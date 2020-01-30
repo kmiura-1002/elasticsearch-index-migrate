@@ -12,7 +12,11 @@
       "*": [
         "types/*"
       ]
-    }
+    },
+    "types": ["reflect-metadata", "node"],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "moduleResolution": "node"
   },
   "include": [
     "src/**/*", "types/*"
