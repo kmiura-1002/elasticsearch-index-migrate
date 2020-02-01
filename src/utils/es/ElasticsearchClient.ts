@@ -7,7 +7,7 @@ export default interface ElasticsearchClient {
 
     search(index: string, query: any): Promise<any>;
 
-    exists(index: string): boolean;
+    exists(index: string): Promise<boolean>;
 
     test(): string;
 }

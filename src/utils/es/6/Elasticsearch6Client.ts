@@ -1,10 +1,10 @@
-import {  esConnectConf } from '../EsUtils';
+import { esConnectConf } from '../EsUtils';
 import { ESConfig, IndexSearchResults } from 'eim';
 import { Client } from 'es6';
 import { ApiResponse } from 'es6/lib/Transport';
 import { inject, injectable } from 'inversify';
-import {Bindings} from "../../../ioc.bindings";
-import ElasticsearchClient from "../ElasticsearchClient";
+import { Bindings } from '../../../ioc.bindings';
+import ElasticsearchClient from '../ElasticsearchClient';
 
 @injectable()
 class Elasticsearch6Client implements ElasticsearchClient {
@@ -24,8 +24,8 @@ class Elasticsearch6Client implements ElasticsearchClient {
         });
     }
 
-    exists(index: string): boolean {
-        return false;
+    async exists(index: string): Promise<boolean> {
+        return await this.client.indices.exists({ index }).then((value) => value.body as boolean);
     }
 
     async healthCheck(): Promise<{ status: string }> {

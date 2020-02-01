@@ -3,8 +3,8 @@ import { ESConfig, IndexSearchResults } from 'eim';
 import { Client } from 'es7';
 import { ApiResponse } from 'es7/lib/Transport';
 import { injectable, inject } from 'inversify';
-import {Bindings} from "../../../ioc.bindings";
-import ElasticsearchClient from "../ElasticsearchClient";
+import { Bindings } from '../../../ioc.bindings';
+import ElasticsearchClient from '../ElasticsearchClient';
 
 @injectable()
 class Elasticsearch7Client implements ElasticsearchClient {
@@ -21,8 +21,8 @@ class Elasticsearch7Client implements ElasticsearchClient {
         });
     }
 
-    exists(index: string): boolean {
-        return false;
+    async exists(index: string): Promise<boolean> {
+        return await this.client.indices.exists({ index }).then((value) => value.body as boolean);
     }
 
     async healthCheck(): Promise<{ status: string }> {
