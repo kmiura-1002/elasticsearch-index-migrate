@@ -9,5 +9,5 @@ export default interface ElasticsearchClient {
 
     exists(index: string): Promise<boolean>;
 
-    test(): string;
+    version(): string;
 }

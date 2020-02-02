@@ -51,8 +51,9 @@ class Elasticsearch6Client implements ElasticsearchClient {
                 value.body.hits.hits.map((hit) => hit._source)
             );
     }
-    test(): string {
-        return 'es6';
+
+    version(): string {
+        return '6.x';
     }
 }
 

@@ -48,8 +48,8 @@ class Elasticsearch7Client implements ElasticsearchClient {
             );
     }
 
-    test(): string {
-        return 'es7';
+    version(): string {
+        return '7.x';
     }
 }
 

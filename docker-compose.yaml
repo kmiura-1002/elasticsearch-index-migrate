@@ -1,0 +1,34 @@
+version: '3'
+services:
+  elasticsearch6x:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.8.6
+    container_name: elasticsearch6x
+    ports:
+      - 9201:9200
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms400m -Xmx400m
+  kibana6x:
+    image: docker.elastic.co/kibana/kibana:6.8.6
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch6x:9200
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch6x
+  elasticsearch7x:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.2
+    container_name: elasticsearch7x
+    ports:
+      - 9202:9200
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms400m -Xmx400m
+  kibana7x:
+    image: docker.elastic.co/kibana/kibana:7.5.2
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch7x:9200
+    ports:
+      - 5602:5601
+    depends_on:
+      - elasticsearch7x
