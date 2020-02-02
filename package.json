@@ -1,93 +1,95 @@
 {
-  "name": "elasticsearch-index-migrate",
-  "description": "elasticsearch-index-migrate",
-  "version": "0.0.0",
-  "author": "kmiura @kmiura-1002",
-  "bin": {
-    "elasticsearch-index-migrate": "./bin/run"
-  },
-  "bugs": "https://github.com/kmiura-1002/elasticsearch-index-migrate/issues",
-  "dependencies": {
-    "@oclif/command": "^1",
-    "@oclif/config": "^1",
-    "@oclif/plugin-help": "^2",
-    "@types/config": "^0.0.36",
-    "@types/inversify": "^2.0.33",
-    "config": "^3.2.5",
-    "es6": "npm:@elastic/elasticsearch@^6.7.0",
-    "es7": "npm:@elastic/elasticsearch@^7.0.0",
-    "inversify": "^5.0.1",
-    "prettier": "^1.19.1",
-    "reflect-metadata": "^0.1.13",
-    "tslib": "^1"
-  },
-  "devDependencies": {
-    "@oclif/dev-cli": "^1",
-    "@oclif/test": "^1",
-    "@types/chai": "^4",
-    "@types/mocha": "^5.2.7",
-    "@types/node": "^13.5.1",
-    "@types/power-assert": "^1.5.3",
-    "@typescript-eslint/eslint-plugin": "^2.18.0",
-    "@typescript-eslint/parser": "^2.18.0",
-    "chai": "^4",
-    "eslint": "^6.8.0",
-    "eslint-config-oclif": "^3.1",
-    "eslint-config-oclif-typescript": "^0.1",
-    "eslint-config-prettier": "^6.10.0",
-    "eslint-plugin-prettier": "^3.1.2",
-    "globby": "^10",
-    "husky": "^4.2.1",
-    "lint-staged": "^10.0.7",
-    "mocha": "^5",
-    "nyc": "^14",
-    "power-assert": "^1.6.1",
-    "ts-node": "^8",
-    "typescript": "^3.7.4"
-  },
-  "engines": {
-    "node": ">=8.0.0"
-  },
-  "files": [
-    "/bin",
-    "/lib",
-    "/npm-shrinkwrap.json",
-    "/oclif.manifest.json"
-  ],
-  "homepage": "https://github.com/kmiura-1002/elasticsearch-index-migrate",
-  "keywords": [
-    "oclif"
-  ],
-  "license": "MIT",
-  "main": "lib/index.js",
-  "oclif": {
-    "commands": "./lib/commands",
-    "bin": "elasticsearch-index-migrate",
-    "plugins": [
-      "@oclif/plugin-help"
-    ]
-  },
-  "repository": "kmiura-1002/elasticsearch-index-migrate",
-  "scripts": {
-    "lint": "eslint -c .eslintrc.json 'src/**/*.ts'",
-    "format": "prettier --write \"src/**/*.{ts,tsx}\"",
-    "postpack": "rm -f oclif.manifest.json",
-    "posttest": "eslint . --ext .ts --config .eslintrc",
-    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
-    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
-    "version": "oclif-dev readme && git add README.md"
-  },
-  "types": "lib/index.d.ts",
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
+    "name": "elasticsearch-index-migrate",
+    "description": "elasticsearch-index-migrate",
+    "version": "0.0.0",
+    "author": "kmiura @kmiura-1002",
+    "bin": {
+        "elasticsearch-index-migrate": "./bin/run"
+    },
+    "bugs": "https://github.com/kmiura-1002/elasticsearch-index-migrate/issues",
+    "dependencies": {
+        "@oclif/command": "^1",
+        "@oclif/config": "^1",
+        "@oclif/plugin-help": "^2",
+        "@types/config": "^0.0.36",
+        "@types/inversify": "^2.0.33",
+        "config": "^3.2.5",
+        "es6": "npm:@elastic/elasticsearch@^6.7.0",
+        "es7": "npm:@elastic/elasticsearch@^7.0.0",
+        "inversify": "^5.0.1",
+        "prettier": "^1.19.1",
+        "reflect-metadata": "^0.1.13",
+        "tslib": "^1"
+    },
+    "devDependencies": {
+        "@oclif/dev-cli": "^1",
+        "@oclif/test": "^1",
+        "@types/chai": "^4.2.8",
+        "@types/mocha": "^5.2.7",
+        "@types/node": "^13.5.1",
+        "@types/power-assert": "^1.5.3",
+        "@types/sinon": "^7.5.1",
+        "@typescript-eslint/eslint-plugin": "^2.18.0",
+        "@typescript-eslint/parser": "^2.18.0",
+        "chai": "^4.2.0",
+        "eslint": "^6.8.0",
+        "eslint-config-oclif": "^3.1",
+        "eslint-config-oclif-typescript": "^0.1",
+        "eslint-config-prettier": "^6.10.0",
+        "eslint-plugin-prettier": "^3.1.2",
+        "globby": "^10",
+        "husky": "^4.2.1",
+        "lint-staged": "^10.0.7",
+        "mocha": "^5",
+        "nyc": "^14",
+        "power-assert": "^1.6.1",
+        "sinon": "^8.1.1",
+        "ts-node": "^8",
+        "typescript": "^3.7.4"
+    },
+    "engines": {
+        "node": ">=10.15.0"
+    },
+    "files": [
+        "/bin",
+        "/lib",
+        "/npm-shrinkwrap.json",
+        "/oclif.manifest.json"
+    ],
+    "homepage": "https://github.com/kmiura-1002/elasticsearch-index-migrate",
+    "keywords": [
+        "oclif"
+    ],
+    "license": "MIT",
+    "main": "lib/index.js",
+    "oclif": {
+        "commands": "./lib/commands",
+        "bin": "elasticsearch-index-migrate",
+        "plugins": [
+            "@oclif/plugin-help"
+        ]
+    },
+    "repository": "kmiura-1002/elasticsearch-index-migrate",
+    "scripts": {
+        "lint": "eslint -c .eslintrc.json 'src/**/*.ts'",
+        "format": "prettier --write \"{src/**/*.ts,test/**/*.ts}\"",
+        "postpack": "rm -f oclif.manifest.json",
+        "posttest": "eslint . --ext .ts --config .eslintrc",
+        "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+        "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+        "version": "oclif-dev readme && git add README.md"
+    },
+    "types": "lib/index.d.ts",
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged"
+        }
+    },
+    "lint-staged": {
+        "*.ts": [
+            "eslint",
+            "prettier --write",
+            "git add"
+        ]
     }
-  },
-  "lint-staged": {
-    "*.ts": [
-      "eslint",
-      "prettier --write",
-      "git add"
-    ]
-  }
 }
