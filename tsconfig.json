@@ -24,6 +24,11 @@
     "moduleResolution": "node"
   },
   "include": [
-    "src/**/*", "types/*"
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "types/eim.d.ts",
+    "eim"
   ]
 }

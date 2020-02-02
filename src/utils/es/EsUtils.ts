@@ -1,4 +1,3 @@
-import { ESConfig } from 'eim';
 import 'reflect-metadata';
 import { ClientOptions as ClientOptions6 } from 'es6';
 import { ClientOptions as ClientOptions7 } from 'es7';
@@ -6,6 +5,7 @@ import * as fs from 'fs';
 import { Bindings } from '../../ioc.bindings';
 import { container } from '../../ioc.config';
 import ElasticsearchClient from './ElasticsearchClient';
+import { ESConfig } from '../../model/types';
 
 export default function getElasticsearchClient() {
     return container.get<ElasticsearchClient>(Bindings.ElasticsearchClient);

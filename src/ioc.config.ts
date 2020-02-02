@@ -1,10 +1,10 @@
 import { Container } from 'inversify';
 import * as config from 'config';
-import { ESConfig } from 'eim';
 import { Bindings } from './ioc.bindings';
 import Elasticsearch6Client from './utils/es/6/Elasticsearch6Client';
 import Elasticsearch7Client from './utils/es/7/Elasticsearch7Client';
 import ElasticsearchClient from './utils/es/ElasticsearchClient';
+import { ESConfig } from './model/types';
 
 function esClientBind(container: Container) {
     const esVersion = config.get<string>('elasticsearch.version');

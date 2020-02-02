@@ -1,10 +1,10 @@
 import { esConnectConf } from '../EsUtils';
-import { ESConfig, IndexSearchResults } from 'eim';
 import { Client } from 'es7';
 import { ApiResponse } from 'es7/lib/Transport';
 import { injectable, inject } from 'inversify';
 import { Bindings } from '../../../ioc.bindings';
 import ElasticsearchClient from '../ElasticsearchClient';
+import { ESConfig, IndexSearchResults } from '../../../model/types';
 
 @injectable()
 class Elasticsearch7Client implements ElasticsearchClient {
