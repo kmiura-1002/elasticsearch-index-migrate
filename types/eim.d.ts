@@ -1,9 +1,3 @@
-// import {ApiResponse as ApiResponse6, Client as Client6} from "es6";
-// import {ApiResponse as ApiResponse7, Client as Client7} from "es7";
-//
-// export type ESClient = Client6 | Client7;
-// export type ApiResponse<T = any, C = any> = ApiResponse6 | ApiResponse7;
-
 interface ESConfig {
     host?: string;
     sslCa?: string;
