@@ -2,9 +2,6 @@
   "elasticsearch": {
     "version": "7.5.2",
     "host": "http://localhost:9200"
-//    "sslCa": "",
-//    "cloudId": "",
-//    "username": "",
-//    "password": ""
+
   }
 }
