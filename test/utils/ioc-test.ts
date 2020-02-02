@@ -1,9 +1,9 @@
-import { ESConfig } from 'eim';
 import ElasticsearchClient from '../../src/utils/es/ElasticsearchClient';
 import Elasticsearch6Client from '../../src/utils/es/6/Elasticsearch6Client';
 import { Container } from 'inversify';
 import { Bindings } from '../../src/ioc.bindings';
 import Elasticsearch7Client from '../../src/utils/es/7/Elasticsearch7Client';
+import { ESConfig } from '../../src/model/types';
 
 export function es6ClientContainer() {
     const container = new Container();
