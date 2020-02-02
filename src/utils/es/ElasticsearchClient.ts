@@ -3,9 +3,9 @@ export default interface ElasticsearchClient {
 
     putMapping(index: string, body: any): Promise<any>;
 
-    createIndex(index: string, body: any): Promise<any>;
+    createIndex(index: string, body?: any): Promise<any>;
 
-    search(index: string, query: any): Promise<any>;
+    search(index: string, query?: any): Promise<any>;
 
     exists(index: string): Promise<boolean>;
 

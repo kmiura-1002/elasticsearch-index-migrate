@@ -17,7 +17,7 @@ class Elasticsearch6Client implements ElasticsearchClient {
         this.client = new Client(esConnectConf(connectConf));
     }
 
-    async createIndex(index: string, body: any) {
+    async createIndex(index: string, body?: any) {
         return await this.client.indices.create({
             index,
             body
@@ -41,7 +41,7 @@ class Elasticsearch6Client implements ElasticsearchClient {
         });
     }
 
-    async search<R>(index: string, query: any) {
+    async search<R>(index: string, query?: any) {
         return await this.client
             .search({
                 index,
