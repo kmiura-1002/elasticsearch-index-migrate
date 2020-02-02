@@ -37,6 +37,8 @@
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-prettier": "^3.1.2",
     "globby": "^10",
+    "husky": "^4.2.1",
+    "lint-staged": "^10.0.7",
     "mocha": "^5",
     "nyc": "^14",
     "power-assert": "^1.6.1",
@@ -67,7 +69,7 @@
   },
   "repository": "kmiura-1002/elasticsearch-index-migrate",
   "scripts": {
-    "eslint": "eslint -c .eslintrc.json 'src/**/*.ts'",
+    "lint": "eslint -c .eslintrc.json 'src/**/*.ts'",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "eslint . --ext .ts --config .eslintrc",
@@ -75,5 +77,17 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"
   },
-  "types": "lib/index.d.ts"
+  "types": "lib/index.d.ts",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint",
+      "prettier --write",
+      "git add"
+    ]
+  }
 }
