@@ -16,6 +16,7 @@ export default class Init extends Command {
     };
 
     async run() {
+        this.parse(Init);
         const client = getElasticsearchClient();
         const health = await client.healthCheck();
 
