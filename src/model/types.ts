@@ -24,3 +24,15 @@ export type IndexSearchResults<T> = {
         }[];
     };
 };
+
+export enum Migrationtype {
+    ADD_FIELD = 'ADD_FIELD',
+    CREATE_INDEX = 'CREATE_INDEX'
+}
+
+export type MigrationScript = {
+    type: Migrationtype;
+    index_name: string;
+    description: string;
+    migrate_script: any;
+};
