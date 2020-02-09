@@ -38,7 +38,11 @@ export default class Init extends Command {
                 encoding: 'utf-8'
             })
         ) as MappingData;
-        const ret = await client.createIndex(MAPPING_HISTORY_INDEX_NAME, mappingData);
+        const ret = await client
+            .createIndex(MAPPING_HISTORY_INDEX_NAME, mappingData)
+            .catch((reason) => {
+                throw new Error(reason);
+            });
         if (ret.statusCode === 200) {
             this.log('Finish creating index for migrate.');
         } else {
