@@ -1,3 +1,8 @@
+import { ParsedPath } from 'path';
+import { ApiResponse as ApiResponse6 } from 'es6';
+import { ApiResponse as ApiResponse7 } from 'es7';
+
+export type ApiResponse<T = any, C = any> = ApiResponse6<T, C> | ApiResponse7<T, C>;
 export const MAPPING_HISTORY_INDEX_NAME = 'migrate_history';
 export interface ESConfig {
     host?: string;
@@ -25,7 +30,19 @@ export type IndexSearchResults<T> = {
     };
 };
 
-export enum Migrationtype {
+export type MigrateIndex = {
+    installed_rank: number;
+    index_name: string;
+    migrate_version: string;
+    description: string;
+    script_name: string;
+    script_type: MigrationType;
+    installed_on: Date;
+    execution_time: number;
+    success: boolean;
+};
+
+export enum MigrationScriptType {
     ADD_FIELD = 'ADD_FIELD',
     CREATE_INDEX = 'CREATE_INDEX'
 }
@@ -37,24 +54,27 @@ export enum MigrationType {
     TEMPLATE = 'TEMPLATE'
 }
 
+// TODO delete
 export type MigrationScript = {
-    type: Migrationtype;
+    type: MigrationScriptType;
     index_name: string;
     description: string;
     migrate_script: any;
 };
+
+// TODO Implement
 export type MigrationExecutor = {
     execute(): void;
 };
 
 export type ResolvedMigration = {
-    getVersion(): string;
-    getDescription(): string;
-    getScript(): string;
-    getChecksum(): number;
-    getType(): MigrationType;
-    getPhysicalLocation(): string;
-    getExecutor(): MigrationExecutor;
+    type: MigrationScriptType;
+    index_name: string;
+    version: string;
+    description: string;
+    physicalLocation: ParsedPath;
+    migrate_script: any;
+    // getExecutor(): MigrationExecutor;
 };
 
 export type AppliedMigration = {
@@ -64,7 +84,7 @@ export type AppliedMigration = {
     type: MigrationType;
     script: string;
     installedOn: Date;
-    installedBy: string;
+    // installedBy: string; // TODO remove?
     executionTime: number;
     success: boolean;
 };
@@ -83,7 +103,8 @@ export type MigrationInfoContext = {
 };
 
 export type MigrationInfo = {
-    resolvedMigration: ResolvedMigration;
-    appliedMigration: AppliedMigration;
+    resolvedMigration?: ResolvedMigration;
+    appliedMigration?: AppliedMigration;
+    outOfOrder: boolean;
     context: MigrationInfoContext;
 };
