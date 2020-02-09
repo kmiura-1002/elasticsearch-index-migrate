@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-export function findAllFiles(dir: string, callback?: (data: string) => void) {
+export function findFiles(dir: string, callback?: (data: string) => void) {
     const filenames = fs.readdirSync(dir);
     filenames.forEach((filename) => {
         const fullPath = path.join(dir, filename);
@@ -9,7 +9,15 @@ export function findAllFiles(dir: string, callback?: (data: string) => void) {
         if (stats.isFile() && callback) {
             callback(fullPath);
         } else if (stats.isDirectory()) {
-            findAllFiles(fullPath, callback);
+            findFiles(fullPath, callback);
         }
     });
+}
+
+export function findAllFiles(dir: string[]): string[] {
+    const paths: string[] = [];
+    dir.forEach((value) => {
+        findFiles(path.join(process.cwd(), value), (data) => paths.push(data));
+    });
+    return paths;
 }

@@ -2,7 +2,7 @@ import 'mocha';
 import * as fs from 'fs';
 import { assert } from 'chai';
 import * as sinon from 'sinon';
-import { findAllFiles } from '../../src/utils/fileUtils';
+import { findAllFiles, findFiles } from '../../src/utils/fileUtils';
 import { Stats } from 'fs';
 
 class MockStats implements Stats {
@@ -75,6 +75,22 @@ class MockStats implements Stats {
 }
 
 describe('fileUtils test', () => {
+    it('findFiles test', () => {
+        const fsMock = sinon.mock(fs);
+        fsMock
+            .expects('readdirSync')
+            .once()
+            .returns(['test.text']);
+        fsMock
+            .expects('statSync')
+            .once()
+            .returns(new MockStats());
+        findFiles('', (data) => {
+            assert.equal(data, 'test.text');
+        });
+        fsMock.verify();
+    });
+
     it('findAllFiles test', () => {
         const fsMock = sinon.mock(fs);
         fsMock
@@ -85,9 +101,11 @@ describe('fileUtils test', () => {
             .expects('statSync')
             .once()
             .returns(new MockStats());
-        findAllFiles('', (data) => {
-            assert.equal(data, 'test.text');
-        });
+        const paths = findAllFiles(['']);
+        assert.isArray(paths);
+        assert.isNotEmpty(paths);
+        assert.isTrue(paths.length === 1);
+        assert.isTrue(paths[0].includes('/test.text'));
         fsMock.verify();
     });
 });
