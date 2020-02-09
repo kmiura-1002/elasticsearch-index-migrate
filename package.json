@@ -20,6 +20,7 @@
         "inversify": "^5.0.1",
         "prettier": "^1.19.1",
         "reflect-metadata": "^0.1.13",
+        "sort-versions": "^0.1.5",
         "tslib": "^1"
     },
     "devDependencies": {

@@ -4,7 +4,8 @@ import {
     MigrationInfoContext,
     ResolvedMigration
 } from '../../model/types';
-
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+import sort from 'sort-versions';
 interface IMigrationInfoService {
     all(): MigrationInfo[] | undefined;
     current(): MigrationInfo | undefined;
@@ -13,14 +14,14 @@ interface IMigrationInfoService {
 }
 
 class MigrationInfoService implements IMigrationInfoService {
-    migrationInfo: MigrationInfo[];
+    migrationInfos: MigrationInfo[];
     resolvedMigrations: ResolvedMigration[];
     appliedMigrations: MigrateIndex[];
 
     constructor(resolvedMigrations: ResolvedMigration[], appliedMigrations: MigrateIndex[]) {
         this.resolvedMigrations = resolvedMigrations;
         this.appliedMigrations = appliedMigrations;
-        this.migrationInfo = [];
+        this.migrationInfos = [];
     }
 
     refresh() {
@@ -80,10 +81,36 @@ class MigrationInfoService implements IMigrationInfoService {
                 });
             }
         });
+
+        const keys: string[] = [];
+        migrationInfoMap.forEach((value, key) => {
+            keys.push(key);
+        });
+        const sortedKeys = sort(keys);
+
+        sortedKeys.forEach((version, index) => {
+            const migrationInfo = migrationInfoMap.get(version);
+            if (migrationInfo?.resolvedMigration && migrationInfo?.appliedMigration === undefined) {
+                const outOfOrder = !!sortedKeys
+                    .slice(index, sortedKeys.length)
+                    .map((value) => {
+                        const info = migrationInfoMap.get(value);
+                        return !!info?.appliedMigration;
+                    })
+                    .find((value) => value);
+                this.migrationInfos.push({
+                    ...migrationInfo,
+                    outOfOrder
+                });
+            } else if (migrationInfo) {
+                this.migrationInfos.push(migrationInfo);
+            }
+        });
+        console.log(this.migrationInfos);
     }
 
     all(): MigrationInfo[] {
-        return this.migrationInfo;
+        return this.migrationInfos;
     }
 
     applied(): MigrationInfo[] | undefined {
