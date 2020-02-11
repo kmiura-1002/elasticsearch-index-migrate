@@ -13,8 +13,8 @@ import sort from 'sort-versions';
 interface IMigrationInfoService {
     all(): MigrationInfo[] | undefined;
     current(): MigrationInfo | undefined;
-    pending(): MigrationInfo[] | undefined;
-    applied(): MigrationInfo[] | undefined;
+    pending(): MigrationInfo[];
+    applied(): MigrationInfo[];
 }
 
 class MigrationInfoImpl implements MigrationInfo {
@@ -203,16 +203,33 @@ class MigrationInfoService implements IMigrationInfoService {
         return this.migrationInfos;
     }
 
-    applied(): MigrationInfo[] | undefined {
-        return undefined;
+    applied(): MigrationInfo[] {
+        return this.migrationInfos.filter((value) => value.getState()?.applied);
     }
 
     current(): MigrationInfo | undefined {
-        return undefined;
+        let current: MigrationInfoImpl | undefined = undefined;
+
+        this.migrationInfos.forEach((value) => {
+            if (
+                value.getState()?.applied &&
+                value.getVersion() &&
+                (current === undefined ||
+                    value.getVersion()?.localeCompare(current?.getVersion() ?? ''))
+            ) {
+                current = value;
+            }
+        });
+        if (current) {
+            return current;
+        }
+        return this.migrationInfos.reverse().find((value) => value.getState()?.applied);
     }
 
-    pending(): MigrationInfo[] | undefined {
-        return undefined;
+    pending(): MigrationInfo[] {
+        return this.migrationInfos.filter(
+            (value) => value.getState()?.status === MigrationState.PENDING
+        );
     }
 }
 
