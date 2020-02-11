@@ -232,17 +232,17 @@ class MigrationInfoService implements IMigrationInfoService {
     migrationInfos: MigrationInfoImpl[];
     appliedMigrations: AppliedMigration[];
     resolvedMigrations: MigrateIndex[];
-    baselineVersion: string;
+    context: MigrationInfoContext;
 
     constructor(
         appliedMigrations: AppliedMigration[],
         resolvedMigrations: MigrateIndex[],
-        baselineVersion: string
+        context: MigrationInfoContext
     ) {
         this.appliedMigrations = appliedMigrations;
         this.resolvedMigrations = resolvedMigrations;
         this.migrationInfos = [];
-        this.baselineVersion = baselineVersion;
+        this.context = context;
     }
 
     refresh() {
@@ -254,17 +254,7 @@ class MigrationInfoService implements IMigrationInfoService {
         const appliedMigrationVersions = sort(this.appliedMigrations.map((value) => value.version));
         const lastApplied = appliedMigrationVersions[appliedMigrationVersions.length - 1];
 
-        const context: MigrationInfoContext = {
-            outOfOrder: true,
-            pending: true,
-            missing: true,
-            ignored: true,
-            future: true,
-            target: '',
-            baseline: this.baselineVersion,
-            lastResolved,
-            lastApplied
-        };
+        const context: MigrationInfoContext = { ...this.context, lastResolved, lastApplied };
 
         this.appliedMigrations.forEach((value) => {
             const migrationInfo = migrationInfoMap.get(value.version);
