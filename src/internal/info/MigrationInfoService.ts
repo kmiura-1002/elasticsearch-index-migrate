@@ -5,6 +5,7 @@ import {
     MigrationInfoContext,
     MigrationState,
     MigrationStateInfo,
+    MigrationType,
     ResolvedMigration
 } from '../../model/types';
 import sort from 'sort-versions';
@@ -152,54 +153,120 @@ function getMigrationStateInfo(status: MigrationState): MigrationStateInfo {
 }
 
 class MigrationInfoImpl implements MigrationInfo {
-    resolvedMigration?: ResolvedMigration;
     appliedMigration?: AppliedMigration;
+    resolvedMigration?: ResolvedMigration;
     context: MigrationInfoContext;
     outOfOrder: boolean;
 
     constructor(
         context: MigrationInfoContext,
         outOfOrder: boolean,
-        resolvedMigration?: ResolvedMigration,
-        appliedMigration?: AppliedMigration
+        appliedMigration?: AppliedMigration,
+        resolvedMigration?: ResolvedMigration
     ) {
-        this.resolvedMigration = resolvedMigration;
         this.appliedMigration = appliedMigration;
+        this.resolvedMigration = resolvedMigration;
         this.context = context;
         this.outOfOrder = outOfOrder;
     }
 
+    getVersion() {
+        if (this.resolvedMigration) {
+            return this.resolvedMigration.version;
+        }
+        return this.appliedMigration?.version;
+    }
+
     getState(): MigrationStateInfo {
-        return getMigrationStateInfo(MigrationState.UNDONE);
+        if (this.resolvedMigration === undefined) {
+            if (this.appliedMigration?.version !== undefined) {
+                if (this.appliedMigration?.version.includes(this.context.baseline)) {
+                    return getMigrationStateInfo(MigrationState.BELOW_BASELINE);
+                }
+                if (
+                    this.context.target !== undefined &&
+                    this.appliedMigration?.version.includes(this.context.target)
+                ) {
+                    return getMigrationStateInfo(MigrationState.ABOVE_TARGET);
+                }
+                if (this.outOfOrder) {
+                    return getMigrationStateInfo(MigrationState.IGNORED);
+                }
+            }
+            return getMigrationStateInfo(MigrationState.PENDING);
+        }
+
+        if (MigrationType.BASELINE === this.resolvedMigration.type) {
+            return getMigrationStateInfo(MigrationState.BASELINE);
+        }
+
+        if (!this.appliedMigration) {
+            if (
+                !this.resolvedMigration.version ||
+                this.getVersion()?.includes(this.context.lastResolved)
+            ) {
+                if (this.resolvedMigration?.success) {
+                    return getMigrationStateInfo(MigrationState.MISSING_SUCCESS);
+                }
+                return getMigrationStateInfo(MigrationState.MISSING_FAILED);
+            } else {
+                if (this.resolvedMigration.success) {
+                    return getMigrationStateInfo(MigrationState.FUTURE_SUCCESS);
+                }
+                return getMigrationStateInfo(MigrationState.FUTURE_FAILED);
+            }
+        }
+
+        if (!this.resolvedMigration?.success) {
+            return getMigrationStateInfo(MigrationState.FAILED);
+        }
+
+        if (this.outOfOrder) {
+            return getMigrationStateInfo(MigrationState.OUT_OF_ORDER);
+        }
+        return getMigrationStateInfo(MigrationState.SUCCESS);
     }
 }
 
 class MigrationInfoService implements IMigrationInfoService {
     migrationInfos: MigrationInfoImpl[];
-    resolvedMigrations: ResolvedMigration[];
-    appliedMigrations: MigrateIndex[];
+    appliedMigrations: AppliedMigration[];
+    resolvedMigrations: MigrateIndex[];
+    baselineVersion: string;
 
-    constructor(resolvedMigrations: ResolvedMigration[], appliedMigrations: MigrateIndex[]) {
-        this.resolvedMigrations = resolvedMigrations;
+    constructor(
+        appliedMigrations: AppliedMigration[],
+        resolvedMigrations: MigrateIndex[],
+        baselineVersion: string
+    ) {
         this.appliedMigrations = appliedMigrations;
+        this.resolvedMigrations = resolvedMigrations;
         this.migrationInfos = [];
+        this.baselineVersion = baselineVersion;
     }
 
     refresh() {
         const migrationInfoMap = new Map<string, MigrationInfoImpl>();
+        const resolvedMigrationVersions = sort(
+            this.resolvedMigrations.map((value) => value.migrate_version)
+        );
+        const lastResolved = resolvedMigrationVersions[resolvedMigrationVersions.length - 1];
+        const appliedMigrationVersions = sort(this.appliedMigrations.map((value) => value.version));
+        const lastApplied = appliedMigrationVersions[appliedMigrationVersions.length - 1];
+
         const context: MigrationInfoContext = {
-            outOfOrder: false,
+            outOfOrder: true,
             pending: true,
-            missing: false,
-            ignored: false,
-            future: false,
+            missing: true,
+            ignored: true,
+            future: true,
             target: '',
-            schema: '',
-            baseline: '',
-            lastResolved: '',
-            lastApplied: ''
+            baseline: this.baselineVersion,
+            lastResolved,
+            lastApplied
         };
-        this.resolvedMigrations.forEach((value) => {
+
+        this.appliedMigrations.forEach((value) => {
             const migrationInfo = migrationInfoMap.get(value.version);
             if (migrationInfo) {
                 migrationInfoMap.set(
@@ -208,15 +275,15 @@ class MigrationInfoService implements IMigrationInfoService {
                         context,
                         migrationInfo.outOfOrder,
                         value,
-                        migrationInfo.appliedMigration
+                        migrationInfo.resolvedMigration
                     )
                 );
-                migrationInfo.resolvedMigration = value;
+                migrationInfo.appliedMigration = value;
             } else {
                 migrationInfoMap.set(value.version, new MigrationInfoImpl(context, false, value));
             }
         });
-        this.appliedMigrations.forEach((value) => {
+        this.resolvedMigrations.forEach((value) => {
             const migrationInfo = migrationInfoMap.get(value.migrate_version);
             const appliedMigration = {
                 installedRank: value.installed_rank,
@@ -234,7 +301,7 @@ class MigrationInfoService implements IMigrationInfoService {
                     new MigrationInfoImpl(
                         context,
                         migrationInfo.outOfOrder,
-                        migrationInfo.resolvedMigration,
+                        migrationInfo.appliedMigration,
                         appliedMigration
                     )
                 );
@@ -254,20 +321,20 @@ class MigrationInfoService implements IMigrationInfoService {
 
         sortedKeys.forEach((version, index) => {
             const migrationInfo = migrationInfoMap.get(version);
-            if (migrationInfo?.resolvedMigration && migrationInfo?.appliedMigration === undefined) {
+            if (migrationInfo?.appliedMigration && migrationInfo?.resolvedMigration === undefined) {
                 const outOfOrder = !!sortedKeys
                     .slice(index, sortedKeys.length)
                     .map((value) => {
                         const info = migrationInfoMap.get(value);
-                        return !!info?.appliedMigration;
+                        return !!info?.resolvedMigration;
                     })
                     .find((value) => value);
                 this.migrationInfos.push(
                     new MigrationInfoImpl(
                         migrationInfo.context,
                         outOfOrder,
-                        migrationInfo.resolvedMigration,
-                        migrationInfo.appliedMigration
+                        migrationInfo.appliedMigration,
+                        migrationInfo.resolvedMigration
                     )
                 );
             } else if (migrationInfo) {
