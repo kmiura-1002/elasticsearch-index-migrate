@@ -48,6 +48,7 @@ export enum MigrationScriptType {
 }
 
 export enum MigrationType {
+    BASELINE = 'BASELINE',
     INDEX = 'INDEX',
     MAPPING = 'MAPPING',
     SETTING = 'SETTING',
@@ -67,7 +68,7 @@ export type MigrationExecutor = {
     execute(): void;
 };
 
-export type ResolvedMigration = {
+export type AppliedMigration = {
     type: MigrationScriptType;
     index_name: string;
     version: string;
@@ -77,7 +78,7 @@ export type ResolvedMigration = {
     // getExecutor(): MigrationExecutor;
 };
 
-export type AppliedMigration = {
+export type ResolvedMigration = {
     installedRank: number;
     version: string;
     description: string;
@@ -96,15 +97,14 @@ export type MigrationInfoContext = {
     ignored: boolean;
     future: boolean;
     target: string;
-    schema: string;
     baseline: string;
     lastResolved: string;
     lastApplied: string;
 };
 
 export type MigrationInfo = {
-    resolvedMigration?: ResolvedMigration;
     appliedMigration?: AppliedMigration;
+    resolvedMigration?: ResolvedMigration;
     outOfOrder: boolean;
     context: MigrationInfoContext;
     getState(): MigrationStateInfo;
