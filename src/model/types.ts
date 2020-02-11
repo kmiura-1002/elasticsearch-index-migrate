@@ -107,4 +107,32 @@ export type MigrationInfo = {
     appliedMigration?: AppliedMigration;
     outOfOrder: boolean;
     context: MigrationInfoContext;
+    getState(): MigrationStateInfo;
 };
+
+export type MigrationStateInfo = {
+    status: MigrationState;
+    displayName: string;
+    resolved: boolean;
+    applied: boolean;
+    failed: boolean;
+};
+
+export enum MigrationState {
+    PENDING = 'PENDING',
+    ABOVE_TARGET = 'ABOVE_TARGET',
+    BELOW_BASELINE = 'BELOW_BASELINE',
+    BASELINE = 'BASELINE',
+    IGNORED = 'IGNORED',
+    MISSING_SUCCESS = 'MISSING_SUCCESS',
+    MISSING_FAILED = 'MISSING_FAILED',
+    SUCCESS = 'SUCCESS',
+    UNDONE = 'UNDONE',
+    AVAILABLE = 'AVAILABLE',
+    FAILED = 'FAILED',
+    OUT_OF_ORDER = 'OUT_OF_ORDER',
+    FUTURE_SUCCESS = 'FUTURE_SUCCESS',
+    FUTURE_FAILED = 'FUTURE_FAILED',
+    OUTDATED = 'OUTDATED',
+    SUPERSEDED = 'SUPERSEDED'
+}
