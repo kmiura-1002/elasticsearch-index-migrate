@@ -107,7 +107,7 @@ export type MigrationInfo = {
     resolvedMigration?: ResolvedMigration;
     outOfOrder: boolean;
     context: MigrationInfoContext;
-    getState(): MigrationStateInfo;
+    getState(): MigrationStateInfo | undefined;
 };
 
 export type MigrationStateInfo = {
@@ -136,3 +136,166 @@ export enum MigrationState {
     OUTDATED = 'OUTDATED',
     SUPERSEDED = 'SUPERSEDED'
 }
+
+export const MigrationStateInfo: Map<MigrationState, MigrationStateInfo> = new Map([
+    [
+        MigrationState.ABOVE_TARGET,
+        {
+            status: MigrationState.ABOVE_TARGET,
+            displayName: 'Above Target',
+            resolved: true,
+            applied: false,
+            failed: false
+        }
+    ],
+    [
+        MigrationState.AVAILABLE,
+        {
+            status: MigrationState.AVAILABLE,
+            displayName: 'Available',
+            resolved: true,
+            applied: false,
+            failed: false
+        }
+    ],
+    [
+        MigrationState.BASELINE,
+        {
+            status: MigrationState.BASELINE,
+            displayName: 'Baseline',
+            resolved: true,
+            applied: true,
+            failed: false
+        }
+    ],
+    [
+        MigrationState.BELOW_BASELINE,
+        {
+            status: MigrationState.BELOW_BASELINE,
+            displayName: 'Below Baseline',
+            resolved: true,
+            applied: false,
+            failed: false
+        }
+    ],
+    [
+        MigrationState.FAILED,
+        {
+            status: MigrationState.FAILED,
+            displayName: 'Failed',
+            resolved: true,
+            applied: true,
+            failed: true
+        }
+    ],
+    [
+        MigrationState.FUTURE_FAILED,
+        {
+            status: MigrationState.FUTURE_FAILED,
+            displayName: 'Failed (Future)',
+            resolved: false,
+            applied: true,
+            failed: true
+        }
+    ],
+    [
+        MigrationState.FUTURE_SUCCESS,
+        {
+            status: MigrationState.FUTURE_SUCCESS,
+            displayName: 'Future',
+            resolved: false,
+            applied: true,
+            failed: false
+        }
+    ],
+    [
+        MigrationState.IGNORED,
+        {
+            status: MigrationState.IGNORED,
+            displayName: 'Ignored',
+            resolved: true,
+            applied: false,
+            failed: false
+        }
+    ],
+    [
+        MigrationState.MISSING_FAILED,
+        {
+            status: MigrationState.MISSING_FAILED,
+            displayName: 'Failed (Missing)',
+            resolved: false,
+            applied: true,
+            failed: true
+        }
+    ],
+    [
+        MigrationState.MISSING_SUCCESS,
+        {
+            status: MigrationState.MISSING_SUCCESS,
+            displayName: 'Missing',
+            resolved: true,
+            applied: true,
+            failed: false
+        }
+    ],
+    [
+        MigrationState.OUT_OF_ORDER,
+        {
+            status: MigrationState.OUT_OF_ORDER,
+            displayName: 'Out of Order',
+            resolved: true,
+            applied: true,
+            failed: false
+        }
+    ],
+    [
+        MigrationState.OUTDATED,
+        {
+            status: MigrationState.OUTDATED,
+            displayName: 'Outdated',
+            resolved: true,
+            applied: true,
+            failed: false
+        }
+    ],
+    [
+        MigrationState.PENDING,
+        {
+            status: MigrationState.PENDING,
+            displayName: 'Pending',
+            resolved: true,
+            applied: false,
+            failed: false
+        }
+    ],
+    [
+        MigrationState.SUCCESS,
+        {
+            status: MigrationState.SUCCESS,
+            displayName: 'Success',
+            resolved: true,
+            applied: true,
+            failed: false
+        }
+    ],
+    [
+        MigrationState.SUPERSEDED,
+        {
+            status: MigrationState.SUPERSEDED,
+            displayName: 'Superseded',
+            resolved: true,
+            applied: true,
+            failed: false
+        }
+    ],
+    [
+        MigrationState.UNDONE,
+        {
+            status: MigrationState.UNDONE,
+            displayName: 'Undone',
+            resolved: true,
+            applied: true,
+            failed: false
+        }
+    ]
+]);

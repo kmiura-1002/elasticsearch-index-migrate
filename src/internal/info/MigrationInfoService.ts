@@ -17,141 +17,6 @@ interface IMigrationInfoService {
     applied(): MigrationInfo[] | undefined;
 }
 
-function getMigrationStateInfo(status: MigrationState): MigrationStateInfo {
-    switch (status) {
-        case MigrationState.ABOVE_TARGET:
-            return {
-                status: MigrationState.ABOVE_TARGET,
-                displayName: 'Above Target',
-                resolved: true,
-                applied: false,
-                failed: false
-            };
-        case MigrationState.AVAILABLE:
-            return {
-                status: MigrationState.AVAILABLE,
-                displayName: 'Available',
-                resolved: true,
-                applied: false,
-                failed: false
-            };
-        case MigrationState.BASELINE:
-            return {
-                status: MigrationState.BASELINE,
-                displayName: 'Baseline',
-                resolved: true,
-                applied: true,
-                failed: false
-            };
-        case MigrationState.BELOW_BASELINE:
-            return {
-                status: MigrationState.BELOW_BASELINE,
-                displayName: 'Below Baseline',
-                resolved: true,
-                applied: false,
-                failed: false
-            };
-        case MigrationState.FAILED:
-            return {
-                status: MigrationState.FAILED,
-                displayName: 'Failed',
-                resolved: true,
-                applied: true,
-                failed: true
-            };
-        case MigrationState.FUTURE_FAILED:
-            return {
-                status: MigrationState.FUTURE_FAILED,
-                displayName: 'Failed (Future)',
-                resolved: false,
-                applied: true,
-                failed: true
-            };
-        case MigrationState.FUTURE_SUCCESS:
-            return {
-                status: MigrationState.FUTURE_SUCCESS,
-                displayName: 'Future',
-                resolved: false,
-                applied: true,
-                failed: false
-            };
-        case MigrationState.IGNORED:
-            return {
-                status: MigrationState.IGNORED,
-                displayName: 'Ignored',
-                resolved: true,
-                applied: false,
-                failed: false
-            };
-        case MigrationState.MISSING_FAILED:
-            return {
-                status: MigrationState.MISSING_FAILED,
-                displayName: 'Failed (Missing)',
-                resolved: false,
-                applied: true,
-                failed: true
-            };
-        case MigrationState.MISSING_SUCCESS:
-            return {
-                status: MigrationState.MISSING_SUCCESS,
-                displayName: 'Missing',
-                resolved: true,
-                applied: true,
-                failed: false
-            };
-        case MigrationState.OUT_OF_ORDER:
-            return {
-                status: MigrationState.OUT_OF_ORDER,
-                displayName: 'Out of Order',
-                resolved: true,
-                applied: true,
-                failed: false
-            };
-        case MigrationState.OUTDATED:
-            return {
-                status: MigrationState.OUTDATED,
-                displayName: 'Outdated',
-                resolved: true,
-                applied: true,
-                failed: false
-            };
-        case MigrationState.PENDING:
-            return {
-                status: MigrationState.PENDING,
-                displayName: 'Pending',
-                resolved: true,
-                applied: false,
-                failed: false
-            };
-        case MigrationState.SUCCESS:
-            return {
-                status: MigrationState.SUCCESS,
-                displayName: 'Success',
-                resolved: true,
-                applied: true,
-                failed: false
-            };
-        case MigrationState.SUPERSEDED:
-            return {
-                status: MigrationState.SUPERSEDED,
-                displayName: 'Superseded',
-                resolved: true,
-                applied: true,
-                failed: false
-            };
-        case MigrationState.UNDONE:
-            return {
-                status: MigrationState.UNDONE,
-                displayName: 'Undone',
-                resolved: true,
-                applied: true,
-                failed: false
-            };
-        default:
-            throw Error(`Unknown status ${status}`);
-    }
-}
-
 class MigrationInfoImpl implements MigrationInfo {
     appliedMigration?: AppliedMigration;
     resolvedMigration?: ResolvedMigration;
@@ -177,27 +42,27 @@ class MigrationInfoImpl implements MigrationInfo {
         return this.appliedMigration?.version;
     }
 
-    getState(): MigrationStateInfo {
+    getState(): MigrationStateInfo | undefined {
         if (this.resolvedMigration === undefined) {
             if (this.appliedMigration?.version !== undefined) {
                 if (this.appliedMigration?.version.includes(this.context.baseline)) {
-                    return getMigrationStateInfo(MigrationState.BELOW_BASELINE);
+                    return MigrationStateInfo.get(MigrationState.BELOW_BASELINE);
                 }
                 if (
                     this.context.target !== undefined &&
                     this.appliedMigration?.version.includes(this.context.target)
                 ) {
-                    return getMigrationStateInfo(MigrationState.ABOVE_TARGET);
+                    return MigrationStateInfo.get(MigrationState.ABOVE_TARGET);
                 }
                 if (this.outOfOrder) {
-                    return getMigrationStateInfo(MigrationState.IGNORED);
+                    return MigrationStateInfo.get(MigrationState.IGNORED);
                 }
             }
-            return getMigrationStateInfo(MigrationState.PENDING);
+            return MigrationStateInfo.get(MigrationState.PENDING);
         }
 
         if (MigrationType.BASELINE === this.resolvedMigration.type) {
-            return getMigrationStateInfo(MigrationState.BASELINE);
+            return MigrationStateInfo.get(MigrationState.BASELINE);
         }
 
         if (!this.appliedMigration) {
@@ -206,25 +71,25 @@ class MigrationInfoImpl implements MigrationInfo {
                 this.getVersion()?.includes(this.context.lastResolved)
             ) {
                 if (this.resolvedMigration?.success) {
-                    return getMigrationStateInfo(MigrationState.MISSING_SUCCESS);
+                    return MigrationStateInfo.get(MigrationState.MISSING_SUCCESS);
                 }
-                return getMigrationStateInfo(MigrationState.MISSING_FAILED);
+                return MigrationStateInfo.get(MigrationState.MISSING_FAILED);
             } else {
                 if (this.resolvedMigration.success) {
-                    return getMigrationStateInfo(MigrationState.FUTURE_SUCCESS);
+                    return MigrationStateInfo.get(MigrationState.FUTURE_SUCCESS);
                 }
-                return getMigrationStateInfo(MigrationState.FUTURE_FAILED);
+                return MigrationStateInfo.get(MigrationState.FUTURE_FAILED);
             }
         }
 
         if (!this.resolvedMigration?.success) {
-            return getMigrationStateInfo(MigrationState.FAILED);
+            return MigrationStateInfo.get(MigrationState.FAILED);
         }
 
         if (this.outOfOrder) {
-            return getMigrationStateInfo(MigrationState.OUT_OF_ORDER);
+            return MigrationStateInfo.get(MigrationState.OUT_OF_ORDER);
         }
-        return getMigrationStateInfo(MigrationState.SUCCESS);
+        return MigrationStateInfo.get(MigrationState.SUCCESS);
     }
 }
 
