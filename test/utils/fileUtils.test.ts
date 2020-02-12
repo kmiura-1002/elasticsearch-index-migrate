@@ -1,6 +1,6 @@
 import 'mocha';
 import * as fs from 'fs';
-import { assert } from 'chai';
+import { expect } from 'chai';
 import * as sinon from 'sinon';
 import { findAllFiles, findFiles } from '../../src/utils/fileUtils';
 import { Stats } from 'fs';
@@ -86,7 +86,7 @@ describe('fileUtils test', () => {
             .once()
             .returns(new MockStats());
         findFiles('', (data) => {
-            assert.equal(data, 'test.text');
+            expect(data).to.eq('test.text');
         });
         fsMock.verify();
     });
@@ -102,10 +102,10 @@ describe('fileUtils test', () => {
             .once()
             .returns(new MockStats());
         const paths = findAllFiles(['']);
-        assert.isArray(paths);
-        assert.isNotEmpty(paths);
-        assert.isTrue(paths.length === 1);
-        assert.isTrue(paths[0].includes('/test.text'));
+        expect(paths)
+            .that.that.to.be.an('array')
+            .that.to.have.lengthOf(1)
+            .that.to.include(`${process.cwd()}/test.text`);
         fsMock.verify();
     });
 });
