@@ -48,12 +48,6 @@ class MigrationInfoImpl implements MigrationInfo {
                 if (this.appliedMigration?.version.includes(this.context.baseline)) {
                     return MigrationStateInfo.get(MigrationState.BELOW_BASELINE);
                 }
-                if (
-                    this.context.target !== undefined &&
-                    this.appliedMigration?.version.includes(this.context.target)
-                ) {
-                    return MigrationStateInfo.get(MigrationState.ABOVE_TARGET);
-                }
                 if (this.outOfOrder) {
                     return MigrationStateInfo.get(MigrationState.IGNORED);
                 }
