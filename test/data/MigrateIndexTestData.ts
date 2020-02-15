@@ -20,7 +20,7 @@ export const migrateIndices: MigrateIndex[] = [
         execution_time: 1,
         index_name: 'test',
         installed_on: new Date(),
-        script_type: MigrationType.MAPPING,
+        script_type: MigrationType.ADD_FIELD,
         success: true
     },
     {
@@ -31,7 +31,7 @@ export const migrateIndices: MigrateIndex[] = [
         execution_time: 1,
         index_name: 'test',
         installed_on: new Date(),
-        script_type: MigrationType.MAPPING,
+        script_type: MigrationType.ADD_FIELD,
         success: true
     }
 ];
