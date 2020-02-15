@@ -1,6 +1,6 @@
 import { MigrateIndex, MigrationType } from '../../src/model/types';
 
-export const resolvedMigrations: MigrateIndex[] = [
+export const migrateIndices: MigrateIndex[] = [
     {
         installed_rank: 1,
         script_name: 'v1.0.0__test',

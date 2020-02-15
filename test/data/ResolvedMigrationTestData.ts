@@ -1,6 +1,6 @@
-import { AppliedMigration, MigrationScriptType } from '../../src/model/types';
+import { ResolvedMigration, MigrationScriptType } from '../../src/model/types';
 
-export const appliedMigrations: AppliedMigration[] = [
+export const resolvedMigrations: ResolvedMigration[] = [
     {
         migrate_script: {},
         type: MigrationScriptType.CREATE_INDEX,

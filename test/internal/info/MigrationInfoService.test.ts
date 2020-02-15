@@ -2,15 +2,15 @@ import 'mocha';
 import { expect } from 'chai';
 import MigrationInfoService from '../../../src/internal/info/MigrationInfoService';
 import { MigrationState } from '../../../src/model/types';
-import { appliedMigrations } from '../../data/AppliedMigrationTestData';
-import { resolvedMigrations } from '../../data/MigrateIndexTestData';
+import { resolvedMigrations } from '../../data/ResolvedMigrationTestData';
+import { migrateIndices } from '../../data/MigrateIndexTestData';
 import { migrationInfoContext } from '../../data/MigrationInfoContextTestData';
 
 describe('MigrationInfoService test', () => {
     it('refresh test', () => {
         const service = new MigrationInfoService(
-            appliedMigrations,
             resolvedMigrations,
+            migrateIndices,
             migrationInfoContext
         );
 
@@ -18,7 +18,7 @@ describe('MigrationInfoService test', () => {
         const migrationInfos = service.all();
         const outOfOrders = migrationInfos.map((value) => value.outOfOrder);
         const versions = migrationInfos.map(
-            (value) => value.appliedMigration?.version ?? value.resolvedMigration?.version
+            (value) => value.resolvedMigration?.version ?? value.appliedMigration?.version
         );
         expect(outOfOrders)
             .to.be.an('array')
@@ -30,8 +30,8 @@ describe('MigrationInfoService test', () => {
 
     it('status test', () => {
         const service = new MigrationInfoService(
-            appliedMigrations,
             resolvedMigrations,
+            migrateIndices,
             migrationInfoContext
         );
 

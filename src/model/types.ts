@@ -68,7 +68,7 @@ export type MigrationExecutor = {
     execute(): void;
 };
 
-export type AppliedMigration = {
+export type ResolvedMigration = {
     type: MigrationScriptType;
     index_name: string;
     version: string;
@@ -78,7 +78,7 @@ export type AppliedMigration = {
     // getExecutor(): MigrationExecutor;
 };
 
-export type ResolvedMigration = {
+export type AppliedMigration = {
     installedRank: number;
     version: string;
     description: string;
@@ -103,8 +103,8 @@ export type MigrationInfoContext = {
 };
 
 export type MigrationInfo = {
-    appliedMigration?: AppliedMigration;
     resolvedMigration?: ResolvedMigration;
+    appliedMigration?: AppliedMigration;
     outOfOrder: boolean;
     context: MigrationInfoContext;
     getState(): MigrationStateInfo | undefined;
