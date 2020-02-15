@@ -1,25 +1,18 @@
 import 'mocha';
 import { expect } from 'chai';
 import MigrationInfoService from '../../../src/internal/info/MigrationInfoService';
-import { MigrationInfoContext, MigrationState } from '../../../src/model/types';
+import { MigrationState } from '../../../src/model/types';
 import { appliedMigrations } from '../../data/AppliedMigrationTestData';
 import { resolvedMigrations } from '../../data/MigrateIndexTestData';
-
-const context: MigrationInfoContext = {
-    outOfOrder: true,
-    pending: true,
-    missing: true,
-    ignored: true,
-    future: true,
-    target: '',
-    baseline: '',
-    lastResolved: '',
-    lastApplied: ''
-};
+import { migrationInfoContext } from '../../data/MigrationInfoContextTestData';
 
 describe('MigrationInfoService test', () => {
     it('refresh test', () => {
-        const service = new MigrationInfoService(appliedMigrations, resolvedMigrations, context);
+        const service = new MigrationInfoService(
+            appliedMigrations,
+            resolvedMigrations,
+            migrationInfoContext
+        );
 
         service.refresh();
         const migrationInfos = service.all();
@@ -36,7 +29,11 @@ describe('MigrationInfoService test', () => {
     });
 
     it('status test', () => {
-        const service = new MigrationInfoService(appliedMigrations, resolvedMigrations, context);
+        const service = new MigrationInfoService(
+            appliedMigrations,
+            resolvedMigrations,
+            migrationInfoContext
+        );
 
         service.refresh();
         const status = service.all().map((value) => value.getState()?.status);
