@@ -42,22 +42,20 @@ export type MigrateIndex = {
     success: boolean;
 };
 
-export enum MigrationScriptType {
+// export enum MigrationScriptType {
+//     ADD_FIELD = 'ADD_FIELD',
+//     CREATE_INDEX = 'CREATE_INDEX'
+// }
+
+export enum MigrationType {
+    BASELINE = 'BASELINE',
     ADD_FIELD = 'ADD_FIELD',
     CREATE_INDEX = 'CREATE_INDEX'
 }
 
-export enum MigrationType {
-    BASELINE = 'BASELINE',
-    INDEX = 'INDEX',
-    MAPPING = 'MAPPING',
-    SETTING = 'SETTING',
-    TEMPLATE = 'TEMPLATE'
-}
-
 // TODO delete
 export type MigrationScript = {
-    type: MigrationScriptType;
+    type: MigrationType;
     index_name: string;
     description: string;
     migrate_script: any;
@@ -69,7 +67,7 @@ export type MigrationExecutor = {
 };
 
 export type ResolvedMigration = {
-    type: MigrationScriptType;
+    type: MigrationType;
     index_name: string;
     version: string;
     description: string;
@@ -110,6 +108,15 @@ export type MigrationInfo = {
     getState(): MigrationStateInfo | undefined;
 };
 
+export type DumpColumn = {
+    category: string;
+    version: string;
+    description: string;
+    type: string;
+    installedOn: Date;
+    state: string;
+};
+
 export type MigrationStateInfo = {
     status: MigrationState;
     displayName: string;
@@ -120,21 +127,22 @@ export type MigrationStateInfo = {
 
 export enum MigrationState {
     PENDING = 'PENDING',
-    ABOVE_TARGET = 'ABOVE_TARGET',
     BELOW_BASELINE = 'BELOW_BASELINE',
     BASELINE = 'BASELINE',
     IGNORED = 'IGNORED',
     MISSING_SUCCESS = 'MISSING_SUCCESS',
     MISSING_FAILED = 'MISSING_FAILED',
     SUCCESS = 'SUCCESS',
-    UNDONE = 'UNDONE',
-    AVAILABLE = 'AVAILABLE',
     FAILED = 'FAILED',
     OUT_OF_ORDER = 'OUT_OF_ORDER',
     FUTURE_SUCCESS = 'FUTURE_SUCCESS',
     FUTURE_FAILED = 'FUTURE_FAILED',
     OUTDATED = 'OUTDATED',
-    SUPERSEDED = 'SUPERSEDED'
+    // unused
+    UNDONE = 'UNDONE',
+    AVAILABLE = 'AVAILABLE',
+    SUPERSEDED = 'SUPERSEDED',
+    ABOVE_TARGET = 'ABOVE_TARGET'
 }
 
 export const MigrationStateInfo: Map<MigrationState, MigrationStateInfo> = new Map([

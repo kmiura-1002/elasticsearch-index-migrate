@@ -1,12 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
 import { MigrationInfoImpl } from '../../../src/internal/info/MigrationInfoService';
-import {
-    MigrationScriptType,
-    MigrationState,
-    MigrationStateInfo,
-    MigrationType
-} from '../../../src/model/types';
+import { MigrationState, MigrationStateInfo, MigrationType } from '../../../src/model/types';
 import { migrationInfoContext } from '../../data/MigrationInfoContextTestData';
 
 describe('MigrationInfo test', () => {
@@ -16,7 +11,7 @@ describe('MigrationInfo test', () => {
             outOfOrder: false,
             resolvedMigration: {
                 migrate_script: {},
-                type: MigrationScriptType.CREATE_INDEX,
+                type: MigrationType.CREATE_INDEX,
                 version: 'v0.0.1',
                 description: '',
                 index_name: 'test',
@@ -30,7 +25,7 @@ describe('MigrationInfo test', () => {
             outOfOrder: true,
             resolvedMigration: {
                 migrate_script: {},
-                type: MigrationScriptType.CREATE_INDEX,
+                type: MigrationType.CREATE_INDEX,
                 version: 'v1.0.1',
                 description: '',
                 index_name: 'test',
@@ -44,7 +39,7 @@ describe('MigrationInfo test', () => {
             outOfOrder: false,
             resolvedMigration: {
                 migrate_script: {},
-                type: MigrationScriptType.CREATE_INDEX,
+                type: MigrationType.CREATE_INDEX,
                 version: 'v1.0.0',
                 description: '',
                 index_name: 'test',
@@ -58,7 +53,7 @@ describe('MigrationInfo test', () => {
             outOfOrder: false,
             resolvedMigration: {
                 migrate_script: {},
-                type: MigrationScriptType.CREATE_INDEX,
+                type: MigrationType.CREATE_INDEX,
                 version: 'v1.0.0',
                 description: '',
                 index_name: 'test',
@@ -84,7 +79,7 @@ describe('MigrationInfo test', () => {
                 installedRank: 1,
                 version: 'v1.0.0',
                 description: '',
-                type: MigrationType.MAPPING,
+                type: MigrationType.ADD_FIELD,
                 script: '',
                 installedOn: new Date(),
                 executionTime: 1,
@@ -100,7 +95,7 @@ describe('MigrationInfo test', () => {
                 installedRank: 1,
                 version: 'v1.0.0',
                 description: '',
-                type: MigrationType.MAPPING,
+                type: MigrationType.ADD_FIELD,
                 script: '',
                 installedOn: new Date(),
                 executionTime: 1,
@@ -116,7 +111,7 @@ describe('MigrationInfo test', () => {
                 installedRank: 1,
                 version: 'v1.0.0',
                 description: '',
-                type: MigrationType.MAPPING,
+                type: MigrationType.ADD_FIELD,
                 script: '',
                 installedOn: new Date(),
                 executionTime: 1,
@@ -132,7 +127,7 @@ describe('MigrationInfo test', () => {
                 installedRank: 1,
                 version: 'v1.0.0',
                 description: '',
-                type: MigrationType.MAPPING,
+                type: MigrationType.ADD_FIELD,
                 script: '',
                 installedOn: new Date(),
                 executionTime: 1,
@@ -145,7 +140,7 @@ describe('MigrationInfo test', () => {
             outOfOrder: false,
             resolvedMigration: {
                 migrate_script: {},
-                type: MigrationScriptType.CREATE_INDEX,
+                type: MigrationType.CREATE_INDEX,
                 version: 'v1.0.0',
                 description: '',
                 index_name: 'test',
@@ -155,7 +150,7 @@ describe('MigrationInfo test', () => {
                 installedRank: 1,
                 version: 'v1.0.0',
                 description: '',
-                type: MigrationType.MAPPING,
+                type: MigrationType.ADD_FIELD,
                 script: '',
                 installedOn: new Date(),
                 executionTime: 1,
@@ -168,7 +163,7 @@ describe('MigrationInfo test', () => {
             outOfOrder: true,
             resolvedMigration: {
                 migrate_script: {},
-                type: MigrationScriptType.CREATE_INDEX,
+                type: MigrationType.CREATE_INDEX,
                 version: 'v1.0.0',
                 description: '',
                 index_name: 'test',
@@ -178,7 +173,7 @@ describe('MigrationInfo test', () => {
                 installedRank: 1,
                 version: 'v1.0.0',
                 description: '',
-                type: MigrationType.MAPPING,
+                type: MigrationType.ADD_FIELD,
                 script: '',
                 installedOn: new Date(),
                 executionTime: 1,
@@ -191,7 +186,7 @@ describe('MigrationInfo test', () => {
             outOfOrder: false,
             resolvedMigration: {
                 migrate_script: {},
-                type: MigrationScriptType.CREATE_INDEX,
+                type: MigrationType.CREATE_INDEX,
                 version: 'v1.0.0',
                 description: '',
                 index_name: 'test',
@@ -201,7 +196,7 @@ describe('MigrationInfo test', () => {
                 installedRank: 1,
                 version: 'v1.0.0',
                 description: '',
-                type: MigrationType.MAPPING,
+                type: MigrationType.ADD_FIELD,
                 script: '',
                 installedOn: new Date(),
                 executionTime: 1,
