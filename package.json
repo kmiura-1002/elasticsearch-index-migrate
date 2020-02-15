@@ -15,6 +15,7 @@
         "@types/inversify": "^2.0.33",
         "cli-ux": "^5.4.4",
         "config": "^3.2.5",
+        "date-fns": "^2.9.0",
         "es6": "npm:@elastic/elasticsearch@^6.7.0",
         "es7": "npm:@elastic/elasticsearch@^7.0.0",
         "inversify": "^5.0.1",

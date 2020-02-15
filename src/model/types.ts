@@ -106,10 +106,13 @@ export type MigrationInfo = {
     outOfOrder: boolean;
     context: MigrationInfoContext;
     getState(): MigrationStateInfo | undefined;
+    getType(): MigrationType | undefined;
+    getVersion(): string | undefined;
+    getDescription(): string | undefined;
+    getInstalledOn(): Date | undefined;
 };
 
 export type DumpColumn = {
-    category: string;
     version: string;
     description: string;
     type: string;

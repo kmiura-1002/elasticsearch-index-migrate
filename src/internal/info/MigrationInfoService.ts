@@ -35,11 +35,31 @@ export class MigrationInfoImpl implements MigrationInfo {
         this.outOfOrder = outOfOrder;
     }
 
-    getVersion() {
+    getType(): MigrationType | undefined {
+        if (this.appliedMigration) {
+            return this.appliedMigration?.type;
+        }
+        return this.resolvedMigration?.type;
+    }
+
+    getVersion(): string | undefined {
         if (this.appliedMigration) {
             return this.appliedMigration.version;
         }
         return this.resolvedMigration?.version;
+    }
+    getDescription(): string | undefined {
+        if (this.appliedMigration) {
+            return this.appliedMigration?.description;
+        }
+        return this.resolvedMigration?.description;
+    }
+
+    getInstalledOn(): Date | undefined {
+        if (this.appliedMigration) {
+            return this.appliedMigration?.installedOn;
+        }
+        return undefined;
     }
 
     getState(): MigrationStateInfo | undefined {
