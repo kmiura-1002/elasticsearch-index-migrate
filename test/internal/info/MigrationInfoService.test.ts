@@ -1,7 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
 import MigrationInfoService from '../../../src/internal/info/MigrationInfoService';
-import { MigrationState } from '../../../src/model/types';
+import { MigrationState, MigrationStateInfo } from '../../../src/model/types';
 import { resolvedMigrations } from '../../data/ResolvedMigrationTestData';
 import { migrateIndices } from '../../data/MigrateIndexTestData';
 import { migrationInfoContext } from '../../data/MigrationInfoContextTestData';
@@ -42,6 +42,56 @@ describe('MigrationInfoService test', () => {
             .to.be.include.ordered.members([
                 MigrationState.BASELINE,
                 MigrationState.IGNORED,
+                MigrationState.SUCCESS,
+                MigrationState.SUCCESS
+            ]);
+    });
+
+    it('Verification of the result filtered by applied status.', () => {
+        const service = new MigrationInfoService(
+            resolvedMigrations,
+            migrateIndices,
+            migrationInfoContext
+        );
+
+        service.refresh();
+        const appliedInfos = service.applied();
+        const status = appliedInfos.map((value) => value.getState()?.status);
+        expect(status)
+            .to.be.an('array')
+            .to.be.include.ordered.members([
+                MigrationState.BASELINE,
+                MigrationState.SUCCESS,
+                MigrationState.SUCCESS
+            ]);
+    });
+
+    it('Verification of the result filtered by current status.', () => {
+        const service = new MigrationInfoService(
+            resolvedMigrations,
+            migrateIndices,
+            migrationInfoContext
+        );
+
+        service.refresh();
+        const currentInfo = service.current();
+        expect(currentInfo?.getState()).to.be.eq(MigrationStateInfo.get(MigrationState.SUCCESS));
+    });
+
+    it('Verification of the result filtered by pending status.', () => {
+        const service = new MigrationInfoService(
+            resolvedMigrations,
+            migrateIndices,
+            migrationInfoContext
+        );
+
+        service.refresh();
+        const pendingInfos = service.applied();
+        const status = pendingInfos.map((value) => value.getState()?.status);
+        expect(status)
+            .to.be.an('array')
+            .to.be.include.ordered.members([
+                MigrationState.BASELINE,
                 MigrationState.SUCCESS,
                 MigrationState.SUCCESS
             ]);
