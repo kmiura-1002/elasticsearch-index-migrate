@@ -17,7 +17,7 @@ interface IMigrationInfoService {
     applied(): MigrationInfo[];
 }
 
-class MigrationInfoImpl implements MigrationInfo {
+export class MigrationInfoImpl implements MigrationInfo {
     appliedMigration?: AppliedMigration;
     resolvedMigration?: ResolvedMigration;
     context: MigrationInfoContext;
@@ -45,7 +45,7 @@ class MigrationInfoImpl implements MigrationInfo {
     getState(): MigrationStateInfo | undefined {
         if (this.resolvedMigration === undefined) {
             if (this.appliedMigration?.version !== undefined) {
-                if (this.appliedMigration?.version.includes(this.context.baseline)) {
+                if (this.appliedMigration?.version < this.context.baseline) {
                     return MigrationStateInfo.get(MigrationState.BELOW_BASELINE);
                 }
                 if (this.outOfOrder) {
@@ -60,10 +60,8 @@ class MigrationInfoImpl implements MigrationInfo {
         }
 
         if (!this.appliedMigration) {
-            if (
-                !this.resolvedMigration.version ||
-                this.getVersion()?.includes(this.context.lastResolved)
-            ) {
+            const version = this.getVersion() ?? '';
+            if (!this.resolvedMigration.version || version < this.context.lastResolved) {
                 if (this.resolvedMigration?.success) {
                     return MigrationStateInfo.get(MigrationState.MISSING_SUCCESS);
                 }

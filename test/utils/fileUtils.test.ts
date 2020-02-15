@@ -103,9 +103,9 @@ describe('fileUtils test', () => {
             .returns(new MockStats());
         const paths = findAllFiles(['']);
         expect(paths)
-            .that.that.to.be.an('array')
-            .that.to.have.lengthOf(1)
-            .that.to.include(`${process.cwd()}/test.text`);
+            .to.be.an('array')
+            .to.lengthOf(1)
+            .to.include(`${process.cwd()}/test.text`);
         fsMock.verify();
     });
 });
