@@ -48,7 +48,7 @@ export class MigrationInfoImpl implements MigrationInfo {
                 if (this.resolvedMigration?.version < this.context.baseline) {
                     return MigrationStateInfo.get(MigrationState.BELOW_BASELINE);
                 }
-                if (this.outOfOrder) {
+                if (this.outOfOrder && this.resolvedMigration?.version < this.context.lastApplied) {
                     return MigrationStateInfo.get(MigrationState.IGNORED);
                 }
             }
