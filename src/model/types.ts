@@ -116,7 +116,7 @@ export type DumpColumn = {
     version: string;
     description: string;
     type: string;
-    installedOn: Date;
+    installedOn: string;
     state: string;
 };
 
