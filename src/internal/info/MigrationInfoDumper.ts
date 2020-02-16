@@ -6,7 +6,7 @@ function getVersion(migrationInfo: MigrationInfo) {
 }
 
 function formatDateAsIsoString(date?: Date) {
-    return date ? format(date, 'YYYY/MM/DD HH:mm:ss') : '';
+    return date ? format(date, 'yyyy/MM/dd HH:mm:ss') : '';
 }
 
 export default function dump(migrationInfos: MigrationInfo[]): DumpColumn[] {

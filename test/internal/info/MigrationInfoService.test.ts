@@ -10,7 +10,7 @@ describe('MigrationInfoService test', () => {
     it('refresh test', () => {
         const service = new MigrationInfoService(
             resolvedMigrations,
-            migrateIndices,
+            migrateIndices(new Date()),
             migrationInfoContext
         );
 
@@ -31,7 +31,7 @@ describe('MigrationInfoService test', () => {
     it('status test', () => {
         const service = new MigrationInfoService(
             resolvedMigrations,
-            migrateIndices,
+            migrateIndices(new Date()),
             migrationInfoContext
         );
 
@@ -50,7 +50,7 @@ describe('MigrationInfoService test', () => {
     it('Verification of the result filtered by applied status.', () => {
         const service = new MigrationInfoService(
             resolvedMigrations,
-            migrateIndices,
+            migrateIndices(new Date()),
             migrationInfoContext
         );
 
@@ -69,7 +69,7 @@ describe('MigrationInfoService test', () => {
     it('Verification of the result filtered by current status.', () => {
         const service = new MigrationInfoService(
             resolvedMigrations,
-            migrateIndices,
+            migrateIndices(new Date()),
             migrationInfoContext
         );
 
@@ -81,7 +81,7 @@ describe('MigrationInfoService test', () => {
     it('Verification of the result filtered by pending status.', () => {
         const service = new MigrationInfoService(
             resolvedMigrations,
-            migrateIndices,
+            migrateIndices(new Date()),
             migrationInfoContext
         );
 

@@ -1,6 +1,6 @@
 import { MigrateIndex, MigrationType } from '../../src/model/types';
 
-export const migrateIndices: MigrateIndex[] = [
+export const migrateIndices = (installed_on: Date): MigrateIndex[] => [
     {
         installed_rank: 1,
         script_name: 'v1.0.0__test',
@@ -8,7 +8,7 @@ export const migrateIndices: MigrateIndex[] = [
         description: '',
         execution_time: 1,
         index_name: 'test',
-        installed_on: new Date(),
+        installed_on,
         script_type: MigrationType.BASELINE,
         success: true
     },
@@ -19,7 +19,7 @@ export const migrateIndices: MigrateIndex[] = [
         description: '',
         execution_time: 1,
         index_name: 'test',
-        installed_on: new Date(),
+        installed_on,
         script_type: MigrationType.ADD_FIELD,
         success: true
     },
@@ -30,7 +30,7 @@ export const migrateIndices: MigrateIndex[] = [
         description: '',
         execution_time: 1,
         index_name: 'test',
-        installed_on: new Date(),
+        installed_on,
         script_type: MigrationType.ADD_FIELD,
         success: true
     }
