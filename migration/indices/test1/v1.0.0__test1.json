@@ -1,0 +1,12 @@
+{
+  "type": "ADD_FIELD",
+  "index_name": "test",
+  "description": "description",
+  "migrate_script": {
+    "properties": {
+      "num": {
+        "type": "long"
+      }
+    }
+  }
+}

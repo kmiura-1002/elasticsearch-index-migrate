@@ -13,12 +13,15 @@
         "@oclif/plugin-help": "^2",
         "@types/config": "^0.0.36",
         "@types/inversify": "^2.0.33",
+        "cli-ux": "^5.4.4",
         "config": "^3.2.5",
+        "date-fns": "^2.9.0",
         "es6": "npm:@elastic/elasticsearch@^6.7.0",
         "es7": "npm:@elastic/elasticsearch@^7.0.0",
         "inversify": "^5.0.1",
         "prettier": "^1.19.1",
         "reflect-metadata": "^0.1.13",
+        "sort-versions": "^0.1.5",
         "tslib": "^1"
     },
     "devDependencies": {
@@ -48,7 +51,8 @@
         "typescript": "^3.7.4"
     },
     "engines": {
-        "node": ">=10.15.0"
+        "node": ">=10.15.0",
+        "npm": ">=6.9"
     },
     "files": [
         "/bin",

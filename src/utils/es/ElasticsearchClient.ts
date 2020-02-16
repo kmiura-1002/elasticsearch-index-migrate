@@ -5,7 +5,7 @@ export default interface ElasticsearchClient {
 
     createIndex(index: string, body?: any): Promise<any>;
 
-    search(index: string, query?: any): Promise<any>;
+    search<R>(index: string, query?: any): Promise<R[]>;
 
     exists(index: string): Promise<boolean>;
 

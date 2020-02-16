@@ -44,7 +44,7 @@ class Elasticsearch7Client implements ElasticsearchClient {
                 body: query
             })
             .then((value: ApiResponse<IndexSearchResults<R>>) =>
-                value.body.hits.hits.map((hit) => hit._source)
+                value.body.hits.hits.map((hit) => hit._source as R)
             );
     }
 
