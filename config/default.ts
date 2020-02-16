@@ -4,6 +4,7 @@ export default {
         host: 'http://localhost:9202'
     },
     migration: {
-        locations: ['migration', 'mapping']
+        locations: ['migration', 'mapping'],
+        baselineVersion: 'v1.0.0'
     }
 };
