@@ -42,7 +42,7 @@ export default class Info extends Command {
             .filter((value) => value.ext === '.json');
 
         if (migrationFileParsedPath.length === 0) {
-            throw Error('Migration file not found.');
+            this.error('Migration file not found.', { exit: 404 });
         }
 
         const migrationScripts = migrationFileParsedPath.map((value) => {
@@ -69,7 +69,7 @@ export default class Info extends Command {
                 }
             })
             .catch((reason) => {
-                throw new Error(reason);
+                this.error(reason, { exit: 500 });
             });
         const context: MigrationInfoContext = {
             outOfOrder: true,
