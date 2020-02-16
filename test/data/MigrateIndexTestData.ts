@@ -1,4 +1,5 @@
 import { MigrateIndex, MigrationType } from '../../src/model/types';
+import { format } from 'date-fns';
 
 export const migrateIndices = (installed_on: Date): MigrateIndex[] => [
     {
@@ -8,7 +9,7 @@ export const migrateIndices = (installed_on: Date): MigrateIndex[] => [
         description: '',
         execution_time: 1,
         index_name: 'test',
-        installed_on,
+        installed_on: format(installed_on, 'yyyy/MM/dd HH:mm:ss'),
         script_type: MigrationType.BASELINE,
         success: true
     },
@@ -19,7 +20,7 @@ export const migrateIndices = (installed_on: Date): MigrateIndex[] => [
         description: '',
         execution_time: 1,
         index_name: 'test',
-        installed_on,
+        installed_on: format(installed_on, 'yyyy/MM/dd HH:mm:ss'),
         script_type: MigrationType.ADD_FIELD,
         success: true
     },
@@ -30,7 +31,7 @@ export const migrateIndices = (installed_on: Date): MigrateIndex[] => [
         description: '',
         execution_time: 1,
         index_name: 'test',
-        installed_on,
+        installed_on: format(installed_on, 'yyyy/MM/dd HH:mm:ss'),
         script_type: MigrationType.ADD_FIELD,
         success: true
     }

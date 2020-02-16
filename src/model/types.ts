@@ -36,8 +36,8 @@ export type MigrateIndex = {
     migrate_version: string;
     description: string;
     script_name: string;
-    script_type: MigrationType;
-    installed_on: Date;
+    script_type: string;
+    installed_on: string;
     execution_time: number;
     success: boolean;
 };

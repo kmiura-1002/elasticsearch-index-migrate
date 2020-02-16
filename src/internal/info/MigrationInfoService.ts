@@ -162,9 +162,9 @@ class MigrationInfoService implements IMigrationInfoService {
                 installedRank: value.installed_rank,
                 version: value.migrate_version,
                 description: value.description,
-                type: value.script_type,
+                type: MigrationType[value.script_type as keyof typeof MigrationType],
                 script: value.script_name,
-                installedOn: value.installed_on,
+                installedOn: new Date(value.installed_on),
                 executionTime: value.execution_time,
                 success: value.success
             };
