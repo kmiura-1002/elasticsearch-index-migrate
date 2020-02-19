@@ -1,6 +1,6 @@
 import 'mocha';
 import { expect } from 'chai';
-import MigrationInfoService from '../../../src/internal/info/MigrationInfoService';
+import MigrationInfoService from '../../../src/executor/info/MigrationInfoService';
 import { MigrationState, MigrationStateInfo } from '../../../src/model/types';
 import { resolvedMigrations } from '../../data/ResolvedMigrationTestData';
 import { migrateIndices } from '../../data/MigrateIndexTestData';

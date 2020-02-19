@@ -94,7 +94,6 @@ export type MigrationInfoContext = {
     missing: boolean;
     ignored: boolean;
     future: boolean;
-    target: string;
     baseline: string;
     lastResolved: string;
     lastApplied: string;
@@ -139,36 +138,10 @@ export enum MigrationState {
     FAILED = 'FAILED',
     OUT_OF_ORDER = 'OUT_OF_ORDER',
     FUTURE_SUCCESS = 'FUTURE_SUCCESS',
-    FUTURE_FAILED = 'FUTURE_FAILED',
-    OUTDATED = 'OUTDATED',
-    // unused
-    UNDONE = 'UNDONE',
-    AVAILABLE = 'AVAILABLE',
-    SUPERSEDED = 'SUPERSEDED',
-    ABOVE_TARGET = 'ABOVE_TARGET'
+    FUTURE_FAILED = 'FUTURE_FAILED'
 }
 
 export const MigrationStateInfo: Map<MigrationState, MigrationStateInfo> = new Map([
-    [
-        MigrationState.ABOVE_TARGET,
-        {
-            status: MigrationState.ABOVE_TARGET,
-            displayName: 'Above Target',
-            resolved: true,
-            applied: false,
-            failed: false
-        }
-    ],
-    [
-        MigrationState.AVAILABLE,
-        {
-            status: MigrationState.AVAILABLE,
-            displayName: 'Available',
-            resolved: true,
-            applied: false,
-            failed: false
-        }
-    ],
     [
         MigrationState.BASELINE,
         {
@@ -260,16 +233,6 @@ export const MigrationStateInfo: Map<MigrationState, MigrationStateInfo> = new M
         }
     ],
     [
-        MigrationState.OUTDATED,
-        {
-            status: MigrationState.OUTDATED,
-            displayName: 'Outdated',
-            resolved: true,
-            applied: true,
-            failed: false
-        }
-    ],
-    [
         MigrationState.PENDING,
         {
             status: MigrationState.PENDING,
@@ -284,26 +247,6 @@ export const MigrationStateInfo: Map<MigrationState, MigrationStateInfo> = new M
         {
             status: MigrationState.SUCCESS,
             displayName: 'Success',
-            resolved: true,
-            applied: true,
-            failed: false
-        }
-    ],
-    [
-        MigrationState.SUPERSEDED,
-        {
-            status: MigrationState.SUPERSEDED,
-            displayName: 'Superseded',
-            resolved: true,
-            applied: true,
-            failed: false
-        }
-    ],
-    [
-        MigrationState.UNDONE,
-        {
-            status: MigrationState.UNDONE,
-            displayName: 'Undone',
             resolved: true,
             applied: true,
             failed: false

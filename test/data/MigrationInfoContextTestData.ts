@@ -6,7 +6,6 @@ export const migrationInfoContext: MigrationInfoContext = {
     missing: true,
     ignored: true,
     future: true,
-    target: '',
     baseline: '',
     lastResolved: '',
     lastApplied: ''

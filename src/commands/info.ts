@@ -10,8 +10,8 @@ import {
     MAPPING_HISTORY_INDEX_NAME
 } from '../model/types';
 import getElasticsearchClient from '../utils/es/EsUtils';
-import MigrationInfoService from '../internal/info/MigrationInfoService';
-import dump from '../internal/info/MigrationInfoDumper';
+import MigrationInfoService from '../executor/info/MigrationInfoService';
+import dump from '../executor/info/MigrationInfoDumper';
 import { cli } from 'cli-ux';
 
 export default class Info extends Command {
@@ -77,7 +77,6 @@ export default class Info extends Command {
             missing: true,
             ignored: true,
             future: true,
-            target: '',
             baseline: baselineVersion,
             lastResolved: '',
             lastApplied: ''

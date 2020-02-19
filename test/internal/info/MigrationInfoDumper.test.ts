@@ -1,10 +1,10 @@
 import 'mocha';
 import { expect } from 'chai';
-import MigrationInfoService from '../../../src/internal/info/MigrationInfoService';
+import MigrationInfoService from '../../../src/executor/info/MigrationInfoService';
 import { resolvedMigrations } from '../../data/ResolvedMigrationTestData';
 import { migrateIndices } from '../../data/MigrateIndexTestData';
 import { migrationInfoContext } from '../../data/MigrationInfoContextTestData';
-import dump from '../../../src/internal/info/MigrationInfoDumper';
+import dump from '../../../src/executor/info/MigrationInfoDumper';
 import { MigrationState } from '../../../src/model/types';
 import { format } from 'date-fns';
 
