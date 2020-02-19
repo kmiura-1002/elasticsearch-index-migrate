@@ -1,15 +1,15 @@
 import 'mocha';
 import { expect } from 'chai';
-import MigrationInfoService from '../../../src/executor/info/MigrationInfoService';
-import { resolvedMigrations } from '../../data/ResolvedMigrationTestData';
-import { migrateIndices } from '../../data/MigrateIndexTestData';
-import { migrationInfoContext } from '../../data/MigrationInfoContextTestData';
-import dump from '../../../src/executor/info/MigrationInfoDumper';
-import { MigrationState } from '../../../src/model/types';
+import MigrationInfoService from '../../src/executor/info/MigrationInfoService';
+import { resolvedMigrations } from '../data/ResolvedMigrationTestData';
+import { migrateIndices } from '../data/MigrateIndexTestData';
+import { migrationInfoContext } from '../data/MigrationInfoContextTestData';
+import makeDetail from '../../src/utils/makeDetail';
+import { MigrationState } from '../../src/model/types';
 import { format } from 'date-fns';
 
-describe('MigrationInfoDumper test', () => {
-    it('dump test', () => {
+describe('makeDetail test', () => {
+    it('makeDetail test', () => {
         const installedOn = new Date();
         const service = new MigrationInfoService(
             resolvedMigrations,
@@ -18,7 +18,7 @@ describe('MigrationInfoDumper test', () => {
         );
         service.refresh();
         const migrationInfos = service.all();
-        const dumpColumns = dump(migrationInfos);
+        const detail = makeDetail(migrationInfos);
         const status = migrationInfos.map((value) => value.getState()?.status);
 
         expect(status)
@@ -30,7 +30,7 @@ describe('MigrationInfoDumper test', () => {
                 MigrationState.SUCCESS
             ]);
 
-        expect(dumpColumns)
+        expect(detail)
             .to.be.an('array')
             .to.be.deep.include.ordered.members([
                 {

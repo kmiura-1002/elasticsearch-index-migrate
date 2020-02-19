@@ -11,7 +11,7 @@ import {
 } from '../model/types';
 import getElasticsearchClient from '../utils/es/EsUtils';
 import MigrationInfoService from '../executor/info/MigrationInfoService';
-import dump from '../executor/info/MigrationInfoDumper';
+import makeDetail from '../utils/makeDetail';
 import { cli } from 'cli-ux';
 
 export default class Info extends Command {
@@ -85,7 +85,7 @@ export default class Info extends Command {
 
         infoService.refresh();
         cli.table(
-            dump(infoService.all()),
+            makeDetail(infoService.all()),
             {
                 version: {},
                 description: {},

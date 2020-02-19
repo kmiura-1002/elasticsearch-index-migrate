@@ -73,7 +73,6 @@ export type ResolvedMigration = {
     description: string;
     physicalLocation: ParsedPath;
     migrate_script: any;
-    // getExecutor(): MigrationExecutor;
 };
 
 export type AppliedMigration = {
@@ -83,7 +82,6 @@ export type AppliedMigration = {
     type: MigrationType;
     script: string;
     installedOn: Date;
-    // installedBy: string; // TODO remove?
     executionTime: number;
     success: boolean;
 };
@@ -99,19 +97,7 @@ export type MigrationInfoContext = {
     lastApplied: string;
 };
 
-export type MigrationInfo = {
-    resolvedMigration?: ResolvedMigration;
-    appliedMigration?: AppliedMigration;
-    outOfOrder: boolean;
-    context: MigrationInfoContext;
-    getState(): MigrationStateInfo | undefined;
-    getType(): MigrationType | undefined;
-    getVersion(): string | undefined;
-    getDescription(): string | undefined;
-    getInstalledOn(): Date | undefined;
-};
-
-export type DumpColumn = {
+export type MigrationInfoDetail = {
     version: string;
     description: string;
     type: string;

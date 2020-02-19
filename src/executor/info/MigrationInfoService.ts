@@ -1,7 +1,6 @@
 import {
     ResolvedMigration,
     MigrateIndex,
-    MigrationInfo,
     MigrationInfoContext,
     MigrationState,
     MigrationStateInfo,
@@ -17,7 +16,7 @@ interface IMigrationInfoService {
     applied(): MigrationInfo[];
 }
 
-export class MigrationInfoImpl implements MigrationInfo {
+export class MigrationInfo {
     resolvedMigration?: ResolvedMigration;
     appliedMigration?: AppliedMigration;
     context: MigrationInfoContext;
@@ -64,7 +63,7 @@ export class MigrationInfoImpl implements MigrationInfo {
 
     getState(): MigrationStateInfo | undefined {
         if (this.appliedMigration === undefined) {
-            if (this.resolvedMigration?.version !== undefined) {
+            if (this.resolvedMigration?.version) {
                 if (this.resolvedMigration?.version < this.context.baseline) {
                     return MigrationStateInfo.get(MigrationState.BELOW_BASELINE);
                 }
@@ -106,7 +105,7 @@ export class MigrationInfoImpl implements MigrationInfo {
 }
 
 class MigrationInfoService implements IMigrationInfoService {
-    migrationInfos: MigrationInfoImpl[];
+    migrationInfos: MigrationInfo[];
     resolvedMigrations: ResolvedMigration[];
     appliedMigrations: MigrateIndex[];
     context: MigrationInfoContext;
@@ -123,7 +122,7 @@ class MigrationInfoService implements IMigrationInfoService {
     }
 
     refresh() {
-        const migrationInfoMap = new Map<string, MigrationInfoImpl>();
+        const migrationInfoMap = new Map<string, MigrationInfo>();
         const appliedMigrationVersions = sort(
             this.appliedMigrations.map((value) => value.migrate_version)
         );
@@ -144,7 +143,7 @@ class MigrationInfoService implements IMigrationInfoService {
             if (migrationInfo) {
                 migrationInfoMap.set(
                     value.version,
-                    new MigrationInfoImpl(
+                    new MigrationInfo(
                         context,
                         migrationInfo.outOfOrder,
                         value,
@@ -153,7 +152,7 @@ class MigrationInfoService implements IMigrationInfoService {
                 );
                 migrationInfo.resolvedMigration = value;
             } else {
-                migrationInfoMap.set(value.version, new MigrationInfoImpl(context, false, value));
+                migrationInfoMap.set(value.version, new MigrationInfo(context, false, value));
             }
         });
         this.appliedMigrations.forEach((value) => {
@@ -171,7 +170,7 @@ class MigrationInfoService implements IMigrationInfoService {
             if (migrationInfo) {
                 migrationInfoMap.set(
                     value.migrate_version,
-                    new MigrationInfoImpl(
+                    new MigrationInfo(
                         context,
                         migrationInfo.outOfOrder,
                         migrationInfo.resolvedMigration,
@@ -181,7 +180,7 @@ class MigrationInfoService implements IMigrationInfoService {
             } else {
                 migrationInfoMap.set(
                     value.migrate_version,
-                    new MigrationInfoImpl(context, false, undefined, appliedMigration)
+                    new MigrationInfo(context, false, undefined, appliedMigration)
                 );
             }
         });
@@ -203,7 +202,7 @@ class MigrationInfoService implements IMigrationInfoService {
                     })
                     .find((value) => value);
                 this.migrationInfos.push(
-                    new MigrationInfoImpl(
+                    new MigrationInfo(
                         migrationInfo.context,
                         outOfOrder,
                         migrationInfo.resolvedMigration,
@@ -225,7 +224,7 @@ class MigrationInfoService implements IMigrationInfoService {
     }
 
     current(): MigrationInfo | undefined {
-        let current: MigrationInfoImpl | undefined = undefined;
+        let current: MigrationInfo | undefined = undefined;
 
         this.migrationInfos.forEach((value) => {
             if (

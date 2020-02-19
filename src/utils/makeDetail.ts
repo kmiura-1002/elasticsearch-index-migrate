@@ -1,5 +1,6 @@
-import { DumpColumn, MigrationInfo } from '../../model/types';
+import { MigrationInfoDetail } from '../model/types';
 import { format } from 'date-fns';
+import { MigrationInfo } from '../executor/info/MigrationInfoService';
 
 function getVersion(migrationInfo: MigrationInfo) {
     return migrationInfo.getVersion() == null ? '' : migrationInfo.getVersion();
@@ -9,7 +10,7 @@ function formatDateAsIsoString(date?: Date) {
     return date ? format(date, 'yyyy/MM/dd HH:mm:ss') : '';
 }
 
-export default function dump(migrationInfos: MigrationInfo[]): DumpColumn[] {
+export default function makeDetail(migrationInfos: MigrationInfo[]): MigrationInfoDetail[] {
     return migrationInfos.map(
         (value) =>
             ({
@@ -18,6 +19,6 @@ export default function dump(migrationInfos: MigrationInfo[]): DumpColumn[] {
                 type: value.getType() ?? '',
                 installedOn: formatDateAsIsoString(value.getInstalledOn()),
                 state: value.getState()?.status ?? ''
-            } as DumpColumn)
+            } as MigrationInfoDetail)
     );
 }

@@ -1,6 +1,6 @@
 import 'mocha';
 import { expect } from 'chai';
-import { MigrationInfoImpl } from '../../../src/executor/info/MigrationInfoService';
+import { MigrationInfo } from '../../../src/executor/info/MigrationInfoService';
 import { MigrationState, MigrationStateInfo, MigrationType } from '../../../src/model/types';
 import { migrationInfoContext } from '../../data/MigrationInfoContextTestData';
 
@@ -208,7 +208,7 @@ describe('MigrationInfo test', () => {
 
     testData.forEach((value) => {
         it(`${value.expect?.status} state test`, () => {
-            const migrationInfo = new MigrationInfoImpl(
+            const migrationInfo = new MigrationInfo(
                 value.context,
                 value.outOfOrder,
                 value.resolvedMigration,
