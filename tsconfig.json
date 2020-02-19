@@ -30,6 +30,7 @@
   "exclude": [
     "node_modules",
     "types/eim.d.ts",
+    "test/data",
     "eim"
   ]
 }
