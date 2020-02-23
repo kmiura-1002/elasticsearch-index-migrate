@@ -1,14 +1,11 @@
 import { Command, flags } from '@oclif/command';
 import * as config from 'config';
-import * as path from 'path';
-import * as fs from 'fs';
-import { findAllFiles } from '../utils/fileUtils';
 import {
-    MigrateIndex,
-    ResolvedMigration,
-    MigrationInfoContext,
-    MAPPING_HISTORY_INDEX_NAME
-} from '../model/types';
+    findAllFiles,
+    loadMigrationScriptFilePaths,
+    loadMigrationScripts
+} from '../utils/fileUtils';
+import { MigrateIndex, MigrationInfoContext, MAPPING_HISTORY_INDEX_NAME } from '../model/types';
 import getElasticsearchClient from '../utils/es/EsUtils';
 import MigrationInfoExecutor from '../executor/info/MigrationInfoExecutor';
 import makeDetail from '../utils/makeDetail';
@@ -22,40 +19,20 @@ export default class Info extends Command {
     };
 
     async run() {
-        const fileNameRegexp = /^([v][0-9]+.[0-9]+.[0-9]+)__([0-9a-zA-Z]+)/;
-        const indexNameRegexp = /[-_]/;
         const { flags } = this.parse(Info);
         const locations = config.get<string[]>('migration.locations');
         const baselineVersion = config.get<string>('migration.baselineVersion');
         const migrationFilePaths: string[] = findAllFiles(locations);
-        const migrationFileParsedPath = migrationFilePaths
-            .filter((value) => {
-                const parentPath = flags.indexName.split(indexNameRegexp).join('/');
-                const migrationFilePath = path.parse(value);
-                return (
-                    migrationFilePath.dir.includes(parentPath) &&
-                    migrationFilePath.dir.lastIndexOf(parentPath) + parentPath.length ===
-                        migrationFilePath.dir.length
-                );
-            })
-            .map(path.parse)
-            .filter((value) => value.ext === '.json');
+        const migrationFileParsedPath = loadMigrationScriptFilePaths(
+            flags.indexName,
+            migrationFilePaths
+        );
 
         if (migrationFileParsedPath.length === 0) {
             this.error('Migration file not found.', { exit: 404 });
         }
 
-        const migrationScripts = migrationFileParsedPath.map((value) => {
-            const resolvedMigration = JSON.parse(
-                fs.readFileSync(path.join(value.dir, value.base), 'utf8')
-            ) as ResolvedMigration;
-            resolvedMigration.physicalLocation = value;
-            const match = value.name.match(fileNameRegexp) as RegExpMatchArray;
-            if (match !== null && match.length > 1) {
-                resolvedMigration.version = match[1];
-            }
-            return resolvedMigration;
-        });
+        const migrationScripts = loadMigrationScripts(migrationFileParsedPath);
         const client = getElasticsearchClient();
         const results = await client
             .search<MigrateIndex>(MAPPING_HISTORY_INDEX_NAME, {
