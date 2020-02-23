@@ -1,6 +1,6 @@
 import 'mocha';
 import { expect } from 'chai';
-import MigrationInfoService from '../../src/executor/info/MigrationInfoService';
+import MigrationInfoExecutor from '../../src/executor/info/MigrationInfoExecutor';
 import { resolvedMigrations } from '../data/ResolvedMigrationTestData';
 import { migrateIndices } from '../data/MigrateIndexTestData';
 import { migrationInfoContext } from '../data/MigrationInfoContextTestData';
@@ -11,7 +11,7 @@ import { format } from 'date-fns';
 describe('makeDetail test', () => {
     it('makeDetail test', () => {
         const installedOn = new Date();
-        const service = new MigrationInfoService(
+        const service = new MigrationInfoExecutor(
             resolvedMigrations,
             migrateIndices(installedOn),
             migrationInfoContext

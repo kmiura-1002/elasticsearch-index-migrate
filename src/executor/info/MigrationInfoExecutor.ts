@@ -97,7 +97,7 @@ export class MigrationInfo {
     }
 }
 
-class MigrationInfoService {
+class MigrationInfoExecutor {
     migrationInfos: MigrationInfo[];
     resolvedMigrations: ResolvedMigration[];
     appliedMigrations: MigrateIndex[];
@@ -242,4 +242,4 @@ class MigrationInfoService {
     }
 }
 
-export default MigrationInfoService;
+export default MigrationInfoExecutor;

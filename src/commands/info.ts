@@ -10,7 +10,7 @@ import {
     MAPPING_HISTORY_INDEX_NAME
 } from '../model/types';
 import getElasticsearchClient from '../utils/es/EsUtils';
-import MigrationInfoService from '../executor/info/MigrationInfoService';
+import MigrationInfoExecutor from '../executor/info/MigrationInfoExecutor';
 import makeDetail from '../utils/makeDetail';
 import { cli } from 'cli-ux';
 
@@ -81,7 +81,7 @@ export default class Info extends Command {
             lastResolved: '',
             lastApplied: ''
         };
-        const infoService = new MigrationInfoService(migrationScripts, results, context);
+        const infoService = new MigrationInfoExecutor(migrationScripts, results, context);
 
         infoService.refresh();
         cli.table(

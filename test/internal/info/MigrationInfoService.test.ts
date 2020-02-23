@@ -1,14 +1,14 @@
 import 'mocha';
 import { expect } from 'chai';
-import MigrationInfoService from '../../../src/executor/info/MigrationInfoService';
+import MigrationInfoExecutor from '../../../src/executor/info/MigrationInfoExecutor';
 import { MigrationState, MigrationStateInfo } from '../../../src/model/types';
 import { resolvedMigrations } from '../../data/ResolvedMigrationTestData';
 import { migrateIndices } from '../../data/MigrateIndexTestData';
 import { migrationInfoContext } from '../../data/MigrationInfoContextTestData';
 
-describe('MigrationInfoService test', () => {
+describe('MigrationInfoExecutor test', () => {
     it('refresh test', () => {
-        const service = new MigrationInfoService(
+        const service = new MigrationInfoExecutor(
             resolvedMigrations,
             migrateIndices(new Date()),
             migrationInfoContext
@@ -29,7 +29,7 @@ describe('MigrationInfoService test', () => {
     });
 
     it('status test', () => {
-        const service = new MigrationInfoService(
+        const service = new MigrationInfoExecutor(
             resolvedMigrations,
             migrateIndices(new Date()),
             migrationInfoContext
@@ -48,7 +48,7 @@ describe('MigrationInfoService test', () => {
     });
 
     it('Verification of the result filtered by applied status.', () => {
-        const service = new MigrationInfoService(
+        const service = new MigrationInfoExecutor(
             resolvedMigrations,
             migrateIndices(new Date()),
             migrationInfoContext
@@ -67,7 +67,7 @@ describe('MigrationInfoService test', () => {
     });
 
     it('Verification of the result filtered by current status.', () => {
-        const service = new MigrationInfoService(
+        const service = new MigrationInfoExecutor(
             resolvedMigrations,
             migrateIndices(new Date()),
             migrationInfoContext
@@ -79,7 +79,7 @@ describe('MigrationInfoService test', () => {
     });
 
     it('Verification of the result filtered by pending status.', () => {
-        const service = new MigrationInfoService(
+        const service = new MigrationInfoExecutor(
             resolvedMigrations,
             migrateIndices(new Date()),
             migrationInfoContext
