@@ -33,8 +33,7 @@ export default class Info extends Command {
         }
 
         const migrationScripts = loadMigrationScripts(migrationFileParsedPath);
-        const client = getElasticsearchClient();
-        const results = await client
+        const results = await getElasticsearchClient()
             .search<MigrateIndex>(MAPPING_HISTORY_INDEX_NAME, {
                 query: {
                     term: {

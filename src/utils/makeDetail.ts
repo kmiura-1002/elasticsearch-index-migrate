@@ -1,6 +1,6 @@
 import { MigrationInfoDetail } from '../model/types';
 import { format } from 'date-fns';
-import { MigrationInfo } from '../executor/info/MigrationInfoExecutor';
+import MigrationInfo from '../executor/info/MigrationInfo';
 
 function getVersion(migrationInfo: MigrationInfo) {
     return migrationInfo.getVersion() == null ? '' : migrationInfo.getVersion();
