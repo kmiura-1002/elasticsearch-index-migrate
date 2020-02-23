@@ -9,13 +9,6 @@ import {
 } from '../../model/types';
 import sort from 'sort-versions';
 
-interface IMigrationInfoService {
-    all(): MigrationInfo[] | undefined;
-    current(): MigrationInfo | undefined;
-    pending(): MigrationInfo[];
-    applied(): MigrationInfo[];
-}
-
 export class MigrationInfo {
     resolvedMigration?: ResolvedMigration;
     appliedMigration?: AppliedMigration;
@@ -104,7 +97,7 @@ export class MigrationInfo {
     }
 }
 
-class MigrationInfoService implements IMigrationInfoService {
+class MigrationInfoService {
     migrationInfos: MigrationInfo[];
     resolvedMigrations: ResolvedMigration[];
     appliedMigrations: MigrateIndex[];

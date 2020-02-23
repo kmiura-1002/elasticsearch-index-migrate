@@ -42,11 +42,6 @@ export type MigrateIndex = {
     success: boolean;
 };
 
-// export enum MigrationScriptType {
-//     ADD_FIELD = 'ADD_FIELD',
-//     CREATE_INDEX = 'CREATE_INDEX'
-// }
-
 export enum MigrationType {
     BASELINE = 'BASELINE',
     ADD_FIELD = 'ADD_FIELD',
