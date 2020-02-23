@@ -8,14 +8,14 @@ import { migrationInfoContext } from '../../data/MigrationInfoContextTestData';
 
 describe('MigrationInfoExecutor test', () => {
     it('refresh test', () => {
-        const service = new MigrationInfoExecutor(
+        const executor = new MigrationInfoExecutor(
             resolvedMigrations,
             migrateIndices(new Date()),
             migrationInfoContext
         );
 
-        service.refresh();
-        const migrationInfos = service.all();
+        executor.refresh();
+        const migrationInfos = executor.all();
         const outOfOrders = migrationInfos.map((value) => value.outOfOrder);
         const versions = migrationInfos.map(
             (value) => value.resolvedMigration?.version ?? value.appliedMigration?.version
@@ -29,14 +29,14 @@ describe('MigrationInfoExecutor test', () => {
     });
 
     it('status test', () => {
-        const service = new MigrationInfoExecutor(
+        const executor = new MigrationInfoExecutor(
             resolvedMigrations,
             migrateIndices(new Date()),
             migrationInfoContext
         );
 
-        service.refresh();
-        const status = service.all().map((value) => value.getState()?.status);
+        executor.refresh();
+        const status = executor.all().map((value) => value.getState()?.status);
         expect(status)
             .to.be.an('array')
             .to.be.include.ordered.members([
@@ -48,14 +48,14 @@ describe('MigrationInfoExecutor test', () => {
     });
 
     it('Verification of the result filtered by applied status.', () => {
-        const service = new MigrationInfoExecutor(
+        const executor = new MigrationInfoExecutor(
             resolvedMigrations,
             migrateIndices(new Date()),
             migrationInfoContext
         );
 
-        service.refresh();
-        const appliedInfos = service.applied();
+        executor.refresh();
+        const appliedInfos = executor.applied();
         const status = appliedInfos.map((value) => value.getState()?.status);
         expect(status)
             .to.be.an('array')
@@ -67,29 +67,47 @@ describe('MigrationInfoExecutor test', () => {
     });
 
     it('Verification of the result filtered by current status.', () => {
-        const service = new MigrationInfoExecutor(
+        const executor = new MigrationInfoExecutor(
             resolvedMigrations,
             migrateIndices(new Date()),
             migrationInfoContext
         );
 
-        service.refresh();
-        const currentInfo = service.current();
+        executor.refresh();
+        const currentInfo = executor.current();
         expect(currentInfo?.getState()).to.be.eq(MigrationStateInfo.get(MigrationState.SUCCESS));
     });
 
     it('Verification of the result filtered by pending status.', () => {
-        const service = new MigrationInfoExecutor(
+        const executor = new MigrationInfoExecutor(
             resolvedMigrations,
             migrateIndices(new Date()),
             migrationInfoContext
         );
 
-        service.refresh();
-        const pendingInfos = service.pending();
+        executor.refresh();
+        const pendingInfos = executor.pending();
         const status = pendingInfos.map((value) => value.getState()?.status);
         expect(status)
             .to.be.an('array')
             .to.be.include.ordered.members([MigrationState.PENDING]);
+    });
+
+    it('Verification of the result filtered by future status.', () => {
+        const executor = new MigrationInfoExecutor(
+            [],
+            migrateIndices(new Date()),
+            migrationInfoContext
+        );
+
+        executor.refresh();
+        const pendingInfos = executor.future();
+        const status = pendingInfos.map((value) => value.getState()?.status);
+        expect(status)
+            .to.be.an('array')
+            .to.be.include.ordered.members([
+                MigrationState.FUTURE_SUCCESS,
+                MigrationState.FUTURE_SUCCESS
+            ]);
     });
 });
