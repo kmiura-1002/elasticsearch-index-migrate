@@ -86,14 +86,10 @@ describe('MigrationInfoExecutor test', () => {
         );
 
         service.refresh();
-        const pendingInfos = service.applied();
+        const pendingInfos = service.pending();
         const status = pendingInfos.map((value) => value.getState()?.status);
         expect(status)
             .to.be.an('array')
-            .to.be.include.ordered.members([
-                MigrationState.BASELINE,
-                MigrationState.SUCCESS,
-                MigrationState.SUCCESS
-            ]);
+            .to.be.include.ordered.members([MigrationState.PENDING]);
     });
 });
