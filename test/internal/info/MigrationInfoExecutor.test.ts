@@ -25,7 +25,14 @@ describe('MigrationInfoExecutor test', () => {
             .to.be.include.ordered.members([false, true, false, false]);
         expect(versions)
             .to.be.an('array')
-            .to.be.include.ordered.members(['v1.0.0', 'v1.1.0', 'v1.1.1', 'v1.20.0']);
+            .to.be.include.ordered.members([
+                'v1.0.0',
+                'v1.1.0',
+                'v1.1.1',
+                'v1.10.2',
+                'v1.20.0',
+                'v99.1.1'
+            ]);
     });
 
     it('status test', () => {
@@ -43,7 +50,9 @@ describe('MigrationInfoExecutor test', () => {
                 MigrationState.BASELINE,
                 MigrationState.IGNORED,
                 MigrationState.SUCCESS,
-                MigrationState.SUCCESS
+                MigrationState.MISSING_FAILED,
+                MigrationState.SUCCESS,
+                MigrationState.PENDING
             ]);
     });
 
@@ -62,6 +71,7 @@ describe('MigrationInfoExecutor test', () => {
             .to.be.include.ordered.members([
                 MigrationState.BASELINE,
                 MigrationState.SUCCESS,
+                MigrationState.MISSING_FAILED,
                 MigrationState.SUCCESS
             ]);
     });
@@ -107,7 +117,23 @@ describe('MigrationInfoExecutor test', () => {
             .to.be.an('array')
             .to.be.include.ordered.members([
                 MigrationState.FUTURE_SUCCESS,
+                MigrationState.FUTURE_FAILED,
                 MigrationState.FUTURE_SUCCESS
             ]);
+    });
+
+    it('Verification of the result filtered by failed status.', () => {
+        const executor = new MigrationInfoExecutor(
+            resolvedMigrations,
+            migrateIndices(new Date()),
+            migrationInfoContext
+        );
+
+        executor.refresh();
+        const failedInfos = executor.failed();
+        const status = failedInfos.map((value) => value.getState()?.status);
+        expect(status)
+            .to.be.an('array')
+            .to.be.include.ordered.members([MigrationState.MISSING_FAILED]);
     });
 });

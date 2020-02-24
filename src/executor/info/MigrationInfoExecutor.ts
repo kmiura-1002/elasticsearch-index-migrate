@@ -159,6 +159,10 @@ class MigrationInfoExecutor {
                 value.getState()?.status === MigrationState.FUTURE_SUCCESS
         );
     }
+
+    failed(): MigrationInfo[] {
+        return this.migrationInfos.filter((value) => value.getState()?.failed);
+    }
 }
 
 export default MigrationInfoExecutor;
