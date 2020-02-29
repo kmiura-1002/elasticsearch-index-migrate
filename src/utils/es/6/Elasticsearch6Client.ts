@@ -52,6 +52,13 @@ class Elasticsearch6Client implements ElasticsearchClient {
             );
     }
 
+    async putSetting(index: string, body: any): Promise<any> {
+        return await this.client.indices.putSettings({
+            index,
+            body
+        });
+    }
+
     version(): string {
         return '6.x';
     }

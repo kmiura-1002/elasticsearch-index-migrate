@@ -10,4 +10,6 @@ export default interface ElasticsearchClient {
     exists(index: string): Promise<boolean>;
 
     version(): string;
+
+    putSetting(index: string, body: any): Promise<any>;
 }

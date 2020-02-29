@@ -47,4 +47,17 @@ describe('Elasticsearch6Client test', () => {
         });
         assert.equal(ret.statusCode, '200');
     });
+
+    it('put settings', async () => {
+        const index = `test_index_${Math.random()
+            .toString(32)
+            .substring(2)}`;
+        await client.createIndex(index);
+        const ret = await client.putSetting(index, {
+            index: {
+                number_of_replicas: 0
+            }
+        });
+        assert.equal(ret.statusCode, '200');
+    });
 });
