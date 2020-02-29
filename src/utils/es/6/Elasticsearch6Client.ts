@@ -62,6 +62,10 @@ class Elasticsearch6Client implements ElasticsearchClient {
     version(): string {
         return '6.x';
     }
+
+    async close() {
+        this.client.close();
+    }
 }
 
 export default Elasticsearch6Client;

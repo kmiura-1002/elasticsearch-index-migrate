@@ -58,6 +58,10 @@ class Elasticsearch7Client implements ElasticsearchClient {
     version(): string {
         return '7.x';
     }
+
+    async close() {
+        this.client.close();
+    }
 }
 
 export default Elasticsearch7Client;

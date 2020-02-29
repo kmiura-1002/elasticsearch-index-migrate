@@ -1,9 +1,13 @@
 import 'mocha';
-import { assert } from 'chai';
+import { assert, expect } from 'chai';
+import * as chai from 'chai';
 import ElasticsearchClient from '../../../../src/utils/es/ElasticsearchClient';
 import { Bindings } from '../../../../src/ioc.bindings';
 // @ts-ignore
 import { es7ClientContainer } from '../../ioc-test';
+import * as chaiAsPromised from 'chai-as-promised';
+
+chai.use(chaiAsPromised);
 
 describe('Elasticsearch7Client test', () => {
     const client = es7ClientContainer().get<ElasticsearchClient>(Bindings.ElasticsearchClient);
@@ -60,5 +64,10 @@ describe('Elasticsearch7Client test', () => {
             }
         });
         assert.equal(ret.statusCode, '200');
+    });
+
+    it('close client', async () => {
+        await client.close();
+        expect(client.healthCheck()).to.be.rejected;
     });
 });
