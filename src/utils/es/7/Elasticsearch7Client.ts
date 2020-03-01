@@ -62,6 +62,15 @@ class Elasticsearch7Client implements ElasticsearchClient {
     async close() {
         this.client.close();
     }
+
+    async postDocument(index: string, body?: any, id?: string) {
+        return await this.client.index({
+            type: '_doc',
+            index,
+            body,
+            id
+        });
+    }
 }
 
 export default Elasticsearch7Client;

@@ -59,7 +59,6 @@ export default class Info extends Command {
         };
         const infoService = new MigrationInfoExecutor(migrationScripts, results, context);
 
-        infoService.refresh();
         cli.table(
             makeDetail(infoService.all()),
             {

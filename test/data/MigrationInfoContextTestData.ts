@@ -6,7 +6,7 @@ export const migrationInfoContext: MigrationInfoContext = {
     missing: true,
     ignored: true,
     future: true,
-    baseline: '',
+    baseline: 'v1.0.0',
     lastResolved: '',
     lastApplied: ''
 };

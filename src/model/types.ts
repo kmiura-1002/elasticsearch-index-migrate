@@ -31,7 +31,7 @@ export type IndexSearchResults<T> = {
 };
 
 export type MigrateIndex = {
-    installed_rank: number;
+    // installed_rank: number;
     index_name: string;
     migrate_version: string;
     description: string;
@@ -43,7 +43,7 @@ export type MigrateIndex = {
 };
 
 export enum MigrationType {
-    BASELINE = 'BASELINE',
+    // BASELINE = 'BASELINE',
     ADD_FIELD = 'ADD_FIELD',
     CREATE_INDEX = 'CREATE_INDEX'
 }
@@ -71,7 +71,7 @@ export type ResolvedMigration = {
 };
 
 export type AppliedMigration = {
-    installedRank: number;
+    // installedRank: number;
     version: string;
     description: string;
     type: MigrationType;
@@ -111,7 +111,7 @@ export type MigrationStateInfo = {
 export enum MigrationState {
     PENDING = 'PENDING',
     BELOW_BASELINE = 'BELOW_BASELINE',
-    BASELINE = 'BASELINE',
+    // BASELINE = 'BASELINE',
     IGNORED = 'IGNORED',
     MISSING_SUCCESS = 'MISSING_SUCCESS',
     MISSING_FAILED = 'MISSING_FAILED',
@@ -123,16 +123,16 @@ export enum MigrationState {
 }
 
 export const MigrationStateInfo: Map<MigrationState, MigrationStateInfo> = new Map([
-    [
-        MigrationState.BASELINE,
-        {
-            status: MigrationState.BASELINE,
-            displayName: 'Baseline',
-            resolved: true,
-            applied: true,
-            failed: false
-        }
-    ],
+    // [
+    //     MigrationState.BASELINE,
+    //     {
+    //         status: MigrationState.BASELINE,
+    //         displayName: 'Baseline',
+    //         resolved: true,
+    //         applied: true,
+    //         failed: false
+    //     }
+    // ],
     [
         MigrationState.BELOW_BASELINE,
         {

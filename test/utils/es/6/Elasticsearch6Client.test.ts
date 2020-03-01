@@ -65,6 +65,16 @@ describe('Elasticsearch6Client test', () => {
         assert.equal(ret.statusCode, '200');
     });
 
+    it('post document', async () => {
+        const index = `test_index_${Math.random()
+            .toString(32)
+            .substring(2)}`;
+        await client.createIndex(index);
+        const ret = await client.postDocument(index, { test: 'foo baz' });
+
+        expect(ret.statusCode).is.eq(201);
+    });
+
     it('close client', async () => {
         await client.close();
         expect(client.healthCheck()).to.be.rejected;

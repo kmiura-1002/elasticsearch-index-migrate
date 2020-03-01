@@ -1,0 +1,215 @@
+import 'mocha';
+import { expect } from 'chai';
+import {
+    doValidate,
+    migrationInfoValidate
+} from '../../../src/executor/migration/MigrationValidate';
+import { MigrationState, MigrationStateInfo, MigrationType } from '../../../src/model/types';
+import { migrationInfoContext } from '../../data/MigrationInfoContextTestData';
+import MigrationInfoExecutor from '../../../src/executor/info/MigrationInfoExecutor';
+import { resolvedMigrations } from '../../data/ResolvedMigrationTestData';
+import { migrateIndices } from '../../data/MigrateIndexTestData';
+import { format } from 'date-fns';
+
+describe('MigrationValidation test', () => {
+    it('Unknown version', () => {
+        expect(
+            migrationInfoValidate({
+                resolvedMigration: {
+                    type: MigrationType.ADD_FIELD,
+                    index_name: 'test',
+                    version: '',
+                    description: '',
+                    physicalLocation: {
+                        name: '',
+                        base: '',
+                        dir: '',
+                        ext: '',
+                        root: ''
+                    },
+                    migrate_script: {}
+                },
+                context: migrationInfoContext,
+                outOfOrder: false,
+                baseline: false
+            })
+        ).is.eq('Unknown version migration detected');
+        expect(
+            migrationInfoValidate({
+                appliedMigration: {
+                    version: '',
+                    description: '',
+                    type: MigrationType.ADD_FIELD,
+                    script: '',
+                    installedOn: new Date(),
+                    executionTime: 0,
+                    success: true
+                },
+                context: migrationInfoContext,
+                outOfOrder: false,
+                baseline: false
+            })
+        ).is.eq('Unknown version migration detected');
+        expect(
+            migrationInfoValidate({
+                context: migrationInfoContext,
+                outOfOrder: false,
+                baseline: false
+            })
+        ).is.eq('Unknown version migration detected');
+    });
+
+    it('ignore state validation', () => {
+        const ret = migrationInfoValidate({
+            resolvedMigration: {
+                type: MigrationType.ADD_FIELD,
+                index_name: 'test',
+                version: 'v1.0.1',
+                description: '',
+                physicalLocation: {
+                    name: '',
+                    base: '',
+                    dir: '',
+                    ext: '',
+                    root: ''
+                },
+                migrate_script: {}
+            },
+            state: MigrationStateInfo.get(MigrationState.IGNORED),
+            context: migrationInfoContext,
+            outOfOrder: false,
+            baseline: false
+        });
+
+        expect(ret).is.include('Resolved migrations detected have not been applied to the index');
+    });
+
+    it('failed state validation', () => {
+        const ret = migrationInfoValidate({
+            resolvedMigration: {
+                type: MigrationType.ADD_FIELD,
+                index_name: 'test',
+                version: 'v1.0.1',
+                description: '',
+                physicalLocation: {
+                    name: '',
+                    base: '',
+                    dir: '',
+                    ext: '',
+                    root: ''
+                },
+                migrate_script: {}
+            },
+            state: MigrationStateInfo.get(MigrationState.FAILED),
+            context: migrationInfoContext,
+            outOfOrder: false,
+            baseline: false
+        });
+
+        expect(ret).is.include('Failed migration to version');
+    });
+
+    it('Applied migration detected not resolved locally validation', () => {
+        const ret = migrationInfoValidate({
+            appliedMigration: {
+                version: 'v1.0.1',
+                description: '',
+                type: MigrationType.ADD_FIELD,
+                script: '',
+                installedOn: new Date(),
+                executionTime: 0,
+                success: true
+            },
+            state: MigrationStateInfo.get(MigrationState.SUCCESS),
+            context: migrationInfoContext,
+            outOfOrder: false,
+            baseline: false
+        });
+
+        expect(ret).is.include('Applied migration detected not resolved locally');
+    });
+
+    it('Migration type mismatch validation', () => {
+        const ret = migrationInfoValidate({
+            appliedMigration: {
+                version: 'v1.0.1',
+                description: '',
+                type: MigrationType.ADD_FIELD,
+                script: '',
+                installedOn: new Date(),
+                executionTime: 0,
+                success: true
+            },
+            resolvedMigration: {
+                type: MigrationType.CREATE_INDEX,
+                index_name: 'test',
+                version: 'v1.0.1',
+                description: '',
+                physicalLocation: {
+                    name: '',
+                    base: '',
+                    dir: '',
+                    ext: '',
+                    root: ''
+                },
+                migrate_script: {}
+            },
+            state: MigrationStateInfo.get(MigrationState.SUCCESS),
+            context: migrationInfoContext,
+            outOfOrder: false,
+            baseline: false
+        });
+
+        expect(ret).is.include('Migration type mismatch for migration');
+    });
+    it('No validation errors', () => {
+        const executor = new MigrationInfoExecutor(
+            [
+                {
+                    migrate_script: {},
+                    type: MigrationType.CREATE_INDEX,
+                    version: 'v1.20.0',
+                    description: '',
+                    index_name: 'test',
+                    physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
+                }
+            ],
+            [
+                {
+                    script_name: 'v1.0.0__test',
+                    migrate_version: 'v1.20.0',
+                    description: '',
+                    execution_time: 1,
+                    index_name: 'test',
+                    installed_on: format(new Date(), 'yyyy/MM/dd HH:mm:ss'),
+                    script_type: MigrationType.CREATE_INDEX,
+                    success: true
+                }
+            ],
+            migrationInfoContext
+        );
+        const ret = doValidate(executor);
+
+        expect(ret)
+            .is.an('array')
+            .lengthOf(0);
+    });
+
+    it('validation errors', () => {
+        const executor = new MigrationInfoExecutor(
+            resolvedMigrations,
+            migrateIndices(new Date()),
+            migrationInfoContext
+        );
+        const ret = doValidate(executor);
+        expect(ret)
+            .is.an('array')
+            .lengthOf(4)
+            .deep.include.ordered.members([
+                'Resolved migrations detected have not been applied to the index (v1.1.0)',
+                'Migration type mismatch for migration v1.1.1',
+                'Failed migration to version v1.10.2() detected',
+                'Migration type mismatch for migration v1.20.0'
+            ]);
+    });
+});

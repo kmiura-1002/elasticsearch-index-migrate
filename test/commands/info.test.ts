@@ -10,8 +10,8 @@ describe('info command test', () => {
         .command(['info', '-i', 'test1'])
         .it('info test', (ctx) => {
             expect(ctx.stdout).to.contain(
-                'Version Description Type      Installedon State   \n' +
-                    'v1.0.0  description ADD_FIELD             PENDING '
+                'Version Description Type      Installedon State    \n' +
+                    'v1.0.0  description ADD_FIELD             BASELINE '
             );
         });
 
@@ -19,8 +19,8 @@ describe('info command test', () => {
         .command(['info', '-i', 'test2-2020.01.01'])
         .it('info versiond index test', (ctx) => {
             expect(ctx.stdout).to.contain(
-                'Version Description Type      Installedon State   \n' +
-                    'v1.0.0  description ADD_FIELD             PENDING '
+                'Version Description Type      Installedon State    \n' +
+                    'v1.0.0  description ADD_FIELD             BASELINE '
             );
         });
 
@@ -28,8 +28,8 @@ describe('info command test', () => {
         .command(['info', '-i', 'test2_2020.01.01'])
         .it('info other versiond index test', (ctx) => {
             expect(ctx.stdout).to.contain(
-                'Version Description Type      Installedon State   \n' +
-                    'v1.0.0  description ADD_FIELD             PENDING '
+                'Version Description Type      Installedon State    \n' +
+                    'v1.0.0  description ADD_FIELD             BASELINE '
             );
         });
 });

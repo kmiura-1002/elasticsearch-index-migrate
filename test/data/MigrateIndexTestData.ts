@@ -3,18 +3,18 @@ import { format } from 'date-fns';
 
 export const migrateIndices = (installed_on: Date): MigrateIndex[] => [
     {
-        installed_rank: 1,
+        // installed_rank: 1,
         script_name: 'v1.0.0__test',
         migrate_version: 'v1.0.0',
         description: '',
         execution_time: 1,
         index_name: 'test',
         installed_on: format(installed_on, 'yyyy/MM/dd HH:mm:ss'),
-        script_type: MigrationType.BASELINE,
+        script_type: MigrationType.CREATE_INDEX,
         success: true
     },
     {
-        installed_rank: 1,
+        // installed_rank: 1,
         script_name: 'v1.0.0__test',
         migrate_version: 'v1.1.1',
         description: '',
@@ -25,7 +25,7 @@ export const migrateIndices = (installed_on: Date): MigrateIndex[] => [
         success: true
     },
     {
-        installed_rank: 1,
+        // installed_rank: 1,
         script_name: 'v1.0.0__test',
         migrate_version: 'v1.20.0',
         description: '',
@@ -36,7 +36,7 @@ export const migrateIndices = (installed_on: Date): MigrateIndex[] => [
         success: true
     },
     {
-        installed_rank: 1,
+        // installed_rank: 1,
         script_name: 'v1.0.0__test',
         migrate_version: 'v1.10.2',
         description: '',

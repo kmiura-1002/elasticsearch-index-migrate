@@ -1,7 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
 import MigrationInfoExecutor from '../../../src/executor/info/MigrationInfoExecutor';
-import { MigrationState, MigrationStateInfo } from '../../../src/model/types';
+import { MigrationState } from '../../../src/model/types';
 import { resolvedMigrations } from '../../data/ResolvedMigrationTestData';
 import { migrateIndices } from '../../data/MigrateIndexTestData';
 import { migrationInfoContext } from '../../data/MigrationInfoContextTestData';
@@ -14,7 +14,6 @@ describe('MigrationInfoExecutor test', () => {
             migrationInfoContext
         );
 
-        executor.refresh();
         const migrationInfos = executor.all();
         const outOfOrders = migrationInfos.map((value) => value.outOfOrder);
         const versions = migrationInfos.map(
@@ -42,50 +41,17 @@ describe('MigrationInfoExecutor test', () => {
             migrationInfoContext
         );
 
-        executor.refresh();
-        const status = executor.all().map((value) => value.getState()?.status);
+        const status = executor.all().map((value) => value.state?.status);
         expect(status)
             .to.be.an('array')
             .to.be.include.ordered.members([
-                MigrationState.BASELINE,
+                MigrationState.MISSING_SUCCESS,
                 MigrationState.IGNORED,
                 MigrationState.SUCCESS,
                 MigrationState.MISSING_FAILED,
                 MigrationState.SUCCESS,
                 MigrationState.PENDING
             ]);
-    });
-
-    it('Verification of the result filtered by applied status.', () => {
-        const executor = new MigrationInfoExecutor(
-            resolvedMigrations,
-            migrateIndices(new Date()),
-            migrationInfoContext
-        );
-
-        executor.refresh();
-        const appliedInfos = executor.applied();
-        const status = appliedInfos.map((value) => value.getState()?.status);
-        expect(status)
-            .to.be.an('array')
-            .to.be.include.ordered.members([
-                MigrationState.BASELINE,
-                MigrationState.SUCCESS,
-                MigrationState.MISSING_FAILED,
-                MigrationState.SUCCESS
-            ]);
-    });
-
-    it('Verification of the result filtered by current status.', () => {
-        const executor = new MigrationInfoExecutor(
-            resolvedMigrations,
-            migrateIndices(new Date()),
-            migrationInfoContext
-        );
-
-        executor.refresh();
-        const currentInfo = executor.current();
-        expect(currentInfo?.getState()).to.be.eq(MigrationStateInfo.get(MigrationState.SUCCESS));
     });
 
     it('Verification of the result filtered by pending status.', () => {
@@ -95,45 +61,10 @@ describe('MigrationInfoExecutor test', () => {
             migrationInfoContext
         );
 
-        executor.refresh();
         const pendingInfos = executor.pending();
-        const status = pendingInfos.map((value) => value.getState()?.status);
+        const status = pendingInfos.map((value) => value.state?.status);
         expect(status)
             .to.be.an('array')
             .to.be.include.ordered.members([MigrationState.PENDING]);
-    });
-
-    it('Verification of the result filtered by future status.', () => {
-        const executor = new MigrationInfoExecutor(
-            [],
-            migrateIndices(new Date()),
-            migrationInfoContext
-        );
-
-        executor.refresh();
-        const pendingInfos = executor.future();
-        const status = pendingInfos.map((value) => value.getState()?.status);
-        expect(status)
-            .to.be.an('array')
-            .to.be.include.ordered.members([
-                MigrationState.FUTURE_SUCCESS,
-                MigrationState.FUTURE_FAILED,
-                MigrationState.FUTURE_SUCCESS
-            ]);
-    });
-
-    it('Verification of the result filtered by failed status.', () => {
-        const executor = new MigrationInfoExecutor(
-            resolvedMigrations,
-            migrateIndices(new Date()),
-            migrationInfoContext
-        );
-
-        executor.refresh();
-        const failedInfos = executor.failed();
-        const status = failedInfos.map((value) => value.getState()?.status);
-        expect(status)
-            .to.be.an('array')
-            .to.be.include.ordered.members([MigrationState.MISSING_FAILED]);
     });
 });

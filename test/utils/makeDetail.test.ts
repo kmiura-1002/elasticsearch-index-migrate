@@ -16,18 +16,19 @@ describe('makeDetail test', () => {
             migrateIndices(installedOn),
             migrationInfoContext
         );
-        service.refresh();
         const migrationInfos = service.all();
         const detail = makeDetail(migrationInfos);
-        const status = migrationInfos.map((value) => value.getState()?.status);
+        const status = migrationInfos.map((value) => value.state?.status);
 
         expect(status)
             .to.be.an('array')
             .to.be.include.ordered.members([
-                MigrationState.BASELINE,
+                MigrationState.MISSING_SUCCESS,
                 MigrationState.IGNORED,
                 MigrationState.SUCCESS,
-                MigrationState.SUCCESS
+                MigrationState.MISSING_FAILED,
+                MigrationState.SUCCESS,
+                MigrationState.PENDING
             ]);
 
         expect(detail)
@@ -36,7 +37,7 @@ describe('makeDetail test', () => {
                 {
                     version: 'v1.0.0',
                     description: '',
-                    type: 'BASELINE',
+                    type: 'CREATE_INDEX',
                     installedOn: format(installedOn, 'yyyy/MM/dd HH:mm:ss'),
                     state: 'BASELINE'
                 },
@@ -55,11 +56,25 @@ describe('makeDetail test', () => {
                     state: 'SUCCESS'
                 },
                 {
+                    version: 'v1.10.2',
+                    description: '',
+                    type: 'ADD_FIELD',
+                    installedOn: format(installedOn, 'yyyy/MM/dd HH:mm:ss'),
+                    state: 'MISSING_FAILED'
+                },
+                {
                     version: 'v1.20.0',
                     description: '',
                     type: 'ADD_FIELD',
                     installedOn: format(installedOn, 'yyyy/MM/dd HH:mm:ss'),
                     state: 'SUCCESS'
+                },
+                {
+                    version: 'v99.1.1',
+                    description: '',
+                    type: 'CREATE_INDEX',
+                    installedOn: '',
+                    state: 'PENDING'
                 }
             ]);
     });

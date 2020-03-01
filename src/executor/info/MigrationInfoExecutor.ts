@@ -6,7 +6,7 @@ import {
     MigrationType
 } from '../../model/types';
 import sort from 'sort-versions';
-import MigrationInfo from './MigrationInfo';
+import { generateMigrationInfo, MigrationInfo } from './MigrationInfo';
 
 class MigrationInfoExecutor {
     migrationInfos: MigrationInfo[];
@@ -23,9 +23,10 @@ class MigrationInfoExecutor {
         this.appliedMigrations = appliedMigrations;
         this.migrationInfos = [];
         this.context = context;
+        this.refresh();
     }
 
-    refresh() {
+    private refresh() {
         const migrationInfoMap = new Map<string, MigrationInfo>();
         const appliedMigrationVersions = sort(
             this.appliedMigrations.map((value) => value.migrate_version)
@@ -47,7 +48,7 @@ class MigrationInfoExecutor {
             if (migrationInfo) {
                 migrationInfoMap.set(
                     value.version,
-                    new MigrationInfo(
+                    generateMigrationInfo(
                         context,
                         migrationInfo.outOfOrder,
                         value,
@@ -56,13 +57,13 @@ class MigrationInfoExecutor {
                 );
                 migrationInfo.resolvedMigration = value;
             } else {
-                migrationInfoMap.set(value.version, new MigrationInfo(context, false, value));
+                migrationInfoMap.set(value.version, generateMigrationInfo(context, false, value));
             }
         });
         this.appliedMigrations.forEach((value) => {
             const migrationInfo = migrationInfoMap.get(value.migrate_version);
             const appliedMigration = {
-                installedRank: value.installed_rank,
+                // installedRank: value.installed_rank,
                 version: value.migrate_version,
                 description: value.description,
                 type: MigrationType[value.script_type as keyof typeof MigrationType],
@@ -74,7 +75,7 @@ class MigrationInfoExecutor {
             if (migrationInfo) {
                 migrationInfoMap.set(
                     value.migrate_version,
-                    new MigrationInfo(
+                    generateMigrationInfo(
                         context,
                         migrationInfo.outOfOrder,
                         migrationInfo.resolvedMigration,
@@ -84,7 +85,7 @@ class MigrationInfoExecutor {
             } else {
                 migrationInfoMap.set(
                     value.migrate_version,
-                    new MigrationInfo(context, false, undefined, appliedMigration)
+                    generateMigrationInfo(context, false, undefined, appliedMigration)
                 );
             }
         });
@@ -106,7 +107,7 @@ class MigrationInfoExecutor {
                     })
                     .find((value) => value);
                 this.migrationInfos.push(
-                    new MigrationInfo(
+                    generateMigrationInfo(
                         migrationInfo.context,
                         outOfOrder,
                         migrationInfo.resolvedMigration,
@@ -123,45 +124,10 @@ class MigrationInfoExecutor {
         return this.migrationInfos;
     }
 
-    applied(): MigrationInfo[] {
-        return this.migrationInfos.filter((value) => value.getState()?.applied);
-    }
-
-    current(): MigrationInfo | undefined {
-        let current: MigrationInfo | undefined = undefined;
-
-        this.migrationInfos.forEach((value) => {
-            if (
-                value.getState()?.applied &&
-                value.getVersion() &&
-                (current === undefined ||
-                    value.getVersion()?.localeCompare(current?.getVersion() ?? ''))
-            ) {
-                current = value;
-            }
-        });
-        if (current) {
-            return current;
-        }
-        return this.migrationInfos.reverse().find((value) => value.getState()?.applied);
-    }
-
     pending(): MigrationInfo[] {
         return this.migrationInfos.filter(
-            (value) => value.getState()?.status === MigrationState.PENDING
+            (value) => value.state?.status === MigrationState.PENDING
         );
-    }
-
-    future(): MigrationInfo[] {
-        return this.migrationInfos.filter(
-            (value) =>
-                value.getState()?.status === MigrationState.FUTURE_FAILED ||
-                value.getState()?.status === MigrationState.FUTURE_SUCCESS
-        );
-    }
-
-    failed(): MigrationInfo[] {
-        return this.migrationInfos.filter((value) => value.getState()?.failed);
     }
 }
 
