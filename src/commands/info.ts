@@ -48,11 +48,6 @@ export default class Info extends Command {
                 this.error(reason, { exit: 500 });
             });
         const context: MigrationInfoContext = {
-            outOfOrder: true,
-            pending: true,
-            missing: true,
-            ignored: true,
-            future: true,
             baseline: baselineVersion,
             lastResolved: '',
             lastApplied: ''

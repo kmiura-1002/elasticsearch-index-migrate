@@ -68,11 +68,11 @@ export type AppliedMigration = {
 };
 
 export type MigrationInfoContext = {
-    outOfOrder: boolean;
-    pending: boolean;
-    missing: boolean;
-    ignored: boolean;
-    future: boolean;
+    // outOfOrder: boolean;
+    // pending: boolean;
+    // missing: boolean;
+    // ignored: boolean;
+    // future: boolean;
     baseline: string;
     lastResolved: string;
     lastApplied: string;
