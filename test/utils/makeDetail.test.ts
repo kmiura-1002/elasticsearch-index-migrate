@@ -38,7 +38,7 @@ describe('makeDetail test', () => {
                     version: 'v1.0.0',
                     description: '',
                     type: 'CREATE_INDEX',
-                    installedOn: format(installedOn, 'yyyy/MM/dd HH:mm:ss'),
+                    installedOn: format(installedOn, 'yyyy-MM-dd HH:mm:ss'),
                     state: 'BASELINE'
                 },
                 {
@@ -52,21 +52,21 @@ describe('makeDetail test', () => {
                     version: 'v1.1.1',
                     description: '',
                     type: 'ADD_FIELD',
-                    installedOn: format(installedOn, 'yyyy/MM/dd HH:mm:ss'),
+                    installedOn: format(installedOn, 'yyyy-MM-dd HH:mm:ss'),
                     state: 'SUCCESS'
                 },
                 {
                     version: 'v1.10.2',
                     description: '',
                     type: 'ADD_FIELD',
-                    installedOn: format(installedOn, 'yyyy/MM/dd HH:mm:ss'),
+                    installedOn: format(installedOn, 'yyyy-MM-dd HH:mm:ss'),
                     state: 'MISSING_FAILED'
                 },
                 {
                     version: 'v1.20.0',
                     description: '',
                     type: 'ADD_FIELD',
-                    installedOn: format(installedOn, 'yyyy/MM/dd HH:mm:ss'),
+                    installedOn: format(installedOn, 'yyyy-MM-dd HH:mm:ss'),
                     state: 'SUCCESS'
                 },
                 {

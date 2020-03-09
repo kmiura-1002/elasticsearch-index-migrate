@@ -7,6 +7,7 @@ import {
 } from '../../model/types';
 import sort from 'sort-versions';
 import { generateMigrationInfo, MigrationInfo } from './MigrationInfo';
+import { cli } from 'cli-ux';
 
 class MigrationInfoExecutor {
     migrationInfos: MigrationInfo[];
@@ -63,7 +64,6 @@ class MigrationInfoExecutor {
         this.appliedMigrations.forEach((value) => {
             const migrationInfo = migrationInfoMap.get(value.migrate_version);
             const appliedMigration = {
-                // installedRank: value.installed_rank,
                 version: value.migrate_version,
                 description: value.description,
                 type: MigrationType[value.script_type as keyof typeof MigrationType],
@@ -95,7 +95,9 @@ class MigrationInfoExecutor {
             keys.push(key);
         });
         const sortedKeys = sort(keys);
-
+        if (sortedKeys.length < 1) {
+            cli.error('Unknown version migration detected');
+        }
         sortedKeys.forEach((version, index) => {
             const migrationInfo = migrationInfoMap.get(version);
             if (migrationInfo?.resolvedMigration && migrationInfo?.appliedMigration === undefined) {

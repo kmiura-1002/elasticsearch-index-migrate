@@ -2,6 +2,8 @@ import { ParsedPath } from 'path';
 import { ApiResponse as ApiResponse6 } from 'es6';
 import { ApiResponse as ApiResponse7 } from 'es7';
 
+export const VERSION_REGEX = /^([v][0-9]+.[0-9]+.[0-9]+)/;
+
 export type ApiResponse<T = any, C = any> = ApiResponse6<T, C> | ApiResponse7<T, C>;
 export const MAPPING_HISTORY_INDEX_NAME = 'migrate_history';
 export interface ESConfig {
@@ -31,7 +33,6 @@ export type IndexSearchResults<T> = {
 };
 
 export type MigrateIndex = {
-    // installed_rank: number;
     index_name: string;
     migrate_version: string;
     description: string;
@@ -43,23 +44,9 @@ export type MigrateIndex = {
 };
 
 export enum MigrationType {
-    // BASELINE = 'BASELINE',
     ADD_FIELD = 'ADD_FIELD',
     CREATE_INDEX = 'CREATE_INDEX'
 }
-
-// TODO delete
-export type MigrationScript = {
-    type: MigrationType;
-    index_name: string;
-    description: string;
-    migrate_script: any;
-};
-
-// TODO Implement
-export type MigrationExecutor = {
-    execute(): void;
-};
 
 export type ResolvedMigration = {
     type: MigrationType;
@@ -71,7 +58,6 @@ export type ResolvedMigration = {
 };
 
 export type AppliedMigration = {
-    // installedRank: number;
     version: string;
     description: string;
     type: MigrationType;
@@ -111,7 +97,6 @@ export type MigrationStateInfo = {
 export enum MigrationState {
     PENDING = 'PENDING',
     BELOW_BASELINE = 'BELOW_BASELINE',
-    // BASELINE = 'BASELINE',
     IGNORED = 'IGNORED',
     MISSING_SUCCESS = 'MISSING_SUCCESS',
     MISSING_FAILED = 'MISSING_FAILED',
@@ -123,16 +108,6 @@ export enum MigrationState {
 }
 
 export const MigrationStateInfo: Map<MigrationState, MigrationStateInfo> = new Map([
-    // [
-    //     MigrationState.BASELINE,
-    //     {
-    //         status: MigrationState.BASELINE,
-    //         displayName: 'Baseline',
-    //         resolved: true,
-    //         applied: true,
-    //         failed: false
-    //     }
-    // ],
     [
         MigrationState.BELOW_BASELINE,
         {

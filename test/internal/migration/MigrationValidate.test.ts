@@ -181,7 +181,7 @@ describe('MigrationValidation test', () => {
                     description: '',
                     execution_time: 1,
                     index_name: 'test',
-                    installed_on: format(new Date(), 'yyyy/MM/dd HH:mm:ss'),
+                    installed_on: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
                     script_type: MigrationType.CREATE_INDEX,
                     success: true
                 }

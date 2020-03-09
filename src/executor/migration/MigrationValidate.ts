@@ -1,5 +1,5 @@
 import MigrationInfoExecutor from '../info/MigrationInfoExecutor';
-import { MigrationState } from '../../model/types';
+import { MigrationState, VERSION_REGEX } from '../../model/types';
 import { generateDescription, generateVersion, MigrationInfo } from '../info/MigrationInfo';
 
 export function migrationInfoValidate(migrateInfo: MigrationInfo): string | undefined {
@@ -8,7 +8,7 @@ export function migrationInfoValidate(migrateInfo: MigrationInfo): string | unde
         generateDescription(migrateInfo.resolvedMigration, migrateInfo.appliedMigration) ??
         '[empty description]';
 
-    if (!version) {
+    if (!version?.match(VERSION_REGEX)) {
         return 'Unknown version migration detected';
     }
 

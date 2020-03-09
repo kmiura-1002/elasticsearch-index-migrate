@@ -53,7 +53,6 @@ describe('MigrationInfo test', () => {
             outOfOrder: false,
             resolvedMigration: undefined,
             appliedMigration: {
-                // installedRank: 1,
                 version: 'v1.0.0',
                 description: '',
                 type: MigrationType.ADD_FIELD,
@@ -69,7 +68,6 @@ describe('MigrationInfo test', () => {
             outOfOrder: false,
             resolvedMigration: undefined,
             appliedMigration: {
-                // installedRank: 1,
                 version: 'v1.0.0',
                 description: '',
                 type: MigrationType.ADD_FIELD,
@@ -85,7 +83,6 @@ describe('MigrationInfo test', () => {
             outOfOrder: false,
             resolvedMigration: undefined,
             appliedMigration: {
-                // installedRank: 1,
                 version: 'v1.0.0',
                 description: '',
                 type: MigrationType.ADD_FIELD,
@@ -101,7 +98,6 @@ describe('MigrationInfo test', () => {
             outOfOrder: false,
             resolvedMigration: undefined,
             appliedMigration: {
-                // installedRank: 1,
                 version: 'v1.0.0',
                 description: '',
                 type: MigrationType.ADD_FIELD,
@@ -124,7 +120,6 @@ describe('MigrationInfo test', () => {
                 physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
             },
             appliedMigration: {
-                // installedRank: 1,
                 version: 'v1.0.0',
                 description: '',
                 type: MigrationType.ADD_FIELD,
@@ -147,7 +142,6 @@ describe('MigrationInfo test', () => {
                 physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
             },
             appliedMigration: {
-                // installedRank: 1,
                 version: 'v1.0.0',
                 description: '',
                 type: MigrationType.ADD_FIELD,
@@ -170,7 +164,6 @@ describe('MigrationInfo test', () => {
                 physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
             },
             appliedMigration: {
-                // installedRank: 1,
                 version: 'v1.0.0',
                 description: '',
                 type: MigrationType.ADD_FIELD,

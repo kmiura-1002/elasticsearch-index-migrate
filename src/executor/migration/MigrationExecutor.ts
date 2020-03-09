@@ -17,7 +17,11 @@ import { formatDateAsIsoString } from '../../utils/makeDetail';
 export async function addMigrationHistory(esClient: ElasticsearchClient, history: MigrateIndex) {
     await esClient
         .postDocument(MAPPING_HISTORY_INDEX_NAME, history)
-        .then((value) => cli.info(`POST Success. Migration history saved successfully. (${value})`))
+        .then((value) =>
+            cli.info(
+                `POST Success. Migration history saved successfully. (${JSON.stringify(value)})`
+            )
+        )
         .catch((reason) =>
             cli.warn(
                 `Failed to save history. (Failed Data: ${JSON.stringify(
@@ -33,7 +37,6 @@ export function makeMigrateHistory(
     success: boolean
 ): MigrateIndex {
     return {
-        // installed_rank: 0,
         index_name: migrationInfo.resolvedMigration?.index_name ?? '',
         migrate_version: migrationInfo.resolvedMigration?.version ?? '',
         description: migrationInfo.resolvedMigration?.description ?? '',
@@ -83,11 +86,14 @@ export async function applyMigration(esClient: ElasticsearchClient, migrationInf
                 resolvedMigration?.physicalLocation.base
             }. (time: ${sw.read()} ms)`
         );
+        return 1;
+    } else {
+        cli.warn('No migration target.');
+        return 0;
     }
-    return 1;
 }
 
-export function migrate(
+export async function migrate(
     resolvedMigrations: ResolvedMigration[],
     appliedMigrations: MigrateIndex[],
     context: MigrationInfoContext
@@ -97,16 +103,24 @@ export function migrate(
     cli.info('Start validate of migration data.');
     const validateErrorMessages = doValidate(migrateInfo);
     if (validateErrorMessages.length > 0) {
-        cli.error(`Migration data problem detected:\n${validateErrorMessages.join('\n')}`);
+        cli.error(`Migration data problem detected:\n${validateErrorMessages.join('\n')}`, {
+            code: 'validate_error'
+        });
+        return;
     }
 
     cli.info('Start migration!');
     const sw = new StopWatch();
     sw.start();
+    const count = await migrateInfo
+        .pending()
+        .map(async (value) => (await applyMigration(esClient, value)) as number)
+        .reduce(
+            async (previousValue, currentValue) => (await previousValue) + (await currentValue)
+        );
 
-    migrateInfo.pending().map((value) => applyMigration(esClient, value));
     sw.stop();
     esClient.close();
     cli.info(`Finished migration! (time: ${sw.read()} ms)`);
-    return 0;
+    return count;
 }

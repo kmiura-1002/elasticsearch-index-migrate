@@ -52,10 +52,6 @@ export function generateState(
         return MigrationStateInfo.get(MigrationState.PENDING);
     }
 
-    // if (MigrationType.BASELINE === appliedMigration.type) {
-    //     return MigrationStateInfo.get(MigrationState.BASELINE);
-    // }
-
     if (!resolvedMigration) {
         const version = generateVersion(resolvedMigration, appliedMigration) ?? '';
         if (!appliedMigration.version || version < context.lastResolved) {
