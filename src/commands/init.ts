@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import getElasticsearchClient from '../utils/es/EsUtils';
 import { clusterStatus, MAPPING_HISTORY_INDEX_NAME } from '../model/types';
+import { cli } from 'cli-ux';
 
 interface MappingData {
     settings: any;
@@ -21,17 +22,17 @@ export default class Init extends Command {
         const health = await client.healthCheck();
 
         if (health.status === clusterStatus.YELLOW) {
-            this.warn('cluster status is yellow.');
+            cli.warn('cluster status is yellow.');
         } else if (health.status === clusterStatus.RED) {
-            this.error('cluster status is red.');
-            this.exit(1);
+            cli.error('cluster status is red.');
+            cli.exit(1);
         }
-        this.log('Start creating index for migrate.');
+        cli.log('Start creating index for migrate.');
 
         const exists = await client.exists('migrate_history');
         if (exists) {
-            this.log('migrate_history index already exists.');
-            this.exit(1);
+            cli.log('migrate_history index already exists.');
+            cli.exit(1);
         }
         const mappingData = JSON.parse(
             fs.readFileSync(path.join(__dirname, '../../', 'mapping', 'migrate_history.json'), {
@@ -44,10 +45,10 @@ export default class Init extends Command {
                 throw new Error(reason);
             });
         if (ret.statusCode === 200) {
-            this.log('Finish creating index for migrate.');
+            cli.log('Finish creating index for migrate.');
         } else {
-            this.error('Failed to create index for migrate.', { code: ret.statusCode });
-            this.error(ret.error);
+            cli.error('Failed to create index for migrate.', { code: ret.statusCode });
+            cli.error(ret.error);
         }
     }
 }
