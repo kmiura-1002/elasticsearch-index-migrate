@@ -2,6 +2,8 @@ import { ParsedPath } from 'path';
 import { ApiResponse as ApiResponse6 } from 'es6';
 import { ApiResponse as ApiResponse7 } from 'es7';
 
+export const VERSION_REGEX = /^([v][0-9]+.[0-9]+.[0-9]+)/;
+
 export type ApiResponse<T = any, C = any> = ApiResponse6<T, C> | ApiResponse7<T, C>;
 export const MAPPING_HISTORY_INDEX_NAME = 'migrate_history';
 export interface ESConfig {
@@ -31,7 +33,6 @@ export type IndexSearchResults<T> = {
 };
 
 export type MigrateIndex = {
-    installed_rank: number;
     index_name: string;
     migrate_version: string;
     description: string;
@@ -42,29 +43,10 @@ export type MigrateIndex = {
     success: boolean;
 };
 
-// export enum MigrationScriptType {
-//     ADD_FIELD = 'ADD_FIELD',
-//     CREATE_INDEX = 'CREATE_INDEX'
-// }
-
 export enum MigrationType {
-    BASELINE = 'BASELINE',
     ADD_FIELD = 'ADD_FIELD',
     CREATE_INDEX = 'CREATE_INDEX'
 }
-
-// TODO delete
-export type MigrationScript = {
-    type: MigrationType;
-    index_name: string;
-    description: string;
-    migrate_script: any;
-};
-
-// TODO Implement
-export type MigrationExecutor = {
-    execute(): void;
-};
 
 export type ResolvedMigration = {
     type: MigrationType;
@@ -73,46 +55,30 @@ export type ResolvedMigration = {
     description: string;
     physicalLocation: ParsedPath;
     migrate_script: any;
-    // getExecutor(): MigrationExecutor;
 };
 
 export type AppliedMigration = {
-    installedRank: number;
     version: string;
     description: string;
     type: MigrationType;
     script: string;
     installedOn: Date;
-    // installedBy: string; // TODO remove?
     executionTime: number;
     success: boolean;
 };
 
 export type MigrationInfoContext = {
-    outOfOrder: boolean;
-    pending: boolean;
-    missing: boolean;
-    ignored: boolean;
-    future: boolean;
-    target: string;
+    // outOfOrder: boolean;
+    // pending: boolean;
+    // missing: boolean;
+    // ignored: boolean;
+    // future: boolean;
     baseline: string;
     lastResolved: string;
     lastApplied: string;
 };
 
-export type MigrationInfo = {
-    resolvedMigration?: ResolvedMigration;
-    appliedMigration?: AppliedMigration;
-    outOfOrder: boolean;
-    context: MigrationInfoContext;
-    getState(): MigrationStateInfo | undefined;
-    getType(): MigrationType | undefined;
-    getVersion(): string | undefined;
-    getDescription(): string | undefined;
-    getInstalledOn(): Date | undefined;
-};
-
-export type DumpColumn = {
+export type MigrationInfoDetail = {
     version: string;
     description: string;
     type: string;
@@ -131,7 +97,6 @@ export type MigrationStateInfo = {
 export enum MigrationState {
     PENDING = 'PENDING',
     BELOW_BASELINE = 'BELOW_BASELINE',
-    BASELINE = 'BASELINE',
     IGNORED = 'IGNORED',
     MISSING_SUCCESS = 'MISSING_SUCCESS',
     MISSING_FAILED = 'MISSING_FAILED',
@@ -139,46 +104,10 @@ export enum MigrationState {
     FAILED = 'FAILED',
     OUT_OF_ORDER = 'OUT_OF_ORDER',
     FUTURE_SUCCESS = 'FUTURE_SUCCESS',
-    FUTURE_FAILED = 'FUTURE_FAILED',
-    OUTDATED = 'OUTDATED',
-    // unused
-    UNDONE = 'UNDONE',
-    AVAILABLE = 'AVAILABLE',
-    SUPERSEDED = 'SUPERSEDED',
-    ABOVE_TARGET = 'ABOVE_TARGET'
+    FUTURE_FAILED = 'FUTURE_FAILED'
 }
 
 export const MigrationStateInfo: Map<MigrationState, MigrationStateInfo> = new Map([
-    [
-        MigrationState.ABOVE_TARGET,
-        {
-            status: MigrationState.ABOVE_TARGET,
-            displayName: 'Above Target',
-            resolved: true,
-            applied: false,
-            failed: false
-        }
-    ],
-    [
-        MigrationState.AVAILABLE,
-        {
-            status: MigrationState.AVAILABLE,
-            displayName: 'Available',
-            resolved: true,
-            applied: false,
-            failed: false
-        }
-    ],
-    [
-        MigrationState.BASELINE,
-        {
-            status: MigrationState.BASELINE,
-            displayName: 'Baseline',
-            resolved: true,
-            applied: true,
-            failed: false
-        }
-    ],
     [
         MigrationState.BELOW_BASELINE,
         {
@@ -260,16 +189,6 @@ export const MigrationStateInfo: Map<MigrationState, MigrationStateInfo> = new M
         }
     ],
     [
-        MigrationState.OUTDATED,
-        {
-            status: MigrationState.OUTDATED,
-            displayName: 'Outdated',
-            resolved: true,
-            applied: true,
-            failed: false
-        }
-    ],
-    [
         MigrationState.PENDING,
         {
             status: MigrationState.PENDING,
@@ -284,26 +203,6 @@ export const MigrationStateInfo: Map<MigrationState, MigrationStateInfo> = new M
         {
             status: MigrationState.SUCCESS,
             displayName: 'Success',
-            resolved: true,
-            applied: true,
-            failed: false
-        }
-    ],
-    [
-        MigrationState.SUPERSEDED,
-        {
-            status: MigrationState.SUPERSEDED,
-            displayName: 'Superseded',
-            resolved: true,
-            applied: true,
-            failed: false
-        }
-    ],
-    [
-        MigrationState.UNDONE,
-        {
-            status: MigrationState.UNDONE,
-            displayName: 'Undone',
             resolved: true,
             applied: true,
             failed: false

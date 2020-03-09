@@ -24,5 +24,13 @@ export const resolvedMigrations: ResolvedMigration[] = [
         description: '',
         index_name: 'test',
         physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
+    },
+    {
+        migrate_script: {},
+        type: MigrationType.CREATE_INDEX,
+        version: 'v99.1.1',
+        description: '',
+        index_name: 'test',
+        physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
     }
 ];

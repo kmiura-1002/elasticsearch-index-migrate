@@ -40,9 +40,6 @@
     },
     "mappings": {
         "properties": {
-            "installed_rank": {
-                "type": "long"
-            },
             "index_name": {
                 "type": "keyword"
             },

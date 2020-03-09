@@ -28,6 +28,7 @@
         "@oclif/dev-cli": "^1",
         "@oclif/test": "^1",
         "@types/chai": "^4.2.8",
+        "@types/chai-as-promised": "^7.1.2",
         "@types/mocha": "^5.2.7",
         "@types/node": "^13.5.1",
         "@types/power-assert": "^1.5.3",
@@ -35,6 +36,7 @@
         "@typescript-eslint/eslint-plugin": "^2.18.0",
         "@typescript-eslint/parser": "^2.18.0",
         "chai": "^4.2.0",
+        "chai-as-promised": "^7.1.1",
         "eslint": "^6.8.0",
         "eslint-config-oclif": "^3.1",
         "eslint-config-oclif-typescript": "^0.1",
@@ -78,7 +80,6 @@
         "lint": "eslint -c .eslintrc 'src/**/*.ts'",
         "format": "prettier --write \"{src/**/*.ts,test/**/*.ts}\"",
         "postpack": "rm -f oclif.manifest.json",
-        "posttest": "eslint . --ext .ts --config .eslintrc",
         "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
         "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
         "version": "oclif-dev readme && git add README.md"

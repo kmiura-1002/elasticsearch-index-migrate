@@ -48,8 +48,28 @@ class Elasticsearch7Client implements ElasticsearchClient {
             );
     }
 
+    async putSetting(index: string, body: any): Promise<any> {
+        return await this.client.indices.putSettings({
+            index,
+            body
+        });
+    }
+
     version(): string {
         return '7.x';
+    }
+
+    async close() {
+        this.client.close();
+    }
+
+    async postDocument(index: string, body?: any, id?: string) {
+        return await this.client.index({
+            type: '_doc',
+            index,
+            body,
+            id
+        });
     }
 }
 

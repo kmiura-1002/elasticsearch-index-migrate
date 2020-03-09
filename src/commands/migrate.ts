@@ -5,21 +5,20 @@ import {
     loadMigrationScriptFilePaths,
     loadMigrationScripts
 } from '../utils/fileUtils';
-import { MigrateIndex, MigrationInfoContext, MAPPING_HISTORY_INDEX_NAME } from '../model/types';
 import getElasticsearchClient from '../utils/es/EsUtils';
-import MigrationInfoExecutor from '../executor/info/MigrationInfoExecutor';
-import makeDetail from '../utils/makeDetail';
+import { MAPPING_HISTORY_INDEX_NAME, MigrateIndex, MigrationInfoContext } from '../model/types';
 import { cli } from 'cli-ux';
+import { migrate } from '../executor/migration/MigrationExecutor';
 
-export default class Info extends Command {
-    static description = 'Prints the details and status information about all the migrations.';
+export default class Migrate extends Command {
+    static description = 'Migrates Elasticsearch index to the latest version.';
     static flags = {
         help: flags.help({ char: 'h' }),
         indexName: flags.string({ char: 'i', description: 'migration index name.', required: true })
     };
 
     async run() {
-        const { flags } = this.parse(Info);
+        const { flags } = this.parse(Migrate);
         const locations = config.get<string[]>('migration.locations');
         const baselineVersion = config.get<string>('migration.baselineVersion');
         const migrationFilePaths: string[] = findAllFiles(locations);
@@ -29,7 +28,7 @@ export default class Info extends Command {
         );
 
         if (migrationFileParsedPath.length === 0) {
-            this.error('Migration file not found.', { exit: 404 });
+            cli.error('Migration file not found.', { exit: 404 });
         }
 
         const migrationScripts = loadMigrationScripts(migrationFileParsedPath);
@@ -37,7 +36,6 @@ export default class Info extends Command {
             .search<MigrateIndex>(MAPPING_HISTORY_INDEX_NAME, {
                 query: {
                     term: {
-                        // eslint-disable-next-line @typescript-eslint/camelcase
                         index_name: {
                             value: flags.indexName
                         }
@@ -45,27 +43,19 @@ export default class Info extends Command {
                 }
             })
             .catch((reason) => {
-                this.error(reason, { exit: 500 });
+                cli.error(reason, { exit: 500 });
             });
         const context: MigrationInfoContext = {
             baseline: baselineVersion,
             lastResolved: '',
             lastApplied: ''
         };
-        const infoService = new MigrationInfoExecutor(migrationScripts, results, context);
 
-        cli.table(
-            makeDetail(infoService.all()),
-            {
-                version: {},
-                description: {},
-                type: {},
-                installedOn: {},
-                state: {}
-            },
-            {
-                printLine: this.log
-            }
-        );
+        const count = await migrate(migrationScripts, results, context);
+        if (count) {
+            cli.info(`Migration completed. (count: ${count})`);
+        } else {
+            cli.error('Migration failed.', { exit: 500 });
+        }
     }
 }

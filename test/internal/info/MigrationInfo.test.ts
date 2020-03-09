@@ -1,8 +1,8 @@
 import 'mocha';
 import { expect } from 'chai';
-import { MigrationInfoImpl } from '../../../src/internal/info/MigrationInfoService';
 import { MigrationState, MigrationStateInfo, MigrationType } from '../../../src/model/types';
 import { migrationInfoContext } from '../../data/MigrationInfoContextTestData';
+import { generateMigrationInfo } from '../../../src/executor/info/MigrationInfo';
 
 describe('MigrationInfo test', () => {
     const testData = [
@@ -49,34 +49,10 @@ describe('MigrationInfo test', () => {
             expect: MigrationStateInfo.get(MigrationState.PENDING)
         },
         {
-            context: { ...migrationInfoContext, baseline: 'v1.0.0' },
-            outOfOrder: false,
-            resolvedMigration: {
-                migrate_script: {},
-                type: MigrationType.CREATE_INDEX,
-                version: 'v1.0.0',
-                description: '',
-                index_name: 'test',
-                physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
-            },
-            appliedMigration: {
-                installedRank: 1,
-                version: 'v1.0.0',
-                description: '',
-                type: MigrationType.BASELINE,
-                script: '',
-                installedOn: new Date(),
-                executionTime: 1,
-                success: true
-            },
-            expect: MigrationStateInfo.get(MigrationState.BASELINE)
-        },
-        {
             context: { ...migrationInfoContext, baseline: 'v1.0.0', lastResolved: 'v2.0.0' },
             outOfOrder: false,
             resolvedMigration: undefined,
             appliedMigration: {
-                installedRank: 1,
                 version: 'v1.0.0',
                 description: '',
                 type: MigrationType.ADD_FIELD,
@@ -92,7 +68,6 @@ describe('MigrationInfo test', () => {
             outOfOrder: false,
             resolvedMigration: undefined,
             appliedMigration: {
-                installedRank: 1,
                 version: 'v1.0.0',
                 description: '',
                 type: MigrationType.ADD_FIELD,
@@ -108,7 +83,6 @@ describe('MigrationInfo test', () => {
             outOfOrder: false,
             resolvedMigration: undefined,
             appliedMigration: {
-                installedRank: 1,
                 version: 'v1.0.0',
                 description: '',
                 type: MigrationType.ADD_FIELD,
@@ -124,7 +98,6 @@ describe('MigrationInfo test', () => {
             outOfOrder: false,
             resolvedMigration: undefined,
             appliedMigration: {
-                installedRank: 1,
                 version: 'v1.0.0',
                 description: '',
                 type: MigrationType.ADD_FIELD,
@@ -147,7 +120,6 @@ describe('MigrationInfo test', () => {
                 physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
             },
             appliedMigration: {
-                installedRank: 1,
                 version: 'v1.0.0',
                 description: '',
                 type: MigrationType.ADD_FIELD,
@@ -170,7 +142,6 @@ describe('MigrationInfo test', () => {
                 physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
             },
             appliedMigration: {
-                installedRank: 1,
                 version: 'v1.0.0',
                 description: '',
                 type: MigrationType.ADD_FIELD,
@@ -193,7 +164,6 @@ describe('MigrationInfo test', () => {
                 physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
             },
             appliedMigration: {
-                installedRank: 1,
                 version: 'v1.0.0',
                 description: '',
                 type: MigrationType.ADD_FIELD,
@@ -208,13 +178,13 @@ describe('MigrationInfo test', () => {
 
     testData.forEach((value) => {
         it(`${value.expect?.status} state test`, () => {
-            const migrationInfo = new MigrationInfoImpl(
+            const migrationInfo = generateMigrationInfo(
                 value.context,
                 value.outOfOrder,
                 value.resolvedMigration,
                 value.appliedMigration
             );
-            expect(migrationInfo.getState()).is.eq(value.expect);
+            expect(migrationInfo.state).is.eq(value.expect);
         });
     });
 });

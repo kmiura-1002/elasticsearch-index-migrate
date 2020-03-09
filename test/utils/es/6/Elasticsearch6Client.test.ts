@@ -1,9 +1,13 @@
 import 'mocha';
-import { assert } from 'chai';
+import { assert, expect } from 'chai';
+import * as chai from 'chai';
 import ElasticsearchClient from '../../../../src/utils/es/ElasticsearchClient';
 import { Bindings } from '../../../../src/ioc.bindings';
 // @ts-ignore
 import { es6ClientContainer } from '../../ioc-test';
+import * as chaiAsPromised from 'chai-as-promised';
+
+chai.use(chaiAsPromised);
 
 describe('Elasticsearch6Client test', () => {
     const client = es6ClientContainer().get<ElasticsearchClient>(Bindings.ElasticsearchClient);
@@ -46,5 +50,33 @@ describe('Elasticsearch6Client test', () => {
             }
         });
         assert.equal(ret.statusCode, '200');
+    });
+
+    it('put settings', async () => {
+        const index = `test_index_${Math.random()
+            .toString(32)
+            .substring(2)}`;
+        await client.createIndex(index);
+        const ret = await client.putSetting(index, {
+            index: {
+                number_of_replicas: 0
+            }
+        });
+        assert.equal(ret.statusCode, '200');
+    });
+
+    it('post document', async () => {
+        const index = `test_index_${Math.random()
+            .toString(32)
+            .substring(2)}`;
+        await client.createIndex(index);
+        const ret = await client.postDocument(index, { test: 'foo baz' });
+
+        expect(ret.statusCode).is.eq(201);
+    });
+
+    it('close client', async () => {
+        await client.close();
+        expect(client.healthCheck()).to.be.rejected;
     });
 });
