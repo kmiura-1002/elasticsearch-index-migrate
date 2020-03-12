@@ -48,7 +48,6 @@ export default class Init extends Command {
             cli.log('Finish creating index for migrate.');
         } else {
             cli.error('Failed to create index for migrate.', { code: ret.statusCode });
-            cli.error(ret.error);
         }
     }
 }
