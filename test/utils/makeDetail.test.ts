@@ -17,7 +17,14 @@ describe('makeDetail test', () => {
             migrationInfoContext
         );
         const migrationInfos = service.all();
-        const detail = makeDetail(migrationInfos);
+        const detail = makeDetail([
+            ...migrationInfos,
+            {
+                context: migrationInfoContext,
+                outOfOrder: false,
+                baseline: false
+            }
+        ]);
         const status = migrationInfos.map((value) => value.state?.status);
 
         expect(status)

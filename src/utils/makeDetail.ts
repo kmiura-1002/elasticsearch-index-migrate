@@ -3,7 +3,7 @@ import { format } from 'date-fns';
 import { MigrationInfo } from '../executor/info/MigrationInfo';
 
 function getVersion(migrationInfo: MigrationInfo) {
-    return migrationInfo.version == null ? '' : migrationInfo.version;
+    return migrationInfo.version ?? '';
 }
 
 export function formatDateAsIsoString(date?: Date) {
@@ -14,7 +14,7 @@ export default function makeDetail(migrationInfos: MigrationInfo[]): MigrationIn
     return migrationInfos.map(
         (value) =>
             ({
-                version: getVersion(value) ?? '',
+                version: getVersion(value),
                 description: value.description ?? '',
                 type: value.type ?? '',
                 installedOn: formatDateAsIsoString(value.installedOn),
