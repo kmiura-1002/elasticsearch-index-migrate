@@ -14,14 +14,7 @@ export default function getElasticsearchClient() {
 export function esConnectConf(conf: ESConfig) {
     const { host, sslCa, cloudId, username, password } = conf;
     let opts: ClientOptions6 | ClientOptions7;
-    if (
-        cloudId !== undefined &&
-        cloudId !== null &&
-        username !== undefined &&
-        username !== null &&
-        password !== undefined &&
-        password !== null
-    ) {
+    if (cloudId && username && password) {
         opts = {
             cloud: {
                 id: cloudId,
@@ -29,7 +22,7 @@ export function esConnectConf(conf: ESConfig) {
                 password: password
             }
         };
-    } else if (sslCa !== undefined && sslCa !== null) {
+    } else if (sslCa && host) {
         opts = {
             node: host,
             ssl: {
