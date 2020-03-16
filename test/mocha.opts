@@ -3,4 +3,3 @@
 --recursive
 --reporter spec
 --timeout 10000
-test/**/*.test.ts

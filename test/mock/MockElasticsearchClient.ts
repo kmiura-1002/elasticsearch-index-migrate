@@ -1,6 +1,6 @@
-import ElasticsearchClient from '../../../src/utils/es/ElasticsearchClient';
+import ElasticsearchClient from '../../src/utils/es/ElasticsearchClient';
 import { cli } from 'cli-ux';
-import { clusterStatus } from '../../../src/model/types';
+import { clusterStatus } from '../../src/model/types';
 
 export default class MockElasticsearchClient implements ElasticsearchClient {
     close() {

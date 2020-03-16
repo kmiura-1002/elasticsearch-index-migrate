@@ -6,13 +6,24 @@ export const VERSION_REGEX = /^([v][0-9]+.[0-9]+.[0-9]+)/;
 
 export type ApiResponse<T = any, C = any> = ApiResponse6<T, C> | ApiResponse7<T, C>;
 export const MAPPING_HISTORY_INDEX_NAME = 'migrate_history';
-export interface ESConfig {
+export interface ESConnectConfig {
     host?: string;
     sslCa?: string;
     cloudId?: string;
     username?: string;
     password?: string;
 }
+export type ESConfig = {
+    version?: string;
+    connect: ESConnectConfig;
+};
+export type MigrationConfigType = {
+    elasticsearch: ESConfig;
+    migration: {
+        locations?: string[];
+        baselineVersion?: string;
+    };
+};
 export enum clusterStatus {
     GREEN = 'green',
     YELLOW = 'yellow',

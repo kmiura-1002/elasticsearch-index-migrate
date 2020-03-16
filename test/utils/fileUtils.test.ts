@@ -8,7 +8,7 @@ import {
     loadMigrationScriptFilePaths,
     loadMigrationScripts
 } from '../../src/utils/fileUtils';
-import { MockStats } from '../data/mock/MockStats';
+import { MockStats } from '../mock/MockStats';
 
 describe('fileUtils test', () => {
     it('findFiles test', () => {
@@ -25,6 +25,7 @@ describe('fileUtils test', () => {
             expect(data).to.eq('test.text');
         });
         fsMock.verify();
+        fsMock.restore();
     });
 
     it('findAllFiles test', () => {
@@ -43,6 +44,7 @@ describe('fileUtils test', () => {
             .to.lengthOf(1)
             .to.include(`${process.cwd()}/test.text`);
         fsMock.verify();
+        fsMock.restore();
     });
 
     it('loadMigrationScriptFilePaths test', () => {

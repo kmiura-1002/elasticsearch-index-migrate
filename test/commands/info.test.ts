@@ -1,6 +1,6 @@
 import { expect, test } from '@oclif/test';
 import * as EsUtils from '../../src/utils/es/EsUtils';
-import MockElasticsearchClient from '../data/mock/MockElasticsearchClient';
+import MockElasticsearchClient from '../mock/MockElasticsearchClient';
 
 describe('info command test', () => {
     test.stdout()

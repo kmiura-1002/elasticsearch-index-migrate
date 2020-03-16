@@ -1,4 +1,4 @@
-import { Command, flags } from '@oclif/command';
+import { flags } from '@oclif/command';
 import * as config from 'config';
 import {
     findAllFiles,
@@ -9,10 +9,12 @@ import getElasticsearchClient from '../utils/es/EsUtils';
 import { MAPPING_HISTORY_INDEX_NAME, MigrateIndex, MigrationInfoContext } from '../model/types';
 import { cli } from 'cli-ux';
 import { migrate } from '../executor/migration/MigrationExecutor';
+import AbstractCommand, { DefaultOptions } from './AbstractCommand';
 
-export default class Migrate extends Command {
+export default class Migrate extends AbstractCommand {
     static description = 'Migrates Elasticsearch index to the latest version.';
     static flags = {
+        ...DefaultOptions,
         help: flags.help({ char: 'h' }),
         indexName: flags.string({ char: 'i', description: 'migration index name.', required: true })
     };
@@ -32,7 +34,7 @@ export default class Migrate extends Command {
         }
 
         const migrationScripts = loadMigrationScripts(migrationFileParsedPath);
-        const results = await getElasticsearchClient()
+        const results = await getElasticsearchClient(this.migrationConfig.elasticsearch)
             .search<MigrateIndex>(MAPPING_HISTORY_INDEX_NAME, {
                 query: {
                     term: {
@@ -51,7 +53,12 @@ export default class Migrate extends Command {
             lastApplied: ''
         };
 
-        const count = await migrate(migrationScripts, results, context);
+        const count = await migrate(
+            migrationScripts,
+            results,
+            context,
+            this.migrationConfig.elasticsearch
+        );
         if (count) {
             cli.info(`Migration completed. (count: ${count})`);
         } else {

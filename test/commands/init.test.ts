@@ -1,6 +1,6 @@
 import { expect, test } from '@oclif/test';
 import * as EsUtils from '../../src/utils/es/EsUtils';
-import MockElasticsearchClient from '../data/mock/MockElasticsearchClient';
+import MockElasticsearchClient from '../mock/MockElasticsearchClient';
 import { clusterStatus } from '../../src/model/types';
 import * as sinon from 'sinon';
 import { cli } from 'cli-ux';

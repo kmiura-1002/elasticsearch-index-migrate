@@ -1,5 +1,6 @@
 import StopWatch from '../../utils/stopWatch';
 import {
+    ESConfig,
     MAPPING_HISTORY_INDEX_NAME,
     MigrateIndex,
     MigrationInfoContext,
@@ -96,10 +97,11 @@ export async function applyMigration(esClient: ElasticsearchClient, migrationInf
 export async function migrate(
     resolvedMigrations: ResolvedMigration[],
     appliedMigrations: MigrateIndex[],
-    context: MigrationInfoContext
+    context: MigrationInfoContext,
+    esConfig: ESConfig
 ) {
     const migrateInfo = new MigrationInfoExecutor(resolvedMigrations, appliedMigrations, context);
-    const esClient = getElasticsearchClient();
+    const esClient = getElasticsearchClient(esConfig);
     cli.info('Start validate of migration data.');
     const validateErrorMessages = doValidate(migrateInfo);
     if (validateErrorMessages.length > 0) {

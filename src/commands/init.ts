@@ -1,24 +1,26 @@
-import { Command, flags } from '@oclif/command';
+import { flags } from '@oclif/command';
 import * as fs from 'fs';
 import * as path from 'path';
 import getElasticsearchClient from '../utils/es/EsUtils';
 import { clusterStatus, MAPPING_HISTORY_INDEX_NAME } from '../model/types';
 import { cli } from 'cli-ux';
+import AbstractCommand, { DefaultOptions } from './AbstractCommand';
 
 interface MappingData {
     settings: any;
     mappings: any;
 }
 
-export default class Init extends Command {
+export default class Init extends AbstractCommand {
     static description = 'Setup elasticsearch index migrate env';
     static flags = {
+        ...DefaultOptions,
         help: flags.help({ char: 'h' })
     };
 
     async run() {
         this.parse(Init);
-        const client = getElasticsearchClient();
+        const client = getElasticsearchClient(this.migrationConfig.elasticsearch);
         const health = await client.healthCheck();
 
         if (health.status === clusterStatus.YELLOW) {

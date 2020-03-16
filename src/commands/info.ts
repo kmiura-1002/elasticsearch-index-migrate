@@ -1,4 +1,4 @@
-import { Command, flags } from '@oclif/command';
+import { flags } from '@oclif/command';
 import * as config from 'config';
 import {
     findAllFiles,
@@ -10,12 +10,17 @@ import getElasticsearchClient from '../utils/es/EsUtils';
 import MigrationInfoExecutor from '../executor/info/MigrationInfoExecutor';
 import makeDetail from '../utils/makeDetail';
 import { cli } from 'cli-ux';
+import AbstractCommand, { DefaultOptions } from './AbstractCommand';
 
-export default class Info extends Command {
+export default class Info extends AbstractCommand {
     static description = 'Prints the details and status information about all the migrations.';
     static flags = {
-        help: flags.help({ char: 'h' }),
-        indexName: flags.string({ char: 'i', description: 'migration index name.', required: true })
+        ...DefaultOptions,
+        indexName: flags.string({
+            char: 'i',
+            description: 'migration index name.',
+            required: true
+        })
     };
 
     async run() {
@@ -33,7 +38,7 @@ export default class Info extends Command {
         }
 
         const migrationScripts = loadMigrationScripts(migrationFileParsedPath);
-        const results = await getElasticsearchClient()
+        const results = await getElasticsearchClient(this.migrationConfig.elasticsearch)
             .search<MigrateIndex>(MAPPING_HISTORY_INDEX_NAME, {
                 query: {
                     term: {

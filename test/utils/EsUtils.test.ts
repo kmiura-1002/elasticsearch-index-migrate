@@ -2,12 +2,20 @@ import 'mocha';
 import * as fs from 'fs';
 import { expect } from 'chai';
 import * as sinon from 'sinon';
-import { ESConfig } from '../../src/model/types';
+import { ESConnectConfig } from '../../src/model/types';
 import { esConnectConf } from '../../src/utils/es/EsUtils';
 
 describe('EsUtils test', () => {
+    let sandbox: sinon.SinonSandbox;
+    before(() => {
+        sandbox = sinon.createSandbox();
+    });
+    afterEach(() => {
+        sandbox.restore();
+    });
+
     it('cloud connect conf test', () => {
-        const conf: ESConfig = {
+        const conf: ESConnectConfig = {
             cloudId: 'cloudId',
             username: 'username',
             password: 'password'
@@ -22,17 +30,16 @@ describe('EsUtils test', () => {
     });
 
     it('ssl connect conf test', () => {
-        const conf: ESConfig = {
+        const conf: ESConnectConfig = {
             host: 'host',
             sslCa: 'sslCa'
         };
         const buffer = new Buffer(1);
-        const fsMock = sinon.mock(fs);
-        fsMock
-            .expects('readFileSync')
-            .once()
-            .returns(buffer);
-        expect(esConnectConf(conf)).is.deep.eq({
+        const stub = sandbox.stub(fs, 'readFileSync').returns(buffer);
+        const connectConf = esConnectConf(conf);
+
+        expect(stub.calledOnce).is.true;
+        expect(connectConf).is.deep.eq({
             node: conf.host,
             ssl: {
                 ca: buffer
@@ -41,7 +48,7 @@ describe('EsUtils test', () => {
     });
 
     it('node connect conf test', () => {
-        const conf: ESConfig = {
+        const conf: ESConnectConfig = {
             host: 'host'
         };
         expect(esConnectConf(conf)).is.deep.eq({

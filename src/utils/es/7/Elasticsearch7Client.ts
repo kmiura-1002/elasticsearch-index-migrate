@@ -4,13 +4,13 @@ import { ApiResponse } from 'es7/lib/Transport';
 import { injectable, inject } from 'inversify';
 import { Bindings } from '../../../ioc.bindings';
 import ElasticsearchClient from '../ElasticsearchClient';
-import { ESConfig, IndexSearchResults } from '../../../model/types';
+import { ESConnectConfig, IndexSearchResults } from '../../../model/types';
 
 @injectable()
 class Elasticsearch7Client implements ElasticsearchClient {
     client: Client;
 
-    public constructor(@inject(Bindings.ESConfig) connectConf: ESConfig) {
+    public constructor(@inject(Bindings.ESConfig) connectConf: ESConnectConfig) {
         this.client = new Client(esConnectConf(connectConf));
     }
 
