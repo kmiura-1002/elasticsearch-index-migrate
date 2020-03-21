@@ -52,11 +52,12 @@ export type MigrateIndex = {
     execution_time: number;
     success: boolean;
 };
+export const MigrationTypes = {
+    ADD_FIELD: 'ADD_FIELD',
+    CREATE_INDEX: 'CREATE_INDEX'
+} as const;
 
-export enum MigrationType {
-    ADD_FIELD = 'ADD_FIELD',
-    CREATE_INDEX = 'CREATE_INDEX'
-}
+export type MigrationType = typeof MigrationTypes[keyof typeof MigrationTypes];
 
 export type ResolvedMigration = {
     type: MigrationType;
@@ -104,24 +105,26 @@ export type MigrationStateInfo = {
     failed: boolean;
 };
 
-export enum MigrationState {
-    PENDING = 'PENDING',
-    BELOW_BASELINE = 'BELOW_BASELINE',
-    IGNORED = 'IGNORED',
-    MISSING_SUCCESS = 'MISSING_SUCCESS',
-    MISSING_FAILED = 'MISSING_FAILED',
-    SUCCESS = 'SUCCESS',
-    FAILED = 'FAILED',
-    OUT_OF_ORDER = 'OUT_OF_ORDER',
-    FUTURE_SUCCESS = 'FUTURE_SUCCESS',
-    FUTURE_FAILED = 'FUTURE_FAILED'
-}
+export const MigrationStates = {
+    PENDING: 'PENDING',
+    BELOW_BASELINE: 'BELOW_BASELINE',
+    IGNORED: 'IGNORED',
+    MISSING_SUCCESS: 'MISSING_SUCCESS',
+    MISSING_FAILED: 'MISSING_FAILED',
+    SUCCESS: 'SUCCESS',
+    FAILED: 'FAILED',
+    OUT_OF_ORDER: 'OUT_OF_ORDER',
+    FUTURE_SUCCESS: 'FUTURE_SUCCESS',
+    FUTURE_FAILED: 'FUTURE_FAILED'
+} as const;
+
+export type MigrationState = typeof MigrationStates[keyof typeof MigrationStates];
 
 export const MigrationStateInfo: Map<MigrationState, MigrationStateInfo> = new Map([
     [
-        MigrationState.BELOW_BASELINE,
+        MigrationStates.BELOW_BASELINE,
         {
-            status: MigrationState.BELOW_BASELINE,
+            status: MigrationStates.BELOW_BASELINE,
             displayName: 'Below Baseline',
             resolved: true,
             applied: false,
@@ -129,9 +132,9 @@ export const MigrationStateInfo: Map<MigrationState, MigrationStateInfo> = new M
         }
     ],
     [
-        MigrationState.FAILED,
+        MigrationStates.FAILED,
         {
-            status: MigrationState.FAILED,
+            status: MigrationStates.FAILED,
             displayName: 'Failed',
             resolved: true,
             applied: true,
@@ -139,9 +142,9 @@ export const MigrationStateInfo: Map<MigrationState, MigrationStateInfo> = new M
         }
     ],
     [
-        MigrationState.FUTURE_FAILED,
+        MigrationStates.FUTURE_FAILED,
         {
-            status: MigrationState.FUTURE_FAILED,
+            status: MigrationStates.FUTURE_FAILED,
             displayName: 'Failed (Future)',
             resolved: false,
             applied: true,
@@ -149,9 +152,9 @@ export const MigrationStateInfo: Map<MigrationState, MigrationStateInfo> = new M
         }
     ],
     [
-        MigrationState.FUTURE_SUCCESS,
+        MigrationStates.FUTURE_SUCCESS,
         {
-            status: MigrationState.FUTURE_SUCCESS,
+            status: MigrationStates.FUTURE_SUCCESS,
             displayName: 'Future',
             resolved: false,
             applied: true,
@@ -159,9 +162,9 @@ export const MigrationStateInfo: Map<MigrationState, MigrationStateInfo> = new M
         }
     ],
     [
-        MigrationState.IGNORED,
+        MigrationStates.IGNORED,
         {
-            status: MigrationState.IGNORED,
+            status: MigrationStates.IGNORED,
             displayName: 'Ignored',
             resolved: true,
             applied: false,
@@ -169,9 +172,9 @@ export const MigrationStateInfo: Map<MigrationState, MigrationStateInfo> = new M
         }
     ],
     [
-        MigrationState.MISSING_FAILED,
+        MigrationStates.MISSING_FAILED,
         {
-            status: MigrationState.MISSING_FAILED,
+            status: MigrationStates.MISSING_FAILED,
             displayName: 'Failed (Missing)',
             resolved: false,
             applied: true,
@@ -179,9 +182,9 @@ export const MigrationStateInfo: Map<MigrationState, MigrationStateInfo> = new M
         }
     ],
     [
-        MigrationState.MISSING_SUCCESS,
+        MigrationStates.MISSING_SUCCESS,
         {
-            status: MigrationState.MISSING_SUCCESS,
+            status: MigrationStates.MISSING_SUCCESS,
             displayName: 'Missing',
             resolved: true,
             applied: true,
@@ -189,9 +192,9 @@ export const MigrationStateInfo: Map<MigrationState, MigrationStateInfo> = new M
         }
     ],
     [
-        MigrationState.OUT_OF_ORDER,
+        MigrationStates.OUT_OF_ORDER,
         {
-            status: MigrationState.OUT_OF_ORDER,
+            status: MigrationStates.OUT_OF_ORDER,
             displayName: 'Out of Order',
             resolved: true,
             applied: true,
@@ -199,9 +202,9 @@ export const MigrationStateInfo: Map<MigrationState, MigrationStateInfo> = new M
         }
     ],
     [
-        MigrationState.PENDING,
+        MigrationStates.PENDING,
         {
-            status: MigrationState.PENDING,
+            status: MigrationStates.PENDING,
             displayName: 'Pending',
             resolved: true,
             applied: false,
@@ -209,9 +212,9 @@ export const MigrationStateInfo: Map<MigrationState, MigrationStateInfo> = new M
         }
     ],
     [
-        MigrationState.SUCCESS,
+        MigrationStates.SUCCESS,
         {
-            status: MigrationState.SUCCESS,
+            status: MigrationStates.SUCCESS,
             displayName: 'Success',
             resolved: true,
             applied: true,

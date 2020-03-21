@@ -1,6 +1,6 @@
 import 'mocha';
 import { expect } from 'chai';
-import { MigrationState, MigrationStateInfo, MigrationType } from '../../../src/model/types';
+import { MigrationStateInfo, MigrationStates, MigrationTypes } from '../../../src/model/types';
 import { migrationInfoContext } from '../../data/MigrationInfoContextTestData';
 import { generateMigrationInfo } from '../../../src/executor/info/MigrationInfo';
 
@@ -11,42 +11,42 @@ describe('MigrationInfo test', () => {
             outOfOrder: false,
             resolvedMigration: {
                 migrate_script: {},
-                type: MigrationType.CREATE_INDEX,
+                type: MigrationTypes.CREATE_INDEX,
                 version: 'v0.0.1',
                 description: '',
                 index_name: 'test',
                 physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
             },
             appliedMigration: undefined,
-            expect: MigrationStateInfo.get(MigrationState.BELOW_BASELINE)
+            expect: MigrationStateInfo.get(MigrationStates.BELOW_BASELINE)
         },
         {
             context: { ...migrationInfoContext, baseline: 'v1.0.0', lastApplied: 'v2.0.0' },
             outOfOrder: true,
             resolvedMigration: {
                 migrate_script: {},
-                type: MigrationType.CREATE_INDEX,
+                type: MigrationTypes.CREATE_INDEX,
                 version: 'v1.0.1',
                 description: '',
                 index_name: 'test',
                 physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
             },
             appliedMigration: undefined,
-            expect: MigrationStateInfo.get(MigrationState.IGNORED)
+            expect: MigrationStateInfo.get(MigrationStates.IGNORED)
         },
         {
             context: { ...migrationInfoContext, baseline: 'v1.0.0' },
             outOfOrder: false,
             resolvedMigration: {
                 migrate_script: {},
-                type: MigrationType.CREATE_INDEX,
+                type: MigrationTypes.CREATE_INDEX,
                 version: 'v1.0.0',
                 description: '',
                 index_name: 'test',
                 physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
             },
             appliedMigration: undefined,
-            expect: MigrationStateInfo.get(MigrationState.PENDING)
+            expect: MigrationStateInfo.get(MigrationStates.PENDING)
         },
         {
             context: { ...migrationInfoContext, baseline: 'v1.0.0', lastResolved: 'v2.0.0' },
@@ -55,13 +55,13 @@ describe('MigrationInfo test', () => {
             appliedMigration: {
                 version: 'v1.0.0',
                 description: '',
-                type: MigrationType.ADD_FIELD,
+                type: MigrationTypes.ADD_FIELD,
                 script: '',
                 installedOn: new Date(),
                 executionTime: 1,
                 success: true
             },
-            expect: MigrationStateInfo.get(MigrationState.MISSING_SUCCESS)
+            expect: MigrationStateInfo.get(MigrationStates.MISSING_SUCCESS)
         },
         {
             context: { ...migrationInfoContext, baseline: 'v1.0.0', lastResolved: 'v2.0.0' },
@@ -70,13 +70,13 @@ describe('MigrationInfo test', () => {
             appliedMigration: {
                 version: 'v1.0.0',
                 description: '',
-                type: MigrationType.ADD_FIELD,
+                type: MigrationTypes.ADD_FIELD,
                 script: '',
                 installedOn: new Date(),
                 executionTime: 1,
                 success: false
             },
-            expect: MigrationStateInfo.get(MigrationState.MISSING_FAILED)
+            expect: MigrationStateInfo.get(MigrationStates.MISSING_FAILED)
         },
         {
             context: { ...migrationInfoContext, baseline: 'v1.0.0', lastResolved: 'v0.0.0' },
@@ -85,13 +85,13 @@ describe('MigrationInfo test', () => {
             appliedMigration: {
                 version: 'v1.0.0',
                 description: '',
-                type: MigrationType.ADD_FIELD,
+                type: MigrationTypes.ADD_FIELD,
                 script: '',
                 installedOn: new Date(),
                 executionTime: 1,
                 success: true
             },
-            expect: MigrationStateInfo.get(MigrationState.FUTURE_SUCCESS)
+            expect: MigrationStateInfo.get(MigrationStates.FUTURE_SUCCESS)
         },
         {
             context: { ...migrationInfoContext, baseline: 'v1.0.0', lastResolved: 'v0.0.0' },
@@ -100,20 +100,20 @@ describe('MigrationInfo test', () => {
             appliedMigration: {
                 version: 'v1.0.0',
                 description: '',
-                type: MigrationType.ADD_FIELD,
+                type: MigrationTypes.ADD_FIELD,
                 script: '',
                 installedOn: new Date(),
                 executionTime: 1,
                 success: false
             },
-            expect: MigrationStateInfo.get(MigrationState.FUTURE_FAILED)
+            expect: MigrationStateInfo.get(MigrationStates.FUTURE_FAILED)
         },
         {
             context: { ...migrationInfoContext },
             outOfOrder: false,
             resolvedMigration: {
                 migrate_script: {},
-                type: MigrationType.CREATE_INDEX,
+                type: MigrationTypes.CREATE_INDEX,
                 version: 'v1.0.0',
                 description: '',
                 index_name: 'test',
@@ -122,20 +122,20 @@ describe('MigrationInfo test', () => {
             appliedMigration: {
                 version: 'v1.0.0',
                 description: '',
-                type: MigrationType.ADD_FIELD,
+                type: MigrationTypes.ADD_FIELD,
                 script: '',
                 installedOn: new Date(),
                 executionTime: 1,
                 success: false
             },
-            expect: MigrationStateInfo.get(MigrationState.FAILED)
+            expect: MigrationStateInfo.get(MigrationStates.FAILED)
         },
         {
             context: { ...migrationInfoContext },
             outOfOrder: true,
             resolvedMigration: {
                 migrate_script: {},
-                type: MigrationType.CREATE_INDEX,
+                type: MigrationTypes.CREATE_INDEX,
                 version: 'v1.0.0',
                 description: '',
                 index_name: 'test',
@@ -144,20 +144,20 @@ describe('MigrationInfo test', () => {
             appliedMigration: {
                 version: 'v1.0.0',
                 description: '',
-                type: MigrationType.ADD_FIELD,
+                type: MigrationTypes.ADD_FIELD,
                 script: '',
                 installedOn: new Date(),
                 executionTime: 1,
                 success: true
             },
-            expect: MigrationStateInfo.get(MigrationState.OUT_OF_ORDER)
+            expect: MigrationStateInfo.get(MigrationStates.OUT_OF_ORDER)
         },
         {
             context: { ...migrationInfoContext },
             outOfOrder: false,
             resolvedMigration: {
                 migrate_script: {},
-                type: MigrationType.CREATE_INDEX,
+                type: MigrationTypes.CREATE_INDEX,
                 version: 'v1.0.0',
                 description: '',
                 index_name: 'test',
@@ -166,13 +166,13 @@ describe('MigrationInfo test', () => {
             appliedMigration: {
                 version: 'v1.0.0',
                 description: '',
-                type: MigrationType.ADD_FIELD,
+                type: MigrationTypes.ADD_FIELD,
                 script: '',
                 installedOn: new Date(),
                 executionTime: 1,
                 success: true
             },
-            expect: MigrationStateInfo.get(MigrationState.SUCCESS)
+            expect: MigrationStateInfo.get(MigrationStates.SUCCESS)
         }
     ];
 

@@ -1,5 +1,5 @@
 import MigrationInfoExecutor from '../info/MigrationInfoExecutor';
-import { MigrationState, VERSION_REGEX } from '../../model/types';
+import { MigrationStates, VERSION_REGEX } from '../../model/types';
 import { generateDescription, generateVersion, MigrationInfo } from '../info/MigrationInfo';
 
 export function migrationInfoValidate(migrateInfo: MigrationInfo): string | undefined {
@@ -12,20 +12,20 @@ export function migrationInfoValidate(migrateInfo: MigrationInfo): string | unde
         return 'Unknown version migration detected';
     }
 
-    if (MigrationState.IGNORED === migrateInfo.state?.status) {
+    if (MigrationStates.IGNORED === migrateInfo.state?.status) {
         return `Resolved migrations detected have not been applied to the index (${version})`;
     }
 
-    if (migrateInfo.state?.failed && MigrationState.FUTURE_FAILED !== migrateInfo.state?.status) {
+    if (migrateInfo.state?.failed && MigrationStates.FUTURE_FAILED !== migrateInfo.state?.status) {
         return `Failed migration to version ${version}(${description}) detected`;
     }
 
     if (
         !migrateInfo.resolvedMigration &&
-        MigrationState.MISSING_SUCCESS !== migrateInfo.state?.status &&
-        MigrationState.MISSING_FAILED !== migrateInfo.state?.status &&
-        MigrationState.FUTURE_SUCCESS !== migrateInfo.state?.status &&
-        MigrationState.FUTURE_FAILED !== migrateInfo.state?.status
+        MigrationStates.MISSING_SUCCESS !== migrateInfo.state?.status &&
+        MigrationStates.MISSING_FAILED !== migrateInfo.state?.status &&
+        MigrationStates.FUTURE_SUCCESS !== migrateInfo.state?.status &&
+        MigrationStates.FUTURE_FAILED !== migrateInfo.state?.status
     ) {
         return `Applied migration detected not resolved locally (${version})`;
     }

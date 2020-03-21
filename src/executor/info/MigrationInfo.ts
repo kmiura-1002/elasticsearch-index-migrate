@@ -1,8 +1,8 @@
 import {
     AppliedMigration,
     MigrationInfoContext,
-    MigrationState,
     MigrationStateInfo,
+    MigrationStates,
     MigrationType,
     ResolvedMigration
 } from '../../model/types';
@@ -43,38 +43,38 @@ export function generateState(
     if (!appliedMigration) {
         if (resolvedMigration?.version) {
             if (resolvedMigration?.version < context.baseline) {
-                return MigrationStateInfo.get(MigrationState.BELOW_BASELINE);
+                return MigrationStateInfo.get(MigrationStates.BELOW_BASELINE);
             }
             if (outOfOrder && resolvedMigration?.version < context.lastApplied) {
-                return MigrationStateInfo.get(MigrationState.IGNORED);
+                return MigrationStateInfo.get(MigrationStates.IGNORED);
             }
         }
-        return MigrationStateInfo.get(MigrationState.PENDING);
+        return MigrationStateInfo.get(MigrationStates.PENDING);
     }
 
     if (!resolvedMigration) {
         const version = generateVersion(resolvedMigration, appliedMigration) ?? '';
         if (!appliedMigration.version || version < context.lastResolved) {
             if (appliedMigration?.success) {
-                return MigrationStateInfo.get(MigrationState.MISSING_SUCCESS);
+                return MigrationStateInfo.get(MigrationStates.MISSING_SUCCESS);
             }
-            return MigrationStateInfo.get(MigrationState.MISSING_FAILED);
+            return MigrationStateInfo.get(MigrationStates.MISSING_FAILED);
         } else {
             if (appliedMigration.success) {
-                return MigrationStateInfo.get(MigrationState.FUTURE_SUCCESS);
+                return MigrationStateInfo.get(MigrationStates.FUTURE_SUCCESS);
             }
-            return MigrationStateInfo.get(MigrationState.FUTURE_FAILED);
+            return MigrationStateInfo.get(MigrationStates.FUTURE_FAILED);
         }
     }
 
     if (!appliedMigration?.success) {
-        return MigrationStateInfo.get(MigrationState.FAILED);
+        return MigrationStateInfo.get(MigrationStates.FAILED);
     }
 
     if (outOfOrder) {
-        return MigrationStateInfo.get(MigrationState.OUT_OF_ORDER);
+        return MigrationStateInfo.get(MigrationStates.OUT_OF_ORDER);
     }
-    return MigrationStateInfo.get(MigrationState.SUCCESS);
+    return MigrationStateInfo.get(MigrationStates.SUCCESS);
 }
 
 export type MigrationInfo = {

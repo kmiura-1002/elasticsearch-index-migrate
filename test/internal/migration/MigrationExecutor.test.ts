@@ -9,7 +9,7 @@ import {
     migrate
 } from '../../../src/executor/migration/MigrationExecutor';
 import * as MigrationExecutor from '../../../src/executor/migration/MigrationExecutor';
-import { MigrateIndex, MigrationType } from '../../../src/model/types';
+import { MigrateIndex, MigrationTypes } from '../../../src/model/types';
 import * as sinon from 'sinon';
 import { cli } from 'cli-ux';
 import { generateMigrationInfo } from '../../../src/executor/info/MigrationInfo';
@@ -58,7 +58,7 @@ describe('MigrationExecutor test', () => {
             false,
             {
                 migrate_script: {},
-                type: MigrationType.CREATE_INDEX,
+                type: MigrationTypes.CREATE_INDEX,
                 version: 'v1.0.0',
                 description: '',
                 index_name: 'test',
@@ -67,7 +67,7 @@ describe('MigrationExecutor test', () => {
             {
                 version: 'v1.0.0',
                 description: '',
-                type: MigrationType.ADD_FIELD,
+                type: MigrationTypes.ADD_FIELD,
                 script: '',
                 installedOn: date,
                 executionTime: 1,
@@ -112,7 +112,7 @@ describe('MigrationExecutor test', () => {
             false,
             {
                 migrate_script: {},
-                type: MigrationType.CREATE_INDEX,
+                type: MigrationTypes.CREATE_INDEX,
                 version: 'v1.0.1',
                 description: '',
                 index_name: 'test',
@@ -121,7 +121,7 @@ describe('MigrationExecutor test', () => {
             {
                 version: 'v1.0.0',
                 description: '',
-                type: MigrationType.ADD_FIELD,
+                type: MigrationTypes.ADD_FIELD,
                 script: '',
                 installedOn: new Date(),
                 executionTime: 1,
@@ -162,7 +162,7 @@ describe('MigrationExecutor test', () => {
             false,
             {
                 migrate_script: {},
-                type: MigrationType.ADD_FIELD,
+                type: MigrationTypes.ADD_FIELD,
                 version: 'v1.0.1',
                 description: '',
                 index_name: 'test',
@@ -171,7 +171,7 @@ describe('MigrationExecutor test', () => {
             {
                 version: 'v1.0.0',
                 description: '',
-                type: MigrationType.ADD_FIELD,
+                type: MigrationTypes.ADD_FIELD,
                 script: '',
                 installedOn: new Date(),
                 executionTime: 1,
@@ -193,7 +193,7 @@ describe('MigrationExecutor test', () => {
         const info = generateMigrationInfo(migrationInfoContext, false, undefined, {
             version: 'v1.0.0',
             description: '',
-            type: MigrationType.ADD_FIELD,
+            type: MigrationTypes.ADD_FIELD,
             script: '',
             installedOn: new Date(),
             executionTime: 1,
@@ -215,7 +215,7 @@ describe('MigrationExecutor test', () => {
             [
                 {
                     migrate_script: {},
-                    type: MigrationType.ADD_FIELD,
+                    type: MigrationTypes.ADD_FIELD,
                     version: 'v1.0.1',
                     description: '',
                     index_name: 'test',
@@ -258,7 +258,7 @@ describe('MigrationExecutor test', () => {
                 [
                     {
                         migrate_script: {},
-                        type: MigrationType.ADD_FIELD,
+                        type: MigrationTypes.ADD_FIELD,
                         version: 'v1.0.1',
                         description: '',
                         index_name: 'test',

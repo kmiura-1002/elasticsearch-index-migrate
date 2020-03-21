@@ -2,8 +2,9 @@ import {
     ResolvedMigration,
     MigrateIndex,
     MigrationInfoContext,
-    MigrationState,
-    MigrationType
+    MigrationType,
+    MigrationTypes,
+    MigrationStates
 } from '../../model/types';
 import sort from 'sort-versions';
 import { generateMigrationInfo, MigrationInfo } from './MigrationInfo';
@@ -66,7 +67,7 @@ class MigrationInfoExecutor {
             const appliedMigration = {
                 version: value.migrate_version,
                 description: value.description,
-                type: MigrationType[value.script_type as keyof typeof MigrationType],
+                type: MigrationTypes[value.script_type as MigrationType],
                 script: value.script_name,
                 installedOn: new Date(value.installed_on),
                 executionTime: value.execution_time,
@@ -128,7 +129,7 @@ class MigrationInfoExecutor {
 
     pending(): MigrationInfo[] {
         return this.migrationInfos.filter(
-            (value) => value.state?.status === MigrationState.PENDING
+            (value) => value.state?.status === MigrationStates.PENDING
         );
     }
 }

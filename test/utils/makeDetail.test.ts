@@ -5,7 +5,7 @@ import { resolvedMigrations } from '../data/ResolvedMigrationTestData';
 import { migrateIndices } from '../data/MigrateIndexTestData';
 import { migrationInfoContext } from '../data/MigrationInfoContextTestData';
 import makeDetail from '../../src/utils/makeDetail';
-import { MigrationState } from '../../src/model/types';
+import { MigrationStates } from '../../src/model/types';
 import { format } from 'date-fns';
 
 describe('makeDetail test', () => {
@@ -30,12 +30,12 @@ describe('makeDetail test', () => {
         expect(status)
             .to.be.an('array')
             .to.be.include.ordered.members([
-                MigrationState.MISSING_SUCCESS,
-                MigrationState.IGNORED,
-                MigrationState.SUCCESS,
-                MigrationState.MISSING_FAILED,
-                MigrationState.SUCCESS,
-                MigrationState.PENDING
+                MigrationStates.MISSING_SUCCESS,
+                MigrationStates.IGNORED,
+                MigrationStates.SUCCESS,
+                MigrationStates.MISSING_FAILED,
+                MigrationStates.SUCCESS,
+                MigrationStates.PENDING
             ]);
 
         expect(detail)

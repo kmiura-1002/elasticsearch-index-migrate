@@ -4,7 +4,7 @@ import {
     doValidate,
     migrationInfoValidate
 } from '../../../src/executor/migration/MigrationValidate';
-import { MigrationState, MigrationStateInfo, MigrationType } from '../../../src/model/types';
+import { MigrationStateInfo, MigrationStates, MigrationTypes } from '../../../src/model/types';
 import { migrationInfoContext } from '../../data/MigrationInfoContextTestData';
 import MigrationInfoExecutor from '../../../src/executor/info/MigrationInfoExecutor';
 import { resolvedMigrations } from '../../data/ResolvedMigrationTestData';
@@ -16,7 +16,7 @@ describe('MigrationValidation test', () => {
         expect(
             migrationInfoValidate({
                 resolvedMigration: {
-                    type: MigrationType.ADD_FIELD,
+                    type: MigrationTypes.ADD_FIELD,
                     index_name: 'test',
                     version: '',
                     description: '',
@@ -39,7 +39,7 @@ describe('MigrationValidation test', () => {
                 appliedMigration: {
                     version: '',
                     description: '',
-                    type: MigrationType.ADD_FIELD,
+                    type: MigrationTypes.ADD_FIELD,
                     script: '',
                     installedOn: new Date(),
                     executionTime: 0,
@@ -62,7 +62,7 @@ describe('MigrationValidation test', () => {
     it('ignore state validation', () => {
         const ret = migrationInfoValidate({
             resolvedMigration: {
-                type: MigrationType.ADD_FIELD,
+                type: MigrationTypes.ADD_FIELD,
                 index_name: 'test',
                 version: 'v1.0.1',
                 description: '',
@@ -75,7 +75,7 @@ describe('MigrationValidation test', () => {
                 },
                 migrate_script: {}
             },
-            state: MigrationStateInfo.get(MigrationState.IGNORED),
+            state: MigrationStateInfo.get(MigrationStates.IGNORED),
             context: migrationInfoContext,
             outOfOrder: false,
             baseline: false
@@ -87,7 +87,7 @@ describe('MigrationValidation test', () => {
     it('failed state validation', () => {
         const ret = migrationInfoValidate({
             resolvedMigration: {
-                type: MigrationType.ADD_FIELD,
+                type: MigrationTypes.ADD_FIELD,
                 index_name: 'test',
                 version: 'v1.0.1',
                 description: '',
@@ -100,7 +100,7 @@ describe('MigrationValidation test', () => {
                 },
                 migrate_script: {}
             },
-            state: MigrationStateInfo.get(MigrationState.FAILED),
+            state: MigrationStateInfo.get(MigrationStates.FAILED),
             context: migrationInfoContext,
             outOfOrder: false,
             baseline: false
@@ -114,13 +114,13 @@ describe('MigrationValidation test', () => {
             appliedMigration: {
                 version: 'v1.0.1',
                 description: '',
-                type: MigrationType.ADD_FIELD,
+                type: MigrationTypes.ADD_FIELD,
                 script: '',
                 installedOn: new Date(),
                 executionTime: 0,
                 success: true
             },
-            state: MigrationStateInfo.get(MigrationState.SUCCESS),
+            state: MigrationStateInfo.get(MigrationStates.SUCCESS),
             context: migrationInfoContext,
             outOfOrder: false,
             baseline: false
@@ -134,14 +134,14 @@ describe('MigrationValidation test', () => {
             appliedMigration: {
                 version: 'v1.0.1',
                 description: '',
-                type: MigrationType.ADD_FIELD,
+                type: MigrationTypes.ADD_FIELD,
                 script: '',
                 installedOn: new Date(),
                 executionTime: 0,
                 success: true
             },
             resolvedMigration: {
-                type: MigrationType.CREATE_INDEX,
+                type: MigrationTypes.CREATE_INDEX,
                 index_name: 'test',
                 version: 'v1.0.1',
                 description: '',
@@ -154,7 +154,7 @@ describe('MigrationValidation test', () => {
                 },
                 migrate_script: {}
             },
-            state: MigrationStateInfo.get(MigrationState.SUCCESS),
+            state: MigrationStateInfo.get(MigrationStates.SUCCESS),
             context: migrationInfoContext,
             outOfOrder: false,
             baseline: false
@@ -167,7 +167,7 @@ describe('MigrationValidation test', () => {
             [
                 {
                     migrate_script: {},
-                    type: MigrationType.CREATE_INDEX,
+                    type: MigrationTypes.CREATE_INDEX,
                     version: 'v1.20.0',
                     description: '',
                     index_name: 'test',
@@ -182,7 +182,7 @@ describe('MigrationValidation test', () => {
                     execution_time: 1,
                     index_name: 'test',
                     installed_on: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
-                    script_type: MigrationType.CREATE_INDEX,
+                    script_type: MigrationTypes.CREATE_INDEX,
                     success: true
                 }
             ],

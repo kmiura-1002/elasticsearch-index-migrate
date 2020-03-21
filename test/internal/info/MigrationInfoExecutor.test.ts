@@ -1,7 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
 import MigrationInfoExecutor from '../../../src/executor/info/MigrationInfoExecutor';
-import { MigrationState } from '../../../src/model/types';
+import { MigrationStates } from '../../../src/model/types';
 import { resolvedMigrations } from '../../data/ResolvedMigrationTestData';
 import { migrateIndices } from '../../data/MigrateIndexTestData';
 import { migrationInfoContext } from '../../data/MigrationInfoContextTestData';
@@ -45,12 +45,12 @@ describe('MigrationInfoExecutor test', () => {
         expect(status)
             .to.be.an('array')
             .to.be.include.ordered.members([
-                MigrationState.MISSING_SUCCESS,
-                MigrationState.IGNORED,
-                MigrationState.SUCCESS,
-                MigrationState.MISSING_FAILED,
-                MigrationState.SUCCESS,
-                MigrationState.PENDING
+                MigrationStates.MISSING_SUCCESS,
+                MigrationStates.IGNORED,
+                MigrationStates.SUCCESS,
+                MigrationStates.MISSING_FAILED,
+                MigrationStates.SUCCESS,
+                MigrationStates.PENDING
             ]);
     });
 
@@ -65,6 +65,6 @@ describe('MigrationInfoExecutor test', () => {
         const status = pendingInfos.map((value) => value.state?.status);
         expect(status)
             .to.be.an('array')
-            .to.be.include.ordered.members([MigrationState.PENDING]);
+            .to.be.include.ordered.members([MigrationStates.PENDING]);
     });
 });
