@@ -24,11 +24,10 @@ export type MigrationConfigType = {
         baselineVersion?: string;
     };
 };
-export enum clusterStatus {
-    GREEN = 'green',
-    YELLOW = 'yellow',
-    RED = 'red'
-}
+
+export const ClusterStatuses = { GREEN: 'green', YELLOW: 'yellow', RED: 'red' } as const;
+export type ClusterStatus = typeof ClusterStatuses[keyof typeof ClusterStatuses];
+
 export type IndexSearchResults<T> = {
     hits: {
         total: number;
