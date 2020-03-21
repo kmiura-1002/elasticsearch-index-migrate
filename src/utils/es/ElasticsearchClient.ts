@@ -13,6 +13,8 @@ export default interface ElasticsearchClient {
 
     putSetting: (index: string, body: any) => Promise<any>;
 
+    delete: (index: string | string[]) => Promise<any>;
+
     postDocument: (index: string, body?: any, id?: string) => Promise<any>;
 
     close: () => void;

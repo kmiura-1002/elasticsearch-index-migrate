@@ -71,6 +71,10 @@ class Elasticsearch7Client implements ElasticsearchClient {
             id
         });
     }
+
+    async delete(index: string | string[]) {
+        return await this.client.indices.delete({ index });
+    }
 }
 
 export default Elasticsearch7Client;

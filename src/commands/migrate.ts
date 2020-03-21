@@ -9,7 +9,7 @@ import getElasticsearchClient from '../utils/es/EsUtils';
 import { MAPPING_HISTORY_INDEX_NAME, MigrateIndex, MigrationInfoContext } from '../model/types';
 import { cli } from 'cli-ux';
 import { migrate } from '../executor/migration/MigrationExecutor';
-import AbstractCommand, { DefaultOptions } from './AbstractCommand';
+import AbstractCommand, { DefaultOptions } from '../AbstractCommand';
 
 export default class Migrate extends AbstractCommand {
     static description = 'Migrates Elasticsearch index to the latest version.';
@@ -30,7 +30,7 @@ export default class Migrate extends AbstractCommand {
         );
 
         if (migrationFileParsedPath.length === 0) {
-            cli.error('Migration file not found.', { exit: 404 });
+            cli.error('Migration file not found.', { exit: 1 });
         }
 
         const migrationScripts = loadMigrationScripts(migrationFileParsedPath);
@@ -45,7 +45,7 @@ export default class Migrate extends AbstractCommand {
                 }
             })
             .catch((reason) => {
-                cli.error(reason, { exit: 500 });
+                cli.error(reason, { exit: 1 });
             });
         const context: MigrationInfoContext = {
             baseline: baselineVersion,
@@ -62,7 +62,7 @@ export default class Migrate extends AbstractCommand {
         if (count) {
             cli.info(`Migration completed. (count: ${count})`);
         } else {
-            cli.error('Migration failed.', { exit: 500 });
+            cli.error('Migration failed.', { exit: 1 });
         }
     }
 }

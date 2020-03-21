@@ -10,7 +10,7 @@ import getElasticsearchClient from '../utils/es/EsUtils';
 import MigrationInfoExecutor from '../executor/info/MigrationInfoExecutor';
 import makeDetail from '../utils/makeDetail';
 import { cli } from 'cli-ux';
-import AbstractCommand, { DefaultOptions } from './AbstractCommand';
+import AbstractCommand, { DefaultOptions } from '../AbstractCommand';
 
 export default class Info extends AbstractCommand {
     static description = 'Prints the details and status information about all the migrations.';
@@ -34,7 +34,7 @@ export default class Info extends AbstractCommand {
         );
 
         if (migrationFileParsedPath.length === 0) {
-            this.error('Migration file not found.', { exit: 404 });
+            this.error('Migration file not found.', { exit: 1 });
         }
 
         const migrationScripts = loadMigrationScripts(migrationFileParsedPath);

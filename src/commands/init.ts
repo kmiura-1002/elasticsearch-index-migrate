@@ -4,7 +4,7 @@ import * as path from 'path';
 import getElasticsearchClient from '../utils/es/EsUtils';
 import { clusterStatus, MAPPING_HISTORY_INDEX_NAME } from '../model/types';
 import { cli } from 'cli-ux';
-import AbstractCommand, { DefaultOptions } from './AbstractCommand';
+import AbstractCommand, { DefaultOptions } from '../AbstractCommand';
 
 interface MappingData {
     settings: any;

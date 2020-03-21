@@ -75,6 +75,10 @@ class Elasticsearch6Client implements ElasticsearchClient {
             id
         });
     }
+
+    async delete(index: string | string[]) {
+        return await this.client.indices.delete({ index });
+    }
 }
 
 export default Elasticsearch6Client;

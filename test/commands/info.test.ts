@@ -5,7 +5,7 @@ import MockElasticsearchClient from '../mock/MockElasticsearchClient';
 describe('info command test', () => {
     test.stdout()
         .command(['info', '-i', 'test'])
-        .exit(404)
+        .exit(1)
         .it('Migration file not found.');
 
     test.stub(EsUtils, 'default', () => new MockElasticsearchClient())
