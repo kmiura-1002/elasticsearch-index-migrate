@@ -42,7 +42,6 @@ export default class Info extends AbstractCommand {
             .search<MigrateIndex>(MAPPING_HISTORY_INDEX_NAME, {
                 query: {
                     term: {
-                        // eslint-disable-next-line @typescript-eslint/camelcase
                         index_name: {
                             value: flags.indexName
                         }

@@ -45,7 +45,6 @@ describe('Elasticsearch6Client test', () => {
         await client.createIndex(index);
         const ret = await client.putMapping(index, {
             properties: {
-                // eslint-disable-next-line @typescript-eslint/camelcase
                 test_id: {
                     type: 'long'
                 }
