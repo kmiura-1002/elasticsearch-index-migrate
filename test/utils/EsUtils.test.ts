@@ -2,8 +2,8 @@ import 'mocha';
 import * as fs from 'fs';
 import { expect } from 'chai';
 import * as sinon from 'sinon';
-import { ESConnectConfig } from '../../src/model/types';
-import { esConnectConf } from '../../src/utils/es/EsUtils';
+import { ESConfig, ESConnectConfig } from '../../src/model/types';
+import getElasticsearchClient, { esClientBind, esConnectConf } from '../../src/utils/es/EsUtils';
 
 describe('EsUtils test', () => {
     let sandbox: sinon.SinonSandbox;
@@ -54,5 +54,54 @@ describe('EsUtils test', () => {
         expect(esConnectConf(conf)).is.deep.eq({
             node: conf.host
         });
+    });
+
+    it('get es connect failed:unsupported version', () => {
+        const esConfig: ESConfig = {
+            version: '1',
+            connect: {
+                host: 'host'
+            }
+        };
+        expect(() => esClientBind(esConfig)).to.throw(
+            '1 is unsupported. support version is 6.x or 7.x.'
+        );
+    });
+
+    it('get es connect failed:Unknown version', () => {
+        const esConfig: ESConfig = {
+            version: 'version',
+            connect: {
+                host: 'host'
+            }
+        };
+
+        expect(() => esClientBind(esConfig)).throw(
+            'Unknown version:version. support version is 6.x or 7.x.'
+        );
+    });
+
+    it('get es6 connect', () => {
+        const esConfig: ESConfig = {
+            version: '6',
+            connect: {
+                host: 'http://0.0.0.0:9200'
+            }
+        };
+
+        const client = getElasticsearchClient(esConfig);
+        expect(client.version()).to.eq('6.x');
+    });
+
+    it('get es7 connect', () => {
+        const esConfig: ESConfig = {
+            version: '7',
+            connect: {
+                host: 'http://0.0.0.0:9200'
+            }
+        };
+
+        const client = getElasticsearchClient(esConfig);
+        expect(client.version()).to.eq('7.x');
     });
 });

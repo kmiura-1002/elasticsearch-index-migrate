@@ -9,7 +9,7 @@ import { Container } from 'inversify';
 import Elasticsearch6Client from './6/Elasticsearch6Client';
 import Elasticsearch7Client from './7/Elasticsearch7Client';
 
-function esClientBind(esConfig: ESConfig) {
+export function esClientBind(esConfig: ESConfig) {
     const container = new Container();
     const versionRegex = /^([1-9]\d{0,4}|0)(\.(([1-9]\d{0,4})|0)){0,3}$/;
     container.bind<ESConnectConfig>(Bindings.ESConfig).toConstantValue(esConfig.connect);
