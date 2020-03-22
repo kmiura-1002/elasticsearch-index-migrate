@@ -3,7 +3,7 @@
     "description": "elasticsearch-index-migrate",
     "version": "0.0.1",
     "author": "kmiura @kmiura-1002",
-    "private": true,
+    "private": false,
     "bin": {
         "elasticsearch-index-migrate": "./bin/run"
     },
