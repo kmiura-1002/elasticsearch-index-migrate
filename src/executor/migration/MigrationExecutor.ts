@@ -100,7 +100,7 @@ export async function migrate(
     context: MigrationInfoContext,
     esConfig: ESConfig
 ) {
-    const migrateInfo = new MigrationInfoExecutor(resolvedMigrations, appliedMigrations, context);
+    const migrateInfo = MigrationInfoExecutor(resolvedMigrations, appliedMigrations, context);
     const esClient = getElasticsearchClient(esConfig);
     cli.info('Start validate of migration data.');
     const validateErrorMessages = doValidate(migrateInfo);
@@ -114,8 +114,7 @@ export async function migrate(
     cli.info('Start migration!');
     const sw = new StopWatch();
     sw.start();
-    const count = await migrateInfo
-        .pending()
+    const count = await migrateInfo.pending
         .map(async (value) => (await applyMigration(esClient, value)) as number)
         .reduce(
             async (previousValue, currentValue) => (await previousValue) + (await currentValue)

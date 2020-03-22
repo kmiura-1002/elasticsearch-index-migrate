@@ -8,13 +8,13 @@ import { migrationInfoContext } from '../../data/MigrationInfoContextTestData';
 
 describe('MigrationInfoExecutor test', () => {
     it('refresh test', () => {
-        const executor = new MigrationInfoExecutor(
+        const executor = MigrationInfoExecutor(
             resolvedMigrations,
             migrateIndices(new Date()),
             migrationInfoContext
         );
 
-        const migrationInfos = executor.all();
+        const migrationInfos = executor.all;
         const outOfOrders = migrationInfos.map((value) => value.outOfOrder);
         const versions = migrationInfos.map(
             (value) => value.resolvedMigration?.version ?? value.appliedMigration?.version
@@ -35,13 +35,13 @@ describe('MigrationInfoExecutor test', () => {
     });
 
     it('status test', () => {
-        const executor = new MigrationInfoExecutor(
+        const executor = MigrationInfoExecutor(
             resolvedMigrations,
             migrateIndices(new Date()),
             migrationInfoContext
         );
 
-        const status = executor.all().map((value) => value.state?.status);
+        const status = executor.all.map((value) => value.state?.status);
         expect(status)
             .to.be.an('array')
             .to.be.include.ordered.members([
@@ -55,13 +55,13 @@ describe('MigrationInfoExecutor test', () => {
     });
 
     it('Verification of the result filtered by pending status.', () => {
-        const executor = new MigrationInfoExecutor(
+        const executor = MigrationInfoExecutor(
             resolvedMigrations,
             migrateIndices(new Date()),
             migrationInfoContext
         );
 
-        const pendingInfos = executor.pending();
+        const pendingInfos = executor.pending;
         const status = pendingInfos.map((value) => value.state?.status);
         expect(status)
             .to.be.an('array')

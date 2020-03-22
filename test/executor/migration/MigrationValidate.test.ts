@@ -163,7 +163,7 @@ describe('MigrationValidation test', () => {
         expect(ret).is.include('Migration type mismatch for migration');
     });
     it('No validation errors', () => {
-        const executor = new MigrationInfoExecutor(
+        const executor = MigrationInfoExecutor(
             [
                 {
                     migrate_script: {},
@@ -196,7 +196,7 @@ describe('MigrationValidation test', () => {
     });
 
     it('validation errors', () => {
-        const executor = new MigrationInfoExecutor(
+        const executor = MigrationInfoExecutor(
             resolvedMigrations,
             migrateIndices(new Date()),
             migrationInfoContext

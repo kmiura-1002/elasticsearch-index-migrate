@@ -1,5 +1,4 @@
-import MigrationInfoExecutor from '../info/MigrationInfoExecutor';
-import { MigrationStates, VERSION_REGEX } from '../../model/types';
+import { MigrationInfoExecutorRet, MigrationStates, VERSION_REGEX } from '../../model/types';
 import { generateDescription, generateVersion, MigrationInfo } from '../info/MigrationInfo';
 
 export function migrationInfoValidate(migrateInfo: MigrationInfo): string | undefined {
@@ -44,9 +43,6 @@ export function migrationInfoValidate(migrateInfo: MigrationInfo): string | unde
  * returns an error message
  * @param migrateInfo
  */
-export function doValidate(migrateInfo: MigrationInfoExecutor): string[] {
-    return migrateInfo
-        .all()
-        .map(migrationInfoValidate)
-        .filter((value) => value) as string[];
+export function doValidate(migrateInfo: MigrationInfoExecutorRet): string[] {
+    return migrateInfo.all.map(migrationInfoValidate).filter((value) => value) as string[];
 }

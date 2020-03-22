@@ -1,6 +1,7 @@
 import { ParsedPath } from 'path';
 import { ApiResponse as ApiResponse6 } from 'es6';
 import { ApiResponse as ApiResponse7 } from 'es7';
+import { MigrationInfo } from '../executor/info/MigrationInfo';
 
 export const VERSION_REGEX = /^([v][0-9]+.[0-9]+.[0-9]+)/;
 
@@ -222,3 +223,8 @@ export const MigrationStateInfo: Map<MigrationState, MigrationStateInfo> = new M
         }
     ]
 ]);
+
+export type MigrationInfoExecutorRet = {
+    all: MigrationInfo[];
+    pending: MigrationInfo[];
+};

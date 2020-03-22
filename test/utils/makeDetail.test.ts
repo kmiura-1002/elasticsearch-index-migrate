@@ -11,12 +11,12 @@ import { format } from 'date-fns';
 describe('makeDetail test', () => {
     it('makeDetail test', () => {
         const installedOn = new Date();
-        const service = new MigrationInfoExecutor(
+        const service = MigrationInfoExecutor(
             resolvedMigrations,
             migrateIndices(installedOn),
             migrationInfoContext
         );
-        const migrationInfos = service.all();
+        const migrationInfos = service.all;
         const detail = makeDetail([
             ...migrationInfos,
             {

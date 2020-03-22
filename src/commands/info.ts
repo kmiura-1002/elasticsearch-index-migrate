@@ -57,10 +57,10 @@ export default class Info extends AbstractCommand {
             lastResolved: '',
             lastApplied: ''
         };
-        const infoService = new MigrationInfoExecutor(migrationScripts, results, context);
+        const infoService = MigrationInfoExecutor(migrationScripts, results, context);
 
         cli.table(
-            makeDetail(infoService.all()),
+            makeDetail(infoService.all),
             {
                 version: {},
                 description: {},
