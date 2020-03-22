@@ -21,8 +21,8 @@ export type ESConfig = {
 export type MigrationConfigType = {
     elasticsearch: ESConfig;
     migration: {
-        locations?: string[];
-        baselineVersion?: string;
+        locations: string[];
+        baselineVersion: string;
     };
 };
 

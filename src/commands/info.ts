@@ -1,5 +1,4 @@
 import { flags } from '@oclif/command';
-import * as config from 'config';
 import {
     findAllFiles,
     loadMigrationScriptFilePaths,
@@ -25,8 +24,8 @@ export default class Info extends AbstractCommand {
 
     async run() {
         const { flags } = this.parse(Info);
-        const locations = config.get<string[]>('migration.locations');
-        const baselineVersion = config.get<string>('migration.baselineVersion');
+        const locations = this.migrationConfig.migration.locations;
+        const baselineVersion = this.migrationConfig.migration.baselineVersion;
         const migrationFilePaths: string[] = findAllFiles(locations);
         const migrationFileParsedPath = loadMigrationScriptFilePaths(
             flags.indexName,
