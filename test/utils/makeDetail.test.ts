@@ -5,30 +5,37 @@ import { resolvedMigrations } from '../data/ResolvedMigrationTestData';
 import { migrateIndices } from '../data/MigrateIndexTestData';
 import { migrationInfoContext } from '../data/MigrationInfoContextTestData';
 import makeDetail from '../../src/utils/makeDetail';
-import { MigrationState } from '../../src/model/types';
+import { MigrationStates } from '../../src/model/types';
 import { format } from 'date-fns';
 
 describe('makeDetail test', () => {
     it('makeDetail test', () => {
         const installedOn = new Date();
-        const service = new MigrationInfoExecutor(
+        const service = MigrationInfoExecutor(
             resolvedMigrations,
             migrateIndices(installedOn),
             migrationInfoContext
         );
-        const migrationInfos = service.all();
-        const detail = makeDetail(migrationInfos);
+        const migrationInfos = service.all;
+        const detail = makeDetail([
+            ...migrationInfos,
+            {
+                context: migrationInfoContext,
+                outOfOrder: false,
+                baseline: false
+            }
+        ]);
         const status = migrationInfos.map((value) => value.state?.status);
 
         expect(status)
             .to.be.an('array')
             .to.be.include.ordered.members([
-                MigrationState.MISSING_SUCCESS,
-                MigrationState.IGNORED,
-                MigrationState.SUCCESS,
-                MigrationState.MISSING_FAILED,
-                MigrationState.SUCCESS,
-                MigrationState.PENDING
+                MigrationStates.MISSING_SUCCESS,
+                MigrationStates.IGNORED,
+                MigrationStates.SUCCESS,
+                MigrationStates.MISSING_FAILED,
+                MigrationStates.SUCCESS,
+                MigrationStates.PENDING
             ]);
 
         expect(detail)

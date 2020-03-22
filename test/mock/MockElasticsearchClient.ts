@@ -1,6 +1,6 @@
-import ElasticsearchClient from '../../../src/utils/es/ElasticsearchClient';
+import ElasticsearchClient from '../../src/utils/es/ElasticsearchClient';
 import { cli } from 'cli-ux';
-import { clusterStatus } from '../../../src/model/types';
+import { ClusterStatuses } from '../../src/model/types';
 
 export default class MockElasticsearchClient implements ElasticsearchClient {
     close() {
@@ -53,6 +53,11 @@ export default class MockElasticsearchClient implements ElasticsearchClient {
     }
 
     healthCheck(): Promise<{ status: string }> {
-        return Promise.resolve({ status: clusterStatus.GREEN });
+        return Promise.resolve({ status: ClusterStatuses.GREEN });
+    }
+
+    delete(index: string | string[]) {
+        cli.debug(`Called MockElasticsearchClient.delete: index=${index}`);
+        return Promise.resolve({ statusCode: 200 });
     }
 }

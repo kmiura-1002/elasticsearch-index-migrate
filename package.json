@@ -1,8 +1,9 @@
 {
     "name": "elasticsearch-index-migrate",
     "description": "elasticsearch-index-migrate",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "author": "kmiura @kmiura-1002",
+    "private": true,
     "bin": {
         "elasticsearch-index-migrate": "./bin/run"
     },
@@ -19,6 +20,7 @@
         "es6": "npm:@elastic/elasticsearch@^6.7.0",
         "es7": "npm:@elastic/elasticsearch@^7.0.0",
         "inversify": "^5.0.1",
+        "load-json-file": "^6.2.0",
         "prettier": "^1.19.1",
         "reflect-metadata": "^0.1.13",
         "sort-versions": "^0.1.5",

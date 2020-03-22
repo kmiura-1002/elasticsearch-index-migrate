@@ -9,22 +9,21 @@ import {
     migrate
 } from '../../../src/executor/migration/MigrationExecutor';
 import * as MigrationExecutor from '../../../src/executor/migration/MigrationExecutor';
-import { MigrateIndex, MigrationType } from '../../../src/model/types';
+import { MigrateIndex, MigrationTypes } from '../../../src/model/types';
 import * as sinon from 'sinon';
 import { cli } from 'cli-ux';
 import { generateMigrationInfo } from '../../../src/executor/info/MigrationInfo';
 import { migrationInfoContext } from '../../data/MigrationInfoContextTestData';
 import { formatDateAsIsoString } from '../../../src/utils/makeDetail';
-import * as StopWatch from '../../../src/utils/stopWatch';
 import * as EsUtils from '../../../src/utils/es/EsUtils';
-import MockElasticsearchClient from '../../data/mock/MockElasticsearchClient';
+import MockElasticsearchClient from '../../mock/MockElasticsearchClient';
 
 describe('MigrationExecutor test', () => {
     let sandbox: sinon.SinonSandbox;
     before(() => {
         sandbox = sinon.createSandbox();
     });
-    beforeEach(() => {
+    afterEach(() => {
         sandbox.restore();
     });
     it('failed addMigrationHistory', async () => {
@@ -59,7 +58,7 @@ describe('MigrationExecutor test', () => {
             false,
             {
                 migrate_script: {},
-                type: MigrationType.CREATE_INDEX,
+                type: MigrationTypes.CREATE_INDEX,
                 version: 'v1.0.0',
                 description: '',
                 index_name: 'test',
@@ -68,7 +67,7 @@ describe('MigrationExecutor test', () => {
             {
                 version: 'v1.0.0',
                 description: '',
-                type: MigrationType.ADD_FIELD,
+                type: MigrationTypes.ADD_FIELD,
                 script: '',
                 installedOn: date,
                 executionTime: 1,
@@ -113,7 +112,7 @@ describe('MigrationExecutor test', () => {
             false,
             {
                 migrate_script: {},
-                type: MigrationType.CREATE_INDEX,
+                type: MigrationTypes.CREATE_INDEX,
                 version: 'v1.0.1',
                 description: '',
                 index_name: 'test',
@@ -122,7 +121,7 @@ describe('MigrationExecutor test', () => {
             {
                 version: 'v1.0.0',
                 description: '',
-                type: MigrationType.ADD_FIELD,
+                type: MigrationTypes.ADD_FIELD,
                 script: '',
                 installedOn: new Date(),
                 executionTime: 1,
@@ -136,6 +135,7 @@ describe('MigrationExecutor test', () => {
         expect(postDocumentStub.calledOnce).is.true;
         expect(cliInfoStub.calledTwice).is.true;
         expect(cliWarnStub.notCalled).is.true;
+        migrationExecutorMock.restore();
     });
 
     it('applyMigration putMapping test', async () => {
@@ -162,7 +162,7 @@ describe('MigrationExecutor test', () => {
             false,
             {
                 migrate_script: {},
-                type: MigrationType.ADD_FIELD,
+                type: MigrationTypes.ADD_FIELD,
                 version: 'v1.0.1',
                 description: '',
                 index_name: 'test',
@@ -171,7 +171,7 @@ describe('MigrationExecutor test', () => {
             {
                 version: 'v1.0.0',
                 description: '',
-                type: MigrationType.ADD_FIELD,
+                type: MigrationTypes.ADD_FIELD,
                 script: '',
                 installedOn: new Date(),
                 executionTime: 1,
@@ -185,6 +185,7 @@ describe('MigrationExecutor test', () => {
         expect(postDocumentStub.calledOnce).is.true;
         expect(cliInfoStub.calledTwice).is.true;
         expect(cliWarnStub.notCalled).is.true;
+        migrationExecutorMock.restore();
     });
 
     it('No migration target', async () => {
@@ -192,7 +193,7 @@ describe('MigrationExecutor test', () => {
         const info = generateMigrationInfo(migrationInfoContext, false, undefined, {
             version: 'v1.0.0',
             description: '',
-            type: MigrationType.ADD_FIELD,
+            type: MigrationTypes.ADD_FIELD,
             script: '',
             installedOn: new Date(),
             executionTime: 1,
@@ -207,11 +208,6 @@ describe('MigrationExecutor test', () => {
     });
 
     it('Migration test', async () => {
-        const stopWatchStub = sandbox.stub(StopWatch, 'default').returns({
-            start: () => {},
-            stop: () => {},
-            read: () => 1
-        });
         const esUtilsStub = sandbox.stub(EsUtils).default;
         esUtilsStub.returns(new MockElasticsearchClient());
         const cliInfoStub = sandbox.stub(cli, 'info');
@@ -219,7 +215,7 @@ describe('MigrationExecutor test', () => {
             [
                 {
                     migrate_script: {},
-                    type: MigrationType.ADD_FIELD,
+                    type: MigrationTypes.ADD_FIELD,
                     version: 'v1.0.1',
                     description: '',
                     index_name: 'test',
@@ -238,15 +234,13 @@ describe('MigrationExecutor test', () => {
                     success: true
                 }
             ],
-            migrationInfoContext
+            migrationInfoContext,
+            { connect: {} }
         );
         expect(esUtilsStub.calledOnce).true;
         expect(cliInfoStub.callCount).to.eq(5);
         expect(cliInfoStub.calledWith('Start validate of migration data.')).is.true;
         expect(cliInfoStub.calledWith('Start migration!')).is.true;
-        expect(cliInfoStub.calledWith('Finished migration! (time: 1 ms)')).is.true;
-        expect(cliInfoStub.calledWith('Successfully completed migration of . (time: 1 ms)')).is
-            .true;
         expect(
             cliInfoStub.calledWith(
                 'POST Success. Migration history saved successfully. ({"statusCode":200})'
@@ -264,7 +258,7 @@ describe('MigrationExecutor test', () => {
                 [
                     {
                         migrate_script: {},
-                        type: MigrationType.ADD_FIELD,
+                        type: MigrationTypes.ADD_FIELD,
                         version: 'v1.0.1',
                         description: '',
                         index_name: 'test',
@@ -283,7 +277,8 @@ describe('MigrationExecutor test', () => {
                         success: true
                     }
                 ],
-                migrationInfoContext
+                migrationInfoContext,
+                { connect: {} }
             )
         ).to.exist;
         expect(cliErrorStub.calledOnce).is.true;

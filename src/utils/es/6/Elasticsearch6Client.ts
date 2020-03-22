@@ -4,7 +4,7 @@ import { ApiResponse } from 'es6/lib/Transport';
 import { inject, injectable } from 'inversify';
 import { Bindings } from '../../../ioc.bindings';
 import ElasticsearchClient from '../ElasticsearchClient';
-import { ESConfig, IndexSearchResults } from '../../../model/types';
+import { ESConnectConfig, IndexSearchResults } from '../../../model/types';
 
 @injectable()
 class Elasticsearch6Client implements ElasticsearchClient {
@@ -12,7 +12,7 @@ class Elasticsearch6Client implements ElasticsearchClient {
 
     constructor(
         @inject(Bindings.ESConfig)
-        private readonly connectConf: ESConfig
+        private readonly connectConf: ESConnectConfig
     ) {
         this.client = new Client(esConnectConf(connectConf));
     }
@@ -74,6 +74,10 @@ class Elasticsearch6Client implements ElasticsearchClient {
             body,
             id
         });
+    }
+
+    async delete(index: string | string[]) {
+        return await this.client.indices.delete({ index });
     }
 }
 

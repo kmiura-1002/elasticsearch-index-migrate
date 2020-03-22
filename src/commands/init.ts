@@ -1,29 +1,31 @@
-import { Command, flags } from '@oclif/command';
+import { flags } from '@oclif/command';
 import * as fs from 'fs';
 import * as path from 'path';
 import getElasticsearchClient from '../utils/es/EsUtils';
-import { clusterStatus, MAPPING_HISTORY_INDEX_NAME } from '../model/types';
+import { ClusterStatuses, MAPPING_HISTORY_INDEX_NAME } from '../model/types';
 import { cli } from 'cli-ux';
+import AbstractCommand, { DefaultOptions } from '../AbstractCommand';
 
 interface MappingData {
     settings: any;
     mappings: any;
 }
 
-export default class Init extends Command {
+export default class Init extends AbstractCommand {
     static description = 'Setup elasticsearch index migrate env';
     static flags = {
+        ...DefaultOptions,
         help: flags.help({ char: 'h' })
     };
 
     async run() {
         this.parse(Init);
-        const client = getElasticsearchClient();
+        const client = getElasticsearchClient(this.migrationConfig.elasticsearch);
         const health = await client.healthCheck();
 
-        if (health.status === clusterStatus.YELLOW) {
+        if (health.status === ClusterStatuses.YELLOW) {
             cli.warn('cluster status is yellow.');
-        } else if (health.status === clusterStatus.RED) {
+        } else if (health.status === ClusterStatuses.RED) {
             cli.error('cluster status is red.');
             cli.exit(1);
         }
@@ -42,13 +44,14 @@ export default class Init extends Command {
         const ret = await client
             .createIndex(MAPPING_HISTORY_INDEX_NAME, mappingData)
             .catch((reason) => {
-                throw new Error(reason);
+                cli.error(`Failed to create index: ${JSON.stringify(reason)}`, { exit: 1 });
+                cli.exit(1);
             });
         if (ret.statusCode === 200) {
             cli.log('Finish creating index for migrate.');
         } else {
-            cli.error('Failed to create index for migrate.', { code: ret.statusCode });
-            cli.error(ret.error);
+            cli.error('Failed to create index for migrate.', { exit: 1, code: ret.statusCode });
+            cli.exit(1);
         }
     }
 }

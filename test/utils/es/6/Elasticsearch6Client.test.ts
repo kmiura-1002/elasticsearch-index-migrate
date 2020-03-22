@@ -27,6 +27,7 @@ describe('Elasticsearch6Client test', () => {
             .substring(2)}`;
         const create = await client.createIndex(index);
         assert.equal(create.statusCode, '200');
+        await client.delete(index);
     });
     it('search', async () => {
         const index = `test_index_${Math.random()
@@ -35,6 +36,7 @@ describe('Elasticsearch6Client test', () => {
         await client.createIndex(index);
         const ret = await client.search(index);
         assert.isArray(ret);
+        await client.delete(index);
     });
     it('put mapping', async () => {
         const index = `test_index_${Math.random()
@@ -43,13 +45,13 @@ describe('Elasticsearch6Client test', () => {
         await client.createIndex(index);
         const ret = await client.putMapping(index, {
             properties: {
-                // eslint-disable-next-line @typescript-eslint/camelcase
                 test_id: {
                     type: 'long'
                 }
             }
         });
         assert.equal(ret.statusCode, '200');
+        await client.delete(index);
     });
 
     it('put settings', async () => {
@@ -63,6 +65,7 @@ describe('Elasticsearch6Client test', () => {
             }
         });
         assert.equal(ret.statusCode, '200');
+        await client.delete(index);
     });
 
     it('post document', async () => {
@@ -73,6 +76,7 @@ describe('Elasticsearch6Client test', () => {
         const ret = await client.postDocument(index, { test: 'foo baz' });
 
         expect(ret.statusCode).is.eq(201);
+        await client.delete(index);
     });
 
     it('close client', async () => {
