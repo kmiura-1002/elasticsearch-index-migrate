@@ -1,8 +1,9 @@
 {
     "name": "elasticsearch-index-migrate",
     "description": "elasticsearch-index-migrate",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "author": "kmiura @kmiura-1002",
+    "private": true,
     "bin": {
         "elasticsearch-index-migrate": "./bin/run"
     },
