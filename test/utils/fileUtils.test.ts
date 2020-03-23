@@ -29,22 +29,11 @@ describe('fileUtils test', () => {
     });
 
     it('findAllFiles test', () => {
-        const fsMock = sinon.mock(fs);
-        fsMock
-            .expects('readdirSync')
-            .once()
-            .returns(['test.text']);
-        fsMock
-            .expects('statSync')
-            .once()
-            .returns(new MockStats());
-        const paths = findAllFiles(['']);
+        const paths = findAllFiles([`${process.cwd()}/migration/indices/test1`]);
         expect(paths)
             .to.be.an('array')
             .to.lengthOf(1)
-            .to.include(`${process.cwd()}/test.text`);
-        fsMock.verify();
-        fsMock.restore();
+            .to.include(`${process.cwd()}/migration/indices/test1/v1.0.0__test1.json`);
     });
 
     it('loadMigrationScriptFilePaths test', () => {

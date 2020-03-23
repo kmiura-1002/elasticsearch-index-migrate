@@ -22,7 +22,7 @@ export function findFiles(dir: string, callback?: (data: string) => void) {
 export function findAllFiles(dir: string[]): string[] {
     const paths: string[] = [];
     dir.forEach((value) => {
-        findFiles(path.join(process.cwd(), value), (data) => paths.push(data));
+        findFiles(value, (data) => paths.push(data));
     });
     return paths;
 }
