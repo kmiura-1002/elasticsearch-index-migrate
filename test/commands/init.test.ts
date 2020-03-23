@@ -52,7 +52,7 @@ describe('Setup elasticsearch index migrate env test', () => {
         .command(['init'])
         .exit(1)
         .it('runs init cluster Status red ', () => {
-            const error: any = cli.error;
+            const error = (cli.error as unknown) as sinon.SinonStub;
             expect(error.called).is.true;
             expect(error.calledWith('cluster status is red.')).is.true;
         });
@@ -72,8 +72,9 @@ describe('Setup elasticsearch index migrate env test', () => {
         .command(['init'])
         .exit(1)
         .it('migrate_history index already exists', () => {
-            const log: any = cli.log;
-            expect(log.called).is.true;
+            const log = cli.log as sinon.SinonStub;
+            expect(log.calledTwice).is.true;
+            expect(log.calledWith('Start creating index for migrate.')).is.true;
             expect(log.calledWith('migrate_history index already exists.')).is.true;
         });
 
@@ -95,8 +96,7 @@ describe('Setup elasticsearch index migrate env test', () => {
         .command(['init'])
         .exit(1)
         .it('Failed to create index for migrate.', () => {
-            const error: any = cli.error;
-            expect(error.callCount).eq(1);
+            const error = (cli.error as unknown) as sinon.SinonStub;
             expect(error.calledOnce).is.true;
             expect(error.calledWith('Failed to create index for migrate.')).is.true;
         });
@@ -119,8 +119,7 @@ describe('Setup elasticsearch index migrate env test', () => {
         .command(['init'])
         .exit(1)
         .it('Failed to create index', () => {
-            const error: any = cli.error;
-            expect(error.callCount).eq(1);
+            const error = (cli.error as unknown) as sinon.SinonStub;
             expect(error.calledOnce).is.true;
             expect(error.calledWith('Failed to create index: undefined')).is.true;
         });
