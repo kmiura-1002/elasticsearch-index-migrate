@@ -111,7 +111,10 @@ export default abstract class AbstractCommand extends Command {
                     version: elasticsearch_version
                 },
                 migration: {
-                    locations: migration_locations,
+                    locations:
+                        typeof migration_locations === 'string'
+                            ? [migration_locations]
+                            : migration_locations,
                     baselineVersion: baseline_version
                 }
             };
