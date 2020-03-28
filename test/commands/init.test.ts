@@ -7,6 +7,12 @@ import { ClusterStatuses } from '../../src/model/types';
 
 describe('Setup elasticsearch index migrate env test', () => {
     test.stub(EsUtils, 'default', () => new MockElasticsearchClient())
+        .env({
+            ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
+            ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
+            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_HOST: 'http://localhost:9202'
+        })
         .stdout()
         .command(['init'])
         .it('runs init', (ctx) => {
@@ -26,6 +32,12 @@ describe('Setup elasticsearch index migrate env test', () => {
             })()
     )
         .stub(cli, 'warn', sinon.stub())
+        .env({
+            ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
+            ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
+            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_HOST: 'http://localhost:9202'
+        })
         .stdout()
         .command(['init'])
         .it('runs init cluster Status yellow ', (ctx) => {
@@ -48,6 +60,12 @@ describe('Setup elasticsearch index migrate env test', () => {
             })()
     )
         .stub(cli, 'error', sinon.stub())
+        .env({
+            ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
+            ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
+            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_HOST: 'http://localhost:9202'
+        })
         .stdout()
         .command(['init'])
         .exit(1)
@@ -68,6 +86,12 @@ describe('Setup elasticsearch index migrate env test', () => {
             })()
     )
         .stub(cli, 'log', sinon.stub())
+        .env({
+            ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
+            ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
+            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_HOST: 'http://localhost:9202'
+        })
         .stdout()
         .command(['init'])
         .exit(1)
@@ -92,6 +116,12 @@ describe('Setup elasticsearch index migrate env test', () => {
             })()
     )
         .stub(cli, 'error', sinon.stub())
+        .env({
+            ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
+            ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
+            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_HOST: 'http://localhost:9202'
+        })
         .stdout()
         .command(['init'])
         .exit(1)
@@ -115,6 +145,12 @@ describe('Setup elasticsearch index migrate env test', () => {
             })()
     )
         .stub(cli, 'error', sinon.stub())
+        .env({
+            ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
+            ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
+            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_HOST: 'http://localhost:9202'
+        })
         .stdout()
         .command(['init'])
         .exit(1)

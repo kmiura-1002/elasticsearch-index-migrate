@@ -29,16 +29,16 @@ describe('fileUtils test', () => {
     });
 
     it('findAllFiles test', () => {
-        const paths = findAllFiles([`${process.cwd()}/migration/indices/test1`]);
+        const paths = findAllFiles([`${process.cwd()}/test/data/migration/indices/test1`]);
         expect(paths)
             .to.be.an('array')
             .to.lengthOf(1)
-            .to.include(`${process.cwd()}/migration/indices/test1/v1.0.0__test1.json`);
+            .to.include(`${process.cwd()}/test/data/migration/indices/test1/v1.0.0__test1.json`);
     });
 
     it('loadMigrationScriptFilePaths test', () => {
         const paths = loadMigrationScriptFilePaths('test1', [
-            `${process.cwd()}/migration/indices/test1/v1.0.0__test1.json`
+            `${process.cwd()}/test/data/migration/indices/test1/v1.0.0__test1.json`
         ]);
         expect(paths)
             .to.be.an('array')
@@ -50,7 +50,7 @@ describe('fileUtils test', () => {
         const scripts = loadMigrationScripts([
             {
                 root: '/',
-                dir: `${process.cwd()}/migration/indices/test1`,
+                dir: `${process.cwd()}/test/data/migration/indices/test1`,
                 base: 'v1.0.0__test1.json',
                 ext: '.json',
                 name: 'v1.0.0__test1'
@@ -72,7 +72,7 @@ describe('fileUtils test', () => {
             },
             physicalLocation: {
                 root: '/',
-                dir: `${process.cwd()}/migration/indices/test1`,
+                dir: `${process.cwd()}/test/data/migration/indices/test1`,
                 base: 'v1.0.0__test1.json',
                 ext: '.json',
                 name: 'v1.0.0__test1'

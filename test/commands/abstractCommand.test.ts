@@ -21,7 +21,7 @@ describe('Setup elasticsearch index migrate env test', () => {
         )
 
         .env({
-            ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/migration`,
+            ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION:
                 'test_ELASTICSEARCH_MIGRATION_BASELINE_VERSION',
             ELASTICSEARCH_VERSION: 'test_ELASTICSEARCH_VERSION',
@@ -37,7 +37,7 @@ describe('Setup elasticsearch index migrate env test', () => {
             const findAllFilesStub = findAllFiles as sinon.SinonStub;
             const esClientStub = getElasticsearchClient as sinon.SinonStub;
             expect(process.env.ELASTICSEARCH_MIGRATION_LOCATIONS).to.equal(
-                `${process.cwd()}/migration`
+                `${process.cwd()}/test/data/migration`
             );
             expect(process.env.ELASTICSEARCH_MIGRATION_BASELINE_VERSION).to.equal(
                 'test_ELASTICSEARCH_MIGRATION_BASELINE_VERSION'
@@ -51,7 +51,7 @@ describe('Setup elasticsearch index migrate env test', () => {
             expect(process.env.ELASTICSEARCH_USERNAME).to.equal('test_ELASTICSEARCH_USERNAME');
             expect(process.env.ELASTICSEARCH_PASSWORD).to.equal('test_ELASTICSEARCH_PASSWORD');
 
-            expect(findAllFilesStub.calledWith([`${process.cwd()}/migration`])).is.true;
+            expect(findAllFilesStub.calledWith([`${process.cwd()}/test/data/migration`])).is.true;
             expect(
                 esClientStub.calledWith({
                     version: 'test_ELASTICSEARCH_VERSION',
@@ -76,7 +76,7 @@ describe('Setup elasticsearch index migrate env test', () => {
             'findAllFiles',
             sinon.stub().callsFake((dir: string[]) => {
                 const paths: string[] = [];
-                dir.map((value) => `${process.cwd()}/${value}`).forEach((value) => {
+                dir.map((value) => `${process.cwd()}/test/data/${value}`).forEach((value) => {
                     findFiles(value, (data) => paths.push(data));
                 });
                 return paths;
@@ -116,7 +116,7 @@ describe('Setup elasticsearch index migrate env test', () => {
             'findAllFiles',
             sinon.stub().callsFake((dir: string[]) => {
                 const paths: string[] = [];
-                dir.map((value) => `${process.cwd()}/${value}`).forEach((value) => {
+                dir.map((value) => `${process.cwd()}/test/data/${value}`).forEach((value) => {
                     findFiles(value, (data) => paths.push(data));
                 });
                 return paths;

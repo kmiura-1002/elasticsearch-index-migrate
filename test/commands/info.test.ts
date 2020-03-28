@@ -4,11 +4,23 @@ import MockElasticsearchClient from '../mock/MockElasticsearchClient';
 
 describe('info command test', () => {
     test.stdout()
+        .env({
+            ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
+            ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
+            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_HOST: 'http://localhost:9202'
+        })
         .command(['info', '-i', 'test'])
         .exit(1)
         .it('Migration file not found.');
 
     test.stub(EsUtils, 'default', () => new MockElasticsearchClient())
+        .env({
+            ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
+            ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
+            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_HOST: 'http://localhost:9202'
+        })
         .stdout()
         .command(['info', '-i', 'test1'])
         .it('info test', (ctx) => {
@@ -19,6 +31,12 @@ describe('info command test', () => {
         });
 
     test.stub(EsUtils, 'default', () => new MockElasticsearchClient())
+        .env({
+            ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
+            ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
+            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_HOST: 'http://localhost:9202'
+        })
         .stdout()
         .command(['info', '-i', 'test2-2020.01.01'])
         .it('info versiond index test', (ctx) => {
@@ -29,6 +47,12 @@ describe('info command test', () => {
         });
 
     test.stub(EsUtils, 'default', () => new MockElasticsearchClient())
+        .env({
+            ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
+            ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
+            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_HOST: 'http://localhost:9202'
+        })
         .stdout()
         .command(['info', '-i', 'test2_2020.01.01'])
         .it('info other versiond index test', (ctx) => {
