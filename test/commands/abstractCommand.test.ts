@@ -69,4 +69,40 @@ describe('Setup elasticsearch index migrate env test', () => {
                     'v1.0.0  description ADD_FIELD             PENDING \n'
             );
         });
+
+    test.stub(EsUtils, 'default', sinon.stub().returns(new MockElasticsearchClient()))
+        .stub(
+            fileUtils,
+            'findAllFiles',
+            sinon.stub().callsFake((dir: string[]) => {
+                const paths: string[] = [];
+                dir.map((value) => `${process.cwd()}/${value}`).forEach((value) => {
+                    findFiles(value, (data) => paths.push(data));
+                });
+                return paths;
+            })
+        )
+
+        .stdout()
+        .command([
+            'info',
+            '-i',
+            'test1',
+            '--option_file',
+            `${process.cwd()}/test/data/test.config.json`
+        ])
+        .it('read option_file test', (ctx) => {
+            const findAllFilesStub = findAllFiles as sinon.SinonStub;
+            const esClientStub = getElasticsearchClient as sinon.SinonStub;
+
+            expect(findAllFilesStub.calledWith(['migration'])).is.true;
+            expect(
+                esClientStub.calledWith({
+                    version: '7.5.2',
+                    connect: {
+                        host: 'http://localhost:9202'
+                    }
+                })
+            ).is.true;
+        });
 });
