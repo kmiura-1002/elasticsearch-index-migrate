@@ -1,7 +1,7 @@
 {
     "elasticsearch": {
-        "version": "7.5.2",
-        "connect": { "host": "http://localhost:9202" }
+        "version": "6",
+        "connect": { "host": "http://0.0.0.0:9202" }
     },
     "migration": {
         "locations": ["migration"],
