@@ -97,7 +97,7 @@ Currently the following migration types are supported:
 
 In the case of ADD_FIELD scripts, describe the mapping information that can be executed with the Put mapping API under the migrate_script property.
 
-```json
+```
 {
   "type": "ADD_FIELD",
   "index_name": "indexName",
@@ -115,7 +115,7 @@ In the case of ADD_FIELD scripts, describe the mapping information that can be e
 
 In the case of CREATE_INDEX scripts, write a Request body that can be executed with the Create index API under the migrate_script property.
 
-```json
+```
 {
   "type": "CREATE_INDEX",
   "index_name": "indexName",
@@ -133,7 +133,7 @@ In the case of CREATE_INDEX scripts, write a Request body that can be executed w
           "user_id": {
             "type": "keyword"
           },
-            ...
+          ...
         }
     }
   }
