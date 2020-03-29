@@ -3,11 +3,11 @@ import {
     ESConfig,
     MAPPING_HISTORY_INDEX_NAME,
     MigrateIndex,
-    MigrationInfoContext,
+    MigrationPlanContext,
     ResolvedMigration
 } from '../../model/types';
-import MigrationInfoExecutor from '../info/MigrationInfoExecutor';
-import { MigrationInfo } from '../info/MigrationInfo';
+import MigrationPlanExecutor from '../plan/MigrationPlanExecutor';
+import { MigrationPlan } from '../plan/MigrationPlan';
 import { doValidate } from './MigrationValidate';
 import { cli } from 'cli-ux';
 import ElasticsearchClient from '../../utils/es/ElasticsearchClient';
@@ -33,16 +33,16 @@ export async function addMigrationHistory(esClient: ElasticsearchClient, history
 }
 
 export function makeMigrateHistory(
-    migrationInfo: MigrationInfo,
+    migrationPlan: MigrationPlan,
     executionTime: number,
     success: boolean
 ): MigrateIndex {
     return {
-        index_name: migrationInfo.resolvedMigration?.index_name ?? '',
-        migrate_version: migrationInfo.resolvedMigration?.version ?? '',
-        description: migrationInfo.resolvedMigration?.description ?? '',
-        script_name: migrationInfo.resolvedMigration?.physicalLocation.base ?? '',
-        script_type: migrationInfo.type ?? '',
+        index_name: migrationPlan.resolvedMigration?.index_name ?? '',
+        migrate_version: migrationPlan.resolvedMigration?.version ?? '',
+        description: migrationPlan.resolvedMigration?.description ?? '',
+        script_name: migrationPlan.resolvedMigration?.physicalLocation.base ?? '',
+        script_type: migrationPlan.type ?? '',
         installed_on: formatDateAsIsoString(new Date()),
         execution_time: executionTime,
         success
@@ -53,8 +53,8 @@ export function makeMigrateHistory(
  * Run one migration task.
  * @Returns Returns 1 if the migration task was successful.
  */
-export async function applyMigration(esClient: ElasticsearchClient, migrationInfo: MigrationInfo) {
-    const resolvedMigration = migrationInfo.resolvedMigration;
+export async function applyMigration(esClient: ElasticsearchClient, migrationPlan: MigrationPlan) {
+    const resolvedMigration = migrationPlan.resolvedMigration;
     if (resolvedMigration) {
         const type = resolvedMigration.type;
         const sw = new StopWatch();
@@ -65,7 +65,7 @@ export async function applyMigration(esClient: ElasticsearchClient, migrationInf
                 if (value.statusCode && value.statusCode >= 400) {
                     await addMigrationHistory(
                         esClient,
-                        makeMigrateHistory(migrationInfo, sw.read(), false)
+                        makeMigrateHistory(migrationPlan, sw.read(), false)
                     );
                     cli.error(
                         `Migration failed. statusCode: ${value.statusCode}, version: ${resolvedMigration.version}`
@@ -76,12 +76,12 @@ export async function applyMigration(esClient: ElasticsearchClient, migrationInf
                 sw.stop();
                 await addMigrationHistory(
                     esClient,
-                    makeMigrateHistory(migrationInfo, sw.read(), false)
+                    makeMigrateHistory(migrationPlan, sw.read(), false)
                 );
                 cli.error(reason);
             });
         sw.stop();
-        await addMigrationHistory(esClient, makeMigrateHistory(migrationInfo, sw.read(), true));
+        await addMigrationHistory(esClient, makeMigrateHistory(migrationPlan, sw.read(), true));
         cli.info(
             `Successfully completed migration of ${
                 resolvedMigration?.physicalLocation.base
@@ -97,13 +97,13 @@ export async function applyMigration(esClient: ElasticsearchClient, migrationInf
 export async function migrate(
     resolvedMigrations: ResolvedMigration[],
     appliedMigrations: MigrateIndex[],
-    context: MigrationInfoContext,
+    context: MigrationPlanContext,
     esConfig: ESConfig
 ) {
-    const migrateInfo = MigrationInfoExecutor(resolvedMigrations, appliedMigrations, context);
+    const migratePlan = MigrationPlanExecutor(resolvedMigrations, appliedMigrations, context);
     const esClient = getElasticsearchClient(esConfig);
     cli.info('Start validate of migration data.');
-    const validateErrorMessages = doValidate(migrateInfo);
+    const validateErrorMessages = doValidate(migratePlan);
     if (validateErrorMessages.length > 0) {
         cli.error(`Migration data problem detected:\n${validateErrorMessages.join('\n')}`, {
             code: 'validate_error'
@@ -114,7 +114,7 @@ export async function migrate(
     cli.info('Start migration!');
     const sw = new StopWatch();
     sw.start();
-    const count = await migrateInfo.pending
+    const count = await migratePlan.pending
         .map(async (value) => (await applyMigration(esClient, value)) as number)
         .reduce(
             async (previousValue, currentValue) => (await previousValue) + (await currentValue)

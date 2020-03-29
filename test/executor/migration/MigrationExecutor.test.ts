@@ -12,8 +12,8 @@ import * as MigrationExecutor from '../../../src/executor/migration/MigrationExe
 import { MigrateIndex, MigrationTypes } from '../../../src/model/types';
 import * as sinon from 'sinon';
 import { cli } from 'cli-ux';
-import { generateMigrationInfo } from '../../../src/executor/info/MigrationInfo';
-import { migrationInfoContext } from '../../data/MigrationInfoContextTestData';
+import { generateMigrationPlan } from '../../../src/executor/plan/MigrationPlan';
+import { migrationPlanContext } from '../../data/MigrationPlanContextTestData';
 import { formatDateAsIsoString } from '../../../src/utils/makeDetail';
 import * as EsUtils from '../../../src/utils/es/EsUtils';
 import MockElasticsearchClient from '../../mock/MockElasticsearchClient';
@@ -53,8 +53,8 @@ describe('MigrationExecutor test', () => {
 
     it('Make MigrateHistory Object', () => {
         const date = new Date();
-        const info = generateMigrationInfo(
-            migrationInfoContext,
+        const info = generateMigrationPlan(
+            migrationPlanContext,
             false,
             {
                 migrate_script: {},
@@ -107,8 +107,8 @@ describe('MigrationExecutor test', () => {
         const cliInfoStub = sandbox.stub(cli, 'info');
         const cliWarnStub = sandbox.stub(cli, 'warn');
 
-        const info = generateMigrationInfo(
-            migrationInfoContext,
+        const info = generateMigrationPlan(
+            migrationPlanContext,
             false,
             {
                 migrate_script: {},
@@ -157,8 +157,8 @@ describe('MigrationExecutor test', () => {
         const cliInfoStub = sandbox.stub(cli, 'info');
         const cliWarnStub = sandbox.stub(cli, 'warn');
 
-        const info = generateMigrationInfo(
-            migrationInfoContext,
+        const info = generateMigrationPlan(
+            migrationPlanContext,
             false,
             {
                 migrate_script: {},
@@ -190,7 +190,7 @@ describe('MigrationExecutor test', () => {
 
     it('No migration target', async () => {
         const cliWarnStub = sandbox.stub(cli, 'warn');
-        const info = generateMigrationInfo(migrationInfoContext, false, undefined, {
+        const info = generateMigrationPlan(migrationPlanContext, false, undefined, {
             version: 'v1.0.0',
             description: '',
             type: MigrationTypes.ADD_FIELD,
@@ -234,7 +234,7 @@ describe('MigrationExecutor test', () => {
                     success: true
                 }
             ],
-            migrationInfoContext,
+            migrationPlanContext,
             { connect: {} }
         );
         expect(esUtilsStub.calledOnce).true;
@@ -277,7 +277,7 @@ describe('MigrationExecutor test', () => {
                         success: true
                     }
                 ],
-                migrationInfoContext,
+                migrationPlanContext,
                 { connect: {} }
             )
         ).to.exist;

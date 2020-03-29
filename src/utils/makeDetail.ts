@@ -1,17 +1,17 @@
-import { MigrationInfoDetail } from '../model/types';
+import { MigrationPlanDetail } from '../model/types';
 import { format } from 'date-fns';
-import { MigrationInfo } from '../executor/info/MigrationInfo';
+import { MigrationPlan } from '../executor/plan/MigrationPlan';
 
-function getVersion(migrationInfo: MigrationInfo) {
-    return migrationInfo.version ?? '';
+function getVersion(migrationPlan: MigrationPlan) {
+    return migrationPlan.version ?? '';
 }
 
 export function formatDateAsIsoString(date?: Date) {
     return date ? format(date, 'yyyy-MM-dd HH:mm:ss') : '';
 }
 
-export default function makeDetail(migrationInfos: MigrationInfo[]): MigrationInfoDetail[] {
-    return migrationInfos.map(
+export default function makeDetail(migrationPlans: MigrationPlan[]): MigrationPlanDetail[] {
+    return migrationPlans.map(
         (value) =>
             ({
                 version: getVersion(value),
@@ -19,6 +19,6 @@ export default function makeDetail(migrationInfos: MigrationInfo[]): MigrationIn
                 type: value.type ?? '',
                 installedOn: formatDateAsIsoString(value.installedOn),
                 state: value.baseline ? 'BASELINE' : value.state?.status ?? ''
-            } as MigrationInfoDetail)
+            } as MigrationPlanDetail)
     );
 }

@@ -1,14 +1,14 @@
 import 'mocha';
 import { expect } from 'chai';
-import MigrationInfoExecutor from '../../../src/executor/info/MigrationInfoExecutor';
+import MigrationPlanExecutor from '../../../src/executor/plan/MigrationPlanExecutor';
 import { MigrationStates, MigrationTypes } from '../../../src/model/types';
 import { resolvedMigrations } from '../../data/ResolvedMigrationTestData';
 import { migrateIndices } from '../../data/MigrateIndexTestData';
-import { migrationInfoContext } from '../../data/MigrationInfoContextTestData';
+import { migrationPlanContext } from '../../data/MigrationPlanContextTestData';
 import { cli } from 'cli-ux';
 import * as sinon from 'sinon';
 
-describe('MigrationInfoExecutor test', () => {
+describe('MigrationPlanExecutor test', () => {
     let sandbox: sinon.SinonSandbox;
     before(() => {
         sandbox = sinon.createSandbox();
@@ -18,15 +18,15 @@ describe('MigrationInfoExecutor test', () => {
     });
 
     it('refresh test', () => {
-        const executor = MigrationInfoExecutor(
+        const executor = MigrationPlanExecutor(
             resolvedMigrations,
             migrateIndices(new Date()),
-            migrationInfoContext
+            migrationPlanContext
         );
 
-        const migrationInfos = executor.all;
-        const outOfOrders = migrationInfos.map((value) => value.outOfOrder);
-        const versions = migrationInfos.map(
+        const migrationPlans = executor.all;
+        const outOfOrders = migrationPlans.map((value) => value.outOfOrder);
+        const versions = migrationPlans.map(
             (value) => value.resolvedMigration?.version ?? value.appliedMigration?.version
         );
         expect(outOfOrders)
@@ -45,10 +45,10 @@ describe('MigrationInfoExecutor test', () => {
     });
 
     it('status test', () => {
-        const executor = MigrationInfoExecutor(
+        const executor = MigrationPlanExecutor(
             resolvedMigrations,
             migrateIndices(new Date()),
-            migrationInfoContext
+            migrationPlanContext
         );
 
         const status = executor.all.map((value) => value.state?.status);
@@ -65,10 +65,10 @@ describe('MigrationInfoExecutor test', () => {
     });
 
     it('Verification of the result filtered by pending status.', () => {
-        const executor = MigrationInfoExecutor(
+        const executor = MigrationPlanExecutor(
             resolvedMigrations,
             migrateIndices(new Date()),
-            migrationInfoContext
+            migrationPlanContext
         );
 
         const pendingInfos = executor.pending;
@@ -79,10 +79,10 @@ describe('MigrationInfoExecutor test', () => {
     });
 
     it('resolvedMigrations duplicates', () => {
-        const executor = MigrationInfoExecutor(
+        const executor = MigrationPlanExecutor(
             [...resolvedMigrations, ...resolvedMigrations],
             migrateIndices(new Date()),
-            migrationInfoContext
+            migrationPlanContext
         );
 
         const pendingInfos = executor.pending;
@@ -95,7 +95,7 @@ describe('MigrationInfoExecutor test', () => {
     it('Unknown version migration detected', () => {
         const stub = sandbox.stub(cli, 'error');
 
-        MigrationInfoExecutor(
+        MigrationPlanExecutor(
             [
                 {
                     migrate_script: {},
@@ -107,7 +107,7 @@ describe('MigrationInfoExecutor test', () => {
                 }
             ],
             [],
-            migrationInfoContext
+            migrationPlanContext
         );
 
         expect(stub.called).is.true;

@@ -4,14 +4,14 @@ import {
     loadMigrationScriptFilePaths,
     loadMigrationScripts
 } from '../utils/fileUtils';
-import { MigrateIndex, MigrationInfoContext, MAPPING_HISTORY_INDEX_NAME } from '../model/types';
+import { MigrateIndex, MigrationPlanContext, MAPPING_HISTORY_INDEX_NAME } from '../model/types';
 import getElasticsearchClient from '../utils/es/EsUtils';
-import MigrationInfoExecutor from '../executor/info/MigrationInfoExecutor';
+import MigrationPlanExecutor from '../executor/plan/MigrationPlanExecutor';
 import makeDetail from '../utils/makeDetail';
 import { cli } from 'cli-ux';
 import AbstractCommand, { DefaultOptions } from '../AbstractCommand';
 
-export default class Info extends AbstractCommand {
+export default class Plan extends AbstractCommand {
     static description = 'Prints the details and status information about all the migrations.';
     static flags = {
         ...DefaultOptions,
@@ -23,7 +23,7 @@ export default class Info extends AbstractCommand {
     };
 
     async run() {
-        const { flags } = this.parse(Info);
+        const { flags } = this.parse(Plan);
         const locations = this.migrationConfig.migration.locations;
         const baselineVersion = this.migrationConfig.migration.baselineVersion;
         const migrationFilePaths: string[] = findAllFiles(locations);
@@ -50,15 +50,15 @@ export default class Info extends AbstractCommand {
             .catch((reason) => {
                 this.error(reason, { exit: 500 });
             });
-        const context: MigrationInfoContext = {
+        const context: MigrationPlanContext = {
             baseline: baselineVersion,
             lastResolved: '',
             lastApplied: ''
         };
-        const infoService = MigrationInfoExecutor(migrationScripts, results, context);
+        const service = MigrationPlanExecutor(migrationScripts, results, context);
 
         cli.table(
-            makeDetail(infoService.all),
+            makeDetail(service.all),
             {
                 version: {},
                 description: {},

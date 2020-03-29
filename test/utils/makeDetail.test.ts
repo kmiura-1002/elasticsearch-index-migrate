@@ -1,9 +1,9 @@
 import 'mocha';
 import { expect } from 'chai';
-import MigrationInfoExecutor from '../../src/executor/info/MigrationInfoExecutor';
+import MigrationPlanExecutor from '../../src/executor/plan/MigrationPlanExecutor';
 import { resolvedMigrations } from '../data/ResolvedMigrationTestData';
 import { migrateIndices } from '../data/MigrateIndexTestData';
-import { migrationInfoContext } from '../data/MigrationInfoContextTestData';
+import { migrationPlanContext } from '../data/MigrationPlanContextTestData';
 import makeDetail from '../../src/utils/makeDetail';
 import { MigrationStates } from '../../src/model/types';
 import { format } from 'date-fns';
@@ -11,21 +11,21 @@ import { format } from 'date-fns';
 describe('makeDetail test', () => {
     it('makeDetail test', () => {
         const installedOn = new Date();
-        const service = MigrationInfoExecutor(
+        const service = MigrationPlanExecutor(
             resolvedMigrations,
             migrateIndices(installedOn),
-            migrationInfoContext
+            migrationPlanContext
         );
-        const migrationInfos = service.all;
+        const migrationPlans = service.all;
         const detail = makeDetail([
-            ...migrationInfos,
+            ...migrationPlans,
             {
-                context: migrationInfoContext,
+                context: migrationPlanContext,
                 outOfOrder: false,
                 baseline: false
             }
         ]);
-        const status = migrationInfos.map((value) => value.state?.status);
+        const status = migrationPlans.map((value) => value.state?.status);
 
         expect(status)
             .to.be.an('array')

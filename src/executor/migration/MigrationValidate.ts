@@ -1,38 +1,38 @@
-import { MigrationInfoExecutorRet, MigrationStates, VERSION_REGEX } from '../../model/types';
-import { generateDescription, generateVersion, MigrationInfo } from '../info/MigrationInfo';
+import { MigrationPlanExecutorRet, MigrationStates, VERSION_REGEX } from '../../model/types';
+import { generateDescription, generateVersion, MigrationPlan } from '../plan/MigrationPlan';
 
-export function migrationInfoValidate(migrateInfo: MigrationInfo): string | undefined {
-    const version = generateVersion(migrateInfo.resolvedMigration, migrateInfo.appliedMigration);
+export function migrationPlanValidate(migratePlan: MigrationPlan): string | undefined {
+    const version = generateVersion(migratePlan.resolvedMigration, migratePlan.appliedMigration);
     const description =
-        generateDescription(migrateInfo.resolvedMigration, migrateInfo.appliedMigration) ??
+        generateDescription(migratePlan.resolvedMigration, migratePlan.appliedMigration) ??
         '[empty description]';
 
     if (!version?.match(VERSION_REGEX)) {
         return 'Unknown version migration detected';
     }
 
-    if (MigrationStates.IGNORED === migrateInfo.state?.status) {
+    if (MigrationStates.IGNORED === migratePlan.state?.status) {
         return `Resolved migrations detected have not been applied to the index (${version})`;
     }
 
-    if (migrateInfo.state?.failed && MigrationStates.FUTURE_FAILED !== migrateInfo.state?.status) {
+    if (migratePlan.state?.failed && MigrationStates.FUTURE_FAILED !== migratePlan.state?.status) {
         return `Failed migration to version ${version}(${description}) detected`;
     }
 
     if (
-        !migrateInfo.resolvedMigration &&
-        MigrationStates.MISSING_SUCCESS !== migrateInfo.state?.status &&
-        MigrationStates.MISSING_FAILED !== migrateInfo.state?.status &&
-        MigrationStates.FUTURE_SUCCESS !== migrateInfo.state?.status &&
-        MigrationStates.FUTURE_FAILED !== migrateInfo.state?.status
+        !migratePlan.resolvedMigration &&
+        MigrationStates.MISSING_SUCCESS !== migratePlan.state?.status &&
+        MigrationStates.MISSING_FAILED !== migratePlan.state?.status &&
+        MigrationStates.FUTURE_SUCCESS !== migratePlan.state?.status &&
+        MigrationStates.FUTURE_FAILED !== migratePlan.state?.status
     ) {
         return `Applied migration detected not resolved locally (${version})`;
     }
 
     if (
-        migrateInfo.resolvedMigration &&
-        migrateInfo.appliedMigration &&
-        migrateInfo.resolvedMigration.type !== migrateInfo.appliedMigration.type
+        migratePlan.resolvedMigration &&
+        migratePlan.appliedMigration &&
+        migratePlan.resolvedMigration.type !== migratePlan.appliedMigration.type
     ) {
         return `Migration type mismatch for migration ${version}`;
     }
@@ -43,6 +43,6 @@ export function migrationInfoValidate(migrateInfo: MigrationInfo): string | unde
  * returns an error message
  * @param migrateInfo
  */
-export function doValidate(migrateInfo: MigrationInfoExecutorRet): string[] {
-    return migrateInfo.all.map(migrationInfoValidate).filter((value) => value) as string[];
+export function doValidate(migrateInfo: MigrationPlanExecutorRet): string[] {
+    return migrateInfo.all.map(migrationPlanValidate).filter((value) => value) as string[];
 }

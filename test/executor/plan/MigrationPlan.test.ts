@@ -1,13 +1,13 @@
 import 'mocha';
 import { expect } from 'chai';
 import { MigrationStateInfo, MigrationStates, MigrationTypes } from '../../../src/model/types';
-import { migrationInfoContext } from '../../data/MigrationInfoContextTestData';
-import { generateMigrationInfo } from '../../../src/executor/info/MigrationInfo';
+import { migrationPlanContext } from '../../data/MigrationPlanContextTestData';
+import { generateMigrationPlan } from '../../../src/executor/plan/MigrationPlan';
 
-describe('MigrationInfo test', () => {
+describe('MigrationPlan test', () => {
     const testData = [
         {
-            context: { ...migrationInfoContext, baseline: 'v1.0.0' },
+            context: { ...migrationPlanContext, baseline: 'v1.0.0' },
             outOfOrder: false,
             resolvedMigration: {
                 migrate_script: {},
@@ -21,7 +21,7 @@ describe('MigrationInfo test', () => {
             expect: MigrationStateInfo.get(MigrationStates.BELOW_BASELINE)
         },
         {
-            context: { ...migrationInfoContext, baseline: 'v1.0.0', lastApplied: 'v2.0.0' },
+            context: { ...migrationPlanContext, baseline: 'v1.0.0', lastApplied: 'v2.0.0' },
             outOfOrder: true,
             resolvedMigration: {
                 migrate_script: {},
@@ -35,7 +35,7 @@ describe('MigrationInfo test', () => {
             expect: MigrationStateInfo.get(MigrationStates.IGNORED)
         },
         {
-            context: { ...migrationInfoContext, baseline: 'v1.0.0' },
+            context: { ...migrationPlanContext, baseline: 'v1.0.0' },
             outOfOrder: false,
             resolvedMigration: {
                 migrate_script: {},
@@ -49,7 +49,7 @@ describe('MigrationInfo test', () => {
             expect: MigrationStateInfo.get(MigrationStates.PENDING)
         },
         {
-            context: { ...migrationInfoContext, baseline: 'v1.0.0', lastResolved: 'v2.0.0' },
+            context: { ...migrationPlanContext, baseline: 'v1.0.0', lastResolved: 'v2.0.0' },
             outOfOrder: false,
             resolvedMigration: undefined,
             appliedMigration: {
@@ -64,7 +64,7 @@ describe('MigrationInfo test', () => {
             expect: MigrationStateInfo.get(MigrationStates.MISSING_SUCCESS)
         },
         {
-            context: { ...migrationInfoContext, baseline: 'v1.0.0', lastResolved: 'v2.0.0' },
+            context: { ...migrationPlanContext, baseline: 'v1.0.0', lastResolved: 'v2.0.0' },
             outOfOrder: false,
             resolvedMigration: undefined,
             appliedMigration: {
@@ -79,7 +79,7 @@ describe('MigrationInfo test', () => {
             expect: MigrationStateInfo.get(MigrationStates.MISSING_FAILED)
         },
         {
-            context: { ...migrationInfoContext, baseline: 'v1.0.0', lastResolved: 'v0.0.0' },
+            context: { ...migrationPlanContext, baseline: 'v1.0.0', lastResolved: 'v0.0.0' },
             outOfOrder: false,
             resolvedMigration: undefined,
             appliedMigration: {
@@ -94,7 +94,7 @@ describe('MigrationInfo test', () => {
             expect: MigrationStateInfo.get(MigrationStates.FUTURE_SUCCESS)
         },
         {
-            context: { ...migrationInfoContext, baseline: 'v1.0.0', lastResolved: 'v0.0.0' },
+            context: { ...migrationPlanContext, baseline: 'v1.0.0', lastResolved: 'v0.0.0' },
             outOfOrder: false,
             resolvedMigration: undefined,
             appliedMigration: {
@@ -109,7 +109,7 @@ describe('MigrationInfo test', () => {
             expect: MigrationStateInfo.get(MigrationStates.FUTURE_FAILED)
         },
         {
-            context: { ...migrationInfoContext },
+            context: { ...migrationPlanContext },
             outOfOrder: false,
             resolvedMigration: {
                 migrate_script: {},
@@ -131,7 +131,7 @@ describe('MigrationInfo test', () => {
             expect: MigrationStateInfo.get(MigrationStates.FAILED)
         },
         {
-            context: { ...migrationInfoContext },
+            context: { ...migrationPlanContext },
             outOfOrder: true,
             resolvedMigration: {
                 migrate_script: {},
@@ -153,7 +153,7 @@ describe('MigrationInfo test', () => {
             expect: MigrationStateInfo.get(MigrationStates.OUT_OF_ORDER)
         },
         {
-            context: { ...migrationInfoContext },
+            context: { ...migrationPlanContext },
             outOfOrder: false,
             resolvedMigration: {
                 migrate_script: {},
@@ -178,13 +178,13 @@ describe('MigrationInfo test', () => {
 
     testData.forEach((value) => {
         it(`${value.expect?.status} state test`, () => {
-            const migrationInfo = generateMigrationInfo(
+            const migrationPlan = generateMigrationPlan(
                 value.context,
                 value.outOfOrder,
                 value.resolvedMigration,
                 value.appliedMigration
             );
-            expect(migrationInfo.state).is.eq(value.expect);
+            expect(migrationPlan.state).is.eq(value.expect);
         });
     });
 });

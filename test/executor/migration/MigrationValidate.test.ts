@@ -2,11 +2,11 @@ import 'mocha';
 import { expect } from 'chai';
 import {
     doValidate,
-    migrationInfoValidate
+    migrationPlanValidate
 } from '../../../src/executor/migration/MigrationValidate';
 import { MigrationStateInfo, MigrationStates, MigrationTypes } from '../../../src/model/types';
-import { migrationInfoContext } from '../../data/MigrationInfoContextTestData';
-import MigrationInfoExecutor from '../../../src/executor/info/MigrationInfoExecutor';
+import { migrationPlanContext } from '../../data/MigrationPlanContextTestData';
+import MigrationPlanExecutor from '../../../src/executor/plan/MigrationPlanExecutor';
 import { resolvedMigrations } from '../../data/ResolvedMigrationTestData';
 import { migrateIndices } from '../../data/MigrateIndexTestData';
 import { format } from 'date-fns';
@@ -14,7 +14,7 @@ import { format } from 'date-fns';
 describe('MigrationValidation test', () => {
     it('Unknown version', () => {
         expect(
-            migrationInfoValidate({
+            migrationPlanValidate({
                 resolvedMigration: {
                     type: MigrationTypes.ADD_FIELD,
                     index_name: 'test',
@@ -29,13 +29,13 @@ describe('MigrationValidation test', () => {
                     },
                     migrate_script: {}
                 },
-                context: migrationInfoContext,
+                context: migrationPlanContext,
                 outOfOrder: false,
                 baseline: false
             })
         ).is.eq('Unknown version migration detected');
         expect(
-            migrationInfoValidate({
+            migrationPlanValidate({
                 appliedMigration: {
                     version: '',
                     description: '',
@@ -45,14 +45,14 @@ describe('MigrationValidation test', () => {
                     executionTime: 0,
                     success: true
                 },
-                context: migrationInfoContext,
+                context: migrationPlanContext,
                 outOfOrder: false,
                 baseline: false
             })
         ).is.eq('Unknown version migration detected');
         expect(
-            migrationInfoValidate({
-                context: migrationInfoContext,
+            migrationPlanValidate({
+                context: migrationPlanContext,
                 outOfOrder: false,
                 baseline: false
             })
@@ -60,7 +60,7 @@ describe('MigrationValidation test', () => {
     });
 
     it('ignore state validation', () => {
-        const ret = migrationInfoValidate({
+        const ret = migrationPlanValidate({
             resolvedMigration: {
                 type: MigrationTypes.ADD_FIELD,
                 index_name: 'test',
@@ -76,7 +76,7 @@ describe('MigrationValidation test', () => {
                 migrate_script: {}
             },
             state: MigrationStateInfo.get(MigrationStates.IGNORED),
-            context: migrationInfoContext,
+            context: migrationPlanContext,
             outOfOrder: false,
             baseline: false
         });
@@ -85,7 +85,7 @@ describe('MigrationValidation test', () => {
     });
 
     it('failed state validation', () => {
-        const ret = migrationInfoValidate({
+        const ret = migrationPlanValidate({
             resolvedMigration: {
                 type: MigrationTypes.ADD_FIELD,
                 index_name: 'test',
@@ -101,7 +101,7 @@ describe('MigrationValidation test', () => {
                 migrate_script: {}
             },
             state: MigrationStateInfo.get(MigrationStates.FAILED),
-            context: migrationInfoContext,
+            context: migrationPlanContext,
             outOfOrder: false,
             baseline: false
         });
@@ -110,7 +110,7 @@ describe('MigrationValidation test', () => {
     });
 
     it('Applied migration detected not resolved locally validation', () => {
-        const ret = migrationInfoValidate({
+        const ret = migrationPlanValidate({
             appliedMigration: {
                 version: 'v1.0.1',
                 description: '',
@@ -121,7 +121,7 @@ describe('MigrationValidation test', () => {
                 success: true
             },
             state: MigrationStateInfo.get(MigrationStates.SUCCESS),
-            context: migrationInfoContext,
+            context: migrationPlanContext,
             outOfOrder: false,
             baseline: false
         });
@@ -130,7 +130,7 @@ describe('MigrationValidation test', () => {
     });
 
     it('Migration type mismatch validation', () => {
-        const ret = migrationInfoValidate({
+        const ret = migrationPlanValidate({
             appliedMigration: {
                 version: 'v1.0.1',
                 description: '',
@@ -155,7 +155,7 @@ describe('MigrationValidation test', () => {
                 migrate_script: {}
             },
             state: MigrationStateInfo.get(MigrationStates.SUCCESS),
-            context: migrationInfoContext,
+            context: migrationPlanContext,
             outOfOrder: false,
             baseline: false
         });
@@ -163,7 +163,7 @@ describe('MigrationValidation test', () => {
         expect(ret).is.include('Migration type mismatch for migration');
     });
     it('No validation errors', () => {
-        const executor = MigrationInfoExecutor(
+        const executor = MigrationPlanExecutor(
             [
                 {
                     migrate_script: {},
@@ -186,7 +186,7 @@ describe('MigrationValidation test', () => {
                     success: true
                 }
             ],
-            migrationInfoContext
+            migrationPlanContext
         );
         const ret = doValidate(executor);
 
@@ -196,10 +196,10 @@ describe('MigrationValidation test', () => {
     });
 
     it('validation errors', () => {
-        const executor = MigrationInfoExecutor(
+        const executor = MigrationPlanExecutor(
             resolvedMigrations,
             migrateIndices(new Date()),
-            migrationInfoContext
+            migrationPlanContext
         );
         const ret = doValidate(executor);
         expect(ret)

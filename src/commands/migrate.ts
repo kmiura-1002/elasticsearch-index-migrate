@@ -5,7 +5,7 @@ import {
     loadMigrationScripts
 } from '../utils/fileUtils';
 import getElasticsearchClient from '../utils/es/EsUtils';
-import { MAPPING_HISTORY_INDEX_NAME, MigrateIndex, MigrationInfoContext } from '../model/types';
+import { MAPPING_HISTORY_INDEX_NAME, MigrateIndex, MigrationPlanContext } from '../model/types';
 import { cli } from 'cli-ux';
 import { migrate } from '../executor/migration/MigrationExecutor';
 import AbstractCommand, { DefaultOptions } from '../AbstractCommand';
@@ -46,7 +46,7 @@ export default class Migrate extends AbstractCommand {
             .catch((reason) => {
                 cli.error(reason, { exit: 1 });
             });
-        const context: MigrationInfoContext = {
+        const context: MigrationPlanContext = {
             baseline: baselineVersion,
             lastResolved: '',
             lastApplied: ''

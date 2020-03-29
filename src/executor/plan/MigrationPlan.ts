@@ -1,6 +1,6 @@
 import {
     AppliedMigration,
-    MigrationInfoContext,
+    MigrationPlanContext,
     MigrationStateInfo,
     MigrationStates,
     MigrationType,
@@ -35,7 +35,7 @@ export function generateInstalledOn(
 }
 
 export function generateState(
-    context: MigrationInfoContext,
+    context: MigrationPlanContext,
     outOfOrder: boolean,
     resolvedMigration?: ResolvedMigration,
     appliedMigration?: AppliedMigration
@@ -77,10 +77,10 @@ export function generateState(
     return MigrationStateInfo.get(MigrationStates.SUCCESS);
 }
 
-export type MigrationInfo = {
+export type MigrationPlan = {
     resolvedMigration?: ResolvedMigration;
     appliedMigration?: AppliedMigration;
-    context: MigrationInfoContext;
+    context: MigrationPlanContext;
     outOfOrder: boolean;
     type?: MigrationType;
     version?: string;
@@ -90,12 +90,12 @@ export type MigrationInfo = {
     baseline: boolean;
 };
 
-export function generateMigrationInfo(
-    context: MigrationInfoContext,
+export function generateMigrationPlan(
+    context: MigrationPlanContext,
     outOfOrder: boolean,
     resolvedMigration?: ResolvedMigration,
     appliedMigration?: AppliedMigration
-): MigrationInfo {
+): MigrationPlan {
     return {
         resolvedMigration: resolvedMigration,
         appliedMigration: appliedMigration,

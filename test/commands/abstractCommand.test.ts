@@ -6,7 +6,7 @@ import { findAllFiles, findFiles } from '../../src/utils/fileUtils';
 import getElasticsearchClient from '../../src/utils/es/EsUtils';
 import MockElasticsearchClient from '../mock/MockElasticsearchClient';
 
-describe('Setup elasticsearch index migrate env test', () => {
+describe('abstract command test', () => {
     test.stub(EsUtils, 'default', sinon.stub().returns(new MockElasticsearchClient()))
         .stub(
             fileUtils,
@@ -32,7 +32,7 @@ describe('Setup elasticsearch index migrate env test', () => {
             ELASTICSEARCH_PASSWORD: 'test_ELASTICSEARCH_PASSWORD'
         })
         .stdout()
-        .command(['info', '-i', 'test1'])
+        .command(['plan', '-i', 'test1'])
         .it('read environment variables test', (ctx) => {
             const findAllFilesStub = findAllFiles as sinon.SinonStub;
             const esClientStub = getElasticsearchClient as sinon.SinonStub;
@@ -85,7 +85,7 @@ describe('Setup elasticsearch index migrate env test', () => {
 
         .stdout()
         .command([
-            'info',
+            'plan',
             '-i',
             'test1',
             '--option_file',
@@ -124,7 +124,7 @@ describe('Setup elasticsearch index migrate env test', () => {
         )
 
         .stdout()
-        .command(['info', '-i', 'test1'])
+        .command(['plan', '-i', 'test1'])
         .it('read default option test', (ctx) => {
             const findAllFilesStub = findAllFiles as sinon.SinonStub;
             const esClientStub = getElasticsearchClient as sinon.SinonStub;

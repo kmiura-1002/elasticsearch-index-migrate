@@ -1,7 +1,7 @@
 import { ParsedPath } from 'path';
 import { ApiResponse as ApiResponse6 } from 'es6';
 import { ApiResponse as ApiResponse7 } from 'es7';
-import { MigrationInfo } from '../executor/info/MigrationInfo';
+import { MigrationPlan } from '../executor/plan/MigrationPlan';
 
 export const VERSION_REGEX = /^([v][0-9]+.[0-9]+.[0-9]+)/;
 
@@ -79,7 +79,7 @@ export type AppliedMigration = {
     success: boolean;
 };
 
-export type MigrationInfoContext = {
+export type MigrationPlanContext = {
     // outOfOrder: boolean;
     // pending: boolean;
     // missing: boolean;
@@ -90,7 +90,7 @@ export type MigrationInfoContext = {
     lastApplied: string;
 };
 
-export type MigrationInfoDetail = {
+export type MigrationPlanDetail = {
     version: string;
     description: string;
     type: string;
@@ -224,7 +224,7 @@ export const MigrationStateInfo: Map<MigrationState, MigrationStateInfo> = new M
     ]
 ]);
 
-export type MigrationInfoExecutorRet = {
-    all: MigrationInfo[];
-    pending: MigrationInfo[];
+export type MigrationPlanExecutorRet = {
+    all: MigrationPlan[];
+    pending: MigrationPlan[];
 };
