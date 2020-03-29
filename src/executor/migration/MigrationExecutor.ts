@@ -60,8 +60,9 @@ export async function applyMigration(esClient: ElasticsearchClient, migrationPla
         const sw = new StopWatch();
         sw.start();
         const executor = esExecutor.get(type) as ExecutorFnc;
-        executor(esClient, resolvedMigration)
+        await executor(esClient, resolvedMigration)
             .then(async (value) => {
+                sw.stop();
                 if (value.statusCode && value.statusCode >= 400) {
                     await addMigrationHistory(
                         esClient,
@@ -69,6 +70,16 @@ export async function applyMigration(esClient: ElasticsearchClient, migrationPla
                     );
                     cli.error(
                         `Migration failed. statusCode: ${value.statusCode}, version: ${resolvedMigration.version}`
+                    );
+                } else {
+                    await addMigrationHistory(
+                        esClient,
+                        makeMigrateHistory(migrationPlan, sw.read(), true)
+                    );
+                    cli.info(
+                        `Successfully completed migration of ${
+                            resolvedMigration?.physicalLocation.base
+                        }. (time: ${sw.read()} ms)`
                     );
                 }
             })
@@ -80,13 +91,6 @@ export async function applyMigration(esClient: ElasticsearchClient, migrationPla
                 );
                 cli.error(reason);
             });
-        sw.stop();
-        await addMigrationHistory(esClient, makeMigrateHistory(migrationPlan, sw.read(), true));
-        cli.info(
-            `Successfully completed migration of ${
-                resolvedMigration?.physicalLocation.base
-            }. (time: ${sw.read()} ms)`
-        );
         return 1;
     } else {
         cli.warn('No migration target.');

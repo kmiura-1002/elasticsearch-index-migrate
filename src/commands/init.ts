@@ -24,16 +24,16 @@ export default class Init extends AbstractCommand {
         const health = await client.healthCheck();
 
         if (health.status === ClusterStatuses.YELLOW) {
-            cli.warn('cluster status is yellow.');
+            cli.info('cluster status is yellow.');
         } else if (health.status === ClusterStatuses.RED) {
             cli.error('cluster status is red.');
             cli.exit(1);
         }
-        cli.log('Start creating index for migrate.');
+        cli.info('Start creating index for migrate.');
 
-        const exists = await client.exists('migrate_history');
+        const exists = await client.exists(MAPPING_HISTORY_INDEX_NAME);
         if (exists) {
-            cli.log('migrate_history index already exists.');
+            cli.info(`${MAPPING_HISTORY_INDEX_NAME} index already exists.`);
             cli.exit(1);
         }
         const mappingData = JSON.parse(
@@ -48,7 +48,7 @@ export default class Init extends AbstractCommand {
                 cli.exit(1);
             });
         if (ret.statusCode === 200) {
-            cli.log('Finish creating index for migrate.');
+            cli.info('Finish creating index for migrate.');
         } else {
             cli.error('Failed to create index for migrate.', { exit: 1, code: ret.statusCode });
             cli.exit(1);

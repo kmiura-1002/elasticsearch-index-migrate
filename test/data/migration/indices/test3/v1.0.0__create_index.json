@@ -1,0 +1,21 @@
+{
+  "type": "CREATE_INDEX",
+  "index_name": "test_index",
+  "description": "test index",
+  "migrate_script": {
+    "settings": {
+      "index": {
+          "refresh_interval": "1s",
+          "number_of_shards": 1,
+          "number_of_replicas": 0
+      }
+  },
+  "mappings": {
+      "properties": {
+        "name": {
+          "type": "text"
+        }
+      }
+    }
+  }
+}

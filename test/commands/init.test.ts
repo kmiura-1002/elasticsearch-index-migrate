@@ -31,7 +31,7 @@ describe('Setup elasticsearch index migrate env test', () => {
                 }
             })()
     )
-        .stub(cli, 'warn', sinon.stub())
+        .stub(cli, 'info', sinon.stub())
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
@@ -41,12 +41,11 @@ describe('Setup elasticsearch index migrate env test', () => {
         .stdout()
         .command(['init'])
         .it('runs init cluster Status yellow ', (ctx) => {
-            const warn = cli.warn as sinon.SinonStub;
-            expect(warn.called).is.true;
-            expect(warn.calledWith('cluster status is yellow.')).is.true;
-            expect(ctx.stdout).to.contain(
-                'Start creating index for migrate.\n' + 'Finish creating index for migrate.\n'
-            );
+            const info = cli.info as sinon.SinonStub;
+            expect(info.called).is.true;
+            expect(info.calledWith('cluster status is yellow.')).is.true;
+            expect(info.calledWith('Start creating index for migrate.')).is.true;
+            expect(info.calledWith('Finish creating index for migrate.')).is.true;
         });
 
     test.stub(
@@ -83,9 +82,12 @@ describe('Setup elasticsearch index migrate env test', () => {
                 exists(index: string) {
                     return Promise.resolve(true);
                 }
+                healthCheck(): Promise<{ status: string }> {
+                    return Promise.resolve({ status: ClusterStatuses.GREEN });
+                }
             })()
     )
-        .stub(cli, 'log', sinon.stub())
+        .stub(cli, 'info', sinon.stub())
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
@@ -96,10 +98,10 @@ describe('Setup elasticsearch index migrate env test', () => {
         .command(['init'])
         .exit(1)
         .it('migrate_history index already exists', () => {
-            const log = cli.log as sinon.SinonStub;
-            expect(log.calledTwice).is.true;
-            expect(log.calledWith('Start creating index for migrate.')).is.true;
-            expect(log.calledWith('migrate_history index already exists.')).is.true;
+            const info = cli.info as sinon.SinonStub;
+            expect(info.calledTwice).is.true;
+            expect(info.calledWith('Start creating index for migrate.')).is.true;
+            expect(info.calledWith('migrate_history index already exists.')).is.true;
         });
 
     test.stub(
