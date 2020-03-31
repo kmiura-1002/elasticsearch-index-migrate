@@ -8,6 +8,8 @@ import ElasticsearchClient from '../../src/utils/es/ElasticsearchClient';
 import { Bindings } from '../../src/ioc.bindings';
 import { MigrateIndex } from '../../src/model/types';
 import { MAPPING_HISTORY_INDEX_NAME } from '../../src/model/types';
+import { cli } from 'cli-ux';
+import * as sinon from 'sinon';
 
 describe('Migrates Elasticsearch index to the latest version.', () => {
     test.stub(MigrationExecutor, 'migrate', () => Promise.resolve(1))
@@ -59,7 +61,7 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
         .exit(1)
         .it('Error: Migration file not found.');
 
-    test.stub(types, 'MAPPING_HISTORY_INDEX_NAME', 'test_migrate_history')
+    test.stub(types, 'MAPPING_HISTORY_INDEX_NAME', 'test3_migrate_history')
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
@@ -72,7 +74,7 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
         .it('migration_history check', async () => {
             // Processing to wait for elasticsearch refresh time
             await new Promise((resolve) => setTimeout(resolve, 2000));
-            const testMigrateHistory = 'test_migrate_history';
+            const testMigrateHistory = 'test3_migrate_history';
             const client = es7ClientContainer().get<ElasticsearchClient>(
                 Bindings.ElasticsearchClient
             );
@@ -82,14 +84,58 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
                     match_all: {}
                 }
             });
-            await client.delete('test_index');
+            await client.delete('test_index3');
             await client.delete(testMigrateHistory);
             client.close();
-            expect(searchRet[0].index_name).to.eq('test_index');
+            expect(searchRet[0].index_name).to.eq('test_index3');
             expect(searchRet[0].migrate_version).to.eq('v1.0.0');
-            expect(searchRet[0].description).to.eq('test index');
+            expect(searchRet[0].description).to.eq('test index3');
             expect(searchRet[0].script_name).to.eq('v1.0.0__create_index.json');
             expect(searchRet[0].script_type).to.eq('CREATE_INDEX');
             expect(searchRet[0].success).to.true;
         });
+    test.stub(types, 'MAPPING_HISTORY_INDEX_NAME', 'test4_migrate_history')
+        .stub(cli, 'info', sinon.stub())
+        .env({
+            ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
+            ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
+            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_HOST: 'http://localhost:9202'
+        })
+        .stdout()
+        .command(['init'])
+        .command(['migrate', '-i', 'test4'])
+        .it(
+            'Return the number of successful migrations when multiple migrations have been made.',
+            async () => {
+                // Processing to wait for elasticsearch refresh time
+                await new Promise((resolve) => setTimeout(resolve, 2000));
+                const testMigrateHistory = 'test4_migrate_history';
+                const client = es7ClientContainer().get<ElasticsearchClient>(
+                    Bindings.ElasticsearchClient
+                );
+
+                const searchRet = await client.search<MigrateIndex>(testMigrateHistory, {
+                    query: {
+                        match_all: {}
+                    }
+                });
+                await client.delete('test_index4');
+                await client.delete(testMigrateHistory);
+                client.close();
+                expect(searchRet.length).to.eq(2);
+                expect(searchRet[0].index_name).to.eq('test_index4');
+                expect(searchRet[0].migrate_version).to.eq('v1.0.0');
+                expect(searchRet[0].script_name).to.eq('v1.0.0__create_index.json');
+                expect(searchRet[0].script_type).to.eq('CREATE_INDEX');
+                expect(searchRet[0].success).to.true;
+                expect(searchRet[1].index_name).to.eq('test_index4');
+                expect(searchRet[1].migrate_version).to.eq('v1.0.1');
+                expect(searchRet[1].script_name).to.eq('v1.0.1__add_field.json');
+                expect(searchRet[1].script_type).to.eq('ADD_FIELD');
+                expect(searchRet[1].success).to.true;
+                const info = cli.info as sinon.SinonStub;
+                expect(info.calledWith('Migration completed. (count: 2)')).is.true;
+            }
+        );
 });

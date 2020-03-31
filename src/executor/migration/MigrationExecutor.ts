@@ -18,11 +18,7 @@ import { formatDateAsIsoString } from '../../utils/makeDetail';
 export async function addMigrationHistory(esClient: ElasticsearchClient, history: MigrateIndex) {
     await esClient
         .postDocument(MAPPING_HISTORY_INDEX_NAME, history)
-        .then((value) =>
-            cli.info(
-                `POST Success. Migration history saved successfully. (${JSON.stringify(value)})`
-            )
-        )
+        .then(() => cli.info('POST Success. Migration history saved successfully.'))
         .catch((reason) =>
             cli.warn(
                 `Failed to save history. (Failed Data: ${JSON.stringify(
@@ -89,7 +85,9 @@ export async function applyMigration(esClient: ElasticsearchClient, migrationPla
                     esClient,
                     makeMigrateHistory(migrationPlan, sw.read(), false)
                 );
-                cli.error(reason);
+                cli.error(
+                    `executor error: val=${JSON.stringify(resolvedMigration)}, reason=${reason}`
+                );
             });
         return 1;
     } else {
@@ -118,11 +116,10 @@ export async function migrate(
     cli.info('Start migration!');
     const sw = new StopWatch();
     sw.start();
-    const count = await migratePlan.pending
-        .map(async (value) => (await applyMigration(esClient, value)) as number)
-        .reduce(
-            async (previousValue, currentValue) => (await previousValue) + (await currentValue)
-        );
+    let count = 0;
+    for (const pending of migratePlan.pending) {
+        count += (await applyMigration(esClient, pending)) as number;
+    }
 
     sw.stop();
     esClient.close();

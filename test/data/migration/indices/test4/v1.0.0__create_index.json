@@ -1,7 +1,7 @@
 {
   "type": "CREATE_INDEX",
-  "index_name": "test_index3",
-  "description": "test index3",
+  "index_name": "test_index4",
+  "description": "test index4",
   "migrate_script": {
     "settings": {
       "index": {

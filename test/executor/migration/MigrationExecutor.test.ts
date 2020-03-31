@@ -47,8 +47,7 @@ describe('MigrationExecutor test', () => {
         };
         await addMigrationHistory(client as ElasticsearchClient, {} as MigrateIndex);
         expect(stub.calledOnce).is.true;
-        expect(stub.calledWith('POST Success. Migration history saved successfully. (undefined)'))
-            .is.true;
+        expect(stub.calledWith('POST Success. Migration history saved successfully.')).is.true;
     });
 
     it('Make MigrateHistory Object', () => {
@@ -241,11 +240,8 @@ describe('MigrationExecutor test', () => {
         expect(cliInfoStub.callCount).to.eq(5);
         expect(cliInfoStub.calledWith('Start validate of migration data.')).is.true;
         expect(cliInfoStub.calledWith('Start migration!')).is.true;
-        expect(
-            cliInfoStub.calledWith(
-                'POST Success. Migration history saved successfully. ({"statusCode":200})'
-            )
-        ).is.true;
+        expect(cliInfoStub.calledWith('POST Success. Migration history saved successfully.')).is
+            .true;
         expect(ret).to.eq(1);
     });
 
