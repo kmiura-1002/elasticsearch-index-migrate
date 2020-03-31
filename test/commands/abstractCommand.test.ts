@@ -105,8 +105,7 @@ describe('abstract command test', () => {
                 })
             ).is.true;
             expect(ctx.stdout).to.contain(
-                'Version Description Type      Installedon State    \n' +
-                    'v1.0.0  description ADD_FIELD             BASELINE \n'
+                'Version Description Type      Installedon State   \nv1.0.0  description ADD_FIELD             PENDING \n'
             );
         });
 
@@ -139,8 +138,7 @@ describe('abstract command test', () => {
                 })
             ).is.true;
             expect(ctx.stdout).to.contain(
-                'Version Description Type      Installedon State    \n' +
-                    'v1.0.0  description ADD_FIELD             BASELINE \n'
+                'Version Description Type      Installedon State   \nv1.0.0  description ADD_FIELD             PENDING \n'
             );
         });
 });
