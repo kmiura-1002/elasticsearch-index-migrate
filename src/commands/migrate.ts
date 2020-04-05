@@ -58,8 +58,10 @@ export default class Migrate extends AbstractCommand {
             context,
             this.migrationConfig.elasticsearch
         );
-        if (count) {
+        if (count && count > 0) {
             cli.info(`Migration completed. (count: ${count})`);
+        } else if (count === 0) {
+            cli.info('There was no migration target.');
         } else {
             cli.error('Migration failed.', { exit: 1 });
         }
