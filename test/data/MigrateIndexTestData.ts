@@ -8,7 +8,7 @@ export const migrateIndices = (installed_on: Date): MigrateIndex[] => [
         description: '',
         execution_time: 1,
         index_name: 'test',
-        installed_on: format(installed_on, 'yyyy-MM-dd HH:mm:ss'),
+        installed_on: format(installed_on, "yyyy-MM-dd'T'HH:mm:ss"),
         script_type: MigrationTypes.CREATE_INDEX,
         success: true
     },
@@ -18,7 +18,7 @@ export const migrateIndices = (installed_on: Date): MigrateIndex[] => [
         description: '',
         execution_time: 1,
         index_name: 'test',
-        installed_on: format(installed_on, 'yyyy-MM-dd HH:mm:ss'),
+        installed_on: format(installed_on, "yyyy-MM-dd'T'HH:mm:ss"),
         script_type: MigrationTypes.ADD_FIELD,
         success: true
     },
@@ -28,7 +28,7 @@ export const migrateIndices = (installed_on: Date): MigrateIndex[] => [
         description: '',
         execution_time: 1,
         index_name: 'test',
-        installed_on: format(installed_on, 'yyyy-MM-dd HH:mm:ss'),
+        installed_on: format(installed_on, "yyyy-MM-dd'T'HH:mm:ss"),
         script_type: MigrationTypes.ADD_FIELD,
         success: true
     },
@@ -38,7 +38,7 @@ export const migrateIndices = (installed_on: Date): MigrateIndex[] => [
         description: '',
         execution_time: 1,
         index_name: 'test',
-        installed_on: format(installed_on, 'yyyy-MM-dd HH:mm:ss'),
+        installed_on: format(installed_on, "yyyy-MM-dd'T'HH:mm:ss"),
         script_type: MigrationTypes.ADD_FIELD,
         success: false
     }

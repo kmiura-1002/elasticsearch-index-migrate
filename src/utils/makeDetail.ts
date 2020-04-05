@@ -19,7 +19,9 @@ export default function makeDetail(migrationPlans: MigrationPlan[]): MigrationPl
                 type: value.type ?? '',
                 installedOn: formatDateAsIsoString(value.installedOn),
                 state:
-                    value.baseline && value.state?.status !== MigrationStates.PENDING
+                    value.baseline &&
+                    value.state?.status !== MigrationStates.PENDING &&
+                    value.state?.status !== MigrationStates.FAILED
                         ? 'BASELINE'
                         : value.state?.status ?? ''
             } as MigrationPlanDetail)

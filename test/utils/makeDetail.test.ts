@@ -5,7 +5,7 @@ import { resolvedMigrations } from '../data/ResolvedMigrationTestData';
 import { migrateIndices } from '../data/MigrateIndexTestData';
 import { migrationPlanContext } from '../data/MigrationPlanContextTestData';
 import makeDetail from '../../src/utils/makeDetail';
-import { MigrationStates } from '../../src/model/types';
+import { MigrationStates, MigrationTypes } from '../../src/model/types';
 import { format } from 'date-fns';
 
 describe('makeDetail test', () => {
@@ -82,6 +82,61 @@ describe('makeDetail test', () => {
                     type: 'CREATE_INDEX',
                     installedOn: '',
                     state: 'PENDING'
+                }
+            ]);
+    });
+
+    it('Failure of the baseline is indicated as a failure', () => {
+        const installedOn = new Date();
+        const service = MigrationPlanExecutor(
+            [
+                {
+                    migrate_script: {},
+                    type: MigrationTypes.CREATE_INDEX,
+                    version: 'v1.0.0',
+                    description: '',
+                    index_name: 'test',
+                    physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
+                }
+            ],
+            [
+                {
+                    script_name: 'v1.0.0__test',
+                    migrate_version: 'v1.0.0',
+                    description: '',
+                    execution_time: 1,
+                    index_name: 'test',
+                    installed_on: '2020-01-01 00:00:00',
+                    script_type: MigrationTypes.CREATE_INDEX,
+                    success: false
+                }
+            ],
+            migrationPlanContext
+        );
+        const migrationPlans = service.all;
+        const detail = makeDetail([
+            ...migrationPlans,
+            {
+                context: migrationPlanContext,
+                outOfOrder: false,
+                baseline: false
+            }
+        ]);
+        const status = migrationPlans.map((value) => value.state?.status);
+
+        expect(status)
+            .to.be.an('array')
+            .to.be.include.ordered.members([MigrationStates.FAILED]);
+
+        expect(detail)
+            .to.be.an('array')
+            .to.be.deep.include.ordered.members([
+                {
+                    version: 'v1.0.0',
+                    description: '',
+                    type: 'CREATE_INDEX',
+                    installedOn: '2020-01-01T00:00:00',
+                    state: 'FAILED'
                 }
             ]);
     });
