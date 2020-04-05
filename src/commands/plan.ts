@@ -12,7 +12,7 @@ import { cli } from 'cli-ux';
 import AbstractCommand, { DefaultOptions } from '../AbstractCommand';
 
 export default class Plan extends AbstractCommand {
-    static description = 'Prints the details and status information about all the migrations.';
+    static description = 'Outputs the migration execution plan.';
     static flags = {
         ...DefaultOptions,
         indexName: flags.string({

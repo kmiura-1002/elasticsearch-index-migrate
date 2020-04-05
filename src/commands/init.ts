@@ -12,7 +12,7 @@ interface MappingData {
 }
 
 export default class Init extends AbstractCommand {
-    static description = 'Setup elasticsearch index migrate env';
+    static description = 'Set up a migration environment.';
     static flags = {
         ...DefaultOptions,
         help: flags.help({ char: 'h' })

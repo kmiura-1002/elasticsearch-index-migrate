@@ -11,7 +11,8 @@ import { migrate } from '../executor/migration/MigrationExecutor';
 import AbstractCommand, { DefaultOptions } from '../AbstractCommand';
 
 export default class Migrate extends AbstractCommand {
-    static description = 'Migrates Elasticsearch index to the latest version.';
+    static description =
+        'Migrate the index of Elasticsearch to the latest version based on the execution plan.';
     static flags = {
         ...DefaultOptions,
         help: flags.help({ char: 'h' }),
