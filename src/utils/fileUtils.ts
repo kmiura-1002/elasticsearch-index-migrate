@@ -42,12 +42,13 @@ export function loadMigrationScriptFilePaths(indexName: string, migrationFilePat
         .filter((value) => value.ext === '.json');
 }
 
-export function loadMigrationScripts(migrationFileParsedPath: ParsedPath[]) {
+export function loadMigrationScripts(migrationFileParsedPath: ParsedPath[], indexName: string) {
     return migrationFileParsedPath.map((value) => {
         const resolvedMigration = JSON.parse(
             fs.readFileSync(path.join(value.dir, value.base), 'utf8')
         ) as ResolvedMigration;
         resolvedMigration.physicalLocation = value;
+        resolvedMigration.index_name = indexName;
         const match = value.name.match(fileNameRegexp) as RegExpMatchArray;
         if (match !== null && match.length > 1) {
             resolvedMigration.version = match[1];

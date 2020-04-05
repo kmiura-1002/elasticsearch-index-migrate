@@ -102,7 +102,6 @@ In the case of ADD_FIELD scripts, describe the mapping information that can be e
 ```
 {
   "type": "ADD_FIELD",
-  "index_name": "indexName",
   "description": "description",
   "migrate_script": {
     "properties": {
@@ -120,7 +119,6 @@ In the case of CREATE_INDEX scripts, write a Request body that can be executed w
 ```
 {
   "type": "CREATE_INDEX",
-  "index_name": "indexName",
   "description": "description",
   "migrate_script": {
     "settings": {
@@ -145,21 +143,23 @@ In the case of CREATE_INDEX scripts, write a Request body that can be executed w
 # Where to store migration scripts
 Save your migration script to the directory you set up in ELASTICSEARCH_MIGRATION_LOCATIONS or JSON's migration.locations.
 If the storage location is /elasticsearch/migration, store the script in a directory like the following.
-This example is for the index names {index_name}_v1 and {index_name}_v2.
+This example is for the index names {index_name} and {index_name}_v1, {index_name}_v2.
 If the index name has a version, it is necessary to separate the directories.For names in the form {index_name}-{version} or {index_name}_{version}, separate the directory from {index_name}/{version}/. In this case, please put the following script in {version}/.
 
 ```
 elasticsearch/
   ┗ migration/
     ┣ indices/
+    │   ┣ {index_name}/
+    │   │  ┣ v1/ 
+    │   │  │  ┣ V1.0.0__init_mapping.json
+    │   │  │  ┗ V1.0.1__add_field.json 
+    │   │  ┣ v2/
+    │   │  │  ┣ V2.0.0__init_mapping.json
+    │   │  │  ┗ V2.0.1__add_field.json 
+    │   │  ┗ v3/
     │   ┗ {index_name}/
-    │      ┣ v1/ 
-    │      │  ┣ V1.0.0__init_mapping.json
-    │      │  ┗ V1.0.1__add_field.json 
-    │      ┣ v2/
-    │      │  ┣ V2.0.0__init_mapping.json
-    │      │  ┗ V2.0.1__add_field.json 
-    │      ┗ v3/
+    │      ┗ V1.0.0__create_index.json
 ```
 
 # Commands

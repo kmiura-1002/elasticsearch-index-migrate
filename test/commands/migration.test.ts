@@ -89,10 +89,10 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
                     match_all: {}
                 }
             });
-            await client.delete('test_index3');
+            await client.delete('test3');
             await client.delete(testMigrateHistory);
             client.close();
-            expect(searchRet[0].index_name).to.eq('test_index3');
+            expect(searchRet[0].index_name).to.eq('test3');
             expect(searchRet[0].migrate_version).to.eq('v1.0.0');
             expect(searchRet[0].description).to.eq('test index3');
             expect(searchRet[0].script_name).to.eq('v1.0.0__create_index.json');
@@ -125,16 +125,16 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
                         match_all: {}
                     }
                 });
-                await client.delete('test_index4');
+                await client.delete('test4');
                 await client.delete(testMigrateHistory);
                 client.close();
                 expect(searchRet.length).to.eq(2);
-                expect(searchRet[0].index_name).to.eq('test_index4');
+                expect(searchRet[0].index_name).to.eq('test4');
                 expect(searchRet[0].migrate_version).to.eq('v1.0.0');
                 expect(searchRet[0].script_name).to.eq('v1.0.0__create_index.json');
                 expect(searchRet[0].script_type).to.eq('CREATE_INDEX');
                 expect(searchRet[0].success).to.true;
-                expect(searchRet[1].index_name).to.eq('test_index4');
+                expect(searchRet[1].index_name).to.eq('test4');
                 expect(searchRet[1].migrate_version).to.eq('v1.0.1');
                 expect(searchRet[1].script_name).to.eq('v1.0.1__add_field.json');
                 expect(searchRet[1].script_type).to.eq('ADD_FIELD');

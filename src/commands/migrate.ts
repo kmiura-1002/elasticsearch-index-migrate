@@ -33,7 +33,7 @@ export default class Migrate extends AbstractCommand {
             cli.error('Migration file not found.', { exit: 1 });
         }
 
-        const migrationScripts = loadMigrationScripts(migrationFileParsedPath);
+        const migrationScripts = loadMigrationScripts(migrationFileParsedPath, flags.indexName);
         const results = await getElasticsearchClient(this.migrationConfig.elasticsearch)
             .search<MigrateIndex>(MAPPING_HISTORY_INDEX_NAME, {
                 query: {
