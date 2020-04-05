@@ -4,8 +4,20 @@ import MockElasticsearchClient from '../mock/MockElasticsearchClient';
 import * as sinon from 'sinon';
 import { cli } from 'cli-ux';
 import { ClusterStatuses } from '../../src/model/types';
+import * as types from '../../src/model/types';
+import { es6ClientContainer, es7ClientContainer } from '../utils/ioc-test';
+import ElasticsearchClient from '../../src/utils/es/ElasticsearchClient';
+import { Bindings } from '../../src/ioc.bindings';
 
 describe('Setup elasticsearch index migrate env test', () => {
+    after(async () => {
+        const client7 = es7ClientContainer().get<ElasticsearchClient>(Bindings.ElasticsearchClient);
+        await client7.delete('test*');
+
+        const client6 = es6ClientContainer().get<ElasticsearchClient>(Bindings.ElasticsearchClient);
+        await client6.delete('test*');
+    });
+
     test.stub(EsUtils, 'default', () => new MockElasticsearchClient())
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
@@ -161,4 +173,48 @@ describe('Setup elasticsearch index migrate env test', () => {
             expect(error.calledOnce).is.true;
             expect(error.calledWith('Failed to create index: undefined')).is.true;
         });
+
+    test.stub(types, 'MAPPING_HISTORY_INDEX_NAME', 'test_migrate_history')
+        .stub(cli, 'info', sinon.stub())
+        .env({
+            ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
+            ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
+            ELASTICSEARCH_VERSION: '7.6.2',
+            ELASTICSEARCH_HOST: 'http://localhost:9202'
+        })
+        .stdout()
+        .command(['init'])
+        .it('command must be able to build the environment in version 7', async () => {
+            const info = cli.info as sinon.SinonStub;
+            expect(info.calledWith('Start creating index for migrate.')).is.true;
+            expect(info.calledWith('Finish creating index for migrate.')).is.true;
+        });
+
+    test.stub(types, 'MAPPING_HISTORY_INDEX_NAME', 'test_migrate_history')
+        .stub(cli, 'info', sinon.stub().returns(cli.info))
+        .env({
+            ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
+            ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
+            ELASTICSEARCH_VERSION: '6.8.8',
+            ELASTICSEARCH_HOST: 'http://localhost:9201'
+        })
+        .stdout()
+        .command(['init'])
+        .it('command must be able to build the environment in version 6', async () => {
+            const info = cli.info as sinon.SinonStub;
+            expect(info.calledWith('Start creating index for migrate.')).is.true;
+            expect(info.calledWith('Finish creating index for migrate.')).is.true;
+        });
+
+    test.stub(types, 'MAPPING_HISTORY_INDEX_NAME', 'test_migrate_history')
+        .stub(cli, 'error', sinon.stub().returns(cli.error))
+        .env({
+            ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
+            ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
+            ELASTICSEARCH_VERSION: '0.0.0',
+            ELASTICSEARCH_HOST: 'http://localhost:9201'
+        })
+        .stdout()
+        .command(['init'])
+        .catch('0.0.0 is unsupported. support version is 6.x or 7.x');
 });

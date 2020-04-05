@@ -3,7 +3,11 @@ import * as fs from 'fs';
 import { expect } from 'chai';
 import * as sinon from 'sinon';
 import { ESConfig, ESConnectConfig } from '../../src/model/types';
-import getElasticsearchClient, { esClientBind, esConnectConf } from '../../src/utils/es/EsUtils';
+import getElasticsearchClient, {
+    esClientBind,
+    esConnectConf,
+    usedEsVersion
+} from '../../src/utils/es/EsUtils';
 
 describe('EsUtils test', () => {
     let sandbox: sinon.SinonSandbox;
@@ -103,5 +107,32 @@ describe('EsUtils test', () => {
 
         const client = getElasticsearchClient(esConfig);
         expect(client.version()).to.eq('7.x');
+    });
+
+    it('The number of the major version to be returned', () => {
+        expect(
+            usedEsVersion({
+                version: '6.0.1',
+                connect: {
+                    host: 'http://0.0.0.0:9201'
+                }
+            })
+        ).is.eq('6');
+        expect(
+            usedEsVersion({
+                version: '7.0.1',
+                connect: {
+                    host: 'http://0.0.0.0:9201'
+                }
+            })
+        ).is.eq('7');
+        expect(
+            usedEsVersion({
+                version: 'foo',
+                connect: {
+                    host: 'http://0.0.0.0:9201'
+                }
+            })
+        ).is.eq(undefined);
     });
 });

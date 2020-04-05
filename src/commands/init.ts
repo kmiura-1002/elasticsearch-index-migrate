@@ -1,7 +1,7 @@
 import { flags } from '@oclif/command';
 import * as fs from 'fs';
 import * as path from 'path';
-import getElasticsearchClient from '../utils/es/EsUtils';
+import getElasticsearchClient, { usedEsVersion } from '../utils/es/EsUtils';
 import { ClusterStatuses, MAPPING_HISTORY_INDEX_NAME } from '../model/types';
 import { cli } from 'cli-ux';
 import AbstractCommand, { DefaultOptions } from '../AbstractCommand';
@@ -36,10 +36,19 @@ export default class Init extends AbstractCommand {
             cli.info(`${MAPPING_HISTORY_INDEX_NAME} index already exists.`);
             cli.exit(1);
         }
+        const esVersion = usedEsVersion(this.migrationConfig.elasticsearch);
         const mappingData = JSON.parse(
-            fs.readFileSync(path.join(__dirname, '../../', 'mapping', 'migrate_history.json'), {
-                encoding: 'utf-8'
-            })
+            fs.readFileSync(
+                path.join(
+                    __dirname,
+                    '../../',
+                    'mapping',
+                    esVersion === '7' ? 'migrate_history_esV7.json' : 'migrate_history_esV6.json'
+                ),
+                {
+                    encoding: 'utf-8'
+                }
+            )
         ) as MappingData;
         const ret = await client
             .createIndex(MAPPING_HISTORY_INDEX_NAME, mappingData)

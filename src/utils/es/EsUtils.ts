@@ -9,15 +9,19 @@ import { Container } from 'inversify';
 import Elasticsearch6Client from './6/Elasticsearch6Client';
 import Elasticsearch7Client from './7/Elasticsearch7Client';
 
+export function usedEsVersion(esConfig: ESConfig) {
+    const versionRegex = /^([1-9]\d{0,4}|0)(\.(([1-9]\d{0,4})|0)){0,3}$/;
+    const versionMatch = esConfig.version?.match(versionRegex);
+    return versionMatch ? versionMatch[1] : undefined;
+}
+
 export function esClientBind(esConfig: ESConfig) {
     const container = new Container();
-    const versionRegex = /^([1-9]\d{0,4}|0)(\.(([1-9]\d{0,4})|0)){0,3}$/;
     container.bind<ESConnectConfig>(Bindings.ESConfig).toConstantValue(esConfig.connect);
-    const versionMatch = esConfig.version?.match(versionRegex);
+    const version = usedEsVersion(esConfig);
 
-    if (versionMatch) {
-        const v = versionMatch[1];
-        switch (v) {
+    if (version) {
+        switch (version) {
             case '6':
                 container
                     .bind<ElasticsearchClient>(Bindings.ElasticsearchClient)
