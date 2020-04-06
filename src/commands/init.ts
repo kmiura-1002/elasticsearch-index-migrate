@@ -1,4 +1,3 @@
-import { flags } from '@oclif/command';
 import * as fs from 'fs';
 import * as path from 'path';
 import getElasticsearchClient, { usedEsVersion } from '../utils/es/EsUtils';
@@ -14,8 +13,7 @@ interface MappingData {
 export default class Init extends AbstractCommand {
     static description = 'Set up a migration environment.';
     static flags = {
-        ...DefaultOptions,
-        help: flags.help({ char: 'h' })
+        ...DefaultOptions
     };
 
     async run() {

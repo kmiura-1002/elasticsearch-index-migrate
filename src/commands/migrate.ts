@@ -15,7 +15,6 @@ export default class Migrate extends AbstractCommand {
         'Migrate the index of Elasticsearch to the latest version based on the execution plan.';
     static flags = {
         ...DefaultOptions,
-        help: flags.help({ char: 'h' }),
         indexName: flags.string({ char: 'i', description: 'migration index name.', required: true })
     };
 
