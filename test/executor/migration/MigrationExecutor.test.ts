@@ -40,14 +40,14 @@ describe('MigrationExecutor test', () => {
     });
 
     it('Migration history saved successfully', async () => {
-        const stub = sandbox.stub(cli, 'info');
+        const debugStub = sandbox.stub(cli, 'debug');
         type mockEsClient = Partial<ElasticsearchClient>;
         const client: mockEsClient = {
             postDocument: (index: string, body?: any, id?: string) => Promise.resolve()
         };
         await addMigrationHistory(client as ElasticsearchClient, {} as MigrateIndex);
-        expect(stub.calledOnce).is.true;
-        expect(stub.calledWith('POST Success. Migration history saved successfully.')).is.true;
+        expect(debugStub.calledOnce).is.true;
+        expect(debugStub.calledWith('POST Success. Migration history saved successfully.')).is.true;
     });
 
     it('Make MigrateHistory Object', () => {
@@ -132,7 +132,7 @@ describe('MigrationExecutor test', () => {
         expect(ret).is.eq(1);
         expect(createIndexStub.calledOnce).is.true;
         expect(postDocumentStub.calledOnce).is.true;
-        expect(cliInfoStub.calledTwice).is.true;
+        expect(cliInfoStub.calledOnce).is.true;
         expect(cliWarnStub.notCalled).is.true;
         migrationExecutorMock.restore();
     });
@@ -182,7 +182,7 @@ describe('MigrationExecutor test', () => {
         expect(ret).is.eq(1);
         expect(putMappingStub.calledOnce).is.true;
         expect(postDocumentStub.calledOnce).is.true;
-        expect(cliInfoStub.calledTwice).is.true;
+        expect(cliInfoStub.calledOnce).is.true;
         expect(cliWarnStub.notCalled).is.true;
         migrationExecutorMock.restore();
     });
@@ -210,6 +210,7 @@ describe('MigrationExecutor test', () => {
         const esUtilsStub = sandbox.stub(EsUtils).default;
         esUtilsStub.returns(new MockElasticsearchClient());
         const cliInfoStub = sandbox.stub(cli, 'info');
+        const debugStub = sandbox.stub(cli, 'debug');
         const ret = await MigrationExecutor.migrate(
             [
                 {
@@ -237,11 +238,10 @@ describe('MigrationExecutor test', () => {
             { connect: {} }
         );
         expect(esUtilsStub.calledOnce).true;
-        expect(cliInfoStub.callCount).to.eq(5);
+        expect(cliInfoStub.callCount).to.eq(4);
         expect(cliInfoStub.calledWith('Start validate of migration data.')).is.true;
         expect(cliInfoStub.calledWith('Start migration!')).is.true;
-        expect(cliInfoStub.calledWith('POST Success. Migration history saved successfully.')).is
-            .true;
+        expect(debugStub.calledWith('POST Success. Migration history saved successfully.')).is.true;
         expect(ret).to.eq(1);
     });
 

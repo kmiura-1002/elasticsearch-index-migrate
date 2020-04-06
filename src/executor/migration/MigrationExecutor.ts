@@ -18,7 +18,7 @@ import { formatDateAsIsoString } from '../../utils/makeDetail';
 export async function addMigrationHistory(esClient: ElasticsearchClient, history: MigrateIndex) {
     await esClient
         .postDocument(MAPPING_HISTORY_INDEX_NAME, history)
-        .then(() => cli.info('POST Success. Migration history saved successfully.'))
+        .then(() => cli.debug('POST Success. Migration history saved successfully.'))
         .catch((reason) =>
             cli.warn(
                 `Failed to save history. (Failed Data: ${JSON.stringify(
