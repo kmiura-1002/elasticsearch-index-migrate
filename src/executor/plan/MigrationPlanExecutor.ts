@@ -7,9 +7,9 @@ import {
     MigrationStates,
     MigrationPlanExecutorRet
 } from '../../model/types';
-import sort from 'sort-versions';
 import { generateMigrationPlan, MigrationPlan } from './MigrationPlan';
 import { cli } from 'cli-ux';
+import { compare, valid } from 'semver';
 
 function MigrationPlanExecutor(
     resolvedMigrations: ResolvedMigration[],
@@ -19,9 +19,15 @@ function MigrationPlanExecutor(
     const migrationPlans: MigrationPlan[] = [];
 
     const migrationPlanMap = new Map<string, MigrationPlan>();
-    const appliedMigrationVersions = sort(appliedMigrations.map((value) => value.migrate_version));
+    const appliedMigrationVersions = appliedMigrations
+        .map((value) => value.migrate_version)
+        .filter((value) => valid(value))
+        .sort((a, b) => compare(a, b));
     const lastApplied = appliedMigrationVersions[appliedMigrationVersions.length - 1];
-    const resolvedMigrationVersions = sort(resolvedMigrations.map((value) => value.version));
+    const resolvedMigrationVersions = resolvedMigrations
+        .map((value) => value.version)
+        .filter((value) => valid(value))
+        .sort((a, b) => compare(a, b));
     const lastResolved = resolvedMigrationVersions[resolvedMigrationVersions.length - 1];
 
     const context: MigrationPlanContext = {
@@ -80,7 +86,7 @@ function MigrationPlanExecutor(
     migrationPlanMap.forEach((value, key) => {
         keys.push(key);
     });
-    const sortedKeys = sort(keys);
+    const sortedKeys = keys.filter((value) => valid(value)).sort((a, b) => compare(a, b));
     if (sortedKeys.length < 1) {
         cli.error('Unknown version migration detected');
     }

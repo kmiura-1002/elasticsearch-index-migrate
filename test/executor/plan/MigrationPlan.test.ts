@@ -7,12 +7,12 @@ import { generateMigrationPlan } from '../../../src/executor/plan/MigrationPlan'
 describe('MigrationPlan test', () => {
     const testData = [
         {
-            context: { ...migrationPlanContext, baseline: 'v1.0.0' },
+            context: { ...migrationPlanContext, baseline: 'v1.0.10' },
             outOfOrder: false,
             resolvedMigration: {
                 migrate_script: {},
                 type: MigrationTypes.CREATE_INDEX,
-                version: 'v0.0.1',
+                version: 'v1.0.4',
                 description: '',
                 index_name: 'test',
                 physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
@@ -21,12 +21,12 @@ describe('MigrationPlan test', () => {
             expect: MigrationStateInfo.get(MigrationStates.BELOW_BASELINE)
         },
         {
-            context: { ...migrationPlanContext, baseline: 'v1.0.0', lastApplied: 'v2.0.0' },
+            context: { ...migrationPlanContext, baseline: 'v1.0.0', lastApplied: 'v1.0.10' },
             outOfOrder: true,
             resolvedMigration: {
                 migrate_script: {},
                 type: MigrationTypes.CREATE_INDEX,
-                version: 'v1.0.1',
+                version: 'v1.0.4',
                 description: '',
                 index_name: 'test',
                 physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
@@ -49,11 +49,11 @@ describe('MigrationPlan test', () => {
             expect: MigrationStateInfo.get(MigrationStates.PENDING)
         },
         {
-            context: { ...migrationPlanContext, baseline: 'v1.0.0', lastResolved: 'v2.0.0' },
+            context: { ...migrationPlanContext, baseline: 'v1.0.0', lastResolved: 'v1.0.10' },
             outOfOrder: false,
             resolvedMigration: undefined,
             appliedMigration: {
-                version: 'v1.0.0',
+                version: 'v1.0.4',
                 description: '',
                 type: MigrationTypes.ADD_FIELD,
                 script: '',

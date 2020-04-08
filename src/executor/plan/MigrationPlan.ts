@@ -6,6 +6,7 @@ import {
     MigrationType,
     ResolvedMigration
 } from '../../model/types';
+import { lt, valid } from 'semver';
 
 export function generateType(
     resolvedMigration?: ResolvedMigration,
@@ -42,10 +43,19 @@ export function generateState(
 ): MigrationStateInfo | undefined {
     if (!appliedMigration) {
         if (resolvedMigration?.version) {
-            if (resolvedMigration?.version < context.baseline) {
+            if (
+                valid(resolvedMigration?.version) &&
+                valid(context.baseline) &&
+                lt(resolvedMigration?.version, context.baseline)
+            ) {
                 return MigrationStateInfo.get(MigrationStates.BELOW_BASELINE);
             }
-            if (outOfOrder && resolvedMigration?.version < context.lastApplied) {
+            if (
+                outOfOrder &&
+                valid(resolvedMigration?.version) &&
+                valid(context.lastApplied) &&
+                lt(resolvedMigration?.version, context.lastApplied)
+            ) {
                 return MigrationStateInfo.get(MigrationStates.IGNORED);
             }
         }
@@ -54,7 +64,10 @@ export function generateState(
 
     if (!resolvedMigration) {
         const version = generateVersion(resolvedMigration, appliedMigration) ?? '';
-        if (!appliedMigration.version || version < context.lastResolved) {
+        if (
+            !appliedMigration.version ||
+            (valid(context.lastResolved) && valid(version) && lt(version, context.lastResolved))
+        ) {
             if (appliedMigration?.success) {
                 return MigrationStateInfo.get(MigrationStates.MISSING_SUCCESS);
             }
