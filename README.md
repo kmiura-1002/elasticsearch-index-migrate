@@ -33,7 +33,7 @@ $ npm install -g elasticsearch-index-migrate
 $ elasticsearch-index-migrate COMMAND
 running command...
 $ elasticsearch-index-migrate (-v|--version|version)
-elasticsearch-index-migrate/0.0.0 darwin-x64 node-v10.15.3
+elasticsearch-index-migrate/0.1.0 darwin-x64 node-v10.15.3
 $ elasticsearch-index-migrate --help [COMMAND]
 USAGE
   $ elasticsearch-index-migrate COMMAND
@@ -225,7 +225,7 @@ OPTIONS
                                                    $ELASTICSEARCH_MIGRATION_LOCATIONS environment variable
 ```
 
-_See code: [src/commands/init.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.0.0/src/commands/init.ts)_
+_See code: [src/commands/init.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.1.0/src/commands/init.ts)_
 
 ## `elasticsearch-index-migrate migrate`
 
@@ -268,7 +268,7 @@ OPTIONS
                                                    $ELASTICSEARCH_MIGRATION_LOCATIONS environment variable
 ```
 
-_See code: [src/commands/migrate.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.0.0/src/commands/migrate.ts)_
+_See code: [src/commands/migrate.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.1.0/src/commands/migrate.ts)_
 
 ## `elasticsearch-index-migrate plan`
 
@@ -311,5 +311,5 @@ OPTIONS
                                                    $ELASTICSEARCH_MIGRATION_LOCATIONS environment variable
 ```
 
-_See code: [src/commands/plan.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.0.0/src/commands/plan.ts)_
+_See code: [src/commands/plan.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.1.0/src/commands/plan.ts)_
 <!-- commandsstop -->
