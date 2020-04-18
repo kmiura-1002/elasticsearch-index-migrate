@@ -2,8 +2,6 @@ import { expect, test } from '@oclif/test';
 import * as EsUtils from '../../src/utils/es/EsUtils';
 import MockElasticsearchClient from '../mock/MockElasticsearchClient';
 import * as types from '../../src/model/types';
-import { cli } from 'cli-ux';
-import * as sinon from 'sinon';
 import { es7ClientContainer } from '../utils/ioc-test';
 import ElasticsearchClient from '../../src/utils/es/ElasticsearchClient';
 import { Bindings } from '../../src/ioc.bindings';
