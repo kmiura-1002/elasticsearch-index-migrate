@@ -35,6 +35,7 @@ export default class Migrate extends AbstractCommand {
         const migrationScripts = loadMigrationScripts(migrationFileParsedPath, flags.indexName);
         const results = await getElasticsearchClient(this.migrationConfig.elasticsearch)
             .search<MigrateIndex>(MAPPING_HISTORY_INDEX_NAME, {
+                size: 10000,
                 query: {
                     term: {
                         index_name: {
