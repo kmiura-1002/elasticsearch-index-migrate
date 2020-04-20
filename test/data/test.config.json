@@ -1,0 +1,10 @@
+{
+    "elasticsearch": {
+        "version": "6",
+        "connect": { "host": "http://0.0.0.0:9202" }
+    },
+    "migration": {
+        "locations": ["migration"],
+        "baselineVersion": "v1.0.0"
+    }
+}
