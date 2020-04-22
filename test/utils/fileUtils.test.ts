@@ -13,14 +13,8 @@ import { MockStats } from '../mock/MockStats';
 describe('fileUtils test', () => {
     it('findFiles test', () => {
         const fsMock = sinon.mock(fs);
-        fsMock
-            .expects('readdirSync')
-            .once()
-            .returns(['test.text']);
-        fsMock
-            .expects('statSync')
-            .once()
-            .returns(new MockStats());
+        fsMock.expects('readdirSync').once().returns(['test.text']);
+        fsMock.expects('statSync').once().returns(new MockStats());
         findFiles('', (data) => {
             expect(data).to.eq('test.text');
         });
@@ -40,9 +34,7 @@ describe('fileUtils test', () => {
         const paths = loadMigrationScriptFilePaths('test1', [
             `${process.cwd()}/test/data/migration/indices/test1/v1.0.0__test1.json`
         ]);
-        expect(paths)
-            .to.be.an('array')
-            .to.lengthOf(1);
+        expect(paths).to.be.an('array').to.lengthOf(1);
         expect(paths[0].name).eq('v1.0.0__test1');
     });
 
@@ -59,9 +51,7 @@ describe('fileUtils test', () => {
             ],
             'test1'
         );
-        expect(scripts)
-            .to.be.an('array')
-            .to.lengthOf(1);
+        expect(scripts).to.be.an('array').to.lengthOf(1);
         expect(scripts[0]).is.deep.eq({
             type: 'ADD_FIELD',
             index_name: 'test1',

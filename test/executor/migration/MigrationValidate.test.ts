@@ -190,9 +190,7 @@ describe('MigrationValidation test', () => {
         );
         const ret = doValidate(executor);
 
-        expect(ret)
-            .is.an('array')
-            .lengthOf(0);
+        expect(ret).is.an('array').lengthOf(0);
     });
 
     it('validation errors', () => {
