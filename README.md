@@ -33,7 +33,7 @@ $ npm install -g elasticsearch-index-migrate
 $ elasticsearch-index-migrate COMMAND
 running command...
 $ elasticsearch-index-migrate (-v|--version|version)
-elasticsearch-index-migrate/0.1.0 darwin-x64 node-v10.15.3
+elasticsearch-index-migrate/0.1.2 darwin-x64 node-v10.15.3
 $ elasticsearch-index-migrate --help [COMMAND]
 USAGE
   $ elasticsearch-index-migrate COMMAND
@@ -143,8 +143,8 @@ In the case of CREATE_INDEX scripts, write a Request body that can be executed w
 # Where to store migration scripts
 Save your migration script to the directory you set up in ELASTICSEARCH_MIGRATION_LOCATIONS or JSON's migration.locations.
 If the storage location is /elasticsearch/migration, store the script in a directory like the following.
-This example is for the index names {index_name} and {index_name}_v1, {index_name}_v2.
-If the index name has a version, it is necessary to separate the directories.For names in the form {index_name}-{version} or {index_name}_{version}, separate the directory from {index_name}/{version}/. In this case, please put the following script in {version}/.
+This example is for the index names {index_name} and {index_name}\_v1, {index_name}\_v2.
+If the index name has a version, it is necessary to separate the directories.For names in the form {index_name}-{version} or {index\_name}\_{version}, separate the directory from {index_name}/{version}/. In this case, please put the following script in {version}/.
 
 ```
 elasticsearch/
@@ -225,7 +225,7 @@ OPTIONS
                                                    $ELASTICSEARCH_MIGRATION_LOCATIONS environment variable
 ```
 
-_See code: [src/commands/init.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.1.0/src/commands/init.ts)_
+_See code: [src/commands/init.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.1.2/src/commands/init.ts)_
 
 ## `elasticsearch-index-migrate migrate`
 
@@ -268,7 +268,7 @@ OPTIONS
                                                    $ELASTICSEARCH_MIGRATION_LOCATIONS environment variable
 ```
 
-_See code: [src/commands/migrate.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.1.0/src/commands/migrate.ts)_
+_See code: [src/commands/migrate.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.1.2/src/commands/migrate.ts)_
 
 ## `elasticsearch-index-migrate plan`
 
@@ -311,5 +311,5 @@ OPTIONS
                                                    $ELASTICSEARCH_MIGRATION_LOCATIONS environment variable
 ```
 
-_See code: [src/commands/plan.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.1.0/src/commands/plan.ts)_
+_See code: [src/commands/plan.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.1.2/src/commands/plan.ts)_
 <!-- commandsstop -->

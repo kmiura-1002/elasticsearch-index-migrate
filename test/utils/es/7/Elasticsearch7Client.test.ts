@@ -16,33 +16,25 @@ describe('Elasticsearch7Client test', () => {
     });
 
     it('exist check', async () => {
-        const index = `test_index_${Math.random()
-            .toString(32)
-            .substring(2)}`;
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
         const exists = await client.exists(index);
         assert.isFalse(exists);
     });
     it('create index', async () => {
-        const index = `test_index_${Math.random()
-            .toString(32)
-            .substring(2)}`;
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
         const create = await client.createIndex(index);
         assert.equal(create.statusCode, '200');
         await client.delete(index);
     });
     it('search', async () => {
-        const index = `test_index_${Math.random()
-            .toString(32)
-            .substring(2)}`;
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex(index);
         const ret = await client.search(index);
         assert.isArray(ret);
         await client.delete(index);
     });
     it('put mapping', async () => {
-        const index = `test_index_${Math.random()
-            .toString(32)
-            .substring(2)}`;
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex(index);
         const ret = await client.putMapping(index, {
             properties: {
@@ -56,9 +48,7 @@ describe('Elasticsearch7Client test', () => {
     });
 
     it('put settings', async () => {
-        const index = `test_index_${Math.random()
-            .toString(32)
-            .substring(2)}`;
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex(index);
         const ret = await client.putSetting(index, {
             index: {
@@ -70,9 +60,7 @@ describe('Elasticsearch7Client test', () => {
     });
 
     it('post document', async () => {
-        const index = `test_index_${Math.random()
-            .toString(32)
-            .substring(2)}`;
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex(index);
         const ret = await client.postDocument(index, { test: 'foo baz' });
 

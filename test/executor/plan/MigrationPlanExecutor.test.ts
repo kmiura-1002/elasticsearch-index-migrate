@@ -73,9 +73,7 @@ describe('MigrationPlanExecutor test', () => {
 
         const pendingInfos = executor.pending;
         const status = pendingInfos.map((value) => value.state?.status);
-        expect(status)
-            .to.be.an('array')
-            .to.be.include.ordered.members([MigrationStates.PENDING]);
+        expect(status).to.be.an('array').to.be.include.ordered.members([MigrationStates.PENDING]);
     });
 
     it('resolvedMigrations duplicates', () => {
@@ -87,9 +85,7 @@ describe('MigrationPlanExecutor test', () => {
 
         const pendingInfos = executor.pending;
         const status = pendingInfos.map((value) => value.state?.status);
-        expect(status)
-            .to.be.an('array')
-            .to.be.include.ordered.members([MigrationStates.PENDING]);
+        expect(status).to.be.an('array').to.be.include.ordered.members([MigrationStates.PENDING]);
     });
 
     it('Unknown version migration detected', () => {
