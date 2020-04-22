@@ -39,7 +39,6 @@
         "@typescript-eslint/parser": "^2.28.0",
         "chai": "^4.2.0",
         "chai-as-promised": "^7.1.1",
-        "conventional-changelog-cli": "^2.0.31",
         "eslint": "^6.8.0",
         "eslint-config-oclif": "^3.1",
         "eslint-config-oclif-typescript": "^0.1",
@@ -80,7 +79,6 @@
     },
     "repository": "kmiura-1002/elasticsearch-index-migrate",
     "scripts": {
-        "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
         "lint": "eslint -c .eslintrc 'src/**/*.ts'",
         "format": "prettier --write \"{src/**/*.ts,test/**/*.ts}\"",
         "postpack": "rm -f oclif.manifest.json",
