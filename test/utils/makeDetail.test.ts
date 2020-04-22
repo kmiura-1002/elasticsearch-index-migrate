@@ -124,9 +124,7 @@ describe('makeDetail test', () => {
         ]);
         const status = migrationPlans.map((value) => value.state?.status);
 
-        expect(status)
-            .to.be.an('array')
-            .to.be.include.ordered.members([MigrationStates.FAILED]);
+        expect(status).to.be.an('array').to.be.include.ordered.members([MigrationStates.FAILED]);
 
         expect(detail)
             .to.be.an('array')
