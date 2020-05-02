@@ -17,6 +17,7 @@ It supports versions 6.x and 7.x of Elasticsearch.
 * [Migration script](#migration-script)
 * [Where to store migration scripts](#where-to-store-migration-scripts)
 * [Commands](#commands)
+* [Quick start with Docker](#quick-start-with-docker)
 <!-- tocstop -->
 
 # Requirements
@@ -24,7 +25,7 @@ It supports versions 6.x and 7.x of Elasticsearch.
 * npm (>=6.9)  
 * elasticsearch 6.x and 7.x  
 
-This project has been tested with node.js(v10.15.3), npm(6.14.3) and elasticsearch(6.8.6 and 7.5.2).
+This project has been tested with node.js(v10.15.3, v12.14.0), npm(6.14.3) and elasticsearch(6.8.6 and 7.5.2).
 
 # Usage
 <!-- usage -->
@@ -33,7 +34,7 @@ $ npm install -g elasticsearch-index-migrate
 $ elasticsearch-index-migrate COMMAND
 running command...
 $ elasticsearch-index-migrate (-v|--version|version)
-elasticsearch-index-migrate/0.1.2 darwin-x64 node-v10.15.3
+elasticsearch-index-migrate/0.2.0 darwin-x64 node-v12.14.0
 $ elasticsearch-index-migrate --help [COMMAND]
 USAGE
   $ elasticsearch-index-migrate COMMAND
@@ -225,7 +226,7 @@ OPTIONS
                                                    $ELASTICSEARCH_MIGRATION_LOCATIONS environment variable
 ```
 
-_See code: [src/commands/init.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.1.2/src/commands/init.ts)_
+_See code: [src/commands/init.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.2.0/src/commands/init.ts)_
 
 ## `elasticsearch-index-migrate migrate`
 
@@ -268,7 +269,7 @@ OPTIONS
                                                    $ELASTICSEARCH_MIGRATION_LOCATIONS environment variable
 ```
 
-_See code: [src/commands/migrate.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.1.2/src/commands/migrate.ts)_
+_See code: [src/commands/migrate.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.2.0/src/commands/migrate.ts)_
 
 ## `elasticsearch-index-migrate plan`
 
@@ -311,5 +312,34 @@ OPTIONS
                                                    $ELASTICSEARCH_MIGRATION_LOCATIONS environment variable
 ```
 
-_See code: [src/commands/plan.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.1.2/src/commands/plan.ts)_
+_See code: [src/commands/plan.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.2.0/src/commands/plan.ts)_
 <!-- commandsstop -->
+
+# Quick start with Docker
+
+The commands of this CLI tool are published as docker images. I think it would be more useful to use this image.
+
+## Usage
+
+Please pull the docker image.
+After that, you can run `docker run --rm` and enter any command and options to use it
+
+```sh-session
+$ docker pull kmiura1002/elasticsearch-index-migrate
+$ docker run --rm  kmiura1002/elasticsearch-index-migrate -h
+  elasticsearch-index-migrate
+  
+  VERSION
+    elasticsearch-index-migrate/0.1.2 linux-x64 node-v12.16.3
+  
+  USAGE
+    $ elasticsearch-index-migrate [COMMAND]
+  
+  COMMANDS
+    help     display help for elasticsearch-index-migrate
+    init     Set up a migration environment.
+    migrate  Migrate the index of Elasticsearch to the latest version based on the
+             execution plan.
+    plan     Outputs the migration execution plan.
+
+```
