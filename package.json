@@ -1,7 +1,7 @@
 {
     "name": "elasticsearch-index-migrate",
-    "description": "elasticsearch-index-migrate",
-    "version": "0.2.0",
+    "description": "This software is a command line tool for version control and mapping changes of Elasticsearch mappings.",
+    "version": "0.2.1",
     "author": "kmiura @kmiura-1002",
     "private": false,
     "bin": {
@@ -66,7 +66,10 @@
     ],
     "homepage": "https://github.com/kmiura-1002/elasticsearch-index-migrate",
     "keywords": [
-        "oclif"
+        "oclif",
+        "elasticsearch",
+        "migration",
+        "cli"
     ],
     "license": "MIT",
     "main": "lib/index.js",
