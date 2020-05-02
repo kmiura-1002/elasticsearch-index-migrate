@@ -6,7 +6,7 @@ elasticsearch-index-migrate
 [![Downloads/week](https://img.shields.io/npm/dw/elasticsearch-index-migrate.svg)](https://npmjs.org/package/elasticsearch-index-migrate)
 [![License](https://img.shields.io/npm/l/elasticsearch-index-migrate.svg)](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/master/package.json)
 
-This software is a mapping migration tool for Elasticsearch.  
+This software is a command line tool for version control and mapping changes of Elasticsearch mappings.  
 It supports versions 6.x and 7.x of Elasticsearch.
 
 
@@ -34,7 +34,7 @@ $ npm install -g elasticsearch-index-migrate
 $ elasticsearch-index-migrate COMMAND
 running command...
 $ elasticsearch-index-migrate (-v|--version|version)
-elasticsearch-index-migrate/0.2.0 darwin-x64 node-v12.14.0
+elasticsearch-index-migrate/0.2.1 darwin-x64 node-v12.14.0
 $ elasticsearch-index-migrate --help [COMMAND]
 USAGE
   $ elasticsearch-index-migrate COMMAND
@@ -226,7 +226,7 @@ OPTIONS
                                                    $ELASTICSEARCH_MIGRATION_LOCATIONS environment variable
 ```
 
-_See code: [src/commands/init.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.2.0/src/commands/init.ts)_
+_See code: [src/commands/init.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.2.1/src/commands/init.ts)_
 
 ## `elasticsearch-index-migrate migrate`
 
@@ -269,7 +269,7 @@ OPTIONS
                                                    $ELASTICSEARCH_MIGRATION_LOCATIONS environment variable
 ```
 
-_See code: [src/commands/migrate.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.2.0/src/commands/migrate.ts)_
+_See code: [src/commands/migrate.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.2.1/src/commands/migrate.ts)_
 
 ## `elasticsearch-index-migrate plan`
 
@@ -312,7 +312,7 @@ OPTIONS
                                                    $ELASTICSEARCH_MIGRATION_LOCATIONS environment variable
 ```
 
-_See code: [src/commands/plan.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.2.0/src/commands/plan.ts)_
+_See code: [src/commands/plan.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.2.1/src/commands/plan.ts)_
 <!-- commandsstop -->
 
 # Quick start with Docker
