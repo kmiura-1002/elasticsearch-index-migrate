@@ -313,3 +313,32 @@ OPTIONS
 
 _See code: [src/commands/plan.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.1.2/src/commands/plan.ts)_
 <!-- commandsstop -->
+
+# Quick start with Docker
+
+The commands of this CLI tool are published as docker images. I think it would be more useful to use this image.
+
+## Usage
+
+Please pull the docker image.
+After that, you can run `docker run --rm` and enter any command and options to use it
+
+```sh-session
+$ docker pull kmiura1002/elasticsearch-index-migrate
+$ docker run --rm  kmiura1002/elasticsearch-index-migrate -h
+  elasticsearch-index-migrate
+  
+  VERSION
+    elasticsearch-index-migrate/0.1.2 linux-x64 node-v12.16.3
+  
+  USAGE
+    $ elasticsearch-index-migrate [COMMAND]
+  
+  COMMANDS
+    help     display help for elasticsearch-index-migrate
+    init     Set up a migration environment.
+    migrate  Migrate the index of Elasticsearch to the latest version based on the
+             execution plan.
+    plan     Outputs the migration execution plan.
+
+```
