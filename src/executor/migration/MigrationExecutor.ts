@@ -1,4 +1,4 @@
-import StopWatch from '../../utils/stopWatch';
+import StopWatch from '../../utils/StopWatch';
 import {
     ESConfig,
     MAPPING_HISTORY_INDEX_NAME,
