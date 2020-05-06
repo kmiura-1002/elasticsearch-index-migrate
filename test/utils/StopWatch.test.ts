@@ -1,6 +1,6 @@
 import 'mocha';
 import { expect } from 'chai';
-import StopWatch from '../../src/utils/stopWatch';
+import StopWatch from '../../src/utils/StopWatch';
 
 describe('StopWatch test', () => {
     it('Call the start function before calling the stop function.', () => {
