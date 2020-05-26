@@ -5,8 +5,35 @@ import * as fileUtils from '../../src/utils/fileUtils';
 import { findAllFiles, findFiles } from '../../src/utils/fileUtils';
 import getElasticsearchClient from '../../src/utils/es/EsUtils';
 import MockElasticsearchClient from '../mock/MockElasticsearchClient';
+import * as fs from 'fs';
+import { MigrationConfigType } from '../../src/model/types';
+import * as path from 'path';
+import * as util from '@oclif/config/lib/util';
 
 describe('abstract command test', () => {
+    const userHome = process.env[process.platform == 'win32' ? 'USERPROFILE' : 'HOME'] ?? '';
+    const existsSyncCallback = sinon.stub();
+    const utilCallback = sinon.stub();
+    existsSyncCallback
+        .callsFake(fs.existsSync)
+        .withArgs(path.join(userHome, '.config/elasticsearch-index-migrate/config.json'))
+        .returns(Promise.resolve(true));
+    utilCallback
+        .callsFake(util.loadJSON)
+        .withArgs(path.join(userHome, '.config/elasticsearch-index-migrate/config.json'))
+        .returns(
+            Promise.resolve<MigrationConfigType>({
+                elasticsearch: {
+                    version: '6',
+                    connect: { host: 'http://0.0.0.0:9202' }
+                },
+                migration: {
+                    locations: ['test_location'],
+                    baselineVersion: 'v1.0.0'
+                }
+            })
+        );
+
     test.stub(EsUtils, 'default', sinon.stub().returns(new MockElasticsearchClient()))
         .stub(
             fileUtils,
@@ -121,7 +148,6 @@ describe('abstract command test', () => {
                 return paths;
             })
         )
-
         .stdout()
         .command(['plan', '-i', 'test1'])
         .it('read default option test', (ctx) => {
@@ -137,6 +163,33 @@ describe('abstract command test', () => {
                     }
                 })
             ).is.true;
+            expect(ctx.stdout).to.contain(
+                'Version Description Type      Installedon State   \nv1.0.0  description ADD_FIELD             PENDING \n'
+            );
+        });
+
+    test.stub(EsUtils, 'default', sinon.stub().returns(new MockElasticsearchClient()))
+        .stub(fs, 'existsSync', existsSyncCallback)
+        .stub(util, 'loadJSON', utilCallback)
+        .stub(
+            fileUtils,
+            'findAllFiles',
+            sinon
+                .stub()
+                .withArgs('test_location')
+                .callsFake((dir: string[]) => {
+                    const paths: string[] = [];
+                    dir.map(() => `${process.cwd()}/test/data/migration`).forEach((value) => {
+                        findFiles(value, (data) => paths.push(data));
+                    });
+                    return paths;
+                })
+        )
+        .stdout()
+        .command(['plan', '-i', 'test1'])
+        .it('read default option test eeee', (ctx) => {
+            const findAllFilesStub = findAllFiles as sinon.SinonStub;
+            expect(findAllFilesStub.calledWith(['test_location'])).is.true;
             expect(ctx.stdout).to.contain(
                 'Version Description Type      Installedon State   \nv1.0.0  description ADD_FIELD             PENDING \n'
             );
