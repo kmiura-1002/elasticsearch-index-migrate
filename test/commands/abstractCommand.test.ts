@@ -187,7 +187,7 @@ describe('abstract command test', () => {
         )
         .stdout()
         .command(['plan', '-i', 'test1'])
-        .it('read default option test eeee', (ctx) => {
+        .it('oclif custom config loading test', (ctx) => {
             const findAllFilesStub = findAllFiles as sinon.SinonStub;
             expect(findAllFilesStub.calledWith(['test_location'])).is.true;
             expect(ctx.stdout).to.contain(
