@@ -34,7 +34,7 @@ $ npm install -g elasticsearch-index-migrate
 $ elasticsearch-index-migrate COMMAND
 running command...
 $ elasticsearch-index-migrate (-v|--version|version)
-elasticsearch-index-migrate/0.2.2 darwin-x64 node-v12.14.0
+elasticsearch-index-migrate/0.3.0 darwin-x64 node-v12.14.0
 $ elasticsearch-index-migrate --help [COMMAND]
 USAGE
   $ elasticsearch-index-migrate COMMAND
@@ -228,7 +228,7 @@ OPTIONS
   -h, --help                                           show CLI help
 ```
 
-_See code: [src/commands/init.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.2.2/src/commands/init.ts)_
+_See code: [src/commands/init.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.3.0/src/commands/init.ts)_
 
 ## `elasticsearch-index-migrate migrate`
 
@@ -271,7 +271,7 @@ OPTIONS
   -i, --indexName=indexName                            (required) migration index name.
 ```
 
-_See code: [src/commands/migrate.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.2.2/src/commands/migrate.ts)_
+_See code: [src/commands/migrate.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.3.0/src/commands/migrate.ts)_
 
 ## `elasticsearch-index-migrate plan`
 
@@ -314,7 +314,7 @@ OPTIONS
   -i, --indexName=indexName                            (required) migration index name.
 ```
 
-_See code: [src/commands/plan.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.2.2/src/commands/plan.ts)_
+_See code: [src/commands/plan.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.3.0/src/commands/plan.ts)_
 <!-- commandsstop -->
 
 # Quick start with Docker
