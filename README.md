@@ -47,9 +47,11 @@ USAGE
 You need to configure the connection settings and migration settings for this software.  
 The settings can be written in JSON format or read from environment variables.  
 A JSON file is read by passing a path to the argument of the executable command.
-If you set it in an environment variable, the system will read it automatically when you execute the command.　　
+If you set it in an environment variable, the system will read it automatically when you execute the command.  
+If you put a configuration file named `config.json` in `~/.config/elasticsearch-index-migrate/`, it will be loaded automatically.  
+The environment variables take precedence over the settings. Then the `-O` option takes precedence.  
 
-If you want to use a JSON file, please use the following.
+If you want to use a JSON file, please use the following.  
 
 ```json
 {
@@ -64,7 +66,7 @@ If you want to use a JSON file, please use the following.
         }
     },
     "migration": {
-        "locations": ["/migration"],
+        "locations": ["~/migration"],
         "baselineVersion": "v1.0.0"
     }
 }
@@ -185,7 +187,7 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.3/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.0.1/src/commands/help.ts)_
 
 ## `elasticsearch-index-migrate init`
 

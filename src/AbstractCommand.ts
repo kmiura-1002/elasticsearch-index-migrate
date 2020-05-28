@@ -1,6 +1,9 @@
 import { Command, flags } from '@oclif/command';
+import { loadJSON } from '@oclif/config/lib/util';
 import { MigrationConfigType } from './model/types';
 import * as loadJsonFile from 'load-json-file';
+import * as path from 'path';
+import * as fs from 'fs';
 
 export const DefaultOptions = {
     help: flags.help({ char: 'h' }),
@@ -94,8 +97,7 @@ export default abstract class AbstractCommand extends Command {
             elasticsearch_username,
             elasticsearch_password,
             option_file
-        } = flags;
-
+        } = flags as any;
         if (
             migration_locations &&
             baseline_version &&
@@ -127,6 +129,10 @@ export default abstract class AbstractCommand extends Command {
             };
         } else if (option_file) {
             this.migrationConfig = { ...(await loadJsonFile<MigrationConfigType>(option_file)) };
+        } else if (fs.existsSync(path.join(this.config.configDir, 'config.json'))) {
+            this.migrationConfig = {
+                ...(await loadJSON(path.join(this.config.configDir, 'config.json')))
+            } as MigrationConfigType;
         }
     }
 }
