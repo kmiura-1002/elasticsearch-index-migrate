@@ -216,5 +216,8 @@ describe('Setup elasticsearch index migrate env test', () => {
         })
         .stdout()
         .command(['init'])
-        .catch('0.0.0 is unsupported. support version is 6.x or 7.x');
+        .catch((err) =>
+            expect(err.message).to.eq('0.0.0 is unsupported. support version is 6.x or 7.x.')
+        )
+        .it('unsupported support version');
 });
