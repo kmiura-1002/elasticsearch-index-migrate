@@ -7,7 +7,7 @@ export const indexNameRegexp = /[-_]/;
 export const fileNameRegexp = /^([v][0-9]+.[0-9]+.[0-9]+)__([0-9a-zA-Z]+)/;
 
 export function findFiles(dir: string, callback?: (data: string) => void) {
-    const filenames = fs.readdirSync(dir);
+    const filenames = fs.readdirSync(path.relative(process.cwd(), dir));
     filenames.forEach((filename) => {
         const fullPath = path.join(dir, filename);
         const stats = fs.statSync(fullPath);

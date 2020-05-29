@@ -66,7 +66,7 @@ If you want to use a JSON file, please use the following.
         }
     },
     "migration": {
-        "locations": ["~/migration"],
+        "locations": ["/migration"],
         "baselineVersion": "v1.0.0"
     }
 }
@@ -78,7 +78,7 @@ If you want to use a JSON file, please use the following.
 * elasticsearch.connect.cloudId : Enter your Elasticsearch Cloud ID.
 * elasticsearch.connect.username : Enter your Elasticsearch username.
 * elasticsearch.connect.password : Enter your Elasticsearch password.
-* migration.locations : Enter the full path to the directory where you want to store your migration script.
+* migration.locations : Enter the full path or relative path to the directory where you want to store your migration script
 * migration.baselineVersion : Please fill in the base version of the migration script
 
 To set the environment variables, set the following variables.
