@@ -1,9 +1,9 @@
-import * as fs from 'fs';
-import * as path from 'path';
 import getElasticsearchClient, { usedEsVersion } from '../utils/es/EsUtils';
 import { ClusterStatuses, MAPPING_HISTORY_INDEX_NAME } from '../model/types';
 import { cli } from 'cli-ux';
 import AbstractCommand, { DefaultOptions } from '../AbstractCommand';
+import * as v7Mapping from '../resources/mapping/migrate_history_esV7.json';
+import * as v6Mapping from '../resources/mapping/migrate_history_esV6.json';
 
 interface MappingData {
     settings: any;
@@ -35,19 +35,8 @@ export default class Init extends AbstractCommand {
             cli.exit(1);
         }
         const esVersion = usedEsVersion(this.migrationConfig.elasticsearch);
-        const mappingData = JSON.parse(
-            fs.readFileSync(
-                path.join(
-                    __dirname,
-                    '../../',
-                    'mapping',
-                    esVersion === '7' ? 'migrate_history_esV7.json' : 'migrate_history_esV6.json'
-                ),
-                {
-                    encoding: 'utf-8'
-                }
-            )
-        ) as MappingData;
+        const mappingData = esVersion === '7' ? v7Mapping : v6Mapping;
+
         const ret = await client
             .createIndex(MAPPING_HISTORY_INDEX_NAME, mappingData)
             .catch((reason) => {
