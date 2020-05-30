@@ -138,7 +138,6 @@ export default abstract class AbstractCommand extends Command {
             cli.error(
                 'No config. You can specify environment variables or files with the -O option and place config.json in ~/.config/elasticsearch-index-migrate. You should set one of these.'
             );
-            cli.exit(1);
         }
     }
 }
