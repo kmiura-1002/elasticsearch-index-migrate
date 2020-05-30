@@ -4,6 +4,7 @@ import { MigrationConfigType } from './model/types';
 import * as loadJsonFile from 'load-json-file';
 import * as path from 'path';
 import * as fs from 'fs';
+import { cli } from 'cli-ux';
 
 export const DefaultOptions = {
     help: flags.help({ char: 'h' }),
@@ -76,12 +77,12 @@ export default abstract class AbstractCommand extends Command {
     // default config
     migrationConfig: MigrationConfigType = {
         elasticsearch: {
-            version: '7',
-            connect: { host: 'http://localhost:9202' }
+            version: '',
+            connect: {}
         },
         migration: {
-            locations: ['migration'],
-            baselineVersion: 'v1.0.0'
+            locations: [],
+            baselineVersion: ''
         }
     };
 
@@ -133,6 +134,11 @@ export default abstract class AbstractCommand extends Command {
             this.migrationConfig = {
                 ...(await loadJSON(path.join(this.config.configDir, 'config.json')))
             } as MigrationConfigType;
+        } else {
+            cli.error(
+                'No config. You can specify environment variables or files with the -O option and place config.json in ~/.config/elasticsearch-index-migrate. You should set one of these.'
+            );
+            cli.exit(1);
         }
     }
 }
