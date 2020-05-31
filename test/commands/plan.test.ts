@@ -6,6 +6,10 @@ import { es7ClientContainer } from '../utils/ioc-test';
 import ElasticsearchClient from '../../src/utils/es/ElasticsearchClient';
 import { Bindings } from '../../src/ioc.bindings';
 import { MigrateIndex } from '../../src/model/types';
+import { cli } from 'cli-ux';
+import * as sinon from 'sinon';
+import * as create from '../../src/executor/init/MigrationInitExecutor';
+import * as MigrationExecutor from '../../src/executor/migration/MigrationExecutor';
 
 describe('plan command test', () => {
     after(async () => {
@@ -14,6 +18,7 @@ describe('plan command test', () => {
     });
 
     test.stdout()
+        .stub(cli, 'error', sinon.stub())
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
@@ -22,7 +27,10 @@ describe('plan command test', () => {
         })
         .command(['plan', '-i', 'test'])
         .exit(1)
-        .it('Migration file not found.');
+        .it('An error occurs when there is no migration target.', async () => {
+            const error = (cli.error as unknown) as sinon.SinonStub;
+            expect(error.calledWith('Migration file not found.')).is.true;
+        });
 
     test.stub(EsUtils, 'default', () => new MockElasticsearchClient())
         .env({
@@ -102,5 +110,64 @@ describe('plan command test', () => {
         .command(['plan', '-i', 'test6'])
         .it('Results of 11 or more plan commands are correct.', async (ctx) => {
             expect(ctx.stdout).not.contain('PENDING');
+        });
+
+    test.stub(cli, 'error', sinon.stub())
+        .stub(
+            EsUtils,
+            'default',
+            () =>
+                new (class extends MockElasticsearchClient {
+                    exists(_index: string) {
+                        return Promise.resolve(false);
+                    }
+                })()
+        )
+        .env({
+            ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
+            ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
+            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_HOST: 'http://localhost:9202'
+        })
+        .stdout()
+        .command(['plan', '-i', 'test1', '--no-init'])
+        .exit(1)
+        .it('If there is no migration environment, an error will occur.', async () => {
+            const error = (cli.error as unknown) as sinon.SinonStub;
+            expect(
+                error.calledWith(
+                    'Migration environment is not ready. Execute the init command. Or, run the command with "--init"'
+                )
+            ).is.true;
+        });
+
+    test.stub(create, 'createHistoryIndex', sinon.stub().returns(Promise.resolve()))
+        .stub(MigrationExecutor, 'migrate', () => Promise.resolve(1))
+        .stub(cli, 'error', sinon.stub())
+        .stub(cli, 'info', sinon.stub())
+        .stub(
+            EsUtils,
+            'default',
+            () =>
+                new (class extends MockElasticsearchClient {
+                    exists(_index: string) {
+                        return Promise.resolve(false);
+                    }
+                })()
+        )
+        .env({
+            ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
+            ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
+            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_HOST: 'http://localhost:9202'
+        })
+        .stdout()
+        .command(['migrate', '-i', 'test1', '--init'])
+        .it('If there is no migration_history index, create one and migrate it.', async () => {
+            const info = cli.info as sinon.SinonStub;
+            expect(info.calledWith('migrate_history index does not exist.')).is.true;
+            expect(info.calledWith('Create a migrate_history index for the first time.')).is.true;
+            expect(info.calledWith('The creation of the index has been completed.')).is.true;
+            expect(info.calledWith('Migration completed. (count: 1)')).is.true;
         });
 });

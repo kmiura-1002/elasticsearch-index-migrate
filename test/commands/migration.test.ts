@@ -10,6 +10,7 @@ import { MigrateIndex } from '../../src/model/types';
 import { MAPPING_HISTORY_INDEX_NAME } from '../../src/model/types';
 import { cli } from 'cli-ux';
 import * as sinon from 'sinon';
+import * as create from '../../src/executor/init/MigrationInitExecutor';
 
 describe('Migrates Elasticsearch index to the latest version.', () => {
     after(async () => {
@@ -31,19 +32,8 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
             expect(ctx.stdout).to.contain('Migration completed. (count: 1)');
         });
 
-    test.stub(MigrationExecutor, 'migrate', () => Promise.resolve(1))
-        .env({
-            ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
-            ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
-            ELASTICSEARCH_HOST: 'http://localhost:9202'
-        })
-        .stdout()
-        .command(['migrate', '-i', 'foobaz'])
-        .exit(1)
-        .it('ResponseError: index_not_found_exception');
-
     test.stub(MigrationExecutor, 'migrate', () => Promise.resolve(undefined))
+        .stub(cli, 'error', sinon.stub())
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
@@ -53,9 +43,13 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
         .stdout()
         .command(['migrate', '-i', 'test1'])
         .exit(1)
-        .it('Migration failed.');
+        .it('An error occurs when the migration process fails.', async () => {
+            const error = (cli.error as unknown) as sinon.SinonStub;
+            expect(error.calledWith('Migration failed.')).is.true;
+        });
 
     test.stdout()
+        .stub(cli, 'error', sinon.stub())
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
@@ -64,7 +58,10 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
         })
         .command(['migrate', '-i', 'not_fount'])
         .exit(1)
-        .it('Error: Migration file not found.');
+        .it('An error occurs when there is no migration target.', async () => {
+            const error = (cli.error as unknown) as sinon.SinonStub;
+            expect(error.calledWith('Migration file not found.')).is.true;
+        });
 
     test.stub(types, 'MAPPING_HISTORY_INDEX_NAME', 'test3_migrate_history')
         .env({
@@ -99,6 +96,7 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
             expect(searchRet[0].script_type).to.eq('CREATE_INDEX');
             expect(searchRet[0].success).to.true;
         });
+
     test.stub(types, 'MAPPING_HISTORY_INDEX_NAME', 'test4_migrate_history')
         .stub(cli, 'info', sinon.stub())
         .env({
@@ -177,5 +175,64 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
         .it('There is no error if you run it again after the migration is done.', async () => {
             const info = cli.info as sinon.SinonStub;
             expect(info.calledWith('There was no migration target.')).is.true;
+        });
+
+    test.stub(cli, 'error', sinon.stub())
+        .stub(
+            EsUtils,
+            'default',
+            () =>
+                new (class extends MockElasticsearchClient {
+                    exists(_index: string) {
+                        return Promise.resolve(false);
+                    }
+                })()
+        )
+        .env({
+            ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
+            ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
+            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_HOST: 'http://localhost:9202'
+        })
+        .stdout()
+        .command(['migrate', '-i', 'test1', '--no-init'])
+        .exit(1)
+        .it('If there is no migration environment, an error will occur.', async () => {
+            const error = (cli.error as unknown) as sinon.SinonStub;
+            expect(
+                error.calledWith(
+                    'Migration environment is not ready. Execute the init command. Or, run the command with "--init"'
+                )
+            ).is.true;
+        });
+
+    test.stub(create, 'createHistoryIndex', sinon.stub().returns(Promise.resolve()))
+        .stub(MigrationExecutor, 'migrate', () => Promise.resolve(1))
+        .stub(cli, 'error', sinon.stub())
+        .stub(cli, 'info', sinon.stub())
+        .stub(
+            EsUtils,
+            'default',
+            () =>
+                new (class extends MockElasticsearchClient {
+                    exists(_index: string) {
+                        return Promise.resolve(false);
+                    }
+                })()
+        )
+        .env({
+            ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
+            ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
+            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_HOST: 'http://localhost:9202'
+        })
+        .stdout()
+        .command(['migrate', '-i', 'test1', '--init'])
+        .it('If there is no migration_history index, create one and migrate it.', async () => {
+            const info = cli.info as sinon.SinonStub;
+            expect(info.calledWith('migrate_history index does not exist.')).is.true;
+            expect(info.calledWith('Create a migrate_history index for the first time.')).is.true;
+            expect(info.calledWith('The creation of the index has been completed.')).is.true;
+            expect(info.calledWith('Migration completed. (count: 1)')).is.true;
         });
 });

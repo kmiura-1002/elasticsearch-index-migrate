@@ -137,38 +137,6 @@ describe('abstract command test', () => {
         });
 
     test.stub(EsUtils, 'default', sinon.stub().returns(new MockElasticsearchClient()))
-        .stub(
-            fileUtils,
-            'findAllFiles',
-            sinon.stub().callsFake((dir: string[]) => {
-                const paths: string[] = [];
-                dir.map((value) => `${process.cwd()}/test/data/${value}`).forEach((value) => {
-                    findFiles(value, (data) => paths.push(data));
-                });
-                return paths;
-            })
-        )
-        .stdout()
-        .command(['plan', '-i', 'test1'])
-        .it('read default option test', (ctx) => {
-            const findAllFilesStub = findAllFiles as sinon.SinonStub;
-            const esClientStub = getElasticsearchClient as sinon.SinonStub;
-
-            expect(findAllFilesStub.calledWith(['migration'])).is.true;
-            expect(
-                esClientStub.calledWith({
-                    version: '7',
-                    connect: {
-                        host: 'http://localhost:9202'
-                    }
-                })
-            ).is.true;
-            expect(ctx.stdout).to.contain(
-                'Version Description Type      Installedon State   \nv1.0.0  description ADD_FIELD             PENDING \n'
-            );
-        });
-
-    test.stub(EsUtils, 'default', sinon.stub().returns(new MockElasticsearchClient()))
         .stub(fs, 'existsSync', existsSyncCallback)
         .stub(util, 'loadJSON', utilCallback)
         .stub(
@@ -194,4 +162,13 @@ describe('abstract command test', () => {
                 'Version Description Type      Installedon State   \nv1.0.0  description ADD_FIELD             PENDING \n'
             );
         });
+
+    test.stdout()
+        .command(['plan', '-i', 'test1'])
+        .catch((err) =>
+            expect(err.message).to.eq(
+                'No config. You can specify environment variables or files with the -O option and place config.json in ~/.config/elasticsearch-index-migrate. You should set one of these.'
+            )
+        )
+        .it('error will occur if there are no settings');
 });
