@@ -1,6 +1,6 @@
 import ElasticsearchClient from '../../src/utils/es/ElasticsearchClient';
 import { cli } from 'cli-ux';
-import { ClusterStatuses } from '../../src/model/types';
+import { ClusterStatuses, SimpleJson } from '../../src/model/types';
 
 export default class MockElasticsearchClient implements ElasticsearchClient {
     close() {
@@ -56,8 +56,43 @@ export default class MockElasticsearchClient implements ElasticsearchClient {
         return Promise.resolve({ status: ClusterStatuses.GREEN });
     }
 
-    delete(index: string | string[]) {
-        cli.debug(`Called MockElasticsearchClient.delete: index=${index}`);
+    delete(_index: string | string[]) {
+        cli.debug(`Called MockElasticsearchClient.delete: index=${_index}`);
         return Promise.resolve({ statusCode: 200 });
+    }
+
+    getMapping(_index: string): Promise<SimpleJson> {
+        return Promise.resolve({
+            migrate_history: {
+                mappings: {
+                    properties: {
+                        description: {
+                            type: 'text'
+                        },
+                        execution_time: {
+                            type: 'long'
+                        },
+                        index_name: {
+                            type: 'keyword'
+                        },
+                        installed_on: {
+                            type: 'date'
+                        },
+                        migrate_version: {
+                            type: 'keyword'
+                        },
+                        script_name: {
+                            type: 'keyword'
+                        },
+                        script_type: {
+                            type: 'keyword'
+                        },
+                        success: {
+                            type: 'boolean'
+                        }
+                    }
+                }
+            }
+        });
     }
 }

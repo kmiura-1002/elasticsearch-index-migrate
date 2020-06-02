@@ -228,3 +228,13 @@ export type MigrationPlanExecutorRet = {
     all: MigrationPlan[];
     pending: MigrationPlan[];
 };
+
+export type JsonPrimitiveType = boolean | number | string | null | undefined | object | {};
+
+export type JsonArrayType = JsonPrimitiveType[] | JsonObjectType[];
+
+export type JsonObjectType = {
+    [key: string]: JsonPrimitiveType | JsonObjectType | JsonArrayType;
+};
+
+export type SimpleJson = JsonPrimitiveType | JsonArrayType | JsonObjectType;
