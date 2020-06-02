@@ -22,4 +22,6 @@ export default interface ElasticsearchClient {
     close: () => void;
 
     getMapping: (index: string) => Promise<SimpleJson>;
+
+    get: (index: string) => Promise<SimpleJson>;
 }

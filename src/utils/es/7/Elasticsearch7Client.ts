@@ -81,6 +81,10 @@ class Elasticsearch7Client implements ElasticsearchClient {
             .getMapping({ index })
             .then((value) => value.body[index] as SimpleJson);
     }
+
+    async get(index: string): Promise<SimpleJson> {
+        return await this.client.indices.get({ index }).then((value) => value.body as SimpleJson);
+    }
 }
 
 export default Elasticsearch7Client;

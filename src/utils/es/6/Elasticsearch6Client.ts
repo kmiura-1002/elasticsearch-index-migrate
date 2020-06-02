@@ -83,6 +83,10 @@ class Elasticsearch6Client implements ElasticsearchClient {
     async getMapping(index: string): Promise<SimpleJson> {
         return await this.client.indices.getMapping({ index }).then((value) => value.body[index]);
     }
+
+    async get(index: string): Promise<SimpleJson> {
+        return await this.client.indices.get({ index }).then((value) => value.body as SimpleJson);
+    }
 }
 
 export default Elasticsearch6Client;

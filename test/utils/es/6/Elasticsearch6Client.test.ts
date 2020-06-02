@@ -94,6 +94,44 @@ describe('Elasticsearch6Client test', () => {
         await client.delete(index);
     });
 
+    it('get', async () => {
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
+        await client.createIndex(index, {
+            settings: {
+                index: {
+                    refresh_interval: '1s',
+                    number_of_shards: 1,
+                    number_of_replicas: 0
+                }
+            },
+            mappings: {
+                test: {
+                    properties: {
+                        test_name: {
+                            type: 'keyword'
+                        }
+                    }
+                }
+            }
+        });
+        const ret = await client.get(index);
+
+        expect((ret as any)[index].mappings).to.eql({
+            test: {
+                properties: {
+                    test_name: {
+                        type: 'keyword'
+                    }
+                }
+            }
+        });
+        expect((ret as any)[index].aliases).to.eql({});
+        expect((ret as any)[index].settings.index.refresh_interval).to.eql('1s');
+        expect((ret as any)[index].settings.index.number_of_shards).to.eql('1');
+        expect((ret as any)[index].settings.index.number_of_replicas).to.eql('0');
+        await client.delete(index);
+    });
+
     it('close client', async () => {
         await client.close();
         expect(client.healthCheck()).to.be.rejected;
