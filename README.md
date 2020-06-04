@@ -273,6 +273,9 @@ OPTIONS
   --[no-]init                                          If the init command has not been executed in advance, the
                                                        migration will be performed after initialization has been
                                                        processed.
+
+  --showDiff                                           Outputs the difference between before and after the migration at
+                                                       the end.
 ```
 
 _See code: [src/commands/migrate.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.3.2/src/commands/migrate.ts)_

@@ -1,3 +1,5 @@
+import type { SimpleJson } from '../../model/types';
+
 export default interface ElasticsearchClient {
     healthCheck(): Promise<{ status: string }>;
 
@@ -18,4 +20,8 @@ export default interface ElasticsearchClient {
     postDocument: (index: string, body?: any, id?: string) => Promise<any>;
 
     close: () => void;
+
+    getMapping: (index: string) => Promise<SimpleJson>;
+
+    get: (index: string) => Promise<SimpleJson>;
 }

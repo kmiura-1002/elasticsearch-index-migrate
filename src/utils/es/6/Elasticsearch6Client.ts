@@ -4,7 +4,7 @@ import { ApiResponse } from 'es6/lib/Transport';
 import { inject, injectable } from 'inversify';
 import { Bindings } from '../../../ioc.bindings';
 import ElasticsearchClient from '../ElasticsearchClient';
-import { ESConnectConfig, IndexSearchResults } from '../../../model/types';
+import { ESConnectConfig, IndexSearchResults, SimpleJson } from '../../../model/types';
 
 @injectable()
 class Elasticsearch6Client implements ElasticsearchClient {
@@ -78,6 +78,14 @@ class Elasticsearch6Client implements ElasticsearchClient {
 
     async delete(index: string | string[]) {
         return await this.client.indices.delete({ index });
+    }
+
+    async getMapping(index: string): Promise<SimpleJson> {
+        return await this.client.indices.getMapping({ index }).then((value) => value.body[index]);
+    }
+
+    async get(index: string): Promise<SimpleJson> {
+        return await this.client.indices.get({ index }).then((value) => value.body as SimpleJson);
     }
 }
 

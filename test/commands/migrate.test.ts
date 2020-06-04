@@ -30,6 +30,7 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
         .command(['migrate', '-i', 'test1'])
         .it('runs migrate', (ctx) => {
             expect(ctx.stdout).to.contain('Migration completed. (count: 1)');
+            expect(ctx.stdout).to.not.contain('Display of the result difference.');
         });
 
     test.stub(MigrationExecutor, 'migrate', () => Promise.resolve(undefined))
@@ -208,7 +209,6 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
 
     test.stub(create, 'createHistoryIndex', sinon.stub().returns(Promise.resolve()))
         .stub(MigrationExecutor, 'migrate', () => Promise.resolve(1))
-        .stub(cli, 'error', sinon.stub())
         .stub(cli, 'info', sinon.stub())
         .stub(
             EsUtils,
@@ -234,5 +234,56 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
             expect(info.calledWith('Create a migrate_history index for the first time.')).is.true;
             expect(info.calledWith('The creation of the index has been completed.')).is.true;
             expect(info.calledWith('Migration completed. (count: 1)')).is.true;
+        });
+
+    test.stub(types, 'MAPPING_HISTORY_INDEX_NAME', 'test2_migrate_history')
+        .stub(cli, 'info', sinon.stub())
+        .env({
+            ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
+            ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
+            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_HOST: 'http://localhost:9202'
+        })
+        .stdout()
+        .command(['migrate', '-i', 'test2', '--showDiff'])
+        .it('Output the index difference after migration(indexing)', async () => {
+            const info = cli.info as sinon.SinonStub;
+            expect(info.calledWith('Display of the result difference.')).is.true;
+        });
+
+    test.stub(types, 'MAPPING_HISTORY_INDEX_NAME', 'test7_migrate_history')
+        .stub(cli, 'info', sinon.stub())
+        .env({
+            ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
+            ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
+            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_HOST: 'http://localhost:9202'
+        })
+        .do(async () => {
+            const client = es7ClientContainer().get<ElasticsearchClient>(
+                Bindings.ElasticsearchClient
+            );
+            await client.createIndex('test7', {
+                settings: {
+                    index: {
+                        refresh_interval: '1s',
+                        number_of_shards: 1,
+                        number_of_replicas: 0
+                    }
+                },
+                mappings: {
+                    properties: {
+                        name: {
+                            type: 'text'
+                        }
+                    }
+                }
+            });
+        })
+        .stdout()
+        .command(['migrate', '-i', 'test7', '--showDiff'])
+        .it('Output the index difference after migration(add field)', async () => {
+            const info = cli.info as sinon.SinonStub;
+            expect(info.calledWith('Display of the result difference.')).is.true;
         });
 });
