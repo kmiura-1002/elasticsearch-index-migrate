@@ -1,7 +1,7 @@
 {
     "name": "elasticsearch-index-migrate",
     "description": "This software is a command line tool for version control and mapping changes of Elasticsearch mappings.",
-    "version": "0.3.2",
+    "version": "0.3.3",
     "author": "kmiura @kmiura-1002",
     "private": false,
     "bin": {
@@ -17,6 +17,7 @@
         "es6": "npm:@elastic/elasticsearch@^6.7.0",
         "es7": "npm:@elastic/elasticsearch@^7.0.0",
         "inversify": "^5.0.1",
+        "jsondiffpatch": "^0.4.1",
         "load-json-file": "^6.2.0",
         "prettier": "^2.0.5",
         "reflect-metadata": "^0.1.13",
