@@ -25,7 +25,7 @@ It supports versions 6.x and 7.x of Elasticsearch.
 * npm (>=6.9)  
 * elasticsearch 6.x and 7.x  
 
-This project has been tested with node.js(v10.15.3, v12.14.0), npm(6.14.3) and elasticsearch(6.8.6 and 7.5.2).
+This project has been tested with node.js(v10.15.3, v12.14.0), npm(6.14.3) and elasticsearch(6.8.9 and 7.7.0).
 
 # Usage
 <!-- usage -->
