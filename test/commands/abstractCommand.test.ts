@@ -185,4 +185,37 @@ describe('abstract command test', () => {
             )
         )
         .it('An error occurs if the version of elasticsearch is not specified');
+
+    test.env({
+        ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
+        ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'test_ELASTICSEARCH_MIGRATION_BASELINE_VERSION',
+        ELASTICSEARCH_VERSION: 'test_ELASTICSEARCH_VERSION',
+        ELASTICSEARCH_SSL: 'test_ELASTICSEARCH_SSL'
+    })
+        .stdout()
+        .command(['plan', '-i', 'test1'])
+        .catch((err) =>
+            expect(err.message).to.eq(
+                'No config. You can specify environment variables or files with the -O option and place config.json in ~/.config/elasticsearch-index-migrate. You should set one of these.'
+            )
+        )
+        .it('If SSL is specified and the HOST is not set, an error occurs.');
+
+    test.env({
+        ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
+        ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'test_ELASTICSEARCH_MIGRATION_BASELINE_VERSION',
+        ELASTICSEARCH_VERSION: 'test_ELASTICSEARCH_VERSION',
+        ELASTICSEARCH_USERNAME: 'test_ELASTICSEARCH_USERNAME',
+        ELASTICSEARCH_PASSWORD: 'test_ELASTICSEARCH_PASSWORD'
+    })
+        .stdout()
+        .command(['plan', '-i', 'test1'])
+        .catch((err) =>
+            expect(err.message).to.eq(
+                'No config. You can specify environment variables or files with the -O option and place config.json in ~/.config/elasticsearch-index-migrate. You should set one of these.'
+            )
+        )
+        .it(
+            'The error occurs if username and password are not provided when specifying the cloudId.'
+        );
 });
