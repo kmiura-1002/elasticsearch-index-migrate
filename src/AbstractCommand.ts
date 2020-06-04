@@ -102,8 +102,8 @@ export default abstract class AbstractCommand extends Command {
         if (
             migration_locations &&
             baseline_version &&
-            (elasticsearch_version ||
-                elasticsearch_host ||
+            elasticsearch_version &&
+            (elasticsearch_host ||
                 elasticsearch_ssl ||
                 elasticsearch_cloudid ||
                 elasticsearch_username ||

@@ -171,4 +171,18 @@ describe('abstract command test', () => {
             )
         )
         .it('error will occur if there are no settings');
+
+    test.env({
+        ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
+        ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'test_ELASTICSEARCH_MIGRATION_BASELINE_VERSION',
+        ELASTICSEARCH_HOST: 'http://0.0.0.0:9200/test_ELASTICSEARCH_HOST'
+    })
+        .stdout()
+        .command(['plan', '-i', 'test1'])
+        .catch((err) =>
+            expect(err.message).to.eq(
+                'No config. You can specify environment variables or files with the -O option and place config.json in ~/.config/elasticsearch-index-migrate. You should set one of these.'
+            )
+        )
+        .it('An error occurs if the version of elasticsearch is not specified');
 });
