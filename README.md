@@ -25,7 +25,7 @@ It supports versions 6.x and 7.x of Elasticsearch.
 * npm (>=6.9)  
 * elasticsearch 6.x and 7.x  
 
-This project has been tested with node.js(v10.15.3, v12.14.0), npm(6.14.3) and elasticsearch(6.8.6 and 7.5.2).
+This project has been tested with node.js(v10.15.3, v12.14.0), npm(6.14.3) and elasticsearch(6.8.9 and 7.7.0).
 
 # Usage
 <!-- usage -->
@@ -34,7 +34,7 @@ $ npm install -g elasticsearch-index-migrate
 $ elasticsearch-index-migrate COMMAND
 running command...
 $ elasticsearch-index-migrate (-v|--version|version)
-elasticsearch-index-migrate/0.3.3 darwin-x64 node-v12.14.0
+elasticsearch-index-migrate/0.3.4 darwin-x64 node-v12.14.0
 $ elasticsearch-index-migrate --help [COMMAND]
 USAGE
   $ elasticsearch-index-migrate COMMAND
@@ -228,7 +228,7 @@ OPTIONS
   -h, --help                                           show CLI help
 ```
 
-_See code: [src/commands/init.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.3.3/src/commands/init.ts)_
+_See code: [src/commands/init.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.3.4/src/commands/init.ts)_
 
 ## `elasticsearch-index-migrate migrate`
 
@@ -278,7 +278,7 @@ OPTIONS
                                                        the end.
 ```
 
-_See code: [src/commands/migrate.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.3.3/src/commands/migrate.ts)_
+_See code: [src/commands/migrate.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.3.4/src/commands/migrate.ts)_
 
 ## `elasticsearch-index-migrate plan`
 
@@ -325,7 +325,7 @@ OPTIONS
                                                        processed.
 ```
 
-_See code: [src/commands/plan.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.3.3/src/commands/plan.ts)_
+_See code: [src/commands/plan.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.3.4/src/commands/plan.ts)_
 <!-- commandsstop -->
 
 # Quick start with Docker
