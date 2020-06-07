@@ -30,4 +30,23 @@ describe('esExecutor test', () => {
         expect(ret).to.deep.eq({ statusCode: 200 });
         expect(stub.calledOnce).is.true;
     });
+
+    it('putTemplate', async () => {
+        const client = new MockElasticsearchClient();
+        const stub = sandbox.stub(client).putTemplate.returns(
+            Promise.resolve({
+                body: {
+                    acknowledged: true
+                }
+            })
+        );
+        const executor = esExecutor.get(MigrationTypes.INDEX_TEMPLATE) as ExecutorFnc;
+        const ret = await executor(client, {} as any);
+        expect(ret).to.deep.eq({
+            body: {
+                acknowledged: true
+            }
+        });
+        expect(stub.calledOnce).is.true;
+    });
 });

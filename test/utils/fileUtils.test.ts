@@ -9,11 +9,21 @@ import {
     loadMigrationScripts
 } from '../../src/utils/fileUtils';
 import { MockStats } from '../mock/MockStats';
+import { cli } from 'cli-ux';
 
 describe('fileUtils test', () => {
+    let sandbox: sinon.SinonSandbox;
+    before(() => {
+        sandbox = sinon.createSandbox();
+    });
+    afterEach(() => {
+        sandbox.restore();
+    });
+
     it('findFiles test', () => {
         const fsMock = sinon.mock(fs);
         fsMock.expects('readdirSync').once().returns(['test.text']);
+        fsMock.expects('existsSync').once().returns(true);
         fsMock.expects('statSync').once().returns(new MockStats());
         findFiles('', (data) => {
             expect(data).to.eq('test.text');
@@ -72,5 +82,12 @@ describe('fileUtils test', () => {
             },
             version: 'v1.0.0'
         });
+    });
+
+    it('Error when a file or directory is missing', () => {
+        const error = sandbox.stub(cli, 'error');
+        expect(() => findFiles('', (_data) => {})).to.throw('no such file or directory: ');
+        expect(error.calledOnce).is.true;
+        expect(error.calledWith('no such file or directory: ')).is.true;
     });
 });

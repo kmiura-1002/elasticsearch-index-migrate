@@ -126,6 +126,32 @@ describe('Elasticsearch7Client test', () => {
         await client.delete(index);
     });
 
+    it('put template, delete template', async () => {
+        const res = await client.putTemplate({
+            name: 'test_template',
+            order: 1,
+            create: true,
+            body: {
+                index_patterns: ['test_index_template'],
+                settings: {
+                    number_of_shards: 1
+                },
+                mappings: {
+                    properties: {
+                        host_name: {
+                            type: 'keyword'
+                        }
+                    }
+                }
+            }
+        });
+        expect(res.body).to.be.eql({
+            acknowledged: true
+        });
+        expect(res.meta.request.params.querystring).to.be.eql('order=1&create=true');
+        await client.deleteTemplate('test_template');
+    });
+
     it('close client', async () => {
         await client.close();
         expect(client.healthCheck()).to.be.rejected;

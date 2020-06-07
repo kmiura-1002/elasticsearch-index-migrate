@@ -5,6 +5,7 @@ import ElasticsearchClient from '../../../../src/utils/es/ElasticsearchClient';
 import { Bindings } from '../../../../src/ioc.bindings';
 import { es6ClientContainer } from '../../ioc-test';
 import * as chaiAsPromised from 'chai-as-promised';
+import { cli } from 'cli-ux';
 
 chai.use(chaiAsPromised);
 
@@ -130,6 +131,34 @@ describe('Elasticsearch6Client test', () => {
         expect((ret as any)[index].settings.index.number_of_shards).to.eql('1');
         expect((ret as any)[index].settings.index.number_of_replicas).to.eql('0');
         await client.delete(index);
+    });
+
+    it('put template, delete template', async () => {
+        const res = await client.putTemplate({
+            name: 'test_template',
+            order: 1,
+            create: true,
+            body: {
+                index_patterns: ['test_index_template'],
+                settings: {
+                    number_of_shards: 1
+                },
+                mappings: {
+                    _doc: {
+                        properties: {
+                            host_name: {
+                                type: 'keyword'
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        expect(res.body).to.be.eql({
+            acknowledged: true
+        });
+        expect(res.meta.request.params.querystring).to.be.eql('order=1&create=true');
+        await client.deleteTemplate('test_template');
     });
 
     it('close client', async () => {

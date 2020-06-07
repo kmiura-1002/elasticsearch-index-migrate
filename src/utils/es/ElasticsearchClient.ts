@@ -1,4 +1,4 @@
-import type { SimpleJson } from '../../model/types';
+import type { IndicesPutTemplate, SimpleJson } from '../../model/types';
 
 export default interface ElasticsearchClient {
     healthCheck(): Promise<{ status: string }>;
@@ -24,4 +24,8 @@ export default interface ElasticsearchClient {
     getMapping: (index: string) => Promise<SimpleJson>;
 
     get: (index: string) => Promise<SimpleJson>;
+
+    putTemplate: (param: IndicesPutTemplate) => Promise<any>;
+
+    deleteTemplate: (templateName: string) => Promise<any>;
 }

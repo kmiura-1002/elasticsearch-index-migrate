@@ -1,6 +1,6 @@
 import ElasticsearchClient from '../../src/utils/es/ElasticsearchClient';
 import { cli } from 'cli-ux';
-import { ClusterStatuses, SimpleJson } from '../../src/model/types';
+import { ClusterStatuses, IndicesPutTemplate, SimpleJson } from '../../src/model/types';
 
 export default class MockElasticsearchClient implements ElasticsearchClient {
     close() {
@@ -164,6 +164,22 @@ export default class MockElasticsearchClient implements ElasticsearchClient {
                         type: 'boolean'
                     }
                 }
+            }
+        });
+    }
+
+    putTemplate(_param: IndicesPutTemplate): Promise<any> {
+        return Promise.resolve({
+            body: {
+                acknowledged: true
+            }
+        });
+    }
+
+    deleteTemplate(_templateName: string): Promise<any> {
+        return Promise.resolve({
+            body: {
+                acknowledged: true
             }
         });
     }

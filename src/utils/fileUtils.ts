@@ -2,11 +2,16 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { ResolvedMigration } from '../model/types';
 import { ParsedPath } from 'path';
+import { cli } from 'cli-ux';
 
 export const indexNameRegexp = /[-_]/;
 export const fileNameRegexp = /^([v][0-9]+.[0-9]+.[0-9]+)__([0-9a-zA-Z]+)/;
 
 export function findFiles(dir: string, callback?: (data: string) => void) {
+    if (!fs.existsSync(path.relative(process.cwd(), dir))) {
+        cli.error(`no such file or directory: ${path.relative(process.cwd(), dir)}`);
+        throw new Error(`no such file or directory: ${path.relative(process.cwd(), dir)}`);
+    }
     const filenames = fs.readdirSync(path.relative(process.cwd(), dir));
     filenames.forEach((filename) => {
         const fullPath = path.join(dir, filename);

@@ -1,4 +1,3 @@
-/* eslint-env node, mocha */
 import 'mocha';
 import { expect } from 'chai';
 import ElasticsearchClient from '../../../src/utils/es/ElasticsearchClient';
