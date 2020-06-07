@@ -2,9 +2,12 @@ import { ParsedPath } from 'path';
 import { ApiResponse as ApiResponse6 } from 'es6';
 import { ApiResponse as ApiResponse7 } from 'es7';
 import { MigrationPlan } from '../executor/plan/MigrationPlan';
+import { IndicesPutTemplate as IndicesPutTemplate6 } from 'es6/api/requestParams';
+import { IndicesPutTemplate as IndicesPutTemplate7 } from 'es7/api/requestParams';
 
+export const MIGRATION_TARGET_TYPES = ['index', 'index_template'] as const;
 export const VERSION_REGEX = /^([v][0-9]+.[0-9]+.[0-9]+)/;
-
+export type IndicesPutTemplate = IndicesPutTemplate6 | IndicesPutTemplate7;
 export type ApiResponse<T = any, C = any> = ApiResponse6<T, C> | ApiResponse7<T, C>;
 export const MAPPING_HISTORY_INDEX_NAME = 'migrate_history';
 export interface ESConnectConfig {
@@ -55,7 +58,8 @@ export type MigrateIndex = {
 };
 export const MigrationTypes = {
     ADD_FIELD: 'ADD_FIELD',
-    CREATE_INDEX: 'CREATE_INDEX'
+    CREATE_INDEX: 'CREATE_INDEX',
+    INDEX_TEMPLATE: 'INDEX_TEMPLATE'
 } as const;
 
 export type MigrationType = typeof MigrationTypes[keyof typeof MigrationTypes];
