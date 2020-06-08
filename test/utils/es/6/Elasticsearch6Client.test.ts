@@ -132,6 +132,52 @@ describe('Elasticsearch6Client test', () => {
         await client.delete(index);
     });
 
+    it('delete document', async () => {
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
+        await client.createIndex(index, {
+            mappings: {
+                _doc: {
+                    properties: {
+                        test: {
+                            type: 'keyword'
+                        }
+                    }
+                }
+            }
+        });
+        await client
+            .postDocument(index, { test: 'foobaz' })
+            .then((value) => expect(value.statusCode).is.eq(201));
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        await client.search(index).then((value) => {
+            expect(value).to.be.an('array');
+            expect(value[0]).to.eql({
+                test: 'foobaz'
+            });
+        });
+
+        await client
+            .deleteDocument(index, {
+                query: {
+                    term: {
+                        test: {
+                            value: 'foobaz'
+                        }
+                    }
+                }
+            })
+            .then((value) => expect(value.statusCode).is.eq(200));
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        await client.search(index).then((value) => {
+            expect(value).to.be.an('array');
+            expect(value.length).to.eql(0);
+        });
+
+        await client.delete(index);
+    });
+
     it('close client', async () => {
         await client.close();
         expect(client.healthCheck()).to.be.rejected;
