@@ -167,10 +167,62 @@ elasticsearch/
 
 # Commands
 <!-- commands -->
+* [`elasticsearch-index-migrate clean`](#elasticsearch-index-migrate-clean)
 * [`elasticsearch-index-migrate help [COMMAND]`](#elasticsearch-index-migrate-help-command)
 * [`elasticsearch-index-migrate init`](#elasticsearch-index-migrate-init)
 * [`elasticsearch-index-migrate migrate`](#elasticsearch-index-migrate-migrate)
 * [`elasticsearch-index-migrate plan`](#elasticsearch-index-migrate-plan)
+
+## `elasticsearch-index-migrate clean`
+
+Delete all history stored in the migration_history index
+
+```
+USAGE
+  $ elasticsearch-index-migrate clean
+
+OPTIONS
+  -B, --baseline_version=baseline_version              Migrate from the baseline set in the
+                                                       ELASTICSEARCH_MIGRATION_BASELINE_VERSION environment variable
+
+  -C, --elasticsearch_cloudid=elasticsearch_cloudid    Connect to Elasticsearch with the value set in the
+                                                       ELASTICSEARCH_CLOUDID environment variable
+
+  -H, --elasticsearch_host=elasticsearch_host          Connect to Elasticsearch with the value set in the
+                                                       ELASTICSEARCH_HOST environment variable
+
+  -L, --migration_locations=migration_locations        Read the migration file from the directory set in the
+                                                       $ELASTICSEARCH_MIGRATION_LOCATIONS environment variable
+
+  -O, --option_file=option_file                        Load migration setting file (.json) from file path (Environment
+                                                       variables take precedence)
+
+  -P, --elasticsearch_password=elasticsearch_password  Connect to Elasticsearch with the value set in the
+                                                       ELASTICSEARCH_PASSWORD environment variable
+
+  -S, --elasticsearch_ssl=elasticsearch_ssl            Connect to Elasticsearch with the value set in the
+                                                       ELASTICSEARCH_SSL environment variable
+
+  -U, --elasticsearch_username=elasticsearch_username  Connect to Elasticsearch with the value set in the
+                                                       ELASTICSEARCH_USERNAME environment variable
+
+  -V, --elasticsearch_version=elasticsearch_version    Run migration with Elasticsearch version set in
+                                                       ELASTICSEARCH_VERSION environment variable
+
+  -h, --help                                           show CLI help
+
+  -i, --indexName=indexName                            (required) migration index name.
+
+  -t, --target=(history|index|all)                     [default: history] Selecting what to delete
+                                                       history : Delete the target index migration history from
+                                                       migration_history
+                                                       index : Not implemented
+                                                       all : Not implemented
+
+  -y, --yes                                            Always answer "yes" to any prompt that appears during processing
+```
+
+_See code: [src/commands/clean.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.3.4/src/commands/clean.ts)_
 
 ## `elasticsearch-index-migrate help [COMMAND]`
 

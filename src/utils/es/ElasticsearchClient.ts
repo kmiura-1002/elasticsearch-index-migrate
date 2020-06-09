@@ -24,4 +24,6 @@ export default interface ElasticsearchClient {
     getMapping: (index: string) => Promise<SimpleJson>;
 
     get: (index: string) => Promise<SimpleJson>;
+
+    deleteDocument: (indexName: string, body?: any) => Promise<any>;
 }
