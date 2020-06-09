@@ -57,8 +57,7 @@ export default class Clean extends AbstractCommand {
             cli.exit();
         }
         cli.info('Start delete data.');
-        cleanExecutor(client, flags.indexName, flags.target as CLEAN_TARGET).catch((reason) => {
-            cli.error(`An error occurred during the deletion process : ${JSON.stringify(reason)}`);
-        });
+        await cleanExecutor(client, flags.indexName, flags.target as CLEAN_TARGET);
+        cli.info('Finish delete data.');
     }
 }

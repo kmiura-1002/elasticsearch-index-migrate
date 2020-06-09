@@ -39,31 +39,7 @@ describe('clean command test', () => {
 
             const cleanExecutor = executor.cleanExecutor as sinon.SinonStub;
             expect(cleanExecutor.returned(Promise.resolve('success'))).is.true;
-        });
-
-    test.stub(cli, 'info', sinon.stub())
-        .stub(cli, 'error', sinon.stub())
-        .stub(cli, 'confirm', () => async () => true)
-        .stub(executor, 'cleanExecutor', sinon.stub().returns(Promise.reject(new Error('reject'))))
-        .env({
-            ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
-            ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
-            ELASTICSEARCH_HOST: 'http://localhost:9202'
-        })
-        .stdout()
-        .command(['clean', '-i', 'test1'])
-        .it('output an error when a deletion fails', () => {
-            const info = cli.info as sinon.SinonStub;
-            expect(info.calledWith('Delete test1 index history from migration history.')).is.true;
-            expect(info.calledWith('Start delete data.')).is.true;
-
-            const cleanExecutor = executor.cleanExecutor as sinon.SinonStub;
-            expect(cleanExecutor.returned(Promise.reject('reject'))).is.true;
-
-            const error = (cli.error as unknown) as sinon.SinonStub;
-            expect(error.called).is.true;
-            expect(error.calledWith('An error occurred during the deletion process : {}')).is.true;
+            expect(info.calledWith('Finish delete data.')).is.true;
         });
 
     // TODO DELETE
