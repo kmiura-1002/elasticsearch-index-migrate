@@ -85,6 +85,10 @@ class Elasticsearch7Client implements ElasticsearchClient {
     async get(index: string): Promise<SimpleJson> {
         return await this.client.indices.get({ index }).then((value) => value.body as SimpleJson);
     }
+
+    async deleteDocument(indexName: string, body: any): Promise<any> {
+        return await this.client.deleteByQuery({ index: indexName, body });
+    }
 }
 
 export default Elasticsearch7Client;
