@@ -4,7 +4,7 @@ import * as chai from 'chai';
 import ElasticsearchClient from '../../../../src/utils/es/ElasticsearchClient';
 import { Bindings } from '../../../../src/ioc.bindings';
 import { es6ClientContainer } from '../../ioc-test';
-import * as chaiAsPromised from 'chai-as-promised';
+import chaiAsPromised from 'chai-as-promised';
 
 chai.use(chaiAsPromised);
 

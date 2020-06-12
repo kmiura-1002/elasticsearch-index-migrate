@@ -5,7 +5,7 @@ import * as fileUtils from '../../src/utils/fileUtils';
 import { findAllFiles, findFiles } from '../../src/utils/fileUtils';
 import getElasticsearchClient from '../../src/utils/es/EsUtils';
 import MockElasticsearchClient from '../mock/MockElasticsearchClient';
-import * as fs from 'fs';
+import fs from 'fs';
 import { MigrationConfigType } from '../../src/model/types';
 import * as path from 'path';
 import * as util from '@oclif/config/lib/util';
@@ -440,7 +440,11 @@ describe('abstract command test', () => {
                 esClientStub.calledWith({
                     version: 'test_ELASTICSEARCH_VERSION',
                     connect: {
-                        host: 'http://0.0.0.0:9200/test_ELASTICSEARCH_HOST'
+                        host: 'http://0.0.0.0:9200/test_ELASTICSEARCH_HOST',
+                        sslCa: undefined,
+                        cloudId: undefined,
+                        username: undefined,
+                        password: undefined
                     }
                 })
             ).is.true;
@@ -478,7 +482,10 @@ describe('abstract command test', () => {
                     version: 'test_ELASTICSEARCH_VERSION',
                     connect: {
                         host: 'http://0.0.0.0:9200/test_ELASTICSEARCH_HOST',
-                        sslCa: 'test_ELASTICSEARCH_SSL'
+                        sslCa: 'test_ELASTICSEARCH_SSL',
+                        cloudId: undefined,
+                        username: undefined,
+                        password: undefined
                     }
                 })
             ).is.true;
@@ -516,6 +523,8 @@ describe('abstract command test', () => {
                 esClientStub.calledWith({
                     version: 'test_ELASTICSEARCH_VERSION',
                     connect: {
+                        host: undefined,
+                        sslCa: undefined,
                         cloudId: 'test_ELASTICSEARCH_CLOUDID',
                         username: 'test_ELASTICSEARCH_USERNAME',
                         password: 'test_ELASTICSEARCH_PASSWORD'
@@ -558,7 +567,11 @@ describe('abstract command test', () => {
                 esClientStub.calledWith({
                     version: 'test_ELASTICSEARCH_VERSION',
                     connect: {
-                        host: 'http://0.0.0.0:9200/test_ELASTICSEARCH_HOST'
+                        host: 'http://0.0.0.0:9200/test_ELASTICSEARCH_HOST',
+                        sslCa: undefined,
+                        cloudId: undefined,
+                        username: undefined,
+                        password: undefined
                     }
                 })
             ).is.true;
@@ -601,7 +614,10 @@ describe('abstract command test', () => {
                     version: 'test_ELASTICSEARCH_VERSION',
                     connect: {
                         host: 'http://0.0.0.0:9200/test_ELASTICSEARCH_HOST',
-                        sslCa: 'test_ELASTICSEARCH_SSL'
+                        sslCa: 'test_ELASTICSEARCH_SSL',
+                        cloudId: undefined,
+                        username: undefined,
+                        password: undefined
                     }
                 })
             ).is.true;
@@ -644,6 +660,8 @@ describe('abstract command test', () => {
                 esClientStub.calledWith({
                     version: 'test_ELASTICSEARCH_VERSION',
                     connect: {
+                        host: undefined,
+                        sslCa: undefined,
                         cloudId: 'test_ELASTICSEARCH_CLOUDID',
                         username: 'test_ELASTICSEARCH_USERNAME',
                         password: 'test_ELASTICSEARCH_PASSWORD'
