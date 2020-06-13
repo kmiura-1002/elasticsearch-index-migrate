@@ -1,5 +1,5 @@
 import 'mocha';
-import * as fs from 'fs';
+import fs from 'fs';
 import { expect } from 'chai';
 import * as sinon from 'sinon';
 import { ESConfig, ESConnectConfig } from '../../src/model/types';
