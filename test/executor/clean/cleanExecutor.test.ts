@@ -56,8 +56,7 @@ describe('CleanExecutor test', () => {
         const client: mockEsClient = {};
         const errorStub = sandbox.stub(cli, 'error');
         await cleanExecutor(client as ElasticsearchClient, 'test', 'all');
-        await cleanExecutor(client as ElasticsearchClient, 'test', 'index');
-        expect(errorStub.calledTwice).is.true;
+        expect(errorStub.calledOnce).is.true;
         expect(errorStub.calledWith('Not implemented. Aborting the process.')).is.true;
     });
 });
