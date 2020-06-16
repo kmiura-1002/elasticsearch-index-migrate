@@ -33,7 +33,26 @@ export async function cleanExecutor(
             });
             break;
         case 'all':
-            // TODO 後で実装する
-            cli.error('Not implemented. Aborting the process.');
+            await esClient
+                .deleteDocument(MAPPING_HISTORY_INDEX_NAME, {
+                    query: {
+                        term: {
+                            index_name: {
+                                value: indexName
+                            }
+                        }
+                    }
+                })
+                .catch((reason) => {
+                    cli.error(
+                        `An error occurred during the deletion process : ${JSON.stringify(reason)}`
+                    );
+                });
+            await esClient.delete(indexName).catch((reason) => {
+                cli.error(
+                    `An error occurred during the deletion process : ${JSON.stringify(reason)}`
+                );
+            });
+            break;
     }
 }

@@ -16,7 +16,7 @@ export default class Clean extends AbstractCommand {
         }),
         target: flags.enum({
             description:
-                'Selecting what to delete \nhistory : Delete the target index migration history from migration_history\nindex : Not implemented\nall : Not implemented',
+                'Selecting what to delete \nhistory : Delete the target index migration history from migration_history\nindex : Delete the target index from elasticsearch\nall : Delete both migration history and index',
             char: 't',
             default: 'history',
             options: [...cleanTargets]
@@ -40,13 +40,10 @@ export default class Clean extends AbstractCommand {
                 cli.info(`Delete ${flags.indexName} index from elasticsearch.`);
                 break;
             case 'all':
-                // TODO 後で実装する
-                // cli.info(`Delete ${flags.indexName} index from elasticsearch.`);
-                // cli.info(
-                //     `In addition to this,  ,Delete ${flags.indexName} index history from migration history.`
-                // );
-                cli.warn('Not implemented. Aborting the process.');
-                cli.exit();
+                cli.info(`Delete ${flags.indexName} index from elasticsearch.`);
+                cli.info(
+                    `In addition to this, Delete ${flags.indexName} index history from migration history.`
+                );
                 break;
         }
         if (!flags.yes && !(await cli.confirm('Do you delete data really ? (y/n)'))) {
