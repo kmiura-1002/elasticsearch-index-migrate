@@ -37,10 +37,7 @@ export default class Clean extends AbstractCommand {
                 cli.info(`Delete ${flags.indexName} index history from migration history.`);
                 break;
             case 'index':
-                // TODO 後で実装する
-                // cli.info(`Delete ${flags.indexName} index from elasticsearch.`);
-                cli.warn('Not implemented. Aborting the process.');
-                cli.exit();
+                cli.info(`Delete ${flags.indexName} index from elasticsearch.`);
                 break;
             case 'all':
                 // TODO 後で実装する

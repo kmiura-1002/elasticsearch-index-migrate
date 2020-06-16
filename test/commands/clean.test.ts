@@ -42,20 +42,25 @@ describe('clean command test', () => {
             expect(info.calledWith('Finish delete data.')).is.true;
         });
 
-    // TODO DELETE
-    test.stub(cli, 'warn', sinon.stub())
+    test.stub(cli, 'info', sinon.stub())
+        .stub(cli, 'confirm', () => async () => true)
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
             ELASTICSEARCH_VERSION: '7',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
+        .stub(executor, 'cleanExecutor', sinon.stub().returns(Promise.resolve('success')))
         .stdout()
         .command(['clean', '-i', 'test1', '-t', 'index'])
-        .exit()
-        .it('Unimplemented options should not be processed (target=index)', () => {
-            const warn = cli.warn as sinon.SinonStub;
-            expect(warn.calledWith('Not implemented. Aborting the process.')).is.true;
+        .it('index must be cleared(ES7)', () => {
+            const info = cli.info as sinon.SinonStub;
+            expect(info.calledWith('Delete test1 index from elasticsearch.')).is.true;
+            expect(info.calledWith('Start delete data.')).is.true;
+
+            const cleanExecutor = executor.cleanExecutor as sinon.SinonStub;
+            expect(cleanExecutor.returned(Promise.resolve('success'))).is.true;
+            expect(info.calledWith('Finish delete data.')).is.true;
         });
 
     // TODO DELETE

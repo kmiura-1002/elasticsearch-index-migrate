@@ -26,6 +26,12 @@ export async function cleanExecutor(
                 });
             break;
         case 'index':
+            await esClient.delete(indexName).catch((reason) => {
+                cli.error(
+                    `An error occurred during the deletion process : ${JSON.stringify(reason)}`
+                );
+            });
+            break;
         case 'all':
             // TODO 後で実装する
             cli.error('Not implemented. Aborting the process.');
