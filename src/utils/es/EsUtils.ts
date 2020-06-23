@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { ClientOptions as ClientOptions6 } from 'es6';
 import { ClientOptions as ClientOptions7 } from 'es7';
-import * as fs from 'fs';
+import fs from 'fs';
 import { Bindings } from '../../ioc.bindings';
 import ElasticsearchClient from './ElasticsearchClient';
 import { ESConfig, ESConnectConfig } from '../../model/types';

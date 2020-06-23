@@ -1,7 +1,7 @@
 {
     "name": "elasticsearch-index-migrate",
     "description": "This software is a command line tool for version control and mapping changes of Elasticsearch mappings.",
-    "version": "0.3.3",
+    "version": "0.4.0",
     "author": "kmiura @kmiura-1002",
     "private": false,
     "bin": {
@@ -12,13 +12,14 @@
         "@oclif/command": "^1.6.1",
         "@oclif/config": "^1.15.1",
         "@oclif/plugin-help": "^3.0.1",
+        "@types/lodash.merge": "^4.6.6",
         "cli-ux": "^5.4.6",
         "date-fns": "^2.13.0",
         "es6": "npm:@elastic/elasticsearch@^6.7.0",
         "es7": "npm:@elastic/elasticsearch@^7.0.0",
         "inversify": "^5.0.1",
         "jsondiffpatch": "^0.4.1",
-        "load-json-file": "^6.2.0",
+        "lodash.merge": "^4.6.2",
         "prettier": "^2.0.5",
         "reflect-metadata": "^0.1.13",
         "semver": "^7.3.2",
@@ -88,7 +89,8 @@
         "posttest": "yarn lint",
         "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
         "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
-        "version": "oclif-dev readme"
+        "version": "oclif-dev readme",
+        "docker:build": "docker build -t kmiura1002/elasticsearch-index-migrate:`npx -c 'echo \"$npm_package_version\"'` ./docker"
     },
     "types": "lib/index.d.ts",
     "husky": {

@@ -100,6 +100,10 @@ class Elasticsearch6Client implements ElasticsearchClient {
     async deleteTemplate(templateName: string): Promise<any> {
         return await this.client.indices.delete_template({ name: templateName });
     }
+
+    async deleteDocument(indexName: string, body: any): Promise<any> {
+        return await this.client.deleteByQuery({ index: indexName, body });
+    }
 }
 
 export default Elasticsearch6Client;

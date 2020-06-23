@@ -183,4 +183,8 @@ export default class MockElasticsearchClient implements ElasticsearchClient {
             }
         });
     }
+
+    deleteDocument(_indexName: string, _body: any): Promise<any> {
+        return Promise.resolve();
+    }
 }

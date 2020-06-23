@@ -4,7 +4,7 @@ import * as chai from 'chai';
 import ElasticsearchClient from '../../../../src/utils/es/ElasticsearchClient';
 import { Bindings } from '../../../../src/ioc.bindings';
 import { es7ClientContainer } from '../../ioc-test';
-import * as chaiAsPromised from 'chai-as-promised';
+import chaiAsPromised from 'chai-as-promised';
 
 chai.use(chaiAsPromised);
 
@@ -150,6 +150,50 @@ describe('Elasticsearch7Client test', () => {
         });
         expect(res.meta.request.params.querystring).to.be.eql('order=1&create=true');
         await client.deleteTemplate('test_template');
+    });
+
+    it('delete document', async () => {
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
+        await client.createIndex(index, {
+            mappings: {
+                properties: {
+                    test: {
+                        type: 'keyword'
+                    }
+                }
+            }
+        });
+        await client
+            .postDocument(index, { test: 'foobaz' })
+            .then((value) => expect(value.statusCode).is.eq(201));
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        await client.search(index).then((value) => {
+            expect(value).to.be.an('array');
+            expect(value[0]).to.eql({
+                test: 'foobaz'
+            });
+        });
+
+        await client
+            .deleteDocument(index, {
+                query: {
+                    term: {
+                        test: {
+                            value: 'foobaz'
+                        }
+                    }
+                }
+            })
+            .then((value) => expect(value.statusCode).is.eq(200));
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        await client.search(index).then((value) => {
+            expect(value).to.be.an('array');
+            expect(value.length).to.eql(0);
+        });
+
+        await client.delete(index);
     });
 
     it('close client', async () => {

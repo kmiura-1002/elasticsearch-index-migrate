@@ -28,4 +28,6 @@ export default interface ElasticsearchClient {
     putTemplate: (param: IndicesPutTemplate) => Promise<any>;
 
     deleteTemplate: (templateName: string) => Promise<any>;
+
+    deleteDocument: (indexName: string, body?: any) => Promise<any>;
 }

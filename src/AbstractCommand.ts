@@ -1,10 +1,10 @@
 import { Command, flags } from '@oclif/command';
 import { loadJSON } from '@oclif/config/lib/util';
 import { MigrationConfigType } from './model/types';
-import * as loadJsonFile from 'load-json-file';
-import * as path from 'path';
-import * as fs from 'fs';
+import path from 'path';
+import fs from 'fs';
 import { cli } from 'cli-ux';
+import merge from 'lodash.merge';
 
 export const DefaultOptions = {
     help: flags.help({ char: 'h' }),
@@ -126,8 +126,60 @@ export default abstract class AbstractCommand extends Command {
                     baselineVersion: baseline_version
                 }
             };
+        } else if (
+            ((elasticsearch_ssl && elasticsearch_host) ||
+                elasticsearch_host ||
+                (elasticsearch_cloudid && elasticsearch_username && elasticsearch_password)) &&
+            option_file
+        ) {
+            this.migrationConfig = merge(
+                {
+                    elasticsearch: {
+                        connect: {
+                            host: elasticsearch_host,
+                            sslCa: elasticsearch_ssl,
+                            cloudId: elasticsearch_cloudid,
+                            username: elasticsearch_username,
+                            password: elasticsearch_password
+                        },
+                        version: elasticsearch_version
+                    },
+                    migration: {
+                        locations: [''],
+                        baselineVersion: ''
+                    }
+                },
+                { ...(await loadJSON(option_file)) }
+            );
+        } else if (
+            ((elasticsearch_ssl && elasticsearch_host) ||
+                elasticsearch_host ||
+                (elasticsearch_cloudid && elasticsearch_username && elasticsearch_password)) &&
+            fs.existsSync(path.join(this.config.configDir, 'config.json'))
+        ) {
+            this.migrationConfig = merge(
+                {
+                    elasticsearch: {
+                        connect: {
+                            host: elasticsearch_host,
+                            sslCa: elasticsearch_ssl,
+                            cloudId: elasticsearch_cloudid,
+                            username: elasticsearch_username,
+                            password: elasticsearch_password
+                        },
+                        version: elasticsearch_version
+                    },
+                    migration: {
+                        locations: [''],
+                        baselineVersion: ''
+                    }
+                },
+                {
+                    ...(await loadJSON(path.join(this.config.configDir, 'config.json')))
+                } as MigrationConfigType
+            );
         } else if (option_file) {
-            this.migrationConfig = { ...(await loadJsonFile<MigrationConfigType>(option_file)) };
+            this.migrationConfig = { ...(await loadJSON(option_file)) };
         } else if (fs.existsSync(path.join(this.config.configDir, 'config.json'))) {
             this.migrationConfig = {
                 ...(await loadJSON(path.join(this.config.configDir, 'config.json')))

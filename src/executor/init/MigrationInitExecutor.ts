@@ -1,8 +1,8 @@
 import ElasticsearchClient from '../../utils/es/ElasticsearchClient';
 import { MAPPING_HISTORY_INDEX_NAME } from '../../model/types';
 import { cli } from 'cli-ux';
-import * as v7Mapping from '../../resources/mapping/migrate_history_esV7.json';
-import * as v6Mapping from '../../resources/mapping/migrate_history_esV6.json';
+import v7Mapping from '../../resources/mapping/migrate_history_esV7.json';
+import v6Mapping from '../../resources/mapping/migrate_history_esV6.json';
 
 export async function createHistoryIndex(esClient: ElasticsearchClient, esVersion: string) {
     const mappingData = esVersion === '7' ? v7Mapping : v6Mapping;
