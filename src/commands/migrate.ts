@@ -8,6 +8,7 @@ import getElasticsearchClient, { usedEsVersion } from '../utils/es/EsUtils';
 import {
     MAPPING_HISTORY_INDEX_NAME,
     MigrateIndex,
+    MIGRATION_TARGET_TYPES,
     MigrationPlanContext,
     SimpleJson
 } from '../model/types';
@@ -17,6 +18,7 @@ import AbstractCommand, { DefaultOptions } from '../AbstractCommand';
 import { createHistoryIndex } from '../executor/init/MigrationInitExecutor';
 import * as JSONDiffPatch from 'jsondiffpatch';
 import { Delta } from 'jsondiffpatch';
+import * as path from 'path';
 
 export default class Migrate extends AbstractCommand {
     static description =
@@ -38,12 +40,22 @@ export default class Migrate extends AbstractCommand {
             description:
                 'Outputs the difference between before and after the migration at the end.',
             default: false
+        }),
+        type: flags.enum({
+            description:
+                'Selecting the target of the migration \nindex : Migration to an index\nindex_template : Migration of the index template',
+            char: 't',
+            default: 'index',
+            options: [...MIGRATION_TARGET_TYPES]
         })
     };
 
     async run() {
         const { flags } = this.parse(Migrate);
-        const locations = this.migrationConfig.migration.locations;
+        const migrationType = flags.type === 'index' ? 'indices' : 'templates';
+        const locations = this.migrationConfig.migration.locations.map((value) =>
+            path.join(value, migrationType)
+        );
         const baselineVersion = this.migrationConfig.migration.baselineVersion;
         const migrationFilePaths: string[] = findAllFiles(locations);
         const migrationFileParsedPath = loadMigrationScriptFilePaths(

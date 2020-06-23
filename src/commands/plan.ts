@@ -4,13 +4,19 @@ import {
     loadMigrationScriptFilePaths,
     loadMigrationScripts
 } from '../utils/fileUtils';
-import { MigrateIndex, MigrationPlanContext, MAPPING_HISTORY_INDEX_NAME } from '../model/types';
+import {
+    MigrateIndex,
+    MigrationPlanContext,
+    MAPPING_HISTORY_INDEX_NAME,
+    MIGRATION_TARGET_TYPES
+} from '../model/types';
 import getElasticsearchClient, { usedEsVersion } from '../utils/es/EsUtils';
 import MigrationPlanExecutor from '../executor/plan/MigrationPlanExecutor';
 import makeDetail from '../utils/makeDetail';
 import { cli } from 'cli-ux';
 import AbstractCommand, { DefaultOptions } from '../AbstractCommand';
 import { createHistoryIndex } from '../executor/init/MigrationInitExecutor';
+import * as path from 'path';
 
 export default class Plan extends AbstractCommand {
     static description = 'Outputs the migration execution plan.';
@@ -26,12 +32,22 @@ export default class Plan extends AbstractCommand {
             description:
                 'If the init command has not been executed in advance, the migration will be performed after initialization has been processed.',
             default: true
+        }),
+        type: flags.enum({
+            description:
+                'Selecting the target of the migration \nindex : Migration to an index\nindex_template : Migration of the index template',
+            char: 't',
+            default: 'index',
+            options: [...MIGRATION_TARGET_TYPES]
         })
     };
 
     async run() {
         const { flags } = this.parse(Plan);
-        const locations = this.migrationConfig.migration.locations;
+        const migrationType = flags.type === 'index' ? 'indices' : 'templates';
+        const locations = this.migrationConfig.migration.locations.map((value) =>
+            path.join(value, migrationType)
+        );
         const baselineVersion = this.migrationConfig.migration.baselineVersion;
         const migrationFilePaths: string[] = findAllFiles(locations);
         const migrationFileParsedPath = loadMigrationScriptFilePaths(
