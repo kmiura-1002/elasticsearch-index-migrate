@@ -90,7 +90,8 @@ describe('abstract command test', () => {
             expect(process.env.ELASTICSEARCH_USERNAME).to.equal('test_ELASTICSEARCH_USERNAME');
             expect(process.env.ELASTICSEARCH_PASSWORD).to.equal('test_ELASTICSEARCH_PASSWORD');
 
-            expect(findAllFilesStub.calledWith([`${process.cwd()}/test/data/migration`])).is.true;
+            expect(findAllFilesStub.calledWith([`${process.cwd()}/test/data/migration/indices`])).is
+                .true;
             expect(
                 esClientStub.calledWith({
                     version: 'test_ELASTICSEARCH_VERSION',
@@ -134,7 +135,7 @@ describe('abstract command test', () => {
             const findAllFilesStub = findAllFiles as sinon.SinonStub;
             const esClientStub = getElasticsearchClient as sinon.SinonStub;
 
-            expect(findAllFilesStub.calledWith(['migration'])).is.true;
+            expect(findAllFilesStub.calledWith(['migration/indices'])).is.true;
             expect(
                 esClientStub.calledWith({
                     version: '6',
@@ -159,9 +160,11 @@ describe('abstract command test', () => {
                 .withArgs('test_location')
                 .callsFake((dir: string[]) => {
                     const paths: string[] = [];
-                    dir.map(() => `${process.cwd()}/test/data/migration`).forEach((value) => {
-                        findFiles(value, (data) => paths.push(data));
-                    });
+                    dir.map(() => `${process.cwd()}/test/data/migration/indices`).forEach(
+                        (value) => {
+                            findFiles(value, (data) => paths.push(data));
+                        }
+                    );
                     return paths;
                 })
         )
@@ -169,7 +172,7 @@ describe('abstract command test', () => {
         .command(['plan', '-i', 'test1'])
         .it('oclif custom config loading test', (ctx) => {
             const findAllFilesStub = findAllFiles as sinon.SinonStub;
-            expect(findAllFilesStub.calledWith(['test_location'])).is.true;
+            expect(findAllFilesStub.calledWith(['test_location/indices'])).is.true;
             expect(ctx.stdout).to.contain(
                 'Version Description Type      Installedon State   \nv1.0.0  description ADD_FIELD             PENDING \n'
             );
@@ -271,7 +274,8 @@ describe('abstract command test', () => {
             expect(process.env.ELASTICSEARCH_USERNAME).to.equal(undefined);
             expect(process.env.ELASTICSEARCH_PASSWORD).to.equal(undefined);
 
-            expect(findAllFilesStub.calledWith([`${process.cwd()}/test/data/migration`])).is.true;
+            expect(findAllFilesStub.calledWith([`${process.cwd()}/test/data/migration/indices`])).is
+                .true;
             expect(
                 esClientStub.calledWith({
                     version: 'test_ELASTICSEARCH_VERSION',
@@ -331,7 +335,8 @@ describe('abstract command test', () => {
             expect(process.env.ELASTICSEARCH_USERNAME).to.equal(undefined);
             expect(process.env.ELASTICSEARCH_PASSWORD).to.equal(undefined);
 
-            expect(findAllFilesStub.calledWith([`${process.cwd()}/test/data/migration`])).is.true;
+            expect(findAllFilesStub.calledWith([`${process.cwd()}/test/data/migration/indices`])).is
+                .true;
             expect(
                 esClientStub.calledWith({
                     version: 'test_ELASTICSEARCH_VERSION',
@@ -392,8 +397,9 @@ describe('abstract command test', () => {
                 expect(process.env.ELASTICSEARCH_USERNAME).to.equal('test_ELASTICSEARCH_USERNAME');
                 expect(process.env.ELASTICSEARCH_PASSWORD).to.equal('test_ELASTICSEARCH_PASSWORD');
 
-                expect(findAllFilesStub.calledWith([`${process.cwd()}/test/data/migration`])).is
-                    .true;
+                expect(
+                    findAllFilesStub.calledWith([`${process.cwd()}/test/data/migration/indices`])
+                ).is.true;
                 expect(
                     esClientStub.calledWith({
                         version: 'test_ELASTICSEARCH_VERSION',
@@ -435,7 +441,7 @@ describe('abstract command test', () => {
             const findAllFilesStub = findAllFiles as sinon.SinonStub;
             const esClientStub = getElasticsearchClient as sinon.SinonStub;
 
-            expect(findAllFilesStub.calledWith(['test_location'])).is.true;
+            expect(findAllFilesStub.calledWith(['test_location/indices'])).is.true;
             expect(
                 esClientStub.calledWith({
                     version: 'test_ELASTICSEARCH_VERSION',
@@ -476,7 +482,7 @@ describe('abstract command test', () => {
             const findAllFilesStub = findAllFiles as sinon.SinonStub;
             const esClientStub = getElasticsearchClient as sinon.SinonStub;
 
-            expect(findAllFilesStub.calledWith(['test_location'])).is.true;
+            expect(findAllFilesStub.calledWith(['test_location/indices'])).is.true;
             expect(
                 esClientStub.calledWith({
                     version: 'test_ELASTICSEARCH_VERSION',
@@ -518,7 +524,7 @@ describe('abstract command test', () => {
             const findAllFilesStub = findAllFiles as sinon.SinonStub;
             const esClientStub = getElasticsearchClient as sinon.SinonStub;
 
-            expect(findAllFilesStub.calledWith(['test_location'])).is.true;
+            expect(findAllFilesStub.calledWith(['test_location/indices'])).is.true;
             expect(
                 esClientStub.calledWith({
                     version: 'test_ELASTICSEARCH_VERSION',
@@ -575,7 +581,7 @@ describe('abstract command test', () => {
                     }
                 })
             ).is.true;
-            expect(findAllFilesStub.calledWith(['test_location'])).is.true;
+            expect(findAllFilesStub.calledWith(['test_location/indices'])).is.true;
             expect(ctx.stdout).to.contain(
                 'Version Description Type      Installedon State   \nv1.0.0  description ADD_FIELD             PENDING \n'
             );
@@ -621,7 +627,7 @@ describe('abstract command test', () => {
                     }
                 })
             ).is.true;
-            expect(findAllFilesStub.calledWith(['test_location'])).is.true;
+            expect(findAllFilesStub.calledWith(['test_location/indices'])).is.true;
             expect(ctx.stdout).to.contain(
                 'Version Description Type      Installedon State   \nv1.0.0  description ADD_FIELD             PENDING \n'
             );
@@ -668,7 +674,7 @@ describe('abstract command test', () => {
                     }
                 })
             ).is.true;
-            expect(findAllFilesStub.calledWith(['test_location'])).is.true;
+            expect(findAllFilesStub.calledWith(['test_location/indices'])).is.true;
             expect(ctx.stdout).to.contain(
                 'Version Description Type      Installedon State   \nv1.0.0  description ADD_FIELD             PENDING \n'
             );
