@@ -59,18 +59,27 @@ export type MigrateIndex = {
 export const MigrationTypes = {
     ADD_FIELD: 'ADD_FIELD',
     CREATE_INDEX: 'CREATE_INDEX',
-    INDEX_TEMPLATE: 'INDEX_TEMPLATE'
+    CREATE_OR_UPDATE_INDEX_TEMPLATE: 'CREATE_OR_UPDATE_INDEX_TEMPLATE'
 } as const;
 
 export type MigrationType = typeof MigrationTypes[keyof typeof MigrationTypes];
 
 export type ResolvedMigration = {
     type: MigrationType;
-    index_name: string;
+    index_name: string; // TODO index_nameは削除したい
     version: string;
     description: string;
     physicalLocation: ParsedPath;
     migrate_script: any;
+};
+
+export type ResolvedTemplateMigration = ResolvedMigration & {
+    include_type_name?: boolean;
+    order?: number;
+    create?: boolean;
+    timeout?: string;
+    master_timeout?: string;
+    flat_settings?: boolean; // only es7
 };
 
 export type AppliedMigration = {
