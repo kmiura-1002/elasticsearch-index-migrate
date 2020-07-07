@@ -24,7 +24,7 @@ export default class Plan extends AbstractCommand {
         ...DefaultOptions,
         indexName: flags.string({
             char: 'i',
-            description: 'migration index name.',
+            description: 'migration index name or index template name(the name of the template).',
             required: true
         }),
         init: flags.boolean({
