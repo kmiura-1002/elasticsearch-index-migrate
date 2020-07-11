@@ -170,4 +170,20 @@ describe('plan command test', () => {
             expect(info.calledWith('The creation of the index has been completed.')).is.true;
             expect(info.calledWith('Migration completed. (count: 1)')).is.true;
         });
+
+    test.stub(EsUtils, 'default', () => new MockElasticsearchClient())
+        .env({
+            ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
+            ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
+            ELASTICSEARCH_VERSION: '6',
+            ELASTICSEARCH_HOST: 'http://localhost:9201'
+        })
+        .stdout()
+        .command(['plan', '-i', 'test1', '-t', 'index_template', '--init'])
+        .it("output of the template's execution plan.", (ctx) => {
+            expect(ctx.stdout).to.contain(
+                'Version Description         Type                            Installedon State   \n' +
+                    'v1.0.0  test index template CREATE_OR_UPDATE_INDEX_TEMPLATE             PENDING \n'
+            );
+        });
 });

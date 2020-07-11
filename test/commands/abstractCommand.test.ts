@@ -553,9 +553,11 @@ describe('abstract command test', () => {
                 .withArgs('test_location')
                 .callsFake((dir: string[]) => {
                     const paths: string[] = [];
-                    dir.map(() => `${process.cwd()}/test/data/migration`).forEach((value) => {
-                        findFiles(value, (data) => paths.push(data));
-                    });
+                    dir.map(() => `${process.cwd()}/test/data/migration/indices`).forEach(
+                        (value) => {
+                            findFiles(value, (data) => paths.push(data));
+                        }
+                    );
                     return paths;
                 })
         )
@@ -598,9 +600,11 @@ describe('abstract command test', () => {
                 .withArgs('test_location')
                 .callsFake((dir: string[]) => {
                     const paths: string[] = [];
-                    dir.map(() => `${process.cwd()}/test/data/migration`).forEach((value) => {
-                        findFiles(value, (data) => paths.push(data));
-                    });
+                    dir.map(() => `${process.cwd()}/test/data/migration/indices`).forEach(
+                        (value) => {
+                            findFiles(value, (data) => paths.push(data));
+                        }
+                    );
                     return paths;
                 })
         )
@@ -644,9 +648,11 @@ describe('abstract command test', () => {
                 .withArgs('test_location')
                 .callsFake((dir: string[]) => {
                     const paths: string[] = [];
-                    dir.map(() => `${process.cwd()}/test/data/migration`).forEach((value) => {
-                        findFiles(value, (data) => paths.push(data));
-                    });
+                    dir.map(() => `${process.cwd()}/test/data/migration/indices`).forEach(
+                        (value) => {
+                            findFiles(value, (data) => paths.push(data));
+                        }
+                    );
                     return paths;
                 })
         )

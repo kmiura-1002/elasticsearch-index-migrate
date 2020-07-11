@@ -40,7 +40,9 @@ describe('esExecutor test', () => {
                 }
             })
         );
-        const executor = esExecutor.get(MigrationTypes.INDEX_TEMPLATE) as ExecutorFnc;
+        const executor = esExecutor.get(
+            MigrationTypes.CREATE_OR_UPDATE_INDEX_TEMPLATE
+        ) as ExecutorFnc;
         const ret = await executor(client, {} as any);
         expect(ret).to.deep.eq({
             body: {
