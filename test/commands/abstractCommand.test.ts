@@ -246,7 +246,6 @@ describe('abstract command test', () => {
                 return paths;
             })
         )
-
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION:
@@ -683,6 +682,73 @@ describe('abstract command test', () => {
             expect(findAllFilesStub.calledWith(['test_location/indices'])).is.true;
             expect(ctx.stdout).to.contain(
                 'Version Description Type      Installedon State   \nv1.0.0  description ADD_FIELD             PENDING \n'
+            );
+        });
+
+    test.stub(EsUtils, 'default', sinon.stub().returns(new MockElasticsearchClient()))
+        .stub(
+            fileUtils,
+            'findAllFiles',
+            sinon.stub().callsFake((dir: string[]) => {
+                const paths: string[] = [];
+                dir.forEach((value) => {
+                    findFiles(value, (data) => paths.push(data));
+                });
+                return paths;
+            })
+        )
+        .env({
+            ELASTICSEARCH_MIGRATION_BASELINE_VERSION:
+                'test_ELASTICSEARCH_MIGRATION_BASELINE_VERSION',
+            ELASTICSEARCH_VERSION: 'test_ELASTICSEARCH_VERSION',
+            ELASTICSEARCH_HOST: 'http://0.0.0.0:9200/test_ELASTICSEARCH_HOST'
+        })
+        .stdout()
+        .command([
+            'plan',
+            '-i',
+            'test1',
+            '-L',
+            `${process.cwd()}/test/data/migration`,
+            `${process.cwd()}/test/data/test_location`
+        ])
+        .it('The ability to specify multiple locations', (ctx) => {
+            const findAllFilesStub = findAllFiles as sinon.SinonStub;
+            const esClientStub = getElasticsearchClient as sinon.SinonStub;
+            expect(process.env.ELASTICSEARCH_MIGRATION_LOCATIONS).to.equal(undefined);
+            expect(process.env.ELASTICSEARCH_MIGRATION_BASELINE_VERSION).to.equal(
+                'test_ELASTICSEARCH_MIGRATION_BASELINE_VERSION'
+            );
+            expect(process.env.ELASTICSEARCH_VERSION).to.equal('test_ELASTICSEARCH_VERSION');
+            expect(process.env.ELASTICSEARCH_HOST).to.equal(
+                'http://0.0.0.0:9200/test_ELASTICSEARCH_HOST'
+            );
+            expect(process.env.ELASTICSEARCH_SSL).to.equal(undefined);
+            expect(process.env.ELASTICSEARCH_CLOUDID).to.equal(undefined);
+            expect(process.env.ELASTICSEARCH_USERNAME).to.equal(undefined);
+            expect(process.env.ELASTICSEARCH_PASSWORD).to.equal(undefined);
+
+            expect(
+                findAllFilesStub.calledWith([
+                    `${process.cwd()}/test/data/migration/indices`,
+                    `${process.cwd()}/test/data/test_location/indices`
+                ])
+            ).is.true;
+            expect(
+                esClientStub.calledWith({
+                    version: 'test_ELASTICSEARCH_VERSION',
+                    connect: {
+                        host: 'http://0.0.0.0:9200/test_ELASTICSEARCH_HOST',
+                        sslCa: undefined,
+                        cloudId: undefined,
+                        username: undefined,
+                        password: undefined
+                    }
+                })
+            ).is.true;
+            expect(ctx.stdout).to.contain(
+                'Version Description Type      Installedon State   \n' +
+                    'v1.0.0  description ADD_FIELD             PENDING \n'
             );
         });
 });
