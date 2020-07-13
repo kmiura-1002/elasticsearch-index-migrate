@@ -175,8 +175,8 @@ describe('plan command test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '6',
-            ELASTICSEARCH_HOST: 'http://localhost:9201'
+            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
         .command(['plan', '-i', 'test1', '-t', 'index_template', '--init'])
