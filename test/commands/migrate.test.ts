@@ -286,4 +286,39 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
             const info = cli.info as sinon.SinonStub;
             expect(info.calledWith('Display of the result difference.')).is.true;
         });
+
+    // TODO type template
+    // test.stub(types, 'MAPPING_HISTORY_INDEX_NAME', 'test5_migrate_history')
+    //     .stub(cli, 'info', sinon.stub())
+    //     .env({
+    //         ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
+    //         ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
+    //         ELASTICSEARCH_VERSION: '7',
+    //         ELASTICSEARCH_HOST: 'http://localhost:9202'
+    //     })
+    //     .stdout()
+    //     .do(async () => {
+    //         const testMigrateHistory = 'test5_migrate_history';
+    //         const client = es7ClientContainer().get<ElasticsearchClient>(
+    //             Bindings.ElasticsearchClient
+    //         );
+    //         const history: MigrateIndex = {
+    //             index_name: 'test5',
+    //             migrate_version: 'v1.0.0',
+    //             description: '',
+    //             script_name: 'v1.0.0__create_index.json',
+    //             script_type: 'CREATE_INDEX',
+    //             installed_on: '2020-01-01T00:00:00',
+    //             execution_time: 1,
+    //             success: true
+    //         };
+    //         await client.postDocument(testMigrateHistory, history);
+    //         // Processing to wait for elasticsearch refresh time
+    //         await new Promise((resolve) => setTimeout(resolve, 2000));
+    //     })
+    //     .command(['migrate', '-i', 'test5'])
+    //     .it('There is no error if you run it again after the migration is done.ff', async () => {
+    //         const info = cli.info as sinon.SinonStub;
+    //         expect(info.calledWith('There was no migration target.')).is.true;
+    //     });
 });

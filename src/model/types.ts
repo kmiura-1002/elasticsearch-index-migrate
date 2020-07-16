@@ -66,20 +66,21 @@ export type MigrationType = typeof MigrationTypes[keyof typeof MigrationTypes];
 
 export type ResolvedMigration = {
     type: MigrationType;
-    index_name: string; // TODO index_nameは削除したい
+    // index_name: string; // TODO index_nameは削除したい
     version: string;
     description: string;
     physicalLocation: ParsedPath;
-    migrate_script: any;
+    migrate_script: any | ResolvedTemplateMigration;
 };
 
-export type ResolvedTemplateMigration = ResolvedMigration & {
+export type ResolvedTemplateMigration = {
     include_type_name?: boolean;
     order?: number;
     create?: boolean;
     timeout?: string;
     master_timeout?: string;
     flat_settings?: boolean; // only es7
+    migrate_script: any;
 };
 
 export type AppliedMigration = {

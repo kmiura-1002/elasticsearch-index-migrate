@@ -95,7 +95,6 @@ describe('makeDetail test', () => {
                     type: MigrationTypes.CREATE_INDEX,
                     version: 'v1.0.0',
                     description: '',
-                    index_name: 'test',
                     physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
                 }
             ],

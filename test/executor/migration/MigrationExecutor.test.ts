@@ -59,7 +59,6 @@ describe('MigrationExecutor test', () => {
                 type: MigrationTypes.CREATE_INDEX,
                 version: 'v1.0.0',
                 description: '',
-                index_name: 'test',
                 physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
             },
             {
@@ -72,7 +71,7 @@ describe('MigrationExecutor test', () => {
                 success: true
             }
         );
-        const history = makeMigrateHistory(info, 1, true);
+        const history = makeMigrateHistory('test', info, 1, true);
 
         expect(history).to.be.deep.include({
             index_name: 'test',
@@ -113,7 +112,6 @@ describe('MigrationExecutor test', () => {
                 type: MigrationTypes.CREATE_INDEX,
                 version: 'v1.0.1',
                 description: '',
-                index_name: 'test',
                 physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
             },
             {
@@ -127,7 +125,7 @@ describe('MigrationExecutor test', () => {
             }
         );
 
-        const ret = await applyMigration(tmpClient, info);
+        const ret = await applyMigration('test', tmpClient, info);
         expect(ret).is.eq(1);
         expect(createIndexStub.calledOnce).is.true;
         expect(postDocumentStub.calledOnce).is.true;
@@ -163,7 +161,6 @@ describe('MigrationExecutor test', () => {
                 type: MigrationTypes.ADD_FIELD,
                 version: 'v1.0.1',
                 description: '',
-                index_name: 'test',
                 physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
             },
             {
@@ -177,7 +174,7 @@ describe('MigrationExecutor test', () => {
             }
         );
 
-        const ret = await applyMigration(tmpClient, info);
+        const ret = await applyMigration('test', tmpClient, info);
         expect(ret).is.eq(1);
         expect(putMappingStub.calledOnce).is.true;
         expect(postDocumentStub.calledOnce).is.true;
@@ -198,7 +195,7 @@ describe('MigrationExecutor test', () => {
             success: true
         });
 
-        const ret = await applyMigration({} as ElasticsearchClient, info);
+        const ret = await applyMigration('', {} as ElasticsearchClient, info);
         expect(ret).is.eq(0);
         expect(cliWarnStub.calledOnce).is.true;
         expect(cliWarnStub.calledWith('No migration target.')).is.true;
@@ -211,13 +208,13 @@ describe('MigrationExecutor test', () => {
         const cliInfoStub = sandbox.stub(cli, 'info');
         const debugStub = sandbox.stub(cli, 'debug');
         const ret = await MigrationExecutor.migrate(
+            'test',
             [
                 {
                     migrate_script: {},
                     type: MigrationTypes.ADD_FIELD,
                     version: 'v1.0.1',
                     description: '',
-                    index_name: 'test',
                     physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
                 }
             ],
@@ -250,13 +247,13 @@ describe('MigrationExecutor test', () => {
         esUtilsStub.returns(new MockElasticsearchClient());
         expect(
             migrate(
+                'test',
                 [
                     {
                         migrate_script: {},
                         type: MigrationTypes.ADD_FIELD,
                         version: 'v1.0.1',
                         description: '',
-                        index_name: 'test',
                         physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
                     }
                 ],

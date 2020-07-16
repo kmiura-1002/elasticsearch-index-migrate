@@ -23,7 +23,7 @@ export default class Plan extends AbstractCommand {
     static flags = {
         ...DefaultOptions,
         indexName: flags.string({
-            char: 'i',
+            char: 'i', // TODO rename n (name
             description: 'migration index name or index template name(the name of the template).',
             required: true
         }),
@@ -60,7 +60,7 @@ export default class Plan extends AbstractCommand {
             cli.exit(1);
         }
 
-        const migrationScripts = loadMigrationScripts(migrationFileParsedPath, flags.indexName);
+        const migrationScripts = loadMigrationScripts(migrationFileParsedPath);
         const elasticsearchClient = getElasticsearchClient(this.migrationConfig.elasticsearch);
         const exists = await elasticsearchClient.exists(MAPPING_HISTORY_INDEX_NAME);
 

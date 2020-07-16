@@ -133,11 +133,10 @@ describe('Elasticsearch6Client test', () => {
     });
 
     it('put template, delete template', async () => {
-        const res = await client.putTemplate({
-            name: 'test_template',
+        const res = await client.putTemplate('test_template', {
             order: 1,
             create: true,
-            body: {
+            migrate_script: {
                 index_patterns: ['test_index_template'],
                 settings: {
                     number_of_shards: 1

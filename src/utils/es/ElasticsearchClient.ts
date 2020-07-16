@@ -1,4 +1,4 @@
-import type { IndicesPutTemplate, SimpleJson } from '../../model/types';
+import type { ResolvedTemplateMigration, SimpleJson } from '../../model/types';
 
 export default interface ElasticsearchClient {
     healthCheck(): Promise<{ status: string }>;
@@ -25,7 +25,7 @@ export default interface ElasticsearchClient {
 
     get: (index: string) => Promise<SimpleJson>;
 
-    putTemplate: (param: IndicesPutTemplate) => Promise<any>;
+    putTemplate: (templateName: string, param: ResolvedTemplateMigration) => Promise<any>;
 
     deleteTemplate: (templateName: string) => Promise<any>;
 

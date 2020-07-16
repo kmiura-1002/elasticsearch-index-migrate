@@ -7,7 +7,7 @@ import ElasticsearchClient from '../ElasticsearchClient';
 import {
     ESConnectConfig,
     IndexSearchResults,
-    IndicesPutTemplate,
+    ResolvedTemplateMigration,
     SimpleJson
 } from '../../../model/types';
 
@@ -93,8 +93,26 @@ class Elasticsearch6Client implements ElasticsearchClient {
         return await this.client.indices.get({ index }).then((value) => value.body as SimpleJson);
     }
 
-    async putTemplate(param: IndicesPutTemplate): Promise<any> {
-        return await this.client.indices.put_template(param);
+    async putTemplate(
+        templateName: string,
+        {
+            include_type_name,
+            order,
+            create,
+            timeout,
+            master_timeout,
+            migrate_script
+        }: ResolvedTemplateMigration
+    ): Promise<any> {
+        return await this.client.indices.put_template({
+            name: templateName,
+            include_type_name,
+            order,
+            create,
+            timeout,
+            master_timeout,
+            body: migrate_script
+        });
     }
 
     async deleteTemplate(templateName: string): Promise<any> {

@@ -49,22 +49,18 @@ describe('fileUtils test', () => {
     });
 
     it('loadMigrationScripts test', () => {
-        const scripts = loadMigrationScripts(
-            [
-                {
-                    root: '/',
-                    dir: `${process.cwd()}/test/data/migration/indices/test1`,
-                    base: 'v1.0.0__test1.json',
-                    ext: '.json',
-                    name: 'v1.0.0__test1'
-                }
-            ],
-            'test1'
-        );
+        const scripts = loadMigrationScripts([
+            {
+                root: '/',
+                dir: `${process.cwd()}/test/data/migration/indices/test1`,
+                base: 'v1.0.0__test1.json',
+                ext: '.json',
+                name: 'v1.0.0__test1'
+            }
+        ]);
         expect(scripts).to.be.an('array').to.lengthOf(1);
         expect(scripts[0]).is.deep.eq({
             type: 'ADD_FIELD',
-            index_name: 'test1',
             description: 'description',
             migrate_script: {
                 properties: {
