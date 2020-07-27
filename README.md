@@ -7,8 +7,8 @@ elasticsearch-index-migrate
 [![License](https://img.shields.io/npm/l/elasticsearch-index-migrate.svg)](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/master/package.json)
 
 This software is a command line tool for version control and mapping changes of Elasticsearch mappings.  
-It supports versions 6.x and 7.x of Elasticsearch.
-
+Elasticsearch versions 6.x and 7.x (up to 7.7.0) are supported.  
+You can see [a sample of this tool here](https://github.com/kmiura-1002/sample-elasticsearch-index-migrate).
 
 <!-- toc -->
 * [Requirements](#requirements)
