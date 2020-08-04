@@ -55,7 +55,9 @@ export type MigrateIndex = {
 };
 export const MigrationTypes = {
     ADD_FIELD: 'ADD_FIELD',
-    CREATE_INDEX: 'CREATE_INDEX'
+    CREATE_INDEX: 'CREATE_INDEX',
+    DELETE_INDEX: 'DELETE_INDEX',
+    ALTER_SETTING: 'ALTER_SETTING'
 } as const;
 
 export type MigrationType = typeof MigrationTypes[keyof typeof MigrationTypes];
@@ -114,9 +116,9 @@ export const MigrationStates = {
     MISSING_FAILED: 'MISSING_FAILED',
     SUCCESS: 'SUCCESS',
     FAILED: 'FAILED',
-    OUT_OF_ORDER: 'OUT_OF_ORDER',
-    FUTURE_SUCCESS: 'FUTURE_SUCCESS',
-    FUTURE_FAILED: 'FUTURE_FAILED'
+    OUT_OF_ORDER: 'OUT_OF_ORDER', // TODO DELETE
+    FUTURE_SUCCESS: 'FUTURE_SUCCESS', // TODO DELETE
+    FUTURE_FAILED: 'FUTURE_FAILED' // TODO DELETE
 } as const;
 
 export type MigrationState = typeof MigrationStates[keyof typeof MigrationStates];
@@ -143,7 +145,7 @@ export const MigrationStateInfo: Map<MigrationState, MigrationStateInfo> = new M
         }
     ],
     [
-        MigrationStates.FUTURE_FAILED,
+        MigrationStates.FUTURE_FAILED, // TODO DELETE
         {
             status: MigrationStates.FUTURE_FAILED,
             displayName: 'Failed (Future)',
@@ -153,7 +155,7 @@ export const MigrationStateInfo: Map<MigrationState, MigrationStateInfo> = new M
         }
     ],
     [
-        MigrationStates.FUTURE_SUCCESS,
+        MigrationStates.FUTURE_SUCCESS, // TODO DELETE
         {
             status: MigrationStates.FUTURE_SUCCESS,
             displayName: 'Future',
@@ -193,7 +195,7 @@ export const MigrationStateInfo: Map<MigrationState, MigrationStateInfo> = new M
         }
     ],
     [
-        MigrationStates.OUT_OF_ORDER,
+        MigrationStates.OUT_OF_ORDER, // TODO DELETE
         {
             status: MigrationStates.OUT_OF_ORDER,
             displayName: 'Out of Order',

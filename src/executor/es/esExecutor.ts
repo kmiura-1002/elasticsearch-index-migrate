@@ -16,5 +16,14 @@ export const esExecutor: Map<MigrationType, ExecutorFnc> = new Map([
         MigrationTypes.CREATE_INDEX,
         (esClient, resolvedMigration) =>
             esClient.createIndex(resolvedMigration.index_name, resolvedMigration?.migrate_script)
+    ],
+    [
+        MigrationTypes.DELETE_INDEX,
+        (esClient, resolvedMigration) => esClient.delete(resolvedMigration.index_name)
+    ],
+    [
+        MigrationTypes.ALTER_SETTING,
+        (esClient, resolvedMigration) =>
+            esClient.putSetting(resolvedMigration.index_name, resolvedMigration?.migrate_script)
     ]
 ]);
