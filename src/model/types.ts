@@ -116,9 +116,8 @@ export const MigrationStates = {
     MISSING_FAILED: 'MISSING_FAILED',
     SUCCESS: 'SUCCESS',
     FAILED: 'FAILED',
-    OUT_OF_ORDER: 'OUT_OF_ORDER', // TODO DELETE
-    FUTURE_SUCCESS: 'FUTURE_SUCCESS', // TODO DELETE
-    FUTURE_FAILED: 'FUTURE_FAILED' // TODO DELETE
+    FUTURE_SUCCESS: 'FUTURE_SUCCESS',
+    FUTURE_FAILED: 'FUTURE_FAILED'
 } as const;
 
 export type MigrationState = typeof MigrationStates[keyof typeof MigrationStates];
@@ -145,7 +144,7 @@ export const MigrationStateInfo: Map<MigrationState, MigrationStateInfo> = new M
         }
     ],
     [
-        MigrationStates.FUTURE_FAILED, // TODO DELETE
+        MigrationStates.FUTURE_FAILED,
         {
             status: MigrationStates.FUTURE_FAILED,
             displayName: 'Failed (Future)',
@@ -155,7 +154,7 @@ export const MigrationStateInfo: Map<MigrationState, MigrationStateInfo> = new M
         }
     ],
     [
-        MigrationStates.FUTURE_SUCCESS, // TODO DELETE
+        MigrationStates.FUTURE_SUCCESS,
         {
             status: MigrationStates.FUTURE_SUCCESS,
             displayName: 'Future',
@@ -189,16 +188,6 @@ export const MigrationStateInfo: Map<MigrationState, MigrationStateInfo> = new M
         {
             status: MigrationStates.MISSING_SUCCESS,
             displayName: 'Missing',
-            resolved: true,
-            applied: true,
-            failed: false
-        }
-    ],
-    [
-        MigrationStates.OUT_OF_ORDER, // TODO DELETE
-        {
-            status: MigrationStates.OUT_OF_ORDER,
-            displayName: 'Out of Order',
             resolved: true,
             applied: true,
             failed: false

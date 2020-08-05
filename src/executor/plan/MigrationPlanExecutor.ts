@@ -41,16 +41,11 @@ function MigrationPlanExecutor(
         if (migrationPlan) {
             migrationPlanMap.set(
                 value.version,
-                generateMigrationPlan(
-                    context,
-                    migrationPlan.outOfOrder,
-                    value,
-                    migrationPlan.appliedMigration
-                )
+                generateMigrationPlan(context, value, migrationPlan.appliedMigration)
             );
             migrationPlan.resolvedMigration = value;
         } else {
-            migrationPlanMap.set(value.version, generateMigrationPlan(context, false, value));
+            migrationPlanMap.set(value.version, generateMigrationPlan(context, value));
         }
     });
     appliedMigrations.forEach((value) => {
@@ -67,17 +62,12 @@ function MigrationPlanExecutor(
         if (migrationPlan) {
             migrationPlanMap.set(
                 value.migrate_version,
-                generateMigrationPlan(
-                    context,
-                    migrationPlan.outOfOrder,
-                    migrationPlan.resolvedMigration,
-                    appliedMigration
-                )
+                generateMigrationPlan(context, migrationPlan.resolvedMigration, appliedMigration)
             );
         } else {
             migrationPlanMap.set(
                 value.migrate_version,
-                generateMigrationPlan(context, false, undefined, appliedMigration)
+                generateMigrationPlan(context, undefined, appliedMigration)
             );
         }
     });
@@ -90,20 +80,12 @@ function MigrationPlanExecutor(
     if (sortedKeys.length < 1) {
         cli.error('Unknown version migration detected');
     }
-    sortedKeys.forEach((version, index) => {
+    sortedKeys.forEach((version) => {
         const migrationPlan = migrationPlanMap.get(version);
         if (migrationPlan?.resolvedMigration && migrationPlan?.appliedMigration === undefined) {
-            const outOfOrder = !!sortedKeys
-                .slice(index, sortedKeys.length)
-                .map((value) => {
-                    const plan = migrationPlanMap.get(value);
-                    return !!plan?.appliedMigration;
-                })
-                .find((value) => value);
             migrationPlans.push(
                 generateMigrationPlan(
                     migrationPlan.context,
-                    outOfOrder,
                     migrationPlan.resolvedMigration,
                     migrationPlan.appliedMigration
                 )

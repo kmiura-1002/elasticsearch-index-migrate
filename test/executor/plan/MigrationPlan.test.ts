@@ -8,7 +8,6 @@ describe('MigrationPlan test', () => {
     const testData = [
         {
             context: { ...migrationPlanContext, baseline: 'v1.0.10' },
-            outOfOrder: false,
             resolvedMigration: {
                 migrate_script: {},
                 type: MigrationTypes.CREATE_INDEX,
@@ -22,7 +21,6 @@ describe('MigrationPlan test', () => {
         },
         {
             context: { ...migrationPlanContext, baseline: 'v1.0.0', lastApplied: 'v1.0.10' },
-            outOfOrder: true,
             resolvedMigration: {
                 migrate_script: {},
                 type: MigrationTypes.CREATE_INDEX,
@@ -36,7 +34,6 @@ describe('MigrationPlan test', () => {
         },
         {
             context: { ...migrationPlanContext, baseline: 'v1.0.0' },
-            outOfOrder: false,
             resolvedMigration: {
                 migrate_script: {},
                 type: MigrationTypes.CREATE_INDEX,
@@ -50,7 +47,6 @@ describe('MigrationPlan test', () => {
         },
         {
             context: { ...migrationPlanContext, baseline: 'v1.0.0', lastResolved: 'v1.0.10' },
-            outOfOrder: false,
             resolvedMigration: undefined,
             appliedMigration: {
                 version: 'v1.0.4',
@@ -65,7 +61,6 @@ describe('MigrationPlan test', () => {
         },
         {
             context: { ...migrationPlanContext, baseline: 'v1.0.0', lastResolved: 'v2.0.0' },
-            outOfOrder: false,
             resolvedMigration: undefined,
             appliedMigration: {
                 version: 'v1.0.0',
@@ -80,7 +75,6 @@ describe('MigrationPlan test', () => {
         },
         {
             context: { ...migrationPlanContext, baseline: 'v1.0.0', lastResolved: 'v0.0.0' },
-            outOfOrder: false,
             resolvedMigration: undefined,
             appliedMigration: {
                 version: 'v1.0.0',
@@ -95,7 +89,6 @@ describe('MigrationPlan test', () => {
         },
         {
             context: { ...migrationPlanContext, baseline: 'v1.0.0', lastResolved: 'v0.0.0' },
-            outOfOrder: false,
             resolvedMigration: undefined,
             appliedMigration: {
                 version: 'v1.0.0',
@@ -110,7 +103,6 @@ describe('MigrationPlan test', () => {
         },
         {
             context: { ...migrationPlanContext },
-            outOfOrder: false,
             resolvedMigration: {
                 migrate_script: {},
                 type: MigrationTypes.CREATE_INDEX,
@@ -132,29 +124,6 @@ describe('MigrationPlan test', () => {
         },
         {
             context: { ...migrationPlanContext },
-            outOfOrder: true,
-            resolvedMigration: {
-                migrate_script: {},
-                type: MigrationTypes.CREATE_INDEX,
-                version: 'v1.0.0',
-                description: '',
-                index_name: 'test',
-                physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
-            },
-            appliedMigration: {
-                version: 'v1.0.0',
-                description: '',
-                type: MigrationTypes.ADD_FIELD,
-                script: '',
-                installedOn: new Date(),
-                executionTime: 1,
-                success: true
-            },
-            expect: MigrationStateInfo.get(MigrationStates.OUT_OF_ORDER)
-        },
-        {
-            context: { ...migrationPlanContext },
-            outOfOrder: false,
             resolvedMigration: {
                 migrate_script: {},
                 type: MigrationTypes.CREATE_INDEX,
@@ -180,7 +149,6 @@ describe('MigrationPlan test', () => {
         it(`${value.expect?.status} state test`, () => {
             const migrationPlan = generateMigrationPlan(
                 value.context,
-                value.outOfOrder,
                 value.resolvedMigration,
                 value.appliedMigration
             );

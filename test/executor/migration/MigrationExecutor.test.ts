@@ -54,7 +54,6 @@ describe('MigrationExecutor test', () => {
         const date = new Date();
         const info = generateMigrationPlan(
             migrationPlanContext,
-            false,
             {
                 migrate_script: {},
                 type: MigrationTypes.CREATE_INDEX,
@@ -108,7 +107,6 @@ describe('MigrationExecutor test', () => {
 
         const info = generateMigrationPlan(
             migrationPlanContext,
-            false,
             {
                 migrate_script: {},
                 type: MigrationTypes.CREATE_INDEX,
@@ -158,7 +156,6 @@ describe('MigrationExecutor test', () => {
 
         const info = generateMigrationPlan(
             migrationPlanContext,
-            false,
             {
                 migrate_script: {},
                 type: MigrationTypes.ADD_FIELD,
@@ -189,7 +186,7 @@ describe('MigrationExecutor test', () => {
 
     it('No migration target', async () => {
         const cliWarnStub = sandbox.stub(cli, 'warn');
-        const info = generateMigrationPlan(migrationPlanContext, false, undefined, {
+        const info = generateMigrationPlan(migrationPlanContext, undefined, {
             version: 'v1.0.0',
             description: '',
             type: MigrationTypes.ADD_FIELD,

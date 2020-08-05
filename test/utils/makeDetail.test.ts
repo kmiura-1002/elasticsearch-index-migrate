@@ -21,7 +21,6 @@ describe('makeDetail test', () => {
             ...migrationPlans,
             {
                 context: migrationPlanContext,
-                outOfOrder: false,
                 baseline: false
             }
         ]);
@@ -118,7 +117,6 @@ describe('makeDetail test', () => {
             ...migrationPlans,
             {
                 context: migrationPlanContext,
-                outOfOrder: false,
                 baseline: false
             }
         ]);

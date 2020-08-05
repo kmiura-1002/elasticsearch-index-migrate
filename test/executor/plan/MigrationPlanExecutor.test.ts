@@ -25,13 +25,9 @@ describe('MigrationPlanExecutor test', () => {
         );
 
         const migrationPlans = executor.all;
-        const outOfOrders = migrationPlans.map((value) => value.outOfOrder);
         const versions = migrationPlans.map(
             (value) => value.resolvedMigration?.version ?? value.appliedMigration?.version
         );
-        expect(outOfOrders)
-            .to.be.an('array')
-            .to.be.include.ordered.members([false, true, false, false]);
         expect(versions)
             .to.be.an('array')
             .to.be.include.ordered.members([

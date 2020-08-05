@@ -37,7 +37,6 @@ export function generateInstalledOn(
 
 export function generateState(
     context: MigrationPlanContext,
-    outOfOrder: boolean,
     resolvedMigration?: ResolvedMigration,
     appliedMigration?: AppliedMigration
 ): MigrationStateInfo | undefined {
@@ -51,7 +50,6 @@ export function generateState(
                 return MigrationStateInfo.get(MigrationStates.BELOW_BASELINE);
             }
             if (
-                outOfOrder &&
                 valid(resolvedMigration?.version) &&
                 valid(context.lastApplied) &&
                 lt(resolvedMigration?.version, context.lastApplied)
@@ -84,9 +82,6 @@ export function generateState(
         return MigrationStateInfo.get(MigrationStates.FAILED);
     }
 
-    if (outOfOrder) {
-        return MigrationStateInfo.get(MigrationStates.OUT_OF_ORDER);
-    }
     return MigrationStateInfo.get(MigrationStates.SUCCESS);
 }
 
@@ -94,7 +89,6 @@ export type MigrationPlan = {
     resolvedMigration?: ResolvedMigration;
     appliedMigration?: AppliedMigration;
     context: MigrationPlanContext;
-    outOfOrder: boolean;
     type?: MigrationType;
     version?: string;
     description?: string;
@@ -105,7 +99,6 @@ export type MigrationPlan = {
 
 export function generateMigrationPlan(
     context: MigrationPlanContext,
-    outOfOrder: boolean,
     resolvedMigration?: ResolvedMigration,
     appliedMigration?: AppliedMigration
 ): MigrationPlan {
@@ -113,12 +106,11 @@ export function generateMigrationPlan(
         resolvedMigration: resolvedMigration,
         appliedMigration: appliedMigration,
         context,
-        outOfOrder,
         type: generateType(resolvedMigration, appliedMigration),
         description: generateDescription(resolvedMigration, appliedMigration),
         version: generateVersion(resolvedMigration, appliedMigration),
         installedOn: generateInstalledOn(resolvedMigration, appliedMigration),
-        state: generateState(context, outOfOrder, resolvedMigration, appliedMigration),
+        state: generateState(context, resolvedMigration, appliedMigration),
         baseline: context.baseline === generateVersion(resolvedMigration, appliedMigration)
     };
 }
