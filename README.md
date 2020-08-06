@@ -97,6 +97,8 @@ Migration scripts are written in JSON format. File names should follow the forma
 Currently the following migration types are supported:
 * ADD_FIELD
 * CREATE_INDEX
+* DELETE_INDEX
+* ALTER_SETTING
 
 ## Migration script format
 
@@ -138,6 +140,27 @@ In the case of CREATE_INDEX scripts, write a Request body that can be executed w
           },
           ...
         }
+    }
+  }
+}
+```
+
+For a DELETE_INDEX script, do the following.
+```
+{
+  "type": "DELETE_INDEX",
+  "description": "description"
+}
+```
+
+In the case of ALTER_SETTING scripts, write a Request body that can be executed with the Update Indices Settings API under the migrate_script property.
+```
+{
+  "type": "ALTER_SETTING",
+  "description": "description",
+  "migrate_script": {
+    "index" : {
+        "number_of_replicas" : 1
     }
   }
 }
