@@ -30,7 +30,6 @@ describe('MigrationValidation test', () => {
                     migrate_script: {}
                 },
                 context: migrationPlanContext,
-                outOfOrder: false,
                 baseline: false
             })
         ).is.eq('Unknown version migration detected');
@@ -46,14 +45,12 @@ describe('MigrationValidation test', () => {
                     success: true
                 },
                 context: migrationPlanContext,
-                outOfOrder: false,
                 baseline: false
             })
         ).is.eq('Unknown version migration detected');
         expect(
             migrationPlanValidate({
                 context: migrationPlanContext,
-                outOfOrder: false,
                 baseline: false
             })
         ).is.eq('Unknown version migration detected');
@@ -77,7 +74,6 @@ describe('MigrationValidation test', () => {
             },
             state: MigrationStateInfo.get(MigrationStates.IGNORED),
             context: migrationPlanContext,
-            outOfOrder: false,
             baseline: false
         });
 
@@ -102,7 +98,6 @@ describe('MigrationValidation test', () => {
             },
             state: MigrationStateInfo.get(MigrationStates.FAILED),
             context: migrationPlanContext,
-            outOfOrder: false,
             baseline: false
         });
 
@@ -122,7 +117,6 @@ describe('MigrationValidation test', () => {
             },
             state: MigrationStateInfo.get(MigrationStates.SUCCESS),
             context: migrationPlanContext,
-            outOfOrder: false,
             baseline: false
         });
 
@@ -156,7 +150,6 @@ describe('MigrationValidation test', () => {
             },
             state: MigrationStateInfo.get(MigrationStates.SUCCESS),
             context: migrationPlanContext,
-            outOfOrder: false,
             baseline: false
         });
 

@@ -7,8 +7,8 @@ elasticsearch-index-migrate
 [![License](https://img.shields.io/npm/l/elasticsearch-index-migrate.svg)](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/master/package.json)
 
 This software is a command line tool for version control and mapping changes of Elasticsearch mappings.  
-It supports versions 6.x and 7.x of Elasticsearch.
-
+Elasticsearch versions 6.x and 7.x (up to 7.7.0) are supported.  
+You can see [a sample of this tool here](https://github.com/kmiura-1002/sample-elasticsearch-index-migrate).
 
 <!-- toc -->
 * [Requirements](#requirements)
@@ -97,6 +97,8 @@ Migration scripts are written in JSON format. File names should follow the forma
 Currently the following migration types are supported:
 * ADD_FIELD
 * CREATE_INDEX
+* DELETE_INDEX
+* ALTER_SETTING
 
 ## Migration script format
 
@@ -138,6 +140,27 @@ In the case of CREATE_INDEX scripts, write a Request body that can be executed w
           },
           ...
         }
+    }
+  }
+}
+```
+
+For a DELETE_INDEX script, do the following.
+```
+{
+  "type": "DELETE_INDEX",
+  "description": "description"
+}
+```
+
+In the case of ALTER_SETTING scripts, write a Request body that can be executed with the Update Indices Settings API under the migrate_script property.
+```
+{
+  "type": "ALTER_SETTING",
+  "description": "description",
+  "migrate_script": {
+    "index" : {
+        "number_of_replicas" : 1
     }
   }
 }
