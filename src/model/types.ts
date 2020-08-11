@@ -110,6 +110,7 @@ export type MigrationStateInfo = {
 
 export const MigrationStates = {
     PENDING: 'PENDING',
+    BASELINE: 'BASELINE',
     BELOW_BASELINE: 'BELOW_BASELINE',
     IGNORED: 'IGNORED',
     MISSING_SUCCESS: 'MISSING_SUCCESS',
@@ -123,6 +124,16 @@ export const MigrationStates = {
 export type MigrationState = typeof MigrationStates[keyof typeof MigrationStates];
 
 export const MigrationStateInfo: Map<MigrationState, MigrationStateInfo> = new Map([
+    [
+        MigrationStates.BASELINE,
+        {
+            status: MigrationStates.BASELINE,
+            displayName: 'Baseline',
+            resolved: true,
+            applied: false,
+            failed: false
+        }
+    ],
     [
         MigrationStates.BELOW_BASELINE,
         {

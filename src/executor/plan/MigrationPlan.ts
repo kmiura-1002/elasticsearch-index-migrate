@@ -60,6 +60,14 @@ export function generateState(
         return MigrationStateInfo.get(MigrationStates.PENDING);
     }
 
+    if (
+        valid(resolvedMigration?.version) &&
+        valid(context.baseline) &&
+        resolvedMigration?.version === context.baseline
+    ) {
+        return MigrationStateInfo.get(MigrationStates.BASELINE);
+    }
+
     if (!resolvedMigration) {
         const version = generateVersion(resolvedMigration, appliedMigration) ?? '';
         if (
