@@ -42,7 +42,7 @@ export default class MockElasticsearchClient implements ElasticsearchClient {
         );
         return Promise.resolve({ statusCode: 200 });
     }
-    search(index: string, query?: any) {
+    search(index: string, query?: any): Promise<any[]> {
         cli.debug(
             `Called MockElasticsearchClient.search: index=${index}, query=${JSON.stringify(query)}`
         );

@@ -90,7 +90,8 @@
         "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
         "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
         "version": "oclif-dev readme",
-        "docker:build": "docker build -t kmiura1002/elasticsearch-index-migrate:`npx -c 'echo \"$npm_package_version\"'` ./docker"
+        "docker:build": "docker build -t kmiura1002/elasticsearch-index-migrate:`npx -c 'echo \"$npm_package_version\"'` ./docker",
+        "readme": "oclif-dev readme"
     },
     "types": "lib/index.d.ts",
     "husky": {
