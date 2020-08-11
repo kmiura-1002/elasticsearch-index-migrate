@@ -51,7 +51,7 @@ describe('MigrationPlanExecutor test', () => {
         expect(status)
             .to.be.an('array')
             .to.be.include.ordered.members([
-                MigrationStates.MISSING_SUCCESS,
+                MigrationStates.BASELINE,
                 MigrationStates.IGNORED,
                 MigrationStates.SUCCESS,
                 MigrationStates.MISSING_FAILED,

@@ -29,7 +29,7 @@ describe('makeDetail test', () => {
         expect(status)
             .to.be.an('array')
             .to.be.include.ordered.members([
-                MigrationStates.MISSING_SUCCESS,
+                MigrationStates.BASELINE,
                 MigrationStates.IGNORED,
                 MigrationStates.SUCCESS,
                 MigrationStates.MISSING_FAILED,
@@ -45,7 +45,7 @@ describe('makeDetail test', () => {
                     description: '',
                     type: 'CREATE_INDEX',
                     installedOn: format(installedOn, "yyyy-MM-dd'T'HH:mm:ss"),
-                    state: 'MISSING_SUCCESS'
+                    state: 'BASELINE'
                 },
                 {
                     version: 'v1.1.0',
