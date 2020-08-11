@@ -61,9 +61,9 @@ export function generateState(
     }
 
     if (
-        valid(resolvedMigration?.version) &&
+        valid(appliedMigration?.version) &&
         valid(context.baseline) &&
-        resolvedMigration?.version === context.baseline
+        appliedMigration?.version === context.baseline
     ) {
         return MigrationStateInfo.get(MigrationStates.BASELINE);
     }
