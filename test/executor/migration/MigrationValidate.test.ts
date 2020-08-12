@@ -195,9 +195,8 @@ describe('MigrationValidation test', () => {
         const ret = doValidate(executor);
         expect(ret)
             .is.an('array')
-            .lengthOf(5)
+            .lengthOf(4)
             .deep.include.ordered.members([
-                'Applied migration detected not resolved locally (v1.0.0)',
                 'Resolved migrations detected have not been applied to the index (v1.1.0)',
                 'Migration type mismatch for migration v1.1.1',
                 'Failed migration to version v1.10.2() detected',
