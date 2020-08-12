@@ -217,6 +217,14 @@ describe('MigrationExecutor test', () => {
                     description: '',
                     index_name: 'test',
                     physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
+                },
+                {
+                    migrate_script: {},
+                    type: MigrationTypes.ADD_FIELD,
+                    version: 'v1.0.0',
+                    description: '',
+                    index_name: 'test',
+                    physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
                 }
             ],
             [
@@ -225,7 +233,7 @@ describe('MigrationExecutor test', () => {
                     migrate_version: 'v1.0.0',
                     description: '',
                     script_name: '',
-                    script_type: '',
+                    script_type: 'ADD_FIELD',
                     installed_on: '',
                     execution_time: 1,
                     success: true

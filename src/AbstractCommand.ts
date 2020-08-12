@@ -1,10 +1,12 @@
 import { Command, flags } from '@oclif/command';
 import { loadJSON } from '@oclif/config/lib/util';
-import { MigrationConfigType } from './model/types';
+import { MAPPING_HISTORY_INDEX_NAME, MigrationConfigType } from './model/types';
 import path from 'path';
 import fs from 'fs';
 import { cli } from 'cli-ux';
 import merge from 'lodash.merge';
+import { createHistoryIndex } from './executor/init/MigrationInitExecutor';
+import getElasticsearchClient, { usedEsVersion } from './utils/es/EsUtils';
 
 export const DefaultOptions = {
     help: flags.help({ char: 'h' }),
@@ -73,6 +75,21 @@ export const DefaultOptions = {
     })
 };
 
+export const CommandOptions = {
+    ...DefaultOptions,
+    indexName: flags.string({
+        char: 'i',
+        description: 'migration index name.',
+        required: true
+    }),
+    init: flags.boolean({
+        allowNo: true,
+        description:
+            'If the init command has not been executed in advance, the migration will be performed after initialization has been processed.',
+        default: true
+    })
+};
+
 export default abstract class AbstractCommand extends Command {
     // default config
     migrationConfig: MigrationConfigType = {
@@ -85,6 +102,27 @@ export default abstract class AbstractCommand extends Command {
             baselineVersion: ''
         }
     };
+
+    async createHistoryIndex() {
+        const { flags } = this.parse();
+        const elasticsearchClient = getElasticsearchClient(this.migrationConfig.elasticsearch);
+        const exists = await elasticsearchClient.exists(MAPPING_HISTORY_INDEX_NAME);
+        const { init } = flags as any;
+        if (init && !exists) {
+            cli.info('migrate_history index does not exist.');
+            cli.info('Create a migrate_history index for the first time.');
+            await createHistoryIndex(
+                elasticsearchClient,
+                usedEsVersion(this.migrationConfig.elasticsearch) ?? ''
+            );
+            cli.info('The creation of the index has been completed.');
+        } else if (!exists) {
+            cli.error(
+                'Migration environment is not ready. Execute the init command. Or, run the command with "--init"'
+            );
+            cli.exit(1);
+        }
+    }
 
     async init() {
         const { flags } = this.parse();

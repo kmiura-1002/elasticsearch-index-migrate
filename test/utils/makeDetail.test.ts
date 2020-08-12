@@ -29,7 +29,7 @@ describe('makeDetail test', () => {
         expect(status)
             .to.be.an('array')
             .to.be.include.ordered.members([
-                MigrationStates.MISSING_SUCCESS,
+                MigrationStates.BASELINE,
                 MigrationStates.IGNORED,
                 MigrationStates.SUCCESS,
                 MigrationStates.MISSING_FAILED,
@@ -85,8 +85,7 @@ describe('makeDetail test', () => {
             ]);
     });
 
-    it('Failure of the baseline is indicated as a failure', () => {
-        const installedOn = new Date();
+    it('Baseline failures appear as baselines, even if they fail.', () => {
         const service = MigrationPlanExecutor(
             [
                 {
@@ -122,7 +121,7 @@ describe('makeDetail test', () => {
         ]);
         const status = migrationPlans.map((value) => value.state?.status);
 
-        expect(status).to.be.an('array').to.be.include.ordered.members([MigrationStates.FAILED]);
+        expect(status).to.be.an('array').to.be.include.ordered.members([MigrationStates.BASELINE]);
 
         expect(detail)
             .to.be.an('array')
@@ -132,7 +131,7 @@ describe('makeDetail test', () => {
                     description: '',
                     type: 'CREATE_INDEX',
                     installedOn: '2020-01-01T00:00:00',
-                    state: 'FAILED'
+                    state: 'BASELINE'
                 }
             ]);
     });
