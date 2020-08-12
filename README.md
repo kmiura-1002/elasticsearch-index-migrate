@@ -34,7 +34,7 @@ $ npm install -g elasticsearch-index-migrate
 $ elasticsearch-index-migrate COMMAND
 running command...
 $ elasticsearch-index-migrate (-v|--version|version)
-elasticsearch-index-migrate/0.4.2 darwin-x64 node-v12.14.0
+elasticsearch-index-migrate/0.5.0 darwin-x64 node-v12.14.0
 $ elasticsearch-index-migrate --help [COMMAND]
 USAGE
   $ elasticsearch-index-migrate COMMAND
@@ -190,11 +190,62 @@ elasticsearch/
 
 # Commands
 <!-- commands -->
+* [`elasticsearch-index-migrate baseline`](#elasticsearch-index-migrate-baseline)
 * [`elasticsearch-index-migrate clean`](#elasticsearch-index-migrate-clean)
 * [`elasticsearch-index-migrate help [COMMAND]`](#elasticsearch-index-migrate-help-command)
 * [`elasticsearch-index-migrate init`](#elasticsearch-index-migrate-init)
 * [`elasticsearch-index-migrate migrate`](#elasticsearch-index-migrate-migrate)
 * [`elasticsearch-index-migrate plan`](#elasticsearch-index-migrate-plan)
+* [`elasticsearch-index-migrate recovery`](#elasticsearch-index-migrate-recovery)
+
+## `elasticsearch-index-migrate baseline`
+
+Create a baseline in migration_history if you were running Elasticsearch before the tool was implemented.
+
+```
+USAGE
+  $ elasticsearch-index-migrate baseline
+
+OPTIONS
+  -B, --baseline_version=baseline_version              Migrate from the baseline set in the
+                                                       ELASTICSEARCH_MIGRATION_BASELINE_VERSION environment variable
+
+  -C, --elasticsearch_cloudid=elasticsearch_cloudid    Connect to Elasticsearch with the value set in the
+                                                       ELASTICSEARCH_CLOUDID environment variable
+
+  -H, --elasticsearch_host=elasticsearch_host          Connect to Elasticsearch with the value set in the
+                                                       ELASTICSEARCH_HOST environment variable
+
+  -L, --migration_locations=migration_locations        Read the migration file from the directory set in the
+                                                       $ELASTICSEARCH_MIGRATION_LOCATIONS environment variable
+
+  -O, --option_file=option_file                        Load migration setting file (.json) from file path (Environment
+                                                       variables take precedence)
+
+  -P, --elasticsearch_password=elasticsearch_password  Connect to Elasticsearch with the value set in the
+                                                       ELASTICSEARCH_PASSWORD environment variable
+
+  -S, --elasticsearch_ssl=elasticsearch_ssl            Connect to Elasticsearch with the value set in the
+                                                       ELASTICSEARCH_SSL environment variable
+
+  -U, --elasticsearch_username=elasticsearch_username  Connect to Elasticsearch with the value set in the
+                                                       ELASTICSEARCH_USERNAME environment variable
+
+  -V, --elasticsearch_version=elasticsearch_version    Run migration with Elasticsearch version set in
+                                                       ELASTICSEARCH_VERSION environment variable
+
+  -d, --description=description                        Description to be saved to history.
+
+  -h, --help                                           show CLI help
+
+  -i, --indexName=indexName                            (required) migration index name.
+
+  --[no-]init                                          If the init command has not been executed in advance, the
+                                                       migration will be performed after initialization has been
+                                                       processed.
+```
+
+_See code: [src/commands/baseline.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.5.0/src/commands/baseline.ts)_
 
 ## `elasticsearch-index-migrate clean`
 
@@ -245,7 +296,7 @@ OPTIONS
   -y, --yes                                            Always answer "yes" to any prompt that appears during processing
 ```
 
-_See code: [src/commands/clean.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.4.2/src/commands/clean.ts)_
+_See code: [src/commands/clean.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.5.0/src/commands/clean.ts)_
 
 ## `elasticsearch-index-migrate help [COMMAND]`
 
@@ -303,7 +354,7 @@ OPTIONS
   -h, --help                                           show CLI help
 ```
 
-_See code: [src/commands/init.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.4.2/src/commands/init.ts)_
+_See code: [src/commands/init.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.5.0/src/commands/init.ts)_
 
 ## `elasticsearch-index-migrate migrate`
 
@@ -353,7 +404,7 @@ OPTIONS
                                                        the end.
 ```
 
-_See code: [src/commands/migrate.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.4.2/src/commands/migrate.ts)_
+_See code: [src/commands/migrate.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.5.0/src/commands/migrate.ts)_
 
 ## `elasticsearch-index-migrate plan`
 
@@ -400,7 +451,54 @@ OPTIONS
                                                        processed.
 ```
 
-_See code: [src/commands/plan.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.4.2/src/commands/plan.ts)_
+_See code: [src/commands/plan.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.5.0/src/commands/plan.ts)_
+
+## `elasticsearch-index-migrate recovery`
+
+Delete failed migration history.
+
+```
+USAGE
+  $ elasticsearch-index-migrate recovery
+
+OPTIONS
+  -B, --baseline_version=baseline_version              Migrate from the baseline set in the
+                                                       ELASTICSEARCH_MIGRATION_BASELINE_VERSION environment variable
+
+  -C, --elasticsearch_cloudid=elasticsearch_cloudid    Connect to Elasticsearch with the value set in the
+                                                       ELASTICSEARCH_CLOUDID environment variable
+
+  -H, --elasticsearch_host=elasticsearch_host          Connect to Elasticsearch with the value set in the
+                                                       ELASTICSEARCH_HOST environment variable
+
+  -L, --migration_locations=migration_locations        Read the migration file from the directory set in the
+                                                       $ELASTICSEARCH_MIGRATION_LOCATIONS environment variable
+
+  -O, --option_file=option_file                        Load migration setting file (.json) from file path (Environment
+                                                       variables take precedence)
+
+  -P, --elasticsearch_password=elasticsearch_password  Connect to Elasticsearch with the value set in the
+                                                       ELASTICSEARCH_PASSWORD environment variable
+
+  -S, --elasticsearch_ssl=elasticsearch_ssl            Connect to Elasticsearch with the value set in the
+                                                       ELASTICSEARCH_SSL environment variable
+
+  -U, --elasticsearch_username=elasticsearch_username  Connect to Elasticsearch with the value set in the
+                                                       ELASTICSEARCH_USERNAME environment variable
+
+  -V, --elasticsearch_version=elasticsearch_version    Run migration with Elasticsearch version set in
+                                                       ELASTICSEARCH_VERSION environment variable
+
+  -h, --help                                           show CLI help
+
+  -i, --indexName=indexName                            (required) migration index name.
+
+  --[no-]init                                          If the init command has not been executed in advance, the
+                                                       migration will be performed after initialization has been
+                                                       processed.
+```
+
+_See code: [src/commands/recovery.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.5.0/src/commands/recovery.ts)_
 <!-- commandsstop -->
 
 # Quick start with Docker

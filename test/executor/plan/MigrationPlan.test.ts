@@ -63,7 +63,7 @@ describe('MigrationPlan test', () => {
             context: { ...migrationPlanContext, baseline: 'v1.0.0', lastResolved: 'v2.0.0' },
             resolvedMigration: undefined,
             appliedMigration: {
-                version: 'v1.0.0',
+                version: 'v0.5.0',
                 description: '',
                 type: MigrationTypes.ADD_FIELD,
                 script: '',
@@ -77,7 +77,7 @@ describe('MigrationPlan test', () => {
             context: { ...migrationPlanContext, baseline: 'v1.0.0', lastResolved: 'v0.0.0' },
             resolvedMigration: undefined,
             appliedMigration: {
-                version: 'v1.0.0',
+                version: 'v0.5.0',
                 description: '',
                 type: MigrationTypes.ADD_FIELD,
                 script: '',
@@ -91,7 +91,7 @@ describe('MigrationPlan test', () => {
             context: { ...migrationPlanContext, baseline: 'v1.0.0', lastResolved: 'v0.0.0' },
             resolvedMigration: undefined,
             appliedMigration: {
-                version: 'v1.0.0',
+                version: 'v0.5.0',
                 description: '',
                 type: MigrationTypes.ADD_FIELD,
                 script: '',
@@ -118,6 +118,27 @@ describe('MigrationPlan test', () => {
                 script: '',
                 installedOn: new Date(),
                 executionTime: 1,
+                success: true
+            },
+            expect: MigrationStateInfo.get(MigrationStates.BASELINE)
+        },
+        {
+            context: { ...migrationPlanContext },
+            resolvedMigration: {
+                migrate_script: {},
+                type: MigrationTypes.CREATE_INDEX,
+                version: 'v2.0.0',
+                description: '',
+                index_name: 'test',
+                physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
+            },
+            appliedMigration: {
+                version: 'v2.0.0',
+                description: '',
+                type: MigrationTypes.ADD_FIELD,
+                script: '',
+                installedOn: new Date(),
+                executionTime: 1,
                 success: false
             },
             expect: MigrationStateInfo.get(MigrationStates.FAILED)
@@ -127,13 +148,13 @@ describe('MigrationPlan test', () => {
             resolvedMigration: {
                 migrate_script: {},
                 type: MigrationTypes.CREATE_INDEX,
-                version: 'v1.0.0',
+                version: 'v2.0.0',
                 description: '',
                 index_name: 'test',
                 physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
             },
             appliedMigration: {
-                version: 'v1.0.0',
+                version: 'v2.0.0',
                 description: '',
                 type: MigrationTypes.ADD_FIELD,
                 script: '',

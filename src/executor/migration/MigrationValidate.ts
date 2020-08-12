@@ -21,6 +21,7 @@ export function migrationPlanValidate(migratePlan: MigrationPlan): string | unde
 
     if (
         !migratePlan.resolvedMigration &&
+        MigrationStates.BASELINE !== migratePlan.state?.status &&
         MigrationStates.MISSING_SUCCESS !== migratePlan.state?.status &&
         MigrationStates.MISSING_FAILED !== migratePlan.state?.status &&
         MigrationStates.FUTURE_SUCCESS !== migratePlan.state?.status &&
