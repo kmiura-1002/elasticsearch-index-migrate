@@ -29,12 +29,13 @@ export async function addMigrationHistory(esClient: ElasticsearchClient, history
 }
 
 export function makeMigrateHistory(
+    name: string,
     migrationPlan: MigrationPlan,
     executionTime: number,
     success: boolean
 ): MigrateIndex {
     return {
-        index_name: migrationPlan.resolvedMigration?.index_name ?? '',
+        index_name: name,
         migrate_version: migrationPlan.resolvedMigration?.version ?? '',
         description: migrationPlan.resolvedMigration?.description ?? '',
         script_name: migrationPlan.resolvedMigration?.physicalLocation.base ?? '',
@@ -49,20 +50,24 @@ export function makeMigrateHistory(
  * Run one migration task.
  * @Returns Returns 1 if the migration task was successful.
  */
-export async function applyMigration(esClient: ElasticsearchClient, migrationPlan: MigrationPlan) {
+export async function applyMigration(
+    name: string,
+    esClient: ElasticsearchClient,
+    migrationPlan: MigrationPlan
+) {
     const resolvedMigration = migrationPlan.resolvedMigration;
     if (resolvedMigration) {
         const type = resolvedMigration.type;
         const sw = new StopWatch();
         sw.start();
         const executor = esExecutor.get(type) as ExecutorFnc;
-        await executor(esClient, resolvedMigration)
+        await executor(name, esClient, resolvedMigration)
             .then(async (value) => {
                 sw.stop();
                 if (value.statusCode && value.statusCode >= 400) {
                     await addMigrationHistory(
                         esClient,
-                        makeMigrateHistory(migrationPlan, sw.read(), false)
+                        makeMigrateHistory(name, migrationPlan, sw.read(), false)
                     );
                     cli.error(
                         `Migration failed. statusCode: ${value.statusCode}, version: ${resolvedMigration.version}`
@@ -70,7 +75,7 @@ export async function applyMigration(esClient: ElasticsearchClient, migrationPla
                 } else {
                     await addMigrationHistory(
                         esClient,
-                        makeMigrateHistory(migrationPlan, sw.read(), true)
+                        makeMigrateHistory(name, migrationPlan, sw.read(), true)
                     );
                     cli.info(
                         `Successfully completed migration of ${
@@ -83,7 +88,7 @@ export async function applyMigration(esClient: ElasticsearchClient, migrationPla
                 sw.stop();
                 await addMigrationHistory(
                     esClient,
-                    makeMigrateHistory(migrationPlan, sw.read(), false)
+                    makeMigrateHistory(name, migrationPlan, sw.read(), false)
                 );
                 cli.error(
                     `executor error: val=${JSON.stringify(resolvedMigration)}, reason=${reason}`
@@ -97,6 +102,7 @@ export async function applyMigration(esClient: ElasticsearchClient, migrationPla
 }
 
 export async function migrate(
+    name: string,
     resolvedMigrations: ResolvedMigration[],
     appliedMigrations: MigrateIndex[],
     context: MigrationPlanContext,
@@ -118,7 +124,7 @@ export async function migrate(
     sw.start();
     let count = 0;
     for (const pending of migratePlan.pending) {
-        count += (await applyMigration(esClient, pending)) as number;
+        count += (await applyMigration(name, esClient, pending)) as number;
     }
 
     sw.stop();

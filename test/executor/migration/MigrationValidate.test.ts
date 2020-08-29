@@ -17,7 +17,6 @@ describe('MigrationValidation test', () => {
             migrationPlanValidate({
                 resolvedMigration: {
                     type: MigrationTypes.ADD_FIELD,
-                    index_name: 'test',
                     version: '',
                     description: '',
                     physicalLocation: {
@@ -60,7 +59,6 @@ describe('MigrationValidation test', () => {
         const ret = migrationPlanValidate({
             resolvedMigration: {
                 type: MigrationTypes.ADD_FIELD,
-                index_name: 'test',
                 version: 'v1.0.1',
                 description: '',
                 physicalLocation: {
@@ -84,7 +82,6 @@ describe('MigrationValidation test', () => {
         const ret = migrationPlanValidate({
             resolvedMigration: {
                 type: MigrationTypes.ADD_FIELD,
-                index_name: 'test',
                 version: 'v1.0.1',
                 description: '',
                 physicalLocation: {
@@ -136,7 +133,6 @@ describe('MigrationValidation test', () => {
             },
             resolvedMigration: {
                 type: MigrationTypes.CREATE_INDEX,
-                index_name: 'test',
                 version: 'v1.0.1',
                 description: '',
                 physicalLocation: {
@@ -163,7 +159,6 @@ describe('MigrationValidation test', () => {
                     type: MigrationTypes.CREATE_INDEX,
                     version: 'v1.20.0',
                     description: '',
-                    index_name: 'test',
                     physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
                 }
             ],

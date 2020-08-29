@@ -31,7 +31,7 @@ describe('MigrationExecutor test', () => {
         type mockEsClient = Partial<ElasticsearchClient>;
 
         const client: mockEsClient = {
-            postDocument: (index: string, body?: any, id?: string) => Promise.reject()
+            postDocument: (_index: string, _body?: any, _id?: string) => Promise.reject()
         };
         await addMigrationHistory(client as ElasticsearchClient, {} as MigrateIndex);
         expect(stub.calledOnce).is.true;
@@ -43,7 +43,7 @@ describe('MigrationExecutor test', () => {
         const debugStub = sandbox.stub(cli, 'debug');
         type mockEsClient = Partial<ElasticsearchClient>;
         const client: mockEsClient = {
-            postDocument: (index: string, body?: any, id?: string) => Promise.resolve()
+            postDocument: (_index: string, _body?: any, _id?: string) => Promise.resolve()
         };
         await addMigrationHistory(client as ElasticsearchClient, {} as MigrateIndex);
         expect(debugStub.calledOnce).is.true;
@@ -59,7 +59,6 @@ describe('MigrationExecutor test', () => {
                 type: MigrationTypes.CREATE_INDEX,
                 version: 'v1.0.0',
                 description: '',
-                index_name: 'test',
                 physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
             },
             {
@@ -72,7 +71,7 @@ describe('MigrationExecutor test', () => {
                 success: true
             }
         );
-        const history = makeMigrateHistory(info, 1, true);
+        const history = makeMigrateHistory('test', info, 1, true);
 
         expect(history).to.be.deep.include({
             index_name: 'test',
@@ -92,8 +91,8 @@ describe('MigrationExecutor test', () => {
         migrationExecutorMock.expects('addMigrationHistory');
 
         const tmpClient = {
-            createIndex: (index: string, body?: any) => Promise.resolve({ statusCode: 200 }),
-            postDocument: (index: string, body?: any, id?: string) =>
+            createIndex: (_index: string, _body?: any) => Promise.resolve({ statusCode: 200 }),
+            postDocument: (_index: string, _body?: any, _id?: string) =>
                 Promise.resolve({ statusCode: 200 })
         } as ElasticsearchClient;
         const createIndexStub = sandbox
@@ -112,7 +111,6 @@ describe('MigrationExecutor test', () => {
                 type: MigrationTypes.CREATE_INDEX,
                 version: 'v1.0.1',
                 description: '',
-                index_name: 'test',
                 physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
             },
             {
@@ -126,7 +124,7 @@ describe('MigrationExecutor test', () => {
             }
         );
 
-        const ret = await applyMigration(tmpClient, info);
+        const ret = await applyMigration('test', tmpClient, info);
         expect(ret).is.eq(1);
         expect(createIndexStub.calledOnce).is.true;
         expect(postDocumentStub.calledOnce).is.true;
@@ -141,8 +139,8 @@ describe('MigrationExecutor test', () => {
         migrationExecutorMock.expects('addMigrationHistory');
 
         const tmpClient = {
-            putMapping: (index: string, body?: any) => Promise.resolve({ statusCode: 200 }),
-            postDocument: (index: string, body?: any, id?: string) =>
+            putMapping: (_index: string, _body?: any) => Promise.resolve({ statusCode: 200 }),
+            postDocument: (_index: string, _body?: any, _id?: string) =>
                 Promise.resolve({ statusCode: 200 })
         } as ElasticsearchClient;
         const putMappingStub = sandbox
@@ -161,7 +159,6 @@ describe('MigrationExecutor test', () => {
                 type: MigrationTypes.ADD_FIELD,
                 version: 'v1.0.1',
                 description: '',
-                index_name: 'test',
                 physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
             },
             {
@@ -175,7 +172,7 @@ describe('MigrationExecutor test', () => {
             }
         );
 
-        const ret = await applyMigration(tmpClient, info);
+        const ret = await applyMigration('test', tmpClient, info);
         expect(ret).is.eq(1);
         expect(putMappingStub.calledOnce).is.true;
         expect(postDocumentStub.calledOnce).is.true;
@@ -196,7 +193,7 @@ describe('MigrationExecutor test', () => {
             success: true
         });
 
-        const ret = await applyMigration({} as ElasticsearchClient, info);
+        const ret = await applyMigration('test', {} as ElasticsearchClient, info);
         expect(ret).is.eq(0);
         expect(cliWarnStub.calledOnce).is.true;
         expect(cliWarnStub.calledWith('No migration target.')).is.true;
@@ -209,13 +206,13 @@ describe('MigrationExecutor test', () => {
         const cliInfoStub = sandbox.stub(cli, 'info');
         const debugStub = sandbox.stub(cli, 'debug');
         const ret = await MigrationExecutor.migrate(
+            'test',
             [
                 {
                     migrate_script: {},
                     type: MigrationTypes.ADD_FIELD,
                     version: 'v1.0.1',
                     description: '',
-                    index_name: 'test',
                     physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
                 },
                 {
@@ -223,7 +220,6 @@ describe('MigrationExecutor test', () => {
                     type: MigrationTypes.ADD_FIELD,
                     version: 'v1.0.0',
                     description: '',
-                    index_name: 'test',
                     physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
                 }
             ],
@@ -256,13 +252,13 @@ describe('MigrationExecutor test', () => {
         esUtilsStub.returns(new MockElasticsearchClient());
         expect(
             migrate(
+                'test',
                 [
                     {
                         migrate_script: {},
                         type: MigrationTypes.ADD_FIELD,
                         version: 'v1.0.1',
                         description: '',
-                        index_name: 'test',
                         physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
                     }
                 ],
