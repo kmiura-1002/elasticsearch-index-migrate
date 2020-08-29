@@ -6,7 +6,6 @@ export const resolvedMigrations: ResolvedMigration[] = [
         type: MigrationTypes.CREATE_INDEX,
         version: 'v1.20.0',
         description: '',
-        index_name: 'test',
         physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
     },
     {
@@ -14,7 +13,6 @@ export const resolvedMigrations: ResolvedMigration[] = [
         type: MigrationTypes.CREATE_INDEX,
         version: 'v1.1.0',
         description: '',
-        index_name: 'test',
         physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
     },
     {
@@ -22,7 +20,6 @@ export const resolvedMigrations: ResolvedMigration[] = [
         type: MigrationTypes.CREATE_INDEX,
         version: 'v1.1.1',
         description: '',
-        index_name: 'test',
         physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
     },
     {
@@ -30,7 +27,6 @@ export const resolvedMigrations: ResolvedMigration[] = [
         type: MigrationTypes.CREATE_INDEX,
         version: 'v99.1.1',
         description: '',
-        index_name: 'test',
         physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
     }
 ];

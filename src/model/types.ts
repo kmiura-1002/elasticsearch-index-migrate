@@ -64,7 +64,7 @@ export type MigrationType = typeof MigrationTypes[keyof typeof MigrationTypes];
 
 export type ResolvedMigration = {
     type: MigrationType;
-    index_name: string;
+    // index_name: string;
     version: string;
     description: string;
     physicalLocation: ParsedPath;

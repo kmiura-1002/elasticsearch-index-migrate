@@ -32,7 +32,7 @@ export default class Plan extends AbstractCommand {
             cli.exit(1);
         }
 
-        const migrationScripts = loadMigrationScripts(migrationFileParsedPath, flags.indexName);
+        const migrationScripts = loadMigrationScripts(migrationFileParsedPath);
         const elasticsearchClient = getElasticsearchClient(this.migrationConfig.elasticsearch);
 
         const results = await elasticsearchClient

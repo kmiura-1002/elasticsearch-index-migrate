@@ -17,7 +17,7 @@ describe('esExecutor test', () => {
         const client = new MockElasticsearchClient();
         const stub = sandbox.stub(client).putMapping.returns(Promise.resolve({ statusCode: 200 }));
         const executor = esExecutor.get(MigrationTypes.ADD_FIELD) as ExecutorFnc;
-        const ret = await executor(client, {} as any);
+        const ret = await executor('', client, {} as any);
         expect(ret).to.deep.eq({ statusCode: 200 });
         expect(stub.calledOnce).is.true;
     });
@@ -26,7 +26,7 @@ describe('esExecutor test', () => {
         const client = new MockElasticsearchClient();
         const stub = sandbox.stub(client).createIndex.returns(Promise.resolve({ statusCode: 200 }));
         const executor = esExecutor.get(MigrationTypes.CREATE_INDEX) as ExecutorFnc;
-        const ret = await executor(client, {} as any);
+        const ret = await executor('', client, {} as any);
         expect(ret).to.deep.eq({ statusCode: 200 });
         expect(stub.calledOnce).is.true;
     });
@@ -35,7 +35,7 @@ describe('esExecutor test', () => {
         const client = new MockElasticsearchClient();
         const stub = sandbox.stub(client).delete.returns(Promise.resolve({ statusCode: 200 }));
         const executor = esExecutor.get(MigrationTypes.DELETE_INDEX) as ExecutorFnc;
-        const ret = await executor(client, {} as any);
+        const ret = await executor('', client, {} as any);
         expect(ret).to.deep.eq({ statusCode: 200 });
         expect(stub.calledOnce).is.true;
     });
@@ -44,7 +44,7 @@ describe('esExecutor test', () => {
         const client = new MockElasticsearchClient();
         const stub = sandbox.stub(client).putSetting.returns(Promise.resolve({ statusCode: 200 }));
         const executor = esExecutor.get(MigrationTypes.ALTER_SETTING) as ExecutorFnc;
-        const ret = await executor(client, {} as any);
+        const ret = await executor('', client, {} as any);
         expect(ret).to.deep.eq({ statusCode: 200 });
         expect(stub.calledOnce).is.true;
     });
