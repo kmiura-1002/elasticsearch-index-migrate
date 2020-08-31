@@ -113,7 +113,7 @@ export default abstract class AbstractCommand extends Command {
             cli.info('Create a migrate_history index for the first time.');
             await createHistoryIndex(
                 elasticsearchClient,
-                usedEsVersion(this.migrationConfig.elasticsearch) ?? ''
+                usedEsVersion(this.migrationConfig.elasticsearch.version)
             );
             cli.info('The creation of the index has been completed.');
         } else if (!exists) {

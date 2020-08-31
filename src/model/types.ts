@@ -244,3 +244,9 @@ export type SimpleJson = JsonPrimitiveType | JsonArrayType | JsonObjectType;
 export const cleanTargets = ['history', 'index', 'all'] as const;
 
 export type CLEAN_TARGET = typeof cleanTargets[number];
+
+export type ElasticsearchVersions = {
+    major: number;
+    minor: number;
+    patch: number;
+};

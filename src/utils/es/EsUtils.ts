@@ -4,30 +4,38 @@ import { ClientOptions as ClientOptions7 } from 'es7';
 import fs from 'fs';
 import { Bindings } from '../../ioc.bindings';
 import ElasticsearchClient from './ElasticsearchClient';
-import { ESConfig, ESConnectConfig } from '../../model/types';
+import { ElasticsearchVersions, ESConfig, ESConnectConfig } from '../../model/types';
 import { Container } from 'inversify';
 import Elasticsearch6Client from './6/Elasticsearch6Client';
 import Elasticsearch7Client from './7/Elasticsearch7Client';
+import major from 'semver/functions/major';
+import minor from 'semver/functions/minor';
+import patch from 'semver/functions/patch';
+import valid from 'semver/functions/valid';
 
-export function usedEsVersion(esConfig: ESConfig) {
-    const versionRegex = /^([1-9]\d{0,4}|0)(\.(([1-9]\d{0,4})|0)){0,3}$/;
-    const versionMatch = esConfig.version?.match(versionRegex);
-    return versionMatch ? versionMatch[1] : undefined;
+export function usedEsVersion(v?: string): ElasticsearchVersions | undefined {
+    return valid(v)
+        ? {
+              major: major(v ?? ''),
+              minor: minor(v ?? ''),
+              patch: patch(v ?? '')
+          }
+        : undefined;
 }
 
 export function esClientBind(esConfig: ESConfig) {
     const container = new Container();
     container.bind<ESConnectConfig>(Bindings.ESConfig).toConstantValue(esConfig.connect);
-    const version = usedEsVersion(esConfig);
 
+    const version = valid(esConfig.version);
     if (version) {
-        switch (version) {
-            case '6':
+        switch (usedEsVersion(version)?.major) {
+            case 6:
                 container
                     .bind<ElasticsearchClient>(Bindings.ElasticsearchClient)
                     .to(Elasticsearch6Client);
                 break;
-            case '7':
+            case 7:
                 container
                     .bind<ElasticsearchClient>(Bindings.ElasticsearchClient)
                     .to(Elasticsearch7Client);

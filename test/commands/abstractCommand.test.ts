@@ -25,7 +25,7 @@ describe('abstract command test', () => {
         .returns(
             Promise.resolve<MigrationConfigType>({
                 elasticsearch: {
-                    version: '6',
+                    version: '6.0.0',
                     connect: { host: 'http://0.0.0.0:9202' }
                 },
                 migration: {
@@ -137,7 +137,7 @@ describe('abstract command test', () => {
             expect(findAllFilesStub.calledWith(['migration'])).is.true;
             expect(
                 esClientStub.calledWith({
-                    version: '6',
+                    version: '6.0.0',
                     connect: {
                         host: 'http://0.0.0.0:9202'
                     }
