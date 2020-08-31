@@ -22,7 +22,7 @@ describe('Setup elasticsearch index migrate env test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -47,12 +47,12 @@ describe('Setup elasticsearch index migrate env test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
         .command(['init'])
-        .it('runs init cluster Status yellow ', (ctx) => {
+        .it('runs init cluster Status yellow ', () => {
             const info = cli.info as sinon.SinonStub;
             expect(info.called).is.true;
             expect(info.calledWith('cluster status is yellow.')).is.true;
@@ -74,7 +74,7 @@ describe('Setup elasticsearch index migrate env test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -103,7 +103,7 @@ describe('Setup elasticsearch index migrate env test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -121,7 +121,7 @@ describe('Setup elasticsearch index migrate env test', () => {
         'default',
         () =>
             new (class extends MockElasticsearchClient {
-                createIndex(index: string, body?: any) {
+                createIndex(_index: string, _body?: any) {
                     return Promise.resolve({ statusCode: 400 });
                 }
                 exists(index: string) {
@@ -133,7 +133,7 @@ describe('Setup elasticsearch index migrate env test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -162,7 +162,7 @@ describe('Setup elasticsearch index migrate env test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()

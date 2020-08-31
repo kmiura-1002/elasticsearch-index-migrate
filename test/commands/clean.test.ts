@@ -9,7 +9,7 @@ describe('clean command test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -27,7 +27,7 @@ describe('clean command test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -48,7 +48,7 @@ describe('clean command test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -69,7 +69,7 @@ describe('clean command test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()

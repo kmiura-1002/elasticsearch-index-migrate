@@ -22,7 +22,7 @@ describe('plan command test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .command(['plan', '-i', 'test'])
@@ -36,7 +36,7 @@ describe('plan command test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -51,7 +51,7 @@ describe('plan command test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -66,7 +66,7 @@ describe('plan command test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -81,7 +81,7 @@ describe('plan command test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -126,7 +126,7 @@ describe('plan command test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -158,7 +158,7 @@ describe('plan command test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()

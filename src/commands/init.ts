@@ -30,7 +30,7 @@ export default class Init extends AbstractCommand {
         } else {
             await createHistoryIndex(
                 client,
-                usedEsVersion(this.migrationConfig.elasticsearch) ?? ''
+                usedEsVersion(this.migrationConfig.elasticsearch.version)
             );
         }
         cli.info('Finish creating index for migrate.');
