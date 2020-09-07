@@ -3,8 +3,6 @@ import { ApiResponse as ApiResponse6 } from 'es6';
 import { ApiResponse as ApiResponse7 } from 'es7';
 import { MigrationPlan } from '../executor/plan/MigrationPlan';
 
-export const VERSION_REGEX = /^([v][0-9]+.[0-9]+.[0-9]+)/;
-
 export type ApiResponse<T = any, C = any> = ApiResponse6<T, C> | ApiResponse7<T, C>;
 export const MAPPING_HISTORY_INDEX_NAME = 'migrate_history';
 export interface ESConnectConfig {
@@ -27,9 +25,9 @@ export type MigrationConfigType = {
 };
 
 export const ClusterStatuses = { GREEN: 'green', YELLOW: 'yellow', RED: 'red' } as const;
-export type ClusterStatus = typeof ClusterStatuses[keyof typeof ClusterStatuses];
+// export type ClusterStatus = typeof ClusterStatuses[keyof typeof ClusterStatuses];
 
-export type IndexSearchResults<T> = {
+export type IndexSearchResults6<T> = {
     hits: {
         total: number;
         max_score?: number;
@@ -41,6 +39,18 @@ export type IndexSearchResults<T> = {
             _source: T;
         }[];
     };
+};
+
+export type IndexSearchResults7<T> = {
+    total: number;
+    max_score?: number;
+    hits: {
+        _index: string;
+        _type: string;
+        _id: string;
+        _score?: number;
+        _source: T;
+    }[];
 };
 
 export type MigrateIndex = {

@@ -56,9 +56,9 @@ export default function getElasticsearchClient(esConfig: ESConfig) {
     return container.get<ElasticsearchClient>(Bindings.ElasticsearchClient);
 }
 
-export function esConnectConf(conf: ESConnectConfig) {
+export function esConnectConf(conf: ESConnectConfig): ClientOptions6 | ClientOptions7 {
     const { host, sslCa, cloudId, username, password } = conf;
-    let opts: ClientOptions6 | ClientOptions7 = {};
+    let opts: ClientOptions6 | ClientOptions7;
     if (cloudId && username && password) {
         opts = {
             cloud: {
