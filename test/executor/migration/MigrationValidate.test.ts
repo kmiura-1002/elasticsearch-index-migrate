@@ -34,8 +34,42 @@ describe('MigrationValidation test', () => {
         ).is.eq('Unknown version migration detected');
         expect(
             migrationPlanValidate({
+                resolvedMigration: {
+                    type: MigrationTypes.ADD_FIELD,
+                    version: 'v2.0',
+                    description: '',
+                    physicalLocation: {
+                        name: '',
+                        base: '',
+                        dir: '',
+                        ext: '',
+                        root: ''
+                    },
+                    migrate_script: {}
+                },
+                context: migrationPlanContext,
+                baseline: false
+            })
+        ).is.eq('Unknown version migration detected');
+        expect(
+            migrationPlanValidate({
                 appliedMigration: {
                     version: '',
+                    description: '',
+                    type: MigrationTypes.ADD_FIELD,
+                    script: '',
+                    installedOn: new Date(),
+                    executionTime: 0,
+                    success: true
+                },
+                context: migrationPlanContext,
+                baseline: false
+            })
+        ).is.eq('Unknown version migration detected');
+        expect(
+            migrationPlanValidate({
+                appliedMigration: {
+                    version: '1',
                     description: '',
                     type: MigrationTypes.ADD_FIELD,
                     script: '',
