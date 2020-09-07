@@ -4,7 +4,8 @@ import { ApiResponse } from 'es6/lib/Transport';
 import { inject, injectable } from 'inversify';
 import { Bindings } from '../../../ioc.bindings';
 import ElasticsearchClient from '../ElasticsearchClient';
-import { ESConnectConfig, IndexSearchResults, SimpleJson } from '../../../model/types';
+import { ESConnectConfig, IndexSearchResults6, SimpleJson } from '../../../model/types';
+import { ClientOptions } from 'es6';
 
 @injectable()
 class Elasticsearch6Client implements ElasticsearchClient {
@@ -14,7 +15,7 @@ class Elasticsearch6Client implements ElasticsearchClient {
         @inject(Bindings.ESConfig)
         private readonly connectConf: ESConnectConfig
     ) {
-        this.client = new Client(esConnectConf(connectConf));
+        this.client = new Client(esConnectConf(connectConf) as ClientOptions);
     }
 
     async createIndex(index: string, body?: any) {
@@ -47,7 +48,7 @@ class Elasticsearch6Client implements ElasticsearchClient {
                 index,
                 body: query
             })
-            .then((value: ApiResponse<IndexSearchResults<R>>) =>
+            .then((value: ApiResponse<IndexSearchResults6<R>>) =>
                 value.body.hits.hits.map((hit) => hit._source as R)
             );
     }
@@ -64,7 +65,7 @@ class Elasticsearch6Client implements ElasticsearchClient {
     }
 
     async close() {
-        this.client.close();
+        await this.client.close();
     }
 
     async postDocument(index: string, body?: any, id?: string) {
