@@ -33,7 +33,8 @@ export function migrationPlanValidate(migratePlan: MigrationPlan): string | unde
     if (
         migratePlan.resolvedMigration &&
         migratePlan.appliedMigration &&
-        migratePlan.resolvedMigration.type !== migratePlan.appliedMigration.type
+        migratePlan.resolvedMigration.type !== migratePlan.appliedMigration.type &&
+        migratePlan.appliedMigration.description !== 'Migration baseline'
     ) {
         return `Migration type mismatch for migration ${version}`;
     }
