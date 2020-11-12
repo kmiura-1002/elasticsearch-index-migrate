@@ -203,4 +203,34 @@ describe('MigrationValidation test', () => {
                 'Migration type mismatch for migration v1.20.0'
             ]);
     });
+
+    it('Even if script type is empty, it should not result in an error under certain conditions (baseline)', () => {
+        const executor = MigrationPlanExecutor(
+            [
+                {
+                    migrate_script: {},
+                    type: MigrationTypes.CREATE_INDEX,
+                    version: 'v1.0.0',
+                    description: '',
+                    index_name: 'test',
+                    physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
+                }
+            ],
+            [
+                {
+                    script_name: 'v1.0.0__test',
+                    migrate_version: 'v1.0.0',
+                    description: 'Migration baseline',
+                    execution_time: 1,
+                    index_name: 'test',
+                    installed_on: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss"),
+                    script_type: '',
+                    success: true
+                }
+            ],
+            migrationPlanContext
+        );
+        const ret = doValidate(executor);
+        expect(ret).is.an('array').lengthOf(0);
+    });
 });
