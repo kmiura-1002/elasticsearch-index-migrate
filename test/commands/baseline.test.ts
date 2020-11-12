@@ -271,4 +271,53 @@ describe('baseline command test', () => {
                 expect(error.calledWith('failed post document')).is.true;
             }
         );
+
+    test.stub(types, 'MAPPING_HISTORY_INDEX_NAME', 'test8_migrate_history')
+        .stub(cli, 'error', sinon.stub())
+        .stub(cli, 'info', sinon.stub())
+        .env({
+            ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
+            ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
+            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_HOST: 'http://localhost:9202'
+        })
+        .stdout()
+        .command(['baseline', '-i', 'test8'])
+        .do(async () => {
+            const client = es7ClientContainer().get<ElasticsearchClient>(
+                Bindings.ElasticsearchClient
+            );
+
+            await client.createIndex('test8', {
+                settings: {
+                    index: {
+                        refresh_interval: '1s',
+                        number_of_shards: 1,
+                        number_of_replicas: 0
+                    }
+                },
+                mappings: {
+                    properties: {
+                        name: {
+                            type: 'text'
+                        }
+                    }
+                }
+            });
+            // Processing to wait for elasticsearch refresh time
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+        })
+        .command(['migrate', '-i', 'test8', '--showDiff'])
+        .it(
+            'The migrate command must succeed after the baseline command is executed.',
+            async () => {
+                const info = cli.info as sinon.SinonStub;
+                expect(info.calledWith('migrate_history index does not exist.')).is.true;
+                expect(info.calledWith('Create a migrate_history index for the first time.')).is
+                    .true;
+                expect(info.calledWith('The creation of the index has been completed.')).is.true;
+                expect(info.calledWith('Migration completed. (count: 1)')).is.true;
+                expect(info.calledWith('Display of the result difference.')).is.true;
+            }
+        );
 });

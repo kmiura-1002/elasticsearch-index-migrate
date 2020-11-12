@@ -1,0 +1,11 @@
+{
+    "type": "ADD_FIELD",
+    "description": "test index4",
+    "migrate_script": {
+        "properties": {
+            "price": {
+                "type": "long"
+            }
+        }
+    }
+}
