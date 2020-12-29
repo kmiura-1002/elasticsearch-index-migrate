@@ -10,7 +10,7 @@ export async function createHistoryIndex(
 ) {
     const mappingData = esVersion?.major === 7 ? v7Mapping : v6Mapping;
     const ret = await esClient
-        .createIndex(MAPPING_HISTORY_INDEX_NAME, mappingData)
+        .createIndex({ index: MAPPING_HISTORY_INDEX_NAME, body: mappingData })
         .catch((reason) => {
             cli.error(`Failed to create index: ${JSON.stringify(reason)}`, { exit: 1 });
             cli.exit(1);

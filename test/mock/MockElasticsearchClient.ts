@@ -1,16 +1,18 @@
 import ElasticsearchClient from '../../src/utils/es/ElasticsearchClient';
 import { cli } from 'cli-ux';
 import { ClusterStatuses, SimpleJson } from '../../src/model/types';
+import { IndicesCreate as IndicesCreate6 } from 'es6/api/requestParams';
+import { IndicesCreate as IndicesCreate7 } from 'es7/api/requestParams';
 
 export default class MockElasticsearchClient implements ElasticsearchClient {
     close() {
         cli.debug('Called MockElasticsearchClient.close');
     }
-    createIndex(index: string, body?: any) {
+    createIndex(param: IndicesCreate6 | IndicesCreate7) {
         cli.debug(
-            `Called MockElasticsearchClient.createIndex: index=${index}, body=${JSON.stringify(
-                body
-            )}`
+            `Called MockElasticsearchClient.createIndex: index=${
+                param.index
+            }, body=${JSON.stringify(param.body)}`
         );
         return Promise.resolve({ statusCode: 200 });
     }

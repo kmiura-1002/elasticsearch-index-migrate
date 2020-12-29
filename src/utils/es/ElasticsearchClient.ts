@@ -1,11 +1,13 @@
 import type { SimpleJson } from '../../model/types';
+import { IndicesCreate as IndicesCreate6 } from 'es6/api/requestParams';
+import { IndicesCreate as IndicesCreate7 } from 'es7/api/requestParams';
 
 export default interface ElasticsearchClient {
     healthCheck(): Promise<{ status: string }>;
 
     putMapping: (index: string, body: any) => Promise<any>;
 
-    createIndex: (index: string, body?: any) => Promise<any>;
+    createIndex: (param: IndicesCreate6 | IndicesCreate7) => Promise<any>;
 
     search: <R>(index: string, query?: any) => Promise<R[]>;
 
