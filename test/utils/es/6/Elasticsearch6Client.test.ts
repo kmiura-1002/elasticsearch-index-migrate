@@ -21,19 +21,19 @@ describe('Elasticsearch6Client test', () => {
     });
     it('create index', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
-        const create = await client.createIndex(index);
+        const create = await client.createIndex({ index });
         expect(create.statusCode).is.eq(200);
         await client.delete(index);
     });
     it('search', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
-        await client.createIndex(index);
+        await client.createIndex({ index });
         const ret = await client.search(index);
         expect(ret).to.be.an('array');
     });
     it('put mapping', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
-        await client.createIndex(index);
+        await client.createIndex({ index });
         const ret = await client.putMapping(index, {
             properties: {
                 test_id: {
@@ -47,7 +47,7 @@ describe('Elasticsearch6Client test', () => {
 
     it('put settings', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
-        await client.createIndex(index);
+        await client.createIndex({ index });
         const ret = await client.putSetting(index, {
             index: {
                 number_of_replicas: 0
@@ -59,7 +59,7 @@ describe('Elasticsearch6Client test', () => {
 
     it('post document', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
-        await client.createIndex(index);
+        await client.createIndex({ index });
         const ret = await client.postDocument(index, { test: 'foo baz' });
 
         expect(ret.statusCode).is.eq(201);
@@ -68,12 +68,15 @@ describe('Elasticsearch6Client test', () => {
 
     it('get mpping', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
-        await client.createIndex(index, {
-            mappings: {
-                test: {
-                    properties: {
-                        test_name: {
-                            type: 'keyword'
+        await client.createIndex({
+            index,
+            body: {
+                mappings: {
+                    test: {
+                        properties: {
+                            test_name: {
+                                type: 'keyword'
+                            }
                         }
                     }
                 }
@@ -96,19 +99,22 @@ describe('Elasticsearch6Client test', () => {
 
     it('get', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
-        await client.createIndex(index, {
-            settings: {
-                index: {
-                    refresh_interval: '1s',
-                    number_of_shards: 1,
-                    number_of_replicas: 0
-                }
-            },
-            mappings: {
-                test: {
-                    properties: {
-                        test_name: {
-                            type: 'keyword'
+        await client.createIndex({
+            index,
+            body: {
+                settings: {
+                    index: {
+                        refresh_interval: '1s',
+                        number_of_shards: 1,
+                        number_of_replicas: 0
+                    }
+                },
+                mappings: {
+                    test: {
+                        properties: {
+                            test_name: {
+                                type: 'keyword'
+                            }
                         }
                     }
                 }
@@ -134,12 +140,15 @@ describe('Elasticsearch6Client test', () => {
 
     it('delete document', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
-        await client.createIndex(index, {
-            mappings: {
-                _doc: {
-                    properties: {
-                        test: {
-                            type: 'keyword'
+        await client.createIndex({
+            index,
+            body: {
+                mappings: {
+                    _doc: {
+                        properties: {
+                            test: {
+                                type: 'keyword'
+                            }
                         }
                     }
                 }

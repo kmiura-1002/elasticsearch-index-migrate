@@ -6,6 +6,7 @@ import { Bindings } from '../../../ioc.bindings';
 import ElasticsearchClient from '../ElasticsearchClient';
 import { ESConnectConfig, IndexSearchResults7, SimpleJson } from '../../../model/types';
 import { ClientOptions } from 'es7';
+import { IndicesCreate as IndicesCreate7 } from 'es7/api/requestParams';
 
 @injectable()
 class Elasticsearch7Client implements ElasticsearchClient {
@@ -15,11 +16,8 @@ class Elasticsearch7Client implements ElasticsearchClient {
         this.client = new Client(esConnectConf(connectConf) as ClientOptions);
     }
 
-    createIndex(index: string, body?: any) {
-        return this.client.indices.create({
-            index,
-            body
-        });
+    createIndex(param: IndicesCreate7) {
+        return this.client.indices.create(param);
     }
 
     async exists(index: string): Promise<boolean> {

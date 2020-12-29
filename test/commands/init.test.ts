@@ -8,6 +8,8 @@ import * as types from '../../src/model/types';
 import { es6ClientContainer, es7ClientContainer } from '../utils/ioc-test';
 import ElasticsearchClient from '../../src/utils/es/ElasticsearchClient';
 import { Bindings } from '../../src/ioc.bindings';
+import { IndicesCreate as IndicesCreate6 } from 'es6/api/requestParams';
+import { IndicesCreate as IndicesCreate7 } from 'es7/api/requestParams';
 
 describe('Setup elasticsearch index migrate env test', () => {
     after(async () => {
@@ -121,7 +123,7 @@ describe('Setup elasticsearch index migrate env test', () => {
         'default',
         () =>
             new (class extends MockElasticsearchClient {
-                createIndex(_index: string, _body?: any) {
+                createIndex(_param: IndicesCreate6 | IndicesCreate7) {
                     return Promise.resolve({ statusCode: 400 });
                 }
                 exists(index: string) {
@@ -150,7 +152,7 @@ describe('Setup elasticsearch index migrate env test', () => {
         'default',
         () =>
             new (class extends MockElasticsearchClient {
-                createIndex(index: string, body?: any) {
+                createIndex(_param: IndicesCreate6 | IndicesCreate7) {
                     return Promise.reject();
                 }
                 exists(index: string) {

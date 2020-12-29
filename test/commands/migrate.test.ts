@@ -263,18 +263,21 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
             const client = es7ClientContainer().get<ElasticsearchClient>(
                 Bindings.ElasticsearchClient
             );
-            await client.createIndex('test7', {
-                settings: {
-                    index: {
-                        refresh_interval: '1s',
-                        number_of_shards: 1,
-                        number_of_replicas: 0
-                    }
-                },
-                mappings: {
-                    properties: {
-                        name: {
-                            type: 'text'
+            await client.createIndex({
+                index: 'test7',
+                body: {
+                    settings: {
+                        index: {
+                            refresh_interval: '1s',
+                            number_of_shards: 1,
+                            number_of_replicas: 0
+                        }
+                    },
+                    mappings: {
+                        properties: {
+                            name: {
+                                type: 'text'
+                            }
                         }
                     }
                 }
