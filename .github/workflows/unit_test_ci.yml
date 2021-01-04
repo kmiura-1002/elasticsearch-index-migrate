@@ -4,12 +4,12 @@
 name: Unit Test
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    types: [opened, synchronize]
-    branches:
-      - '**'
+    push:
+        branches: [master]
+    pull_request:
+        types: [opened, synchronize]
+        branches:
+            - '**'
 jobs:
   build-and-test:
     name: Build and Test (Node.js ${{ matrix.node-version }})
