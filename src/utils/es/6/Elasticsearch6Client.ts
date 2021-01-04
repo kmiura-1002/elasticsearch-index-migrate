@@ -10,6 +10,7 @@ import {
     IndicesCreate as IndicesCreate6,
     IndicesExists as IndicesExists6
 } from 'es6/api/requestParams';
+import { IndicesExists as IndicesExists7 } from 'es7/api/requestParams';
 
 @injectable()
 class Elasticsearch6Client implements ElasticsearchClient {
@@ -26,8 +27,10 @@ class Elasticsearch6Client implements ElasticsearchClient {
         return await this.client.indices.create(param);
     }
 
-    async exists(param: IndicesExists6): Promise<boolean> {
-        return await this.client.indices.exists(param).then((value) => value.body as boolean);
+    async exists(param: IndicesExists6 | IndicesExists7): Promise<boolean> {
+        return await this.client.indices
+            .exists(param as IndicesExists6)
+            .then((value) => value.body as boolean);
     }
 
     async healthCheck(): Promise<{ status: string }> {
