@@ -10,6 +10,8 @@ import { cli } from 'cli-ux';
 import * as sinon from 'sinon';
 import * as create from '../../src/executor/init/MigrationInitExecutor';
 import * as MigrationExecutor from '../../src/executor/migration/MigrationExecutor';
+import { IndicesExists as IndicesExists6 } from 'es6/api/requestParams';
+import { IndicesExists as IndicesExists7 } from 'es7/api/requestParams';
 
 describe('plan command test', () => {
     after(async () => {
@@ -118,7 +120,7 @@ describe('plan command test', () => {
             'default',
             () =>
                 new (class extends MockElasticsearchClient {
-                    exists(_index: string) {
+                    exists(_param: IndicesExists6 | IndicesExists7) {
                         return Promise.resolve(false);
                     }
                 })()
@@ -150,7 +152,7 @@ describe('plan command test', () => {
             'default',
             () =>
                 new (class extends MockElasticsearchClient {
-                    exists(_index: string) {
+                    exists(_param: IndicesExists6 | IndicesExists7) {
                         return Promise.resolve(false);
                     }
                 })()

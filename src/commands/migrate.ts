@@ -69,7 +69,7 @@ export default class Migrate extends AbstractCommand {
             lastResolved: '',
             lastApplied: ''
         };
-        if (flags.showDiff && (await elasticsearchClient.exists(flags.indexName))) {
+        if (flags.showDiff && (await elasticsearchClient.exists({ index: flags.indexName }))) {
             beforeIndex = await elasticsearchClient.get(flags.indexName);
         }
         const count = await migrate(

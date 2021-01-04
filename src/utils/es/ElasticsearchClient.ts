@@ -1,6 +1,12 @@
 import type { SimpleJson } from '../../model/types';
-import { IndicesCreate as IndicesCreate6 } from 'es6/api/requestParams';
-import { IndicesCreate as IndicesCreate7 } from 'es7/api/requestParams';
+import {
+    IndicesCreate as IndicesCreate6,
+    IndicesExists as IndicesExists6
+} from 'es6/api/requestParams';
+import {
+    IndicesCreate as IndicesCreate7,
+    IndicesExists as IndicesExists7
+} from 'es7/api/requestParams';
 
 export default interface ElasticsearchClient {
     healthCheck(): Promise<{ status: string }>;
@@ -11,7 +17,7 @@ export default interface ElasticsearchClient {
 
     search: <R>(index: string, query?: any) => Promise<R[]>;
 
-    exists: (index: string) => Promise<boolean>;
+    exists: (param: IndicesExists6 | IndicesExists7) => Promise<boolean>;
 
     version: () => string;
 

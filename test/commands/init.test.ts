@@ -8,8 +8,14 @@ import * as types from '../../src/model/types';
 import { es6ClientContainer, es7ClientContainer } from '../utils/ioc-test';
 import ElasticsearchClient from '../../src/utils/es/ElasticsearchClient';
 import { Bindings } from '../../src/ioc.bindings';
-import { IndicesCreate as IndicesCreate6 } from 'es6/api/requestParams';
-import { IndicesCreate as IndicesCreate7 } from 'es7/api/requestParams';
+import {
+    IndicesCreate as IndicesCreate6,
+    IndicesExists as IndicesExists6
+} from 'es6/api/requestParams';
+import {
+    IndicesCreate as IndicesCreate7,
+    IndicesExists as IndicesExists7
+} from 'es7/api/requestParams';
 
 describe('Setup elasticsearch index migrate env test', () => {
     after(async () => {
@@ -93,7 +99,7 @@ describe('Setup elasticsearch index migrate env test', () => {
         'default',
         () =>
             new (class extends MockElasticsearchClient {
-                exists(index: string) {
+                exists(_param: IndicesExists6 | IndicesExists7) {
                     return Promise.resolve(true);
                 }
                 healthCheck(): Promise<{ status: string }> {
@@ -126,7 +132,7 @@ describe('Setup elasticsearch index migrate env test', () => {
                 createIndex(_param: IndicesCreate6 | IndicesCreate7) {
                     return Promise.resolve({ statusCode: 400 });
                 }
-                exists(index: string) {
+                exists(_param: IndicesExists6 | IndicesExists7) {
                     return Promise.resolve(false);
                 }
             })()
@@ -155,7 +161,7 @@ describe('Setup elasticsearch index migrate env test', () => {
                 createIndex(_param: IndicesCreate6 | IndicesCreate7) {
                     return Promise.reject();
                 }
-                exists(index: string) {
+                exists(_param: IndicesExists6 | IndicesExists7) {
                     return Promise.resolve(false);
                 }
             })()

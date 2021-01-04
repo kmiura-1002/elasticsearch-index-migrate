@@ -16,7 +16,7 @@ describe('Elasticsearch6Client test', () => {
     });
     it('exist check', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
-        const exists = await client.exists(index);
+        const exists = await client.exists({ index });
         expect(exists).is.false;
     });
     it('create index', async () => {

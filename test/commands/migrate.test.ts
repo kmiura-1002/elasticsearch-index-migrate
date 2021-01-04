@@ -11,6 +11,8 @@ import { MAPPING_HISTORY_INDEX_NAME } from '../../src/model/types';
 import { cli } from 'cli-ux';
 import * as sinon from 'sinon';
 import * as create from '../../src/executor/init/MigrationInitExecutor';
+import { IndicesExists as IndicesExists6 } from 'es6/api/requestParams';
+import { IndicesExists as IndicesExists7 } from 'es7/api/requestParams';
 
 describe('Migrates Elasticsearch index to the latest version.', () => {
     after(async () => {
@@ -184,7 +186,7 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
             'default',
             () =>
                 new (class extends MockElasticsearchClient {
-                    exists(_index: string) {
+                    exists(_param: IndicesExists6 | IndicesExists7) {
                         return Promise.resolve(false);
                     }
                 })()
@@ -215,7 +217,7 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
             'default',
             () =>
                 new (class extends MockElasticsearchClient {
-                    exists(_index: string) {
+                    exists(_param: IndicesExists6 | IndicesExists7) {
                         return Promise.resolve(false);
                     }
                 })()

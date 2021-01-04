@@ -1,8 +1,14 @@
 import ElasticsearchClient from '../../src/utils/es/ElasticsearchClient';
 import { cli } from 'cli-ux';
 import { ClusterStatuses, SimpleJson } from '../../src/model/types';
-import { IndicesCreate as IndicesCreate6 } from 'es6/api/requestParams';
-import { IndicesCreate as IndicesCreate7 } from 'es7/api/requestParams';
+import {
+    IndicesCreate as IndicesCreate6,
+    IndicesExists as IndicesExists6
+} from 'es6/api/requestParams';
+import {
+    IndicesCreate as IndicesCreate7,
+    IndicesExists as IndicesExists7
+} from 'es7/api/requestParams';
 
 export default class MockElasticsearchClient implements ElasticsearchClient {
     close() {
@@ -16,8 +22,8 @@ export default class MockElasticsearchClient implements ElasticsearchClient {
         );
         return Promise.resolve({ statusCode: 200 });
     }
-    exists(index: string) {
-        cli.debug(`Called MockElasticsearchClient.exists: index=${index}`);
+    exists(param: IndicesExists6 | IndicesExists7) {
+        cli.debug(`Called MockElasticsearchClient.exists: index=${param.index}`);
         return Promise.resolve(false);
     }
     postDocument(index: string, body?: any, id?: string) {

@@ -23,7 +23,7 @@ export default class Init extends AbstractCommand {
         }
         cli.info('Start creating index for migrate.');
 
-        const exists = await client.exists(MAPPING_HISTORY_INDEX_NAME);
+        const exists = await client.exists({ index: MAPPING_HISTORY_INDEX_NAME });
         if (exists) {
             cli.info(`${MAPPING_HISTORY_INDEX_NAME} index already exists.`);
             cli.exit(1);

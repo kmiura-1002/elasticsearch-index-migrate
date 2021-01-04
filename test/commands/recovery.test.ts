@@ -10,6 +10,8 @@ import { cli } from 'cli-ux';
 import * as sinon from 'sinon';
 import * as create from '../../src/executor/init/MigrationInitExecutor';
 import * as MigrationExecutor from '../../src/executor/migration/MigrationExecutor';
+import { IndicesExists as IndicesExists6 } from 'es6/api/requestParams';
+import { IndicesExists as IndicesExists7 } from 'es7/api/requestParams';
 
 describe('recovery command test', () => {
     after(async () => {
@@ -23,7 +25,7 @@ describe('recovery command test', () => {
             'default',
             () =>
                 new (class extends MockElasticsearchClient {
-                    exists(_index: string) {
+                    exists(_param: IndicesExists6 | IndicesExists7) {
                         return Promise.resolve(false);
                     }
                 })()
@@ -55,7 +57,7 @@ describe('recovery command test', () => {
             'default',
             () =>
                 new (class extends MockElasticsearchClient {
-                    exists(_index: string) {
+                    exists(_param: IndicesExists6 | IndicesExists7) {
                         return Promise.resolve(false);
                     }
                 })()
@@ -169,7 +171,7 @@ describe('recovery command test', () => {
                 search(_index: string, _query?: any) {
                     return Promise.reject('failed search');
                 }
-                exists(_index: string): Promise<boolean> {
+                exists(_param: IndicesExists6 | IndicesExists7): Promise<boolean> {
                     return Promise.resolve(true);
                 }
             })()
@@ -211,7 +213,7 @@ describe('recovery command test', () => {
                         }
                     ]);
                 }
-                exists(_index: string): Promise<boolean> {
+                exists(_param: IndicesExists6 | IndicesExists7): Promise<boolean> {
                     return Promise.resolve(true);
                 }
                 deleteDocument(_indexName: string, _body: any): Promise<any> {
