@@ -36,12 +36,15 @@ export default class Plan extends AbstractCommand {
         const elasticsearchClient = getElasticsearchClient(this.migrationConfig.elasticsearch);
 
         const results = await elasticsearchClient
-            .search<MigrateIndex>(MAPPING_HISTORY_INDEX_NAME, {
-                size: 10000,
-                query: {
-                    term: {
-                        index_name: {
-                            value: flags.indexName
+            .search<MigrateIndex>({
+                index: MAPPING_HISTORY_INDEX_NAME,
+                body: {
+                    size: 10000,
+                    query: {
+                        term: {
+                            index_name: {
+                                value: flags.indexName
+                            }
                         }
                     }
                 }

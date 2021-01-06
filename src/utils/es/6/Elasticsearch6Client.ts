@@ -5,7 +5,8 @@ import { inject, injectable } from 'inversify';
 import { Bindings } from '../../../ioc.bindings';
 import ElasticsearchClient, {
     isIndicesExists6,
-    isIndicesPutMapping6
+    isIndicesPutMapping6,
+    isSearch6
 } from '../ElasticsearchClient';
 import { ESConnectConfig, IndexSearchResults6, SimpleJson } from '../../../model/types';
 import { ClientOptions } from 'es6';
@@ -13,11 +14,13 @@ import {
     ClusterHealth as ClusterHealth6,
     IndicesCreate as IndicesCreate6,
     IndicesExists as IndicesExists6,
-    IndicesPutMapping as IndicesPutMapping6
+    IndicesPutMapping as IndicesPutMapping6,
+    Search as Search6
 } from 'es6/api/requestParams';
 import {
     IndicesExists as IndicesExists7,
-    IndicesPutMapping as IndicesPutMapping7
+    IndicesPutMapping as IndicesPutMapping7,
+    Search as Search7
 } from 'es7/api/requestParams';
 
 @injectable()
@@ -64,12 +67,16 @@ class Elasticsearch6Client implements ElasticsearchClient {
         );
     }
 
-    async search<R>(index: string, query?: any) {
+    async search<R>(param: Search6 | Search7) {
         return await this.client
-            .search({
-                index,
-                body: query
-            })
+            .search(
+                isSearch6(param)
+                    ? param
+                    : {
+                          index: param.index,
+                          body: param.body
+                      }
+            )
             .then((value: ApiResponse<IndexSearchResults6<R>>) =>
                 value.body.hits.hits.map((hit) => hit._source as R)
             );

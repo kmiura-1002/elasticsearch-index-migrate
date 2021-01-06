@@ -3,12 +3,15 @@ import { cli } from 'cli-ux';
 import { ClusterStatuses, SimpleJson } from '../../src/model/types';
 import {
     IndicesCreate as IndicesCreate6,
-    IndicesExists as IndicesExists6
+    IndicesExists as IndicesExists6,
+    IndicesPutMapping as IndicesPutMapping6,
+    Search as Search6
 } from 'es6/api/requestParams';
 import {
     IndicesCreate as IndicesCreate7,
     IndicesExists as IndicesExists7,
-    IndicesPutMapping as IndicesPutMapping7
+    IndicesPutMapping as IndicesPutMapping7,
+    Search as Search7
 } from 'es7/api/requestParams';
 
 export default class MockElasticsearchClient implements ElasticsearchClient {
@@ -31,7 +34,7 @@ export default class MockElasticsearchClient implements ElasticsearchClient {
         );
         return Promise.resolve({ statusCode: 200 });
     }
-    putMapping(param: IndicesPutMapping7) {
+    putMapping(param: IndicesPutMapping6 | IndicesPutMapping7) {
         cli.debug(`Called MockElasticsearchClient.putMapping: param=${JSON.stringify(param)}`);
         return Promise.resolve({ statusCode: 200 });
     }
@@ -43,10 +46,8 @@ export default class MockElasticsearchClient implements ElasticsearchClient {
         );
         return Promise.resolve({ statusCode: 200 });
     }
-    search(index: string, query?: any): Promise<any[]> {
-        cli.debug(
-            `Called MockElasticsearchClient.search: index=${index}, query=${JSON.stringify(query)}`
-        );
+    search(param: Search6 | Search7): Promise<any[]> {
+        cli.debug(`Called MockElasticsearchClient.search: param=${JSON.stringify(param)}`);
         return Promise.resolve([]);
     }
     version() {

@@ -28,7 +28,7 @@ describe('Elasticsearch6Client test', () => {
     it('search', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({ index });
-        const ret = await client.search(index);
+        const ret = await client.search({ index });
         expect(ret).to.be.an('array');
     });
     it('put mapping', async () => {
@@ -162,7 +162,7 @@ describe('Elasticsearch6Client test', () => {
             .then((value) => expect(value.statusCode).is.eq(201));
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
-        await client.search(index).then((value) => {
+        await client.search({ index }).then((value) => {
             expect(value).to.be.an('array');
             expect(value[0]).to.eql({
                 test: 'foobaz'
@@ -182,7 +182,7 @@ describe('Elasticsearch6Client test', () => {
             .then((value) => expect(value.statusCode).is.eq(200));
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
-        await client.search(index).then((value) => {
+        await client.search({ index }).then((value) => {
             expect(value).to.be.an('array');
             expect(value.length).to.eql(0);
         });

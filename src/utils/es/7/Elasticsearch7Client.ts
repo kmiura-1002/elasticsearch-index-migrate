@@ -10,7 +10,8 @@ import {
     ClusterHealth as ClusterHealth7,
     IndicesCreate as IndicesCreate7,
     IndicesExists as IndicesExists7,
-    IndicesPutMapping as IndicesPutMapping7
+    IndicesPutMapping as IndicesPutMapping7,
+    Search as Search7
 } from 'es7/api/requestParams';
 
 @injectable()
@@ -38,12 +39,9 @@ class Elasticsearch7Client implements ElasticsearchClient {
         return this.client.indices.putMapping(param);
     }
 
-    search<R>(index: string, query?: any) {
+    search<R>(param: Search7) {
         return this.client
-            .search({
-                index,
-                body: query
-            })
+            .search(param)
             .then((value: ApiResponse<Record<string, IndexSearchResults7<R>>>) =>
                 value.body.hits.hits.map((hit) => hit._source as R)
             );

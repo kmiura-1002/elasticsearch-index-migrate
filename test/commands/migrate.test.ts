@@ -84,9 +84,12 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
                 Bindings.ElasticsearchClient
             );
 
-            const searchRet = await client.search<MigrateIndex>(testMigrateHistory, {
-                query: {
-                    match_all: {}
+            const searchRet = await client.search<MigrateIndex>({
+                index: testMigrateHistory,
+                body: {
+                    query: {
+                        match_all: {}
+                    }
                 }
             });
             await client.delete('test3');
@@ -121,9 +124,12 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
                     Bindings.ElasticsearchClient
                 );
 
-                const searchRet = await client.search<MigrateIndex>(testMigrateHistory, {
-                    query: {
-                        match_all: {}
+                const searchRet = await client.search<MigrateIndex>({
+                    index: testMigrateHistory,
+                    body: {
+                        query: {
+                            match_all: {}
+                        }
                     }
                 });
                 await client.delete('test4');

@@ -10,8 +10,8 @@ import { cli } from 'cli-ux';
 import * as sinon from 'sinon';
 import * as create from '../../src/executor/init/MigrationInitExecutor';
 import * as MigrationExecutor from '../../src/executor/migration/MigrationExecutor';
-import { IndicesExists as IndicesExists6 } from 'es6/api/requestParams';
-import { IndicesExists as IndicesExists7 } from 'es7/api/requestParams';
+import { IndicesExists as IndicesExists6, Search as Search6 } from 'es6/api/requestParams';
+import { IndicesExists as IndicesExists7, Search as Search7 } from 'es7/api/requestParams';
 
 describe('recovery command test', () => {
     after(async () => {
@@ -122,26 +122,29 @@ describe('recovery command test', () => {
             );
             // Processing to wait for elasticsearch refresh time
             await new Promise((resolve) => setTimeout(resolve, 2000));
-            const ret = await client.search<MigrateIndex>('test1_migrate_history', {
-                size: 10000,
-                query: {
-                    bool: {
-                        must: [
-                            {
-                                term: {
-                                    index_name: {
-                                        value: 'test1'
+            const ret = await client.search<MigrateIndex>({
+                index: 'test1_migrate_history',
+                body: {
+                    size: 10000,
+                    query: {
+                        bool: {
+                            must: [
+                                {
+                                    term: {
+                                        index_name: {
+                                            value: 'test1'
+                                        }
+                                    }
+                                },
+                                {
+                                    term: {
+                                        success: {
+                                            value: 'false'
+                                        }
                                     }
                                 }
-                            },
-                            {
-                                term: {
-                                    success: {
-                                        value: 'false'
-                                    }
-                                }
-                            }
-                        ]
+                            ]
+                        }
                     }
                 }
             });
@@ -168,7 +171,7 @@ describe('recovery command test', () => {
         'default',
         () =>
             new (class extends MockElasticsearchClient {
-                search(_index: string, _query?: any) {
+                search(_param: Search6 | Search7) {
                     return Promise.reject('failed search');
                 }
                 exists(_param: IndicesExists6 | IndicesExists7): Promise<boolean> {
@@ -199,7 +202,7 @@ describe('recovery command test', () => {
         'default',
         () =>
             new (class extends MockElasticsearchClient {
-                search(_index: string, _query?: any) {
+                search(_param: Search6 | Search7) {
                     return Promise.resolve<MigrateIndex[]>([
                         {
                             index_name: 'test',

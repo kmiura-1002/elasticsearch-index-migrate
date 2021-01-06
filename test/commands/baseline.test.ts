@@ -10,8 +10,8 @@ import { cli } from 'cli-ux';
 import * as sinon from 'sinon';
 import * as create from '../../src/executor/init/MigrationInitExecutor';
 import * as MigrationExecutor from '../../src/executor/migration/MigrationExecutor';
-import { IndicesExists as IndicesExists6 } from 'es6/api/requestParams';
-import { IndicesExists as IndicesExists7 } from 'es7/api/requestParams';
+import { IndicesExists as IndicesExists6, Search as Search6 } from 'es6/api/requestParams';
+import { IndicesExists as IndicesExists7, Search as Search7 } from 'es7/api/requestParams';
 
 describe('baseline command test', () => {
     after(async () => {
@@ -97,25 +97,28 @@ describe('baseline command test', () => {
             );
             // Processing to wait for elasticsearch refresh time
             await new Promise((resolve) => setTimeout(resolve, 2000));
-            const ret = await client.search<MigrateIndex>('test1_migrate_history', {
-                query: {
-                    bool: {
-                        must: [
-                            {
-                                term: {
-                                    index_name: {
-                                        value: 'test2'
+            const ret = await client.search<MigrateIndex>({
+                index: 'test1_migrate_history',
+                body: {
+                    query: {
+                        bool: {
+                            must: [
+                                {
+                                    term: {
+                                        index_name: {
+                                            value: 'test2'
+                                        }
+                                    }
+                                },
+                                {
+                                    term: {
+                                        migrate_version: {
+                                            value: 'v1.0.0'
+                                        }
                                     }
                                 }
-                            },
-                            {
-                                term: {
-                                    migrate_version: {
-                                        value: 'v1.0.0'
-                                    }
-                                }
-                            }
-                        ]
+                            ]
+                        }
                     }
                 }
             });
@@ -143,25 +146,28 @@ describe('baseline command test', () => {
             );
             // Processing to wait for elasticsearch refresh time
             await new Promise((resolve) => setTimeout(resolve, 2000));
-            const ret = await client.search<MigrateIndex>('test2_migrate_history', {
-                query: {
-                    bool: {
-                        must: [
-                            {
-                                term: {
-                                    index_name: {
-                                        value: 'test3'
+            const ret = await client.search<MigrateIndex>({
+                index: 'test2_migrate_history',
+                body: {
+                    query: {
+                        bool: {
+                            must: [
+                                {
+                                    term: {
+                                        index_name: {
+                                            value: 'test3'
+                                        }
+                                    }
+                                },
+                                {
+                                    term: {
+                                        migrate_version: {
+                                            value: 'v1.0.0'
+                                        }
                                     }
                                 }
-                            },
-                            {
-                                term: {
-                                    migrate_version: {
-                                        value: 'v1.0.0'
-                                    }
-                                }
-                            }
-                        ]
+                            ]
+                        }
                     }
                 }
             });
@@ -209,7 +215,7 @@ describe('baseline command test', () => {
         'default',
         () =>
             new (class extends MockElasticsearchClient {
-                search(_index: string, _query?: any) {
+                search(_param: Search6 | Search7) {
                     return Promise.reject('failed search');
                 }
                 exists(_param: IndicesExists6 | IndicesExists7): Promise<boolean> {
@@ -240,7 +246,7 @@ describe('baseline command test', () => {
         'default',
         () =>
             new (class extends MockElasticsearchClient {
-                search(_index: string, _query?: any) {
+                search(_param: Search6 | Search7) {
                     return Promise.resolve<MigrateIndex[]>([]);
                 }
                 exists(_param: IndicesExists6 | IndicesExists7): Promise<boolean> {

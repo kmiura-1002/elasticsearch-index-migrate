@@ -3,13 +3,15 @@ import {
     ClusterHealth as ClusterHealth6,
     IndicesCreate as IndicesCreate6,
     IndicesExists as IndicesExists6,
-    IndicesPutMapping as IndicesPutMapping6
+    IndicesPutMapping as IndicesPutMapping6,
+    Search as Search6
 } from 'es6/api/requestParams';
 import {
     ClusterHealth as ClusterHealth7,
     IndicesCreate as IndicesCreate7,
     IndicesExists as IndicesExists7,
-    IndicesPutMapping as IndicesPutMapping7
+    IndicesPutMapping as IndicesPutMapping7,
+    Search as Search7
 } from 'es7/api/requestParams';
 
 export default interface ElasticsearchClient {
@@ -19,7 +21,7 @@ export default interface ElasticsearchClient {
 
     createIndex: (param: IndicesCreate6 | IndicesCreate7) => Promise<any>;
 
-    search: <R>(index: string, query?: any) => Promise<R[]>;
+    search: <R>(param: Search6 | Search7) => Promise<R[]>;
 
     exists: (param: IndicesExists6 | IndicesExists7) => Promise<boolean>;
 
@@ -63,6 +65,16 @@ export function isIndicesPutMapping6(
     param: IndicesPutMapping6 | IndicesPutMapping7
 ): param is IndicesPutMapping6 {
     if (!param?.expand_wildcards) {
+        return false;
+    }
+    return expandWildcardsCheck(param.expand_wildcards);
+}
+
+export function isSearch6(param: Search6 | Search7): param is Search6 {
+    if (!param?.expand_wildcards) {
+        return false;
+    }
+    if (Object.keys(param).includes('ccs_minimize_roundtrips')) {
         return false;
     }
     return expandWildcardsCheck(param.expand_wildcards);
