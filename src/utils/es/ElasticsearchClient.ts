@@ -55,7 +55,7 @@ function expandWildcardsCheck(param: string) {
 }
 
 export function isIndicesExists6(param: IndicesExists6 | IndicesExists7): param is IndicesExists6 {
-    if (!param?.expand_wildcards) {
+    if (!param.expand_wildcards) {
         return false;
     }
     return expandWildcardsCheck(param.expand_wildcards);
@@ -64,17 +64,14 @@ export function isIndicesExists6(param: IndicesExists6 | IndicesExists7): param 
 export function isIndicesPutMapping6(
     param: IndicesPutMapping6 | IndicesPutMapping7
 ): param is IndicesPutMapping6 {
-    if (!param?.expand_wildcards) {
+    if (!param.expand_wildcards) {
         return false;
     }
     return expandWildcardsCheck(param.expand_wildcards);
 }
 
 export function isSearch6(param: Search6 | Search7): param is Search6 {
-    if (!param?.expand_wildcards) {
-        return false;
-    }
-    if (Object.keys(param).includes('ccs_minimize_roundtrips')) {
+    if (!param.expand_wildcards || Object.keys(param).includes('ccs_minimize_roundtrips')) {
         return false;
     }
     return expandWildcardsCheck(param.expand_wildcards);
