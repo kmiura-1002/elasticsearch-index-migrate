@@ -7,7 +7,8 @@ import {
 } from 'es6/api/requestParams';
 import {
     IndicesCreate as IndicesCreate7,
-    IndicesExists as IndicesExists7
+    IndicesExists as IndicesExists7,
+    IndicesPutMapping as IndicesPutMapping7
 } from 'es7/api/requestParams';
 
 export default class MockElasticsearchClient implements ElasticsearchClient {
@@ -15,11 +16,7 @@ export default class MockElasticsearchClient implements ElasticsearchClient {
         cli.debug('Called MockElasticsearchClient.close');
     }
     createIndex(param: IndicesCreate6 | IndicesCreate7) {
-        cli.debug(
-            `Called MockElasticsearchClient.createIndex: index=${
-                param.index
-            }, body=${JSON.stringify(param.body)}`
-        );
+        cli.debug(`Called MockElasticsearchClient.createIndex: param=${JSON.stringify(param)}`);
         return Promise.resolve({ statusCode: 200 });
     }
     exists(param: IndicesExists6 | IndicesExists7) {
@@ -34,12 +31,8 @@ export default class MockElasticsearchClient implements ElasticsearchClient {
         );
         return Promise.resolve({ statusCode: 200 });
     }
-    putMapping(index: string, body: any) {
-        cli.debug(
-            `Called MockElasticsearchClient.putMapping: index=${index}, body=${JSON.stringify(
-                body
-            )}`
-        );
+    putMapping(param: IndicesPutMapping7) {
+        cli.debug(`Called MockElasticsearchClient.putMapping: param=${JSON.stringify(param)}`);
         return Promise.resolve({ statusCode: 200 });
     }
     putSetting(index: string, body: any) {

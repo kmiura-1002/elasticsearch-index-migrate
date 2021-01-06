@@ -36,10 +36,13 @@ describe('Elasticsearch7Client test', () => {
     it('put mapping', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({ index });
-        const ret = await client.putMapping(index, {
-            properties: {
-                test_id: {
-                    type: 'long'
+        const ret = await client.putMapping({
+            index,
+            body: {
+                properties: {
+                    test_id: {
+                        type: 'long'
+                    }
                 }
             }
         });

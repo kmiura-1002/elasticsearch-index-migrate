@@ -7,10 +7,49 @@ import ElasticsearchClient from '../ElasticsearchClient';
 import { ESConnectConfig, IndexSearchResults6, SimpleJson } from '../../../model/types';
 import { ClientOptions } from 'es6';
 import {
+    ClusterHealth as ClusterHealth6,
     IndicesCreate as IndicesCreate6,
-    IndicesExists as IndicesExists6
+    IndicesExists as IndicesExists6,
+    IndicesPutMapping as IndicesPutMapping6
 } from 'es6/api/requestParams';
-import { IndicesExists as IndicesExists7 } from 'es7/api/requestParams';
+import {
+    IndicesExists as IndicesExists7,
+    IndicesPutMapping as IndicesPutMapping7
+} from 'es7/api/requestParams';
+
+function isIndicesExists6(param: IndicesExists6 | IndicesExists7): param is IndicesExists6 {
+    if (!param?.expand_wildcards) {
+        return false;
+    }
+    switch (param?.expand_wildcards) {
+        case 'all':
+        case 'closed':
+        case 'none':
+        case 'open':
+            return true;
+        case 'hidden':
+        default:
+            return false;
+    }
+}
+
+function isIndicesPutMapping6(
+    param: IndicesPutMapping6 | IndicesPutMapping7
+): param is IndicesPutMapping6 {
+    if (!param?.expand_wildcards) {
+        return false;
+    }
+    switch (param?.expand_wildcards) {
+        case 'all':
+        case 'closed':
+        case 'none':
+        case 'open':
+            return true;
+        case 'hidden':
+        default:
+            return false;
+    }
+}
 
 @injectable()
 class Elasticsearch6Client implements ElasticsearchClient {
@@ -29,21 +68,31 @@ class Elasticsearch6Client implements ElasticsearchClient {
 
     async exists(param: IndicesExists6 | IndicesExists7): Promise<boolean> {
         return await this.client.indices
-            .exists(param as IndicesExists6)
+            .exists(
+                isIndicesExists6(param)
+                    ? param
+                    : {
+                          index: param.index
+                      }
+            )
             .then((value) => value.body as boolean);
     }
 
-    async healthCheck(): Promise<{ status: string }> {
-        const healthCheck: ApiResponse = await this.client.cluster.health();
+    async healthCheck(param?: ClusterHealth6): Promise<{ status: string }> {
+        const healthCheck: ApiResponse = await this.client.cluster.health({ ...param });
         return { status: healthCheck.body.status };
     }
 
-    async putMapping(index: string, body: any) {
-        return await this.client.indices.putMapping({
-            index,
-            type: '_doc',
-            body
-        });
+    async putMapping(param: IndicesPutMapping6 | IndicesPutMapping7) {
+        return await this.client.indices.putMapping(
+            isIndicesPutMapping6(param)
+                ? param
+                : {
+                      index: param.index,
+                      type: '_doc',
+                      body: param.body
+                  }
+        );
     }
 
     async search<R>(index: string, query?: any) {

@@ -11,7 +11,7 @@ export const esExecutor: Map<MigrationType, ExecutorFnc> = new Map([
     [
         MigrationTypes.ADD_FIELD,
         (name, esClient, resolvedMigration) =>
-            esClient.putMapping(name, resolvedMigration?.migrate_script)
+            esClient.putMapping({ index: name, body: resolvedMigration?.migrate_script })
     ],
     [
         MigrationTypes.CREATE_INDEX,

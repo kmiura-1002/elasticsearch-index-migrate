@@ -7,8 +7,10 @@ import ElasticsearchClient from '../ElasticsearchClient';
 import { ESConnectConfig, IndexSearchResults7, SimpleJson } from '../../../model/types';
 import { ClientOptions } from 'es7';
 import {
+    ClusterHealth as ClusterHealth7,
     IndicesCreate as IndicesCreate7,
-    IndicesExists as IndicesExists7
+    IndicesExists as IndicesExists7,
+    IndicesPutMapping as IndicesPutMapping7
 } from 'es7/api/requestParams';
 
 @injectable()
@@ -27,16 +29,13 @@ class Elasticsearch7Client implements ElasticsearchClient {
         return await this.client.indices.exists(param).then((value) => value.body as boolean);
     }
 
-    async healthCheck(): Promise<{ status: string }> {
-        const healthCheck: ApiResponse = await this.client.cluster.health();
+    async healthCheck(param?: ClusterHealth7): Promise<{ status: string }> {
+        const healthCheck: ApiResponse = await this.client.cluster.health({ ...param });
         return { status: healthCheck.body.status };
     }
 
-    async putMapping(index: string, body: any) {
-        return this.client.indices.putMapping({
-            index,
-            body
-        });
+    async putMapping(param: IndicesPutMapping7) {
+        return this.client.indices.putMapping(param);
     }
 
     search<R>(index: string, query?: any) {

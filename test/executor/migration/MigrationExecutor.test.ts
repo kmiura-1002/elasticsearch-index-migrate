@@ -17,8 +17,14 @@ import { migrationPlanContext } from '../../data/MigrationPlanContextTestData';
 import { formatDateAsIsoString } from '../../../src/utils/makeDetail';
 import * as EsUtils from '../../../src/utils/es/EsUtils';
 import MockElasticsearchClient from '../../mock/MockElasticsearchClient';
-import { IndicesCreate as IndicesCreate6 } from 'es6/api/requestParams';
-import { IndicesCreate as IndicesCreate7 } from 'es7/api/requestParams';
+import {
+    IndicesCreate as IndicesCreate6,
+    IndicesPutMapping as IndicesPutMapping6
+} from 'es6/api/requestParams';
+import {
+    IndicesCreate as IndicesCreate7,
+    IndicesPutMapping as IndicesPutMapping7
+} from 'es7/api/requestParams';
 
 describe('MigrationExecutor test', () => {
     let sandbox: sinon.SinonSandbox;
@@ -142,7 +148,8 @@ describe('MigrationExecutor test', () => {
         migrationExecutorMock.expects('addMigrationHistory');
 
         const tmpClient = {
-            putMapping: (_index: string, _body?: any) => Promise.resolve({ statusCode: 200 }),
+            putMapping: (_param: IndicesPutMapping6 | IndicesPutMapping7) =>
+                Promise.resolve({ statusCode: 200 }),
             postDocument: (_index: string, _body?: any, _id?: string) =>
                 Promise.resolve({ statusCode: 200 })
         } as ElasticsearchClient;

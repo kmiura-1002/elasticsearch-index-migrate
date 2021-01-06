@@ -1,17 +1,21 @@
 import type { SimpleJson } from '../../model/types';
 import {
+    ClusterHealth as ClusterHealth6,
     IndicesCreate as IndicesCreate6,
-    IndicesExists as IndicesExists6
+    IndicesExists as IndicesExists6,
+    IndicesPutMapping as IndicesPutMapping6
 } from 'es6/api/requestParams';
 import {
+    ClusterHealth as ClusterHealth7,
     IndicesCreate as IndicesCreate7,
-    IndicesExists as IndicesExists7
+    IndicesExists as IndicesExists7,
+    IndicesPutMapping as IndicesPutMapping7
 } from 'es7/api/requestParams';
 
 export default interface ElasticsearchClient {
-    healthCheck(): Promise<{ status: string }>;
+    healthCheck(param?: ClusterHealth6 | ClusterHealth7): Promise<{ status: string }>;
 
-    putMapping: (index: string, body: any) => Promise<any>;
+    putMapping: (param: IndicesPutMapping6 | IndicesPutMapping7) => Promise<any>;
 
     createIndex: (param: IndicesCreate6 | IndicesCreate7) => Promise<any>;
 
