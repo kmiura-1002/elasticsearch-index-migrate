@@ -3,7 +3,10 @@ import { Client } from 'es6';
 import { ApiResponse } from 'es6/lib/Transport';
 import { inject, injectable } from 'inversify';
 import { Bindings } from '../../../ioc.bindings';
-import ElasticsearchClient from '../ElasticsearchClient';
+import ElasticsearchClient, {
+    isIndicesExists6,
+    isIndicesPutMapping6
+} from '../ElasticsearchClient';
 import { ESConnectConfig, IndexSearchResults6, SimpleJson } from '../../../model/types';
 import { ClientOptions } from 'es6';
 import {
@@ -16,40 +19,6 @@ import {
     IndicesExists as IndicesExists7,
     IndicesPutMapping as IndicesPutMapping7
 } from 'es7/api/requestParams';
-
-function isIndicesExists6(param: IndicesExists6 | IndicesExists7): param is IndicesExists6 {
-    if (!param?.expand_wildcards) {
-        return false;
-    }
-    switch (param?.expand_wildcards) {
-        case 'all':
-        case 'closed':
-        case 'none':
-        case 'open':
-            return true;
-        case 'hidden':
-        default:
-            return false;
-    }
-}
-
-function isIndicesPutMapping6(
-    param: IndicesPutMapping6 | IndicesPutMapping7
-): param is IndicesPutMapping6 {
-    if (!param?.expand_wildcards) {
-        return false;
-    }
-    switch (param?.expand_wildcards) {
-        case 'all':
-        case 'closed':
-        case 'none':
-        case 'open':
-            return true;
-        case 'hidden':
-        default:
-            return false;
-    }
-}
 
 @injectable()
 class Elasticsearch6Client implements ElasticsearchClient {

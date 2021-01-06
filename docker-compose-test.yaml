@@ -1,30 +1,5 @@
 version: '3'
 services:
-#  elasticsearch6.7:
-#    image:  docker.elastic.co/elasticsearch/elasticsearch:6.7.2
-#    container_name: elasticsearch6.7
-#    ports:
-#      - 9203:9200
-#    environment:
-#      - discovery.type=single-node
-#      - ES_JAVA_OPTS=-Xms400m -Xmx400m
-#  kibana6.7:
-#    image: docker.elastic.co/kibana/kibana:6.7.2
-#    environment:
-#      ELASTICSEARCH_HOSTS: http://elasticsearch6.7:9200
-#    ports:
-#      - 5603:5601
-#    depends_on:
-#      - elasticsearch6.7
-#  webserver:
-#    image: node:12-alpine
-#    container_name: node
-#    tty: true
-#    volumes:
-#      - ./test/data/migration:/test/data/migration/
-#    environment:
-#      ELASTICSEARCH6X_HOSTS: http://elasticsearch6x:9200,
-#      ELASTICSEARCH7X_HOSTS: http://elasticsearch7x:9200
   elasticsearch6x:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.8.12
     container_name: elasticsearch6.8.12
@@ -33,15 +8,6 @@ services:
     environment:
       - discovery.type=single-node
       - ES_JAVA_OPTS=-Xms400m -Xmx400m
-  kibana6x:
-    image: docker.elastic.co/kibana/kibana:6.8.12
-    container_name: kibana6.8.12
-    environment:
-      ELASTICSEARCH_HOSTS: http://elasticsearch6x:9200
-    ports:
-      - 5601:5601
-    depends_on:
-      - elasticsearch6x
   elasticsearch7x:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.7.1
     container_name: elasticsearch7.7.1
@@ -50,12 +16,3 @@ services:
     environment:
       - discovery.type=single-node
       - ES_JAVA_OPTS=-Xms400m -Xmx400m
-  kibana7x:
-    image: docker.elastic.co/kibana/kibana:7.7.1
-    container_name: kibana7.7.1
-    environment:
-      ELASTICSEARCH_HOSTS: http://elasticsearch7x:9200
-    ports:
-      - 5602:5601
-    depends_on:
-      - elasticsearch7x

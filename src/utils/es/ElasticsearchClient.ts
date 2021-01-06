@@ -39,3 +39,31 @@ export default interface ElasticsearchClient {
 
     deleteDocument: (indexName: string, body?: any) => Promise<any>;
 }
+
+function expandWildcardsCheck(param: string) {
+    switch (param) {
+        case 'all':
+        case 'closed':
+        case 'none':
+        case 'open':
+            return true;
+        default:
+            return false;
+    }
+}
+
+export function isIndicesExists6(param: IndicesExists6 | IndicesExists7): param is IndicesExists6 {
+    if (!param?.expand_wildcards) {
+        return false;
+    }
+    return expandWildcardsCheck(param.expand_wildcards);
+}
+
+export function isIndicesPutMapping6(
+    param: IndicesPutMapping6 | IndicesPutMapping7
+): param is IndicesPutMapping6 {
+    if (!param?.expand_wildcards) {
+        return false;
+    }
+    return expandWildcardsCheck(param.expand_wildcards);
+}
