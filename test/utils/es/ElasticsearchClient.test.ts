@@ -6,11 +6,13 @@ import {
 import {
     IndicesExists as IndicesExists6,
     IndicesPutMapping as IndicesPutMapping6,
+    IndicesPutSettings as IndicesPutSettings6,
     Search as Search6
 } from 'es6/api/requestParams';
 import {
     IndicesExists as IndicesExists7,
     IndicesPutMapping as IndicesPutMapping7,
+    IndicesPutSettings as IndicesPutSettings7,
     Search as Search7
 } from 'es7/api/requestParams';
 import { expect } from 'chai';
@@ -22,6 +24,11 @@ type IndicesExistsTestType = {
 
 type IndicesPutMappingTestType = {
     param: IndicesPutMapping6 | IndicesPutMapping7;
+    expected: boolean;
+};
+
+type IndicesPutSettingsTestType = {
+    param: IndicesPutSettings6 | IndicesPutSettings7;
     expected: boolean;
 };
 
@@ -72,11 +79,13 @@ describe('ElasticsearchClient', () => {
                 index: 'index',
                 expand_wildcards: undefined
             },
-            expected: false
+            expected: true
         }
     ];
     indicesExistsTestData.forEach((testData) => {
-        it(`isIndicesExists6 fnc return ${testData.expected} when expand_wildcards is ${testData.param.expand_wildcards}`, () => {
+        it(`isIndicesExists6 fnc return ${testData.expected} when param is ${JSON.stringify(
+            testData.param
+        )}`, () => {
             expect(isIndicesExists6(testData.param)).is.eq(testData.expected);
         });
     });
@@ -121,11 +130,20 @@ describe('ElasticsearchClient', () => {
             param: {
                 body: {}
             },
-            expected: false
+            expected: true
+        },
+        {
+            param: {
+                body: {},
+                type: 'aaa'
+            },
+            expected: true
         }
     ];
     indicesPutMappingTestData.forEach((testData) => {
-        it(`isIndicesPutMapping6 fnc return ${testData.expected} when expand_wildcards is ${testData.param.expand_wildcards}`, () => {
+        it(`isIndicesPutMapping6 fnc return ${testData.expected} when param is ${JSON.stringify(
+            testData.param
+        )}`, () => {
             expect(isIndicesPutMapping6(testData.param)).is.eq(testData.expected);
         });
     });
@@ -170,7 +188,7 @@ describe('ElasticsearchClient', () => {
             param: {
                 body: {}
             },
-            expected: false
+            expected: true
         },
         {
             param: {
@@ -191,6 +209,57 @@ describe('ElasticsearchClient', () => {
     ];
     searchTestData.forEach((testData) => {
         it(`isSearch6 fnc return ${testData.expected} when param is ${JSON.stringify(
+            testData.param
+        )}`, () => {
+            expect(isSearch6(testData.param)).is.eq(testData.expected);
+        });
+    });
+
+    const IndicesPutSettingsTestData: IndicesPutSettingsTestType[] = [
+        {
+            param: {
+                body: {},
+                expand_wildcards: 'open'
+            },
+            expected: true
+        },
+        {
+            param: {
+                body: {},
+                expand_wildcards: 'closed'
+            },
+            expected: true
+        },
+        {
+            param: {
+                body: {},
+                expand_wildcards: 'none'
+            },
+            expected: true
+        },
+        {
+            param: {
+                body: {},
+                expand_wildcards: 'all'
+            },
+            expected: true
+        },
+        {
+            param: {
+                body: {},
+                expand_wildcards: 'hidden'
+            },
+            expected: false
+        },
+        {
+            param: {
+                body: {}
+            },
+            expected: true
+        }
+    ];
+    IndicesPutSettingsTestData.forEach((testData) => {
+        it(`isIndicesPutSettings6 fnc return ${testData.expected} when param is ${JSON.stringify(
             testData.param
         )}`, () => {
             expect(isSearch6(testData.param)).is.eq(testData.expected);

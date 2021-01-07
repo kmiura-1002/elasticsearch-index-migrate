@@ -5,12 +5,14 @@ import {
     IndicesCreate as IndicesCreate6,
     IndicesExists as IndicesExists6,
     IndicesPutMapping as IndicesPutMapping6,
+    IndicesPutSettings as IndicesPutSettings6,
     Search as Search6
 } from 'es6/api/requestParams';
 import {
     IndicesCreate as IndicesCreate7,
     IndicesExists as IndicesExists7,
     IndicesPutMapping as IndicesPutMapping7,
+    IndicesPutSettings as IndicesPutSettings7,
     Search as Search7
 } from 'es7/api/requestParams';
 
@@ -38,12 +40,8 @@ export default class MockElasticsearchClient implements ElasticsearchClient {
         cli.debug(`Called MockElasticsearchClient.putMapping: param=${JSON.stringify(param)}`);
         return Promise.resolve({ statusCode: 200 });
     }
-    putSetting(index: string, body: any) {
-        cli.debug(
-            `Called MockElasticsearchClient.putSetting: index=${index}, body=${JSON.stringify(
-                body
-            )}`
-        );
+    putSetting(param: IndicesPutSettings6 | IndicesPutSettings7) {
+        cli.debug(`Called MockElasticsearchClient.putSetting: param=${JSON.stringify(param)}`);
         return Promise.resolve({ statusCode: 200 });
     }
     search(param: Search6 | Search7): Promise<any[]> {

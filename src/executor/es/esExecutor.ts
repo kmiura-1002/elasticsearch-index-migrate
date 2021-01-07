@@ -22,6 +22,6 @@ export const esExecutor: Map<MigrationType, ExecutorFnc> = new Map([
     [
         MigrationTypes.ALTER_SETTING,
         (name, esClient, resolvedMigration) =>
-            esClient.putSetting(name, resolvedMigration?.migrate_script)
+            esClient.putSetting({ index: name, body: resolvedMigration?.migrate_script })
     ]
 ]);

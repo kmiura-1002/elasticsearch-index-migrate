@@ -19,6 +19,11 @@ describe('Elasticsearch6Client test', () => {
         const exists = await client.exists({ index });
         expect(exists).is.false;
     });
+    it('exist check with args is es7 params', async () => {
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
+        const exists = await client.exists({ index, expand_wildcards: 'hidden' });
+        expect(exists).is.false;
+    });
     it('create index', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         const create = await client.createIndex({ index });
@@ -31,7 +36,53 @@ describe('Elasticsearch6Client test', () => {
         const ret = await client.search({ index });
         expect(ret).to.be.an('array');
     });
+    it('search with args is es7 params 1', async () => {
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
+        await client.createIndex({ index });
+        const ret = await client.search({ index, ccs_minimize_roundtrips: false });
+        expect(ret).to.be.an('array');
+    });
+    it('search with args is es7 params 2', async () => {
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
+        await client.createIndex({ index });
+        const ret = await client.search({ index, expand_wildcards: 'hidden' });
+        expect(ret).to.be.an('array');
+    });
     it('put mapping', async () => {
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
+        await client.createIndex({ index });
+        const ret = await client.putMapping({
+            index,
+            type: '_doc',
+            body: {
+                properties: {
+                    test_id: {
+                        type: 'long'
+                    }
+                }
+            }
+        });
+        expect(ret.statusCode).is.eq(200);
+        await client.delete(index);
+    });
+    it('put mapping with args is es7 params', async () => {
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
+        await client.createIndex({ index });
+        const ret = await client.putMapping({
+            index,
+            expand_wildcards: 'hidden',
+            body: {
+                properties: {
+                    test_id: {
+                        type: 'long'
+                    }
+                }
+            }
+        });
+        expect(ret.statusCode).is.eq(200);
+        await client.delete(index);
+    });
+    it('put mapping not exists type param', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({ index });
         const ret = await client.putMapping({
@@ -51,9 +102,28 @@ describe('Elasticsearch6Client test', () => {
     it('put settings', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({ index });
-        const ret = await client.putSetting(index, {
-            index: {
-                number_of_replicas: 0
+        const ret = await client.putSetting({
+            index,
+            body: {
+                index: {
+                    number_of_replicas: 0
+                }
+            }
+        });
+        expect(ret.statusCode).is.eq(200);
+        await client.delete(index);
+    });
+
+    it('put settings with args is es7 params', async () => {
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
+        await client.createIndex({ index });
+        const ret = await client.putSetting({
+            index,
+            expand_wildcards: 'hidden',
+            body: {
+                index: {
+                    number_of_replicas: 0
+                }
             }
         });
         expect(ret.statusCode).is.eq(200);

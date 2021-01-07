@@ -53,9 +53,12 @@ describe('Elasticsearch7Client test', () => {
     it('put settings', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({ index });
-        const ret = await client.putSetting(index, {
-            index: {
-                number_of_replicas: 0
+        const ret = await client.putSetting({
+            index,
+            body: {
+                index: {
+                    number_of_replicas: 0
+                }
             }
         });
         expect(ret.statusCode).is.eq(200);

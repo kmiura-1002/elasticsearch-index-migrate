@@ -7,11 +7,12 @@ import ElasticsearchClient from '../ElasticsearchClient';
 import { ESConnectConfig, IndexSearchResults7, SimpleJson } from '../../../model/types';
 import { ClientOptions } from 'es7';
 import {
-    ClusterHealth as ClusterHealth7,
-    IndicesCreate as IndicesCreate7,
-    IndicesExists as IndicesExists7,
-    IndicesPutMapping as IndicesPutMapping7,
-    Search as Search7
+    ClusterHealth,
+    IndicesCreate,
+    IndicesExists,
+    IndicesPutMapping,
+    IndicesPutSettings,
+    Search
 } from 'es7/api/requestParams';
 
 @injectable()
@@ -22,24 +23,24 @@ class Elasticsearch7Client implements ElasticsearchClient {
         this.client = new Client(esConnectConf(connectConf) as ClientOptions);
     }
 
-    createIndex(param: IndicesCreate7) {
+    createIndex(param: IndicesCreate) {
         return this.client.indices.create(param);
     }
 
-    async exists(param: IndicesExists7): Promise<boolean> {
+    async exists(param: IndicesExists): Promise<boolean> {
         return await this.client.indices.exists(param).then((value) => value.body as boolean);
     }
 
-    async healthCheck(param?: ClusterHealth7): Promise<{ status: string }> {
+    async healthCheck(param?: ClusterHealth): Promise<{ status: string }> {
         const healthCheck: ApiResponse = await this.client.cluster.health({ ...param });
         return { status: healthCheck.body.status };
     }
 
-    async putMapping(param: IndicesPutMapping7) {
+    async putMapping(param: IndicesPutMapping) {
         return this.client.indices.putMapping(param);
     }
 
-    search<R>(param: Search7) {
+    search<R>(param: Search) {
         return this.client
             .search(param)
             .then((value: ApiResponse<Record<string, IndexSearchResults7<R>>>) =>
@@ -47,11 +48,8 @@ class Elasticsearch7Client implements ElasticsearchClient {
             );
     }
 
-    async putSetting(index: string, body: any): Promise<any> {
-        return this.client.indices.putSettings({
-            index,
-            body
-        });
+    async putSetting(param: IndicesPutSettings): Promise<any> {
+        return this.client.indices.putSettings(param);
     }
 
     version(): string {
