@@ -57,15 +57,18 @@ export default class Baseline extends AbstractCommand {
             cli.info('Baseline history does not exist.');
             cli.info(`Create baseline in ${baselineVersion}.`);
             await elasticsearchClient
-                .postDocument(MAPPING_HISTORY_INDEX_NAME, {
-                    index_name: flags.indexName,
-                    migrate_version: baselineVersion,
-                    description: flags.description ?? 'Migration baseline',
-                    script_name: '',
-                    script_type: '',
-                    installed_on: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss"),
-                    execution_time: 0,
-                    success: true
+                .postDocument({
+                    index: MAPPING_HISTORY_INDEX_NAME,
+                    body: {
+                        index_name: flags.indexName,
+                        migrate_version: baselineVersion,
+                        description: flags.description ?? 'Migration baseline',
+                        script_name: '',
+                        script_type: '',
+                        installed_on: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss"),
+                        execution_time: 0,
+                        success: true
+                    }
                 })
                 .then(() => {
                     cli.info(`Successfully created a baseline in ${baselineVersion}.`);

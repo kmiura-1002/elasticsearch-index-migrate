@@ -5,6 +5,7 @@ import ElasticsearchClient from '../../../../src/utils/es/ElasticsearchClient';
 import { Bindings } from '../../../../src/ioc.bindings';
 import { es7ClientContainer } from '../../ioc-test';
 import chaiAsPromised from 'chai-as-promised';
+import { Index } from 'es6/api/requestParams';
 
 chai.use(chaiAsPromised);
 
@@ -68,9 +69,47 @@ describe('Elasticsearch7Client test', () => {
     it('post document', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({ index });
-        const ret = await client.postDocument(index, { test: 'foo baz' });
+        const ret = await client.postDocument({
+            index,
+            body: {
+                test: 'foo baz'
+            }
+        });
 
         expect(ret.statusCode).is.eq(201);
+        await client.delete(index);
+    });
+
+    it('post document with custom type', async () => {
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
+        await client.createIndex({ index });
+        const ret = await client.postDocument({
+            index,
+            type: 'test',
+            body: {
+                test: 'foo baz'
+            }
+        });
+
+        expect(ret.statusCode).is.eq(201);
+        await client.delete(index);
+    });
+
+    it('post document with args is es6 params', async () => {
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
+        await client.createIndex({ index });
+        const param: Index = {
+            index,
+            type: '_doc',
+            parent: '',
+            body: {
+                test: 'foo baz'
+            }
+        };
+
+        await expect(client.postDocument(param)).is.rejectedWith(
+            `illegal argument : ${JSON.stringify(param)}`
+        );
         await client.delete(index);
     });
 
@@ -153,7 +192,12 @@ describe('Elasticsearch7Client test', () => {
             }
         });
         await client
-            .postDocument(index, { test: 'foobaz' })
+            .postDocument({
+                index,
+                body: {
+                    test: 'foobaz'
+                }
+            })
             .then((value) => expect(value.statusCode).is.eq(201));
         await new Promise((resolve) => setTimeout(resolve, 2000));
 

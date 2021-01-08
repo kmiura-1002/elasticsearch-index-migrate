@@ -19,11 +19,13 @@ import * as EsUtils from '../../../src/utils/es/EsUtils';
 import MockElasticsearchClient from '../../mock/MockElasticsearchClient';
 import {
     IndicesCreate as IndicesCreate6,
-    IndicesPutMapping as IndicesPutMapping6
+    IndicesPutMapping as IndicesPutMapping6,
+    Index as Index6
 } from 'es6/api/requestParams';
 import {
     IndicesCreate as IndicesCreate7,
-    IndicesPutMapping as IndicesPutMapping7
+    IndicesPutMapping as IndicesPutMapping7,
+    Index as Index7
 } from 'es7/api/requestParams';
 
 describe('MigrationExecutor test', () => {
@@ -39,7 +41,7 @@ describe('MigrationExecutor test', () => {
         type mockEsClient = Partial<ElasticsearchClient>;
 
         const client: mockEsClient = {
-            postDocument: (_index: string, _body?: any, _id?: string) => Promise.reject()
+            postDocument: (_param: Index6 | Index7) => Promise.reject()
         };
         await addMigrationHistory(client as ElasticsearchClient, {} as MigrateIndex);
         expect(stub.calledOnce).is.true;
@@ -51,7 +53,7 @@ describe('MigrationExecutor test', () => {
         const debugStub = sandbox.stub(cli, 'debug');
         type mockEsClient = Partial<ElasticsearchClient>;
         const client: mockEsClient = {
-            postDocument: (_index: string, _body?: any, _id?: string) => Promise.resolve()
+            postDocument: (_param: Index6 | Index7) => Promise.resolve()
         };
         await addMigrationHistory(client as ElasticsearchClient, {} as MigrateIndex);
         expect(debugStub.calledOnce).is.true;
@@ -101,8 +103,7 @@ describe('MigrationExecutor test', () => {
         const tmpClient = {
             createIndex: (_param: IndicesCreate6 | IndicesCreate7) =>
                 Promise.resolve({ statusCode: 200 }),
-            postDocument: (_index: string, _body?: any, _id?: string) =>
-                Promise.resolve({ statusCode: 200 })
+            postDocument: (_param: Index6 | Index7) => Promise.resolve({ statusCode: 200 })
         } as ElasticsearchClient;
         const createIndexStub = sandbox
             .stub(tmpClient, 'createIndex')
@@ -150,8 +151,7 @@ describe('MigrationExecutor test', () => {
         const tmpClient = {
             putMapping: (_param: IndicesPutMapping6 | IndicesPutMapping7) =>
                 Promise.resolve({ statusCode: 200 }),
-            postDocument: (_index: string, _body?: any, _id?: string) =>
-                Promise.resolve({ statusCode: 200 })
+            postDocument: (_param: Index6 | Index7) => Promise.resolve({ statusCode: 200 })
         } as ElasticsearchClient;
         const putMappingStub = sandbox
             .stub(tmpClient, 'putMapping')

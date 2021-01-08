@@ -3,16 +3,18 @@ import { Client } from 'es7';
 import { ApiResponse } from 'es7/lib/Transport';
 import { injectable, inject } from 'inversify';
 import { Bindings } from '../../../ioc.bindings';
-import ElasticsearchClient from '../ElasticsearchClient';
+import ElasticsearchClient, { isIndex7 } from '../ElasticsearchClient';
 import { ESConnectConfig, IndexSearchResults7, SimpleJson } from '../../../model/types';
 import { ClientOptions } from 'es7';
+import { Index as Index6 } from 'es6/api/requestParams';
 import {
     ClusterHealth,
     IndicesCreate,
     IndicesExists,
     IndicesPutMapping,
     IndicesPutSettings,
-    Search
+    Search,
+    Index as Index7
 } from 'es7/api/requestParams';
 
 @injectable()
@@ -60,13 +62,14 @@ class Elasticsearch7Client implements ElasticsearchClient {
         await this.client.close();
     }
 
-    postDocument(index: string, body?: any, id?: string) {
-        return this.client.index({
-            type: '_doc',
-            index,
-            body,
-            id
-        });
+    postDocument(param: Index6 | Index7) {
+        if (isIndex7(param)) {
+            return this.client.index({
+                ...param,
+                type: param.type ? param.type : '_doc'
+            });
+        }
+        return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
     }
 
     delete(index: string | string[]) {

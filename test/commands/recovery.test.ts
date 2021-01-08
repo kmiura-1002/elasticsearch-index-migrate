@@ -102,7 +102,7 @@ describe('recovery command test', () => {
                     execution_time: 1,
                     success: false
                 };
-                await client.postDocument(testMigrateHistory, history);
+                await client.postDocument({ index: testMigrateHistory, body: history });
             }
             // Processing to wait for elasticsearch refresh time
             await new Promise((resolve) => setTimeout(resolve, 2000));

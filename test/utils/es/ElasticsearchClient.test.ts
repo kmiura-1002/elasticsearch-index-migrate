@@ -1,4 +1,6 @@
 import {
+    isIndex6,
+    isIndex7,
     isIndicesExists6,
     isIndicesPutMapping6,
     isSearch6
@@ -7,13 +9,15 @@ import {
     IndicesExists as IndicesExists6,
     IndicesPutMapping as IndicesPutMapping6,
     IndicesPutSettings as IndicesPutSettings6,
-    Search as Search6
+    Search as Search6,
+    Index as Index6
 } from 'es6/api/requestParams';
 import {
     IndicesExists as IndicesExists7,
     IndicesPutMapping as IndicesPutMapping7,
     IndicesPutSettings as IndicesPutSettings7,
-    Search as Search7
+    Search as Search7,
+    Index as Index7
 } from 'es7/api/requestParams';
 import { expect } from 'chai';
 
@@ -34,6 +38,11 @@ type IndicesPutSettingsTestType = {
 
 type SearchTestType = {
     param: Search6 | Search7;
+    expected: boolean;
+};
+
+type IndexTestType = {
+    param: Index6 | Index7;
     expected: boolean;
 };
 
@@ -263,6 +272,173 @@ describe('ElasticsearchClient', () => {
             testData.param
         )}`, () => {
             expect(isSearch6(testData.param)).is.eq(testData.expected);
+        });
+    });
+
+    const Index6TestData: IndexTestType[] = [
+        {
+            param: {
+                index: 'index',
+                type: 'type',
+                body: {},
+                parent: 'parent'
+            },
+            expected: true
+        },
+        {
+            param: {
+                index: 'index',
+                body: {}
+            },
+            expected: false
+        },
+        {
+            param: {
+                index: 'index',
+                type: 'type',
+                body: {},
+                refresh: true
+            },
+            expected: false
+        },
+        {
+            param: {
+                index: 'index',
+                type: 'type',
+                body: {}
+            },
+            expected: true
+        },
+        {
+            param: {
+                index: 'index',
+                type: 'type',
+                body: {},
+                version_type: 'external'
+            },
+            expected: true
+        },
+        {
+            param: {
+                index: 'index',
+                type: 'type',
+                body: {},
+                version_type: 'external_gte'
+            },
+            expected: true
+        },
+        {
+            param: {
+                index: 'index',
+                type: 'type',
+                body: {},
+                version_type: 'force'
+            },
+            expected: true
+        },
+        {
+            param: {
+                index: 'index',
+                type: 'type',
+                body: {},
+                version_type: 'internal'
+            },
+            expected: true
+        }
+    ];
+    Index6TestData.forEach((testData) => {
+        it(`isIndex6 fnc return ${testData.expected} when param is ${JSON.stringify(
+            testData.param
+        )}`, () => {
+            expect(isIndex6(testData.param)).is.eq(testData.expected);
+        });
+    });
+
+    const Index7TestData: IndexTestType[] = [
+        {
+            param: {
+                index: 'index',
+                type: 'type',
+                body: {},
+                parent: 'parent'
+            },
+            expected: false
+        },
+        {
+            param: {
+                index: 'index',
+                body: {}
+            },
+            expected: true
+        },
+        {
+            param: {
+                index: 'index',
+                type: 'type',
+                body: {},
+                refresh: true
+            },
+            expected: true
+        },
+        {
+            param: {
+                index: 'index',
+                type: 'type',
+                body: {},
+                refresh: 'true'
+            },
+            expected: true
+        },
+        {
+            param: {
+                index: 'index',
+                type: 'type',
+                body: {}
+            },
+            expected: true
+        },
+        {
+            param: {
+                index: 'index',
+                type: 'type',
+                body: {},
+                version_type: 'external'
+            },
+            expected: true
+        },
+        {
+            param: {
+                index: 'index',
+                type: 'type',
+                body: {},
+                version_type: 'external_gte'
+            },
+            expected: true
+        },
+        {
+            param: {
+                index: 'index',
+                type: 'type',
+                body: {},
+                version_type: 'force'
+            },
+            expected: false
+        },
+        {
+            param: {
+                index: 'index',
+                type: 'type',
+                body: {},
+                version_type: 'internal'
+            },
+            expected: true
+        }
+    ];
+    Index7TestData.forEach((testData) => {
+        it(`isIndex7 fnc return ${testData.expected} when param is ${JSON.stringify(
+            testData.param
+        )}`, () => {
+            expect(isIndex7(testData.param)).is.eq(testData.expected);
         });
     });
 });

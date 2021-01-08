@@ -4,6 +4,7 @@ import { ApiResponse } from 'es6/lib/Transport';
 import { inject, injectable } from 'inversify';
 import { Bindings } from '../../../ioc.bindings';
 import ElasticsearchClient, {
+    isIndex6,
     isIndicesExists6,
     isIndicesPutMapping6,
     isIndicesPutSettings6,
@@ -17,15 +18,16 @@ import {
     IndicesExists as IndicesExists6,
     IndicesPutMapping as IndicesPutMapping6,
     IndicesPutSettings as IndicesPutSettings6,
-    Search as Search6
+    Search as Search6,
+    Index as Index6
 } from 'es6/api/requestParams';
 import {
     IndicesExists as IndicesExists7,
     IndicesPutMapping as IndicesPutMapping7,
     IndicesPutSettings as IndicesPutSettings7,
-    Search as Search7
+    Search as Search7,
+    Index as Index7
 } from 'es7/api/requestParams';
-import omit from 'lodash.omit';
 
 @injectable()
 class Elasticsearch6Client implements ElasticsearchClient {
@@ -43,9 +45,10 @@ class Elasticsearch6Client implements ElasticsearchClient {
     }
 
     async exists(param: IndicesExists6 | IndicesExists7): Promise<boolean> {
-        return await this.client.indices
-            .exists(isIndicesExists6(param) ? param : omit(param, 'expand_wildcards'))
-            .then((value) => value.body as boolean);
+        if (isIndicesExists6(param)) {
+            return await this.client.indices.exists(param).then((value) => value.body as boolean);
+        }
+        return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
     }
 
     async healthCheck(param?: ClusterHealth6): Promise<{ status: string }> {
@@ -54,29 +57,31 @@ class Elasticsearch6Client implements ElasticsearchClient {
     }
 
     async putMapping(param: IndicesPutMapping6 | IndicesPutMapping7) {
-        const argument = isIndicesPutMapping6(param) ? param : omit(param, 'expand_wildcards');
-        if (!param.type) {
-            return await this.client.indices.putMapping({ ...argument, type: '_doc' });
+        if (isIndicesPutMapping6(param)) {
+            return await this.client.indices.putMapping({
+                ...param,
+                type: param.type ? param.type : '_doc'
+            });
         }
-        return await this.client.indices.putMapping(argument);
+        return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
     }
 
     async search<R>(param: Search6 | Search7) {
-        return await this.client
-            .search(
-                isSearch6(param)
-                    ? param
-                    : omit(param, ['expand_wildcards', 'ccs_minimize_roundtrips'])
-            )
-            .then((value: ApiResponse<IndexSearchResults6<R>>) =>
-                value.body.hits.hits.map((hit) => hit._source as R)
-            );
+        if (isSearch6(param)) {
+            return await this.client
+                .search(param)
+                .then((value: ApiResponse<IndexSearchResults6<R>>) =>
+                    value.body.hits.hits.map((hit) => hit._source as R)
+                );
+        }
+        return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
     }
 
     async putSetting(param: IndicesPutSettings6 | IndicesPutSettings7): Promise<any> {
-        return await this.client.indices.putSettings(
-            isIndicesPutSettings6(param) ? param : omit(param, 'expand_wildcards')
-        );
+        if (isIndicesPutSettings6(param)) {
+            return await this.client.indices.putSettings(param);
+        }
+        return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
     }
 
     version(): string {
@@ -87,13 +92,13 @@ class Elasticsearch6Client implements ElasticsearchClient {
         await this.client.close();
     }
 
-    async postDocument(index: string, body?: any, id?: string) {
-        return await this.client.index({
-            type: '_doc',
-            index,
-            body,
-            id
-        });
+    async postDocument(param: Index6 | Index7) {
+        if (isIndex6(param)) {
+            return await this.client.index({
+                ...param
+            });
+        }
+        return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
     }
 
     async delete(index: string | string[]) {

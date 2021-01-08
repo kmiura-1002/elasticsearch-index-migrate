@@ -5,6 +5,13 @@ import ElasticsearchClient from '../../../../src/utils/es/ElasticsearchClient';
 import { Bindings } from '../../../../src/ioc.bindings';
 import { es6ClientContainer } from '../../ioc-test';
 import chaiAsPromised from 'chai-as-promised';
+import {
+    Index,
+    IndicesExists,
+    IndicesPutMapping,
+    IndicesPutSettings,
+    Search
+} from 'es7/api/requestParams';
 
 chai.use(chaiAsPromised);
 
@@ -14,40 +21,53 @@ describe('Elasticsearch6Client test', () => {
     it('version check', () => {
         expect(client.version()).is.eq('6.x');
     });
+
     it('exist check', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         const exists = await client.exists({ index });
         expect(exists).is.false;
     });
+
     it('exist check with args is es7 params', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
-        const exists = await client.exists({ index, expand_wildcards: 'hidden' });
-        expect(exists).is.false;
+        const param: IndicesExists = { index, expand_wildcards: 'hidden' };
+        await expect(client.exists(param)).is.rejectedWith(
+            `illegal argument : ${JSON.stringify(param)}`
+        );
     });
+
     it('create index', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         const create = await client.createIndex({ index });
         expect(create.statusCode).is.eq(200);
         await client.delete(index);
     });
+
     it('search', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({ index });
         const ret = await client.search({ index });
         expect(ret).to.be.an('array');
     });
+
     it('search with args is es7 params 1', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({ index });
-        const ret = await client.search({ index, ccs_minimize_roundtrips: false });
-        expect(ret).to.be.an('array');
+        const param: Search = { index, ccs_minimize_roundtrips: false };
+        await expect(client.search(param)).is.rejectedWith(
+            `illegal argument : ${JSON.stringify(param)}`
+        );
     });
+
     it('search with args is es7 params 2', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({ index });
-        const ret = await client.search({ index, expand_wildcards: 'hidden' });
-        expect(ret).to.be.an('array');
+        const param: Search = { index, expand_wildcards: 'hidden' };
+        await expect(client.search(param)).is.rejectedWith(
+            `illegal argument : ${JSON.stringify(param)}`
+        );
     });
+
     it('put mapping', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({ index });
@@ -65,10 +85,11 @@ describe('Elasticsearch6Client test', () => {
         expect(ret.statusCode).is.eq(200);
         await client.delete(index);
     });
+
     it('put mapping with args is es7 params', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({ index });
-        const ret = await client.putMapping({
+        const param: IndicesPutMapping = {
             index,
             expand_wildcards: 'hidden',
             body: {
@@ -78,10 +99,13 @@ describe('Elasticsearch6Client test', () => {
                     }
                 }
             }
-        });
-        expect(ret.statusCode).is.eq(200);
+        };
+        await expect(client.putMapping(param)).is.rejectedWith(
+            `illegal argument : ${JSON.stringify(param)}`
+        );
         await client.delete(index);
     });
+
     it('put mapping not exists type param', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({ index });
@@ -117,7 +141,7 @@ describe('Elasticsearch6Client test', () => {
     it('put settings with args is es7 params', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({ index });
-        const ret = await client.putSetting({
+        const param: IndicesPutSettings = {
             index,
             expand_wildcards: 'hidden',
             body: {
@@ -125,17 +149,41 @@ describe('Elasticsearch6Client test', () => {
                     number_of_replicas: 0
                 }
             }
-        });
-        expect(ret.statusCode).is.eq(200);
+        };
+        await expect(client.putSetting(param)).is.rejectedWith(
+            `illegal argument : ${JSON.stringify(param)}`
+        );
         await client.delete(index);
     });
 
     it('post document', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({ index });
-        const ret = await client.postDocument(index, { test: 'foo baz' });
+        const ret = await client.postDocument({
+            index,
+            type: '_doc',
+            body: {
+                test: 'foo baz'
+            }
+        });
 
         expect(ret.statusCode).is.eq(201);
+        await client.delete(index);
+    });
+
+    it('post document with args is es7 params', async () => {
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
+        await client.createIndex({ index });
+        const param: Index = {
+            index,
+            body: {
+                test: 'foo baz'
+            }
+        };
+
+        await expect(client.postDocument(param)).is.rejectedWith(
+            `illegal argument : ${JSON.stringify(param)}`
+        );
         await client.delete(index);
     });
 
@@ -228,7 +276,13 @@ describe('Elasticsearch6Client test', () => {
             }
         });
         await client
-            .postDocument(index, { test: 'foobaz' })
+            .postDocument({
+                index,
+                type: '_doc',
+                body: {
+                    test: 'foobaz'
+                }
+            })
             .then((value) => expect(value.statusCode).is.eq(201));
         await new Promise((resolve) => setTimeout(resolve, 2000));
 

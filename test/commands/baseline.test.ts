@@ -10,8 +10,16 @@ import { cli } from 'cli-ux';
 import * as sinon from 'sinon';
 import * as create from '../../src/executor/init/MigrationInitExecutor';
 import * as MigrationExecutor from '../../src/executor/migration/MigrationExecutor';
-import { IndicesExists as IndicesExists6, Search as Search6 } from 'es6/api/requestParams';
-import { IndicesExists as IndicesExists7, Search as Search7 } from 'es7/api/requestParams';
+import {
+    IndicesExists as IndicesExists6,
+    Search as Search6,
+    Index as Index6
+} from 'es6/api/requestParams';
+import {
+    IndicesExists as IndicesExists7,
+    Search as Search7,
+    Index as Index7
+} from 'es7/api/requestParams';
 
 describe('baseline command test', () => {
     after(async () => {
@@ -199,7 +207,7 @@ describe('baseline command test', () => {
                 execution_time: 1,
                 success: false
             };
-            await client.postDocument(testMigrateHistory, history);
+            await client.postDocument({ index: testMigrateHistory, body: history });
             // Processing to wait for elasticsearch refresh time
             await new Promise((resolve) => setTimeout(resolve, 2000));
         })
@@ -252,7 +260,7 @@ describe('baseline command test', () => {
                 exists(_param: IndicesExists6 | IndicesExists7): Promise<boolean> {
                     return Promise.resolve(true);
                 }
-                postDocument(_indexName: string, _body: any): Promise<any> {
+                postDocument(_param: Index6 | Index7): Promise<any> {
                     return Promise.reject('failed post document');
                 }
             })()
