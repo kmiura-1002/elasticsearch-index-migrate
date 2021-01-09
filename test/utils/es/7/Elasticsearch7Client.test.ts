@@ -196,10 +196,10 @@ describe('Elasticsearch7Client test', () => {
                 index,
                 body: {
                     test: 'foobaz'
-                }
+                },
+                refresh: true
             })
             .then((value) => expect(value.statusCode).is.eq(201));
-        await new Promise((resolve) => setTimeout(resolve, 2000));
 
         await client.search({ index }).then((value) => {
             expect(value).to.be.an('array');

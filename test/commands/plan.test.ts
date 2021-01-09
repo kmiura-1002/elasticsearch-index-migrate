@@ -104,10 +104,12 @@ describe('plan command test', () => {
                     execution_time: 1,
                     success: true
                 };
-                await client.postDocument({ index: testMigrateHistory, body: history });
+                await client.postDocument({
+                    index: testMigrateHistory,
+                    body: history,
+                    refresh: true
+                });
             }
-            // Processing to wait for elasticsearch refresh time
-            await new Promise((resolve) => setTimeout(resolve, 2000));
         })
         .command(['plan', '-i', 'test6'])
         .it('Results of 11 or more plan commands are correct.', async (ctx) => {

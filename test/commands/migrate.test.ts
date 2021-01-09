@@ -176,9 +176,11 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
                 execution_time: 1,
                 success: true
             };
-            await client.postDocument({ index: testMigrateHistory, body: history });
-            // Processing to wait for elasticsearch refresh time
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+            await client.postDocument({
+                index: testMigrateHistory,
+                body: history,
+                refresh: true
+            });
         })
         .command(['migrate', '-i', 'test5'])
         .it('There is no error if you run it again after the migration is done.', async () => {

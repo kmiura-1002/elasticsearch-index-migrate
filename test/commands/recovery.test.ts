@@ -102,10 +102,12 @@ describe('recovery command test', () => {
                     execution_time: 1,
                     success: false
                 };
-                await client.postDocument({ index: testMigrateHistory, body: history });
+                await client.postDocument({
+                    index: testMigrateHistory,
+                    body: history,
+                    refresh: true
+                });
             }
-            // Processing to wait for elasticsearch refresh time
-            await new Promise((resolve) => setTimeout(resolve, 2000));
         })
         .stdout()
         .command(['recovery', '-i', 'test1'])
