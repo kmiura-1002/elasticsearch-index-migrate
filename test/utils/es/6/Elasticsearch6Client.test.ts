@@ -9,6 +9,7 @@ import {
     Index,
     IndicesDelete,
     IndicesExists,
+    IndicesGetMapping,
     IndicesPutMapping,
     IndicesPutSettings,
     Search
@@ -204,8 +205,9 @@ describe('Elasticsearch6Client test', () => {
                 }
             }
         });
-        const ret = await client.getMapping(index);
-        expect(ret).to.eql({
+        const ret = await client.getMapping({ index });
+        expect(ret).is.an('array').lengthOf(1);
+        expect(ret[0]).to.eql({
             mappings: {
                 test: {
                     properties: {
@@ -216,6 +218,29 @@ describe('Elasticsearch6Client test', () => {
                 }
             }
         });
+        await client.delete({ index });
+    });
+
+    it('get mpping return reject args is es7 params', async () => {
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
+        await client.createIndex({
+            index,
+            body: {
+                mappings: {
+                    test: {
+                        properties: {
+                            test_name: {
+                                type: 'keyword'
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        const param: IndicesGetMapping = { index, expand_wildcards: 'hidden' };
+        await expect(client.getMapping(param)).is.rejectedWith(
+            `illegal argument : ${JSON.stringify(param)}`
+        );
         await client.delete({ index });
     });
 

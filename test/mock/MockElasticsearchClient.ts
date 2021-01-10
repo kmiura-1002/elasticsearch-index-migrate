@@ -7,6 +7,7 @@ import {
     IndicesPutMapping as IndicesPutMapping6,
     IndicesPutSettings as IndicesPutSettings6,
     IndicesDelete as IndicesDelete6,
+    IndicesGetMapping as IndicesGetMapping6,
     Search as Search6,
     Index as Index6
 } from 'es6/api/requestParams';
@@ -16,6 +17,7 @@ import {
     IndicesPutMapping as IndicesPutMapping7,
     IndicesPutSettings as IndicesPutSettings7,
     IndicesDelete as IndicesDelete7,
+    IndicesGetMapping as IndicesGetMapping7,
     Search as Search7,
     Index as Index7
 } from 'es7/api/requestParams';
@@ -61,39 +63,41 @@ export default class MockElasticsearchClient implements ElasticsearchClient {
         return Promise.resolve({ statusCode: 200 });
     }
 
-    getMapping(_index: string): Promise<SimpleJson> {
-        return Promise.resolve({
-            migrate_history: {
-                mappings: {
-                    properties: {
-                        description: {
-                            type: 'text'
-                        },
-                        execution_time: {
-                            type: 'long'
-                        },
-                        index_name: {
-                            type: 'keyword'
-                        },
-                        installed_on: {
-                            type: 'date'
-                        },
-                        migrate_version: {
-                            type: 'keyword'
-                        },
-                        script_name: {
-                            type: 'keyword'
-                        },
-                        script_type: {
-                            type: 'keyword'
-                        },
-                        success: {
-                            type: 'boolean'
+    getMapping(_param: IndicesGetMapping6 | IndicesGetMapping7): Promise<Array<SimpleJson>> {
+        return Promise.resolve([
+            {
+                migrate_history: {
+                    mappings: {
+                        properties: {
+                            description: {
+                                type: 'text'
+                            },
+                            execution_time: {
+                                type: 'long'
+                            },
+                            index_name: {
+                                type: 'keyword'
+                            },
+                            installed_on: {
+                                type: 'date'
+                            },
+                            migrate_version: {
+                                type: 'keyword'
+                            },
+                            script_name: {
+                                type: 'keyword'
+                            },
+                            script_type: {
+                                type: 'keyword'
+                            },
+                            success: {
+                                type: 'boolean'
+                            }
                         }
                     }
                 }
             }
-        });
+        ]);
     }
 
     get(_index: string): Promise<SimpleJson> {

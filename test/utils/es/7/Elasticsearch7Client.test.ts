@@ -127,8 +127,9 @@ describe('Elasticsearch7Client test', () => {
                 }
             }
         });
-        const ret = await client.getMapping(index);
-        expect(ret).to.eql({
+        const ret = await client.getMapping({ index });
+        expect(ret).is.an('array').lengthOf(1);
+        expect(ret[0]).to.eql({
             mappings: {
                 properties: {
                     test_name: {

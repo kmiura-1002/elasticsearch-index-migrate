@@ -1,4 +1,5 @@
 import {
+    convertGetMappingResponse,
     isIndex6,
     isIndex7,
     isIndicesExists6,
@@ -10,7 +11,8 @@ import {
     IndicesPutMapping as IndicesPutMapping6,
     IndicesPutSettings as IndicesPutSettings6,
     Search as Search6,
-    Index as Index6
+    Index as Index6,
+    IndicesGetMapping as IndicesGetMapping6
 } from 'es6/api/requestParams';
 import {
     IndicesExists as IndicesExists7,
@@ -20,6 +22,7 @@ import {
     Index as Index7
 } from 'es7/api/requestParams';
 import { expect } from 'chai';
+import { ApiResponse as ApiResponse6 } from 'es6/lib/Transport';
 
 type IndicesExistsTestType = {
     param: IndicesExists6 | IndicesExists7;
@@ -440,5 +443,67 @@ describe('ElasticsearchClient', () => {
         )}`, () => {
             expect(isIndex7(testData.param)).is.eq(testData.expected);
         });
+    });
+
+    it('convertGetMappingResponse return json array with param.index is undefined', () => {
+        const expected = {
+            test: 'abc'
+        };
+        const param: IndicesGetMapping6 = {};
+        const res: ApiResponse6 = {
+            body: expected,
+            headers: {},
+            meta: {} as any,
+            statusCode: 200,
+            warnings: null
+        };
+        const actual = convertGetMappingResponse(param, res);
+        expect(actual).is.an('array').lengthOf(1);
+        expect(actual[0]).is.eq(expected);
+    });
+
+    it('convertGetMappingResponse return json array with param.index is array', () => {
+        const expected = [
+            {
+                a: 'abc'
+            },
+            {
+                b: 'def'
+            }
+        ];
+        const param: IndicesGetMapping6 = {
+            index: ['test1', 'test2']
+        };
+        const res: ApiResponse6 = {
+            body: { test1: { a: 'abc' }, test2: { b: 'def' } },
+            headers: {},
+            meta: {} as any,
+            statusCode: 200,
+            warnings: null
+        };
+        const actual = convertGetMappingResponse(param, res);
+        expect(actual).is.an('array').lengthOf(2);
+        expect(actual).is.deep.eq(expected);
+    });
+
+    it('convertGetMappingResponse return json array with param.index is string type', () => {
+        const expected = [
+            {
+                a: 'abc'
+            }
+        ];
+        const param: IndicesGetMapping6 = {
+            index: ['test1']
+        };
+        const res: ApiResponse6 = {
+            body: { test1: { a: 'abc' } },
+            headers: {},
+            meta: {} as any,
+            statusCode: 200,
+            warnings: null
+        };
+        const actual = convertGetMappingResponse(param, res);
+        expect(actual).is.an('array').lengthOf(1);
+        expect(actual).is.deep.eq(expected);
     });
 });

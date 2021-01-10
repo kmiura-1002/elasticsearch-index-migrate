@@ -6,6 +6,7 @@ import {
     IndicesPutMapping as IndicesPutMapping6,
     IndicesPutSettings as IndicesPutSettings6,
     IndicesDelete as IndicesDelete6,
+    IndicesGetMapping as IndicesGetMapping6,
     Search as Search6,
     Index as Index6
 } from 'es6/api/requestParams';
@@ -16,9 +17,12 @@ import {
     IndicesPutMapping as IndicesPutMapping7,
     IndicesPutSettings as IndicesPutSettings7,
     IndicesDelete as IndicesDelete7,
+    IndicesGetMapping as IndicesGetMapping7,
     Search as Search7,
     Index as Index7
 } from 'es7/api/requestParams';
+import { ApiResponse as ApiResponse6 } from 'es6/lib/Transport';
+import { ApiResponse as ApiResponse7 } from 'es7/lib/Transport';
 
 export default interface ElasticsearchClient {
     healthCheck(param?: ClusterHealth6 | ClusterHealth7): Promise<{ status: string }>;
@@ -41,7 +45,7 @@ export default interface ElasticsearchClient {
 
     close: () => void;
 
-    getMapping: (index: string) => Promise<SimpleJson>;
+    getMapping: (param: IndicesGetMapping6 | IndicesGetMapping7) => Promise<Array<SimpleJson>>;
 
     get: (index: string) => Promise<SimpleJson>;
 
@@ -123,4 +127,23 @@ export function isIndex7(param: Index6 | Index7): param is Index7 {
 
 export function isIndicesDelete6(param: IndicesDelete6 | IndicesDelete7): param is IndicesDelete6 {
     return expandWildcardsCheck(param.expand_wildcards);
+}
+
+export function isIndicesGetMapping6(
+    param: IndicesGetMapping6 | IndicesGetMapping7
+): param is IndicesGetMapping6 {
+    return expandWildcardsCheck(param.expand_wildcards);
+}
+
+export function convertGetMappingResponse(
+    param: IndicesGetMapping6 | IndicesGetMapping7,
+    res: ApiResponse6 | ApiResponse7
+): Array<SimpleJson> {
+    if (param.index === undefined) {
+        return [res.body] as SimpleJson[];
+    }
+    if (Array.isArray(param.index)) {
+        return param.index.flatMap((value) => res.body[value] as SimpleJson);
+    }
+    return [res.body[param.index]] as SimpleJson[];
 }

@@ -3,7 +3,7 @@ import { Client } from 'es7';
 import { ApiResponse } from 'es7/lib/Transport';
 import { injectable, inject } from 'inversify';
 import { Bindings } from '../../../ioc.bindings';
-import ElasticsearchClient, { isIndex7 } from '../ElasticsearchClient';
+import ElasticsearchClient, { convertGetMappingResponse, isIndex7 } from '../ElasticsearchClient';
 import { ESConnectConfig, IndexSearchResults7, SimpleJson } from '../../../model/types';
 import { ClientOptions } from 'es7';
 import { Index as Index6 } from 'es6/api/requestParams';
@@ -15,7 +15,8 @@ import {
     IndicesPutSettings,
     IndicesDelete,
     Search,
-    Index as Index7
+    Index as Index7,
+    IndicesGetMapping
 } from 'es7/api/requestParams';
 
 @injectable()
@@ -77,10 +78,10 @@ class Elasticsearch7Client implements ElasticsearchClient {
         return this.client.indices.delete(param);
     }
 
-    async getMapping(index: string): Promise<SimpleJson> {
+    async getMapping(param: IndicesGetMapping): Promise<Array<SimpleJson>> {
         return await this.client.indices
-            .getMapping({ index })
-            .then((value) => value.body[index] as SimpleJson);
+            .getMapping(param)
+            .then((value) => convertGetMappingResponse(param, value));
     }
 
     async get(index: string): Promise<SimpleJson> {

@@ -4,9 +4,11 @@ import { ApiResponse } from 'es6/lib/Transport';
 import { inject, injectable } from 'inversify';
 import { Bindings } from '../../../ioc.bindings';
 import ElasticsearchClient, {
+    convertGetMappingResponse,
     isIndex6,
     isIndicesDelete6,
     isIndicesExists6,
+    isIndicesGetMapping6,
     isIndicesPutMapping6,
     isIndicesPutSettings6,
     isSearch6
@@ -20,6 +22,7 @@ import {
     IndicesPutMapping as IndicesPutMapping6,
     IndicesPutSettings as IndicesPutSettings6,
     IndicesDelete as IndicesDelete6,
+    IndicesGetMapping as IndicesGetMapping6,
     Search as Search6,
     Index as Index6
 } from 'es6/api/requestParams';
@@ -28,6 +31,7 @@ import {
     IndicesPutMapping as IndicesPutMapping7,
     IndicesPutSettings as IndicesPutSettings7,
     IndicesDelete as IndicesDelete7,
+    IndicesGetMapping as IndicesGetMapping7,
     Search as Search7,
     Index as Index7
 } from 'es7/api/requestParams';
@@ -111,8 +115,13 @@ class Elasticsearch6Client implements ElasticsearchClient {
         return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
     }
 
-    async getMapping(index: string): Promise<SimpleJson> {
-        return await this.client.indices.getMapping({ index }).then((value) => value.body[index]);
+    async getMapping(param: IndicesGetMapping6 | IndicesGetMapping7): Promise<Array<SimpleJson>> {
+        if (isIndicesGetMapping6(param)) {
+            return await this.client.indices
+                .getMapping(param)
+                .then((value) => convertGetMappingResponse(param, value));
+        }
+        return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
     }
 
     async get(index: string): Promise<SimpleJson> {
