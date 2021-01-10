@@ -212,6 +212,7 @@ describe('Elasticsearch7Client test', () => {
         await client
             .deleteDocument({
                 index,
+                refresh: true,
                 body: {
                     query: {
                         term: {
@@ -223,7 +224,6 @@ describe('Elasticsearch7Client test', () => {
                 }
             })
             .then((value) => expect(value.statusCode).is.eq(200));
-        await new Promise((resolve) => setTimeout(resolve, 2000));
 
         await client.search({ index }).then((value) => {
             expect(value).to.be.an('array');
