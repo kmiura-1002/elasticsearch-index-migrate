@@ -20,10 +20,10 @@ import {
 describe('Setup elasticsearch index migrate env test', () => {
     after(async () => {
         const client7 = es7ClientContainer().get<ElasticsearchClient>(Bindings.ElasticsearchClient);
-        await client7.delete('test*');
+        await client7.delete({ index: 'test*' });
 
         const client6 = es6ClientContainer().get<ElasticsearchClient>(Bindings.ElasticsearchClient);
-        await client6.delete('test*');
+        await client6.delete({ index: 'test*' });
     });
 
     test.stub(EsUtils, 'default', () => new MockElasticsearchClient())

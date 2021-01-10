@@ -7,6 +7,7 @@ import { es6ClientContainer } from '../../ioc-test';
 import chaiAsPromised from 'chai-as-promised';
 import {
     Index,
+    IndicesDelete,
     IndicesExists,
     IndicesPutMapping,
     IndicesPutSettings,
@@ -40,7 +41,7 @@ describe('Elasticsearch6Client test', () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         const create = await client.createIndex({ index });
         expect(create.statusCode).is.eq(200);
-        await client.delete(index);
+        await client.delete({ index });
     });
 
     it('search', async () => {
@@ -83,7 +84,7 @@ describe('Elasticsearch6Client test', () => {
             }
         });
         expect(ret.statusCode).is.eq(200);
-        await client.delete(index);
+        await client.delete({ index });
     });
 
     it('put mapping with args is es7 params', async () => {
@@ -103,7 +104,7 @@ describe('Elasticsearch6Client test', () => {
         await expect(client.putMapping(param)).is.rejectedWith(
             `illegal argument : ${JSON.stringify(param)}`
         );
-        await client.delete(index);
+        await client.delete({ index });
     });
 
     it('put mapping not exists type param', async () => {
@@ -120,7 +121,7 @@ describe('Elasticsearch6Client test', () => {
             }
         });
         expect(ret.statusCode).is.eq(200);
-        await client.delete(index);
+        await client.delete({ index });
     });
 
     it('put settings', async () => {
@@ -135,7 +136,7 @@ describe('Elasticsearch6Client test', () => {
             }
         });
         expect(ret.statusCode).is.eq(200);
-        await client.delete(index);
+        await client.delete({ index });
     });
 
     it('put settings with args is es7 params', async () => {
@@ -153,7 +154,7 @@ describe('Elasticsearch6Client test', () => {
         await expect(client.putSetting(param)).is.rejectedWith(
             `illegal argument : ${JSON.stringify(param)}`
         );
-        await client.delete(index);
+        await client.delete({ index });
     });
 
     it('post document', async () => {
@@ -168,7 +169,7 @@ describe('Elasticsearch6Client test', () => {
         });
 
         expect(ret.statusCode).is.eq(201);
-        await client.delete(index);
+        await client.delete({ index });
     });
 
     it('post document with args is es7 params', async () => {
@@ -184,7 +185,7 @@ describe('Elasticsearch6Client test', () => {
         await expect(client.postDocument(param)).is.rejectedWith(
             `illegal argument : ${JSON.stringify(param)}`
         );
-        await client.delete(index);
+        await client.delete({ index });
     });
 
     it('get mpping', async () => {
@@ -215,7 +216,7 @@ describe('Elasticsearch6Client test', () => {
                 }
             }
         });
-        await client.delete(index);
+        await client.delete({ index });
     });
 
     it('get', async () => {
@@ -256,7 +257,7 @@ describe('Elasticsearch6Client test', () => {
         expect((ret as any)[index].settings.index.refresh_interval).to.eql('1s');
         expect((ret as any)[index].settings.index.number_of_shards).to.eql('1');
         expect((ret as any)[index].settings.index.number_of_replicas).to.eql('0');
-        await client.delete(index);
+        await client.delete({ index });
     });
 
     it('delete document', async () => {
@@ -311,7 +312,16 @@ describe('Elasticsearch6Client test', () => {
             expect(value.length).to.eql(0);
         });
 
-        await client.delete(index);
+        await client.delete({ index });
+    });
+
+    it('delete index reject with args is es7 params', async () => {
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
+        await client.createIndex({ index });
+        const param: IndicesDelete = { index, expand_wildcards: 'hidden' };
+        await expect(client.delete(param)).is.rejectedWith(
+            `illegal argument : ${JSON.stringify(param)}`
+        );
     });
 
     it('close client', async () => {

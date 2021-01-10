@@ -13,6 +13,7 @@ import {
     IndicesExists,
     IndicesPutMapping,
     IndicesPutSettings,
+    IndicesDelete,
     Search,
     Index as Index7
 } from 'es7/api/requestParams';
@@ -72,8 +73,8 @@ class Elasticsearch7Client implements ElasticsearchClient {
         return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
     }
 
-    delete(index: string | string[]) {
-        return this.client.indices.delete({ index });
+    delete(param: IndicesDelete) {
+        return this.client.indices.delete(param);
     }
 
     async getMapping(index: string): Promise<SimpleJson> {

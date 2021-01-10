@@ -24,7 +24,7 @@ import {
 describe('baseline command test', () => {
     after(async () => {
         const client = es7ClientContainer().get<ElasticsearchClient>(Bindings.ElasticsearchClient);
-        await client.delete('test*');
+        await client.delete({ index: 'test*' });
     });
 
     test.stub(cli, 'error', sinon.stub())

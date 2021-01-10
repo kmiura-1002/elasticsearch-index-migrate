@@ -17,7 +17,7 @@ import { IndicesExists as IndicesExists7 } from 'es7/api/requestParams';
 describe('Migrates Elasticsearch index to the latest version.', () => {
     after(async () => {
         const client = es7ClientContainer().get<ElasticsearchClient>(Bindings.ElasticsearchClient);
-        await client.delete('test*');
+        await client.delete({ index: 'test*' });
     });
 
     test.stub(MigrationExecutor, 'migrate', () => Promise.resolve(1))
@@ -92,8 +92,8 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
                     }
                 }
             });
-            await client.delete('test3');
-            await client.delete(testMigrateHistory);
+            await client.delete({ index: 'test3' });
+            await client.delete({ index: testMigrateHistory });
             client.close();
             expect(searchRet[0].index_name).to.eq('test3');
             expect(searchRet[0].migrate_version).to.eq('v1.0.0');
@@ -132,8 +132,8 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
                         }
                     }
                 });
-                await client.delete('test4');
-                await client.delete(testMigrateHistory);
+                await client.delete({ index: 'test4' });
+                await client.delete({ index: testMigrateHistory });
                 client.close();
                 expect(searchRet.length).to.eq(2);
                 expect(searchRet[0].index_name).to.eq('test4');

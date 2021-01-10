@@ -5,6 +5,7 @@ import {
     IndicesExists as IndicesExists6,
     IndicesPutMapping as IndicesPutMapping6,
     IndicesPutSettings as IndicesPutSettings6,
+    IndicesDelete as IndicesDelete6,
     Search as Search6,
     Index as Index6
 } from 'es6/api/requestParams';
@@ -14,6 +15,7 @@ import {
     IndicesExists as IndicesExists7,
     IndicesPutMapping as IndicesPutMapping7,
     IndicesPutSettings as IndicesPutSettings7,
+    IndicesDelete as IndicesDelete7,
     Search as Search7,
     Index as Index7
 } from 'es7/api/requestParams';
@@ -33,7 +35,7 @@ export default interface ElasticsearchClient {
 
     putSetting: (param: IndicesPutSettings6 | IndicesPutSettings7) => Promise<any>;
 
-    delete: (index: string | string[]) => Promise<any>;
+    delete: (param: IndicesDelete6 | IndicesDelete7) => Promise<any>;
 
     postDocument: (param: Index6 | Index7) => Promise<any>;
 
@@ -117,4 +119,8 @@ export function isIndex7(param: Index6 | Index7): param is Index7 {
         return true;
     }
     return versionTypeCheck(param.version_type);
+}
+
+export function isIndicesDelete6(param: IndicesDelete6 | IndicesDelete7): param is IndicesDelete6 {
+    return expandWildcardsCheck(param.expand_wildcards);
 }

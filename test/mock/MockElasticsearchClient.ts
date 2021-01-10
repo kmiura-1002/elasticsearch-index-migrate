@@ -6,6 +6,7 @@ import {
     IndicesExists as IndicesExists6,
     IndicesPutMapping as IndicesPutMapping6,
     IndicesPutSettings as IndicesPutSettings6,
+    IndicesDelete as IndicesDelete6,
     Search as Search6,
     Index as Index6
 } from 'es6/api/requestParams';
@@ -14,6 +15,7 @@ import {
     IndicesExists as IndicesExists7,
     IndicesPutMapping as IndicesPutMapping7,
     IndicesPutSettings as IndicesPutSettings7,
+    IndicesDelete as IndicesDelete7,
     Search as Search7,
     Index as Index7
 } from 'es7/api/requestParams';
@@ -54,8 +56,8 @@ export default class MockElasticsearchClient implements ElasticsearchClient {
         return Promise.resolve({ status: ClusterStatuses.GREEN });
     }
 
-    delete(_index: string | string[]) {
-        cli.debug(`Called MockElasticsearchClient.delete: index=${_index}`);
+    delete(param: IndicesDelete6 | IndicesDelete7) {
+        cli.debug(`Called MockElasticsearchClient.delete: param=${JSON.stringify(param)}`);
         return Promise.resolve({ statusCode: 200 });
     }
 

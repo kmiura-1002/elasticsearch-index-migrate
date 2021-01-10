@@ -26,7 +26,7 @@ export async function cleanExecutor(
                 });
             break;
         case 'index':
-            await esClient.delete(indexName).catch((reason) => {
+            await esClient.delete({ index: indexName }).catch((reason) => {
                 cli.error(
                     `An error occurred during the deletion process : ${JSON.stringify(reason)}`
                 );
@@ -48,7 +48,7 @@ export async function cleanExecutor(
                         `An error occurred during the deletion process : ${JSON.stringify(reason)}`
                     );
                 });
-            await esClient.delete(indexName).catch((reason) => {
+            await esClient.delete({ index: indexName }).catch((reason) => {
                 cli.error(
                     `An error occurred during the deletion process : ${JSON.stringify(reason)}`
                 );
