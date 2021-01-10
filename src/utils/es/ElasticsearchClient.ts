@@ -7,6 +7,7 @@ import {
     IndicesPutSettings as IndicesPutSettings6,
     IndicesDelete as IndicesDelete6,
     IndicesGetMapping as IndicesGetMapping6,
+    IndicesGet as IndicesGet6,
     Search as Search6,
     Index as Index6
 } from 'es6/api/requestParams';
@@ -18,6 +19,7 @@ import {
     IndicesPutSettings as IndicesPutSettings7,
     IndicesDelete as IndicesDelete7,
     IndicesGetMapping as IndicesGetMapping7,
+    IndicesGet as IndicesGet7,
     Search as Search7,
     Index as Index7
 } from 'es7/api/requestParams';
@@ -47,7 +49,7 @@ export default interface ElasticsearchClient {
 
     getMapping: (param: IndicesGetMapping6 | IndicesGetMapping7) => Promise<Array<SimpleJson>>;
 
-    get: (index: string) => Promise<SimpleJson>;
+    get: (param: IndicesGet6 | IndicesGet7) => Promise<SimpleJson>;
 
     deleteDocument: (indexName: string, body?: any) => Promise<any>;
 }
@@ -132,6 +134,10 @@ export function isIndicesDelete6(param: IndicesDelete6 | IndicesDelete7): param 
 export function isIndicesGetMapping6(
     param: IndicesGetMapping6 | IndicesGetMapping7
 ): param is IndicesGetMapping6 {
+    return expandWildcardsCheck(param.expand_wildcards);
+}
+
+export function isIndicesGet6(param: IndicesGet6 | IndicesGet7): param is IndicesGet6 {
     return expandWildcardsCheck(param.expand_wildcards);
 }
 

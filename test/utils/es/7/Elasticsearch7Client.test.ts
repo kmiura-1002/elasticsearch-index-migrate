@@ -162,7 +162,7 @@ describe('Elasticsearch7Client test', () => {
                 }
             }
         });
-        const ret = await client.get(index);
+        const ret = await client.get({ index });
 
         expect((ret as any)[index].mappings).to.eql({
             properties: {

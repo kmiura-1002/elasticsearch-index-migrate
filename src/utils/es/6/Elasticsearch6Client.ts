@@ -8,6 +8,7 @@ import ElasticsearchClient, {
     isIndex6,
     isIndicesDelete6,
     isIndicesExists6,
+    isIndicesGet6,
     isIndicesGetMapping6,
     isIndicesPutMapping6,
     isIndicesPutSettings6,
@@ -23,6 +24,7 @@ import {
     IndicesPutSettings as IndicesPutSettings6,
     IndicesDelete as IndicesDelete6,
     IndicesGetMapping as IndicesGetMapping6,
+    IndicesGet as IndicesGet6,
     Search as Search6,
     Index as Index6
 } from 'es6/api/requestParams';
@@ -32,6 +34,7 @@ import {
     IndicesPutSettings as IndicesPutSettings7,
     IndicesDelete as IndicesDelete7,
     IndicesGetMapping as IndicesGetMapping7,
+    IndicesGet as IndicesGet7,
     Search as Search7,
     Index as Index7
 } from 'es7/api/requestParams';
@@ -124,8 +127,11 @@ class Elasticsearch6Client implements ElasticsearchClient {
         return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
     }
 
-    async get(index: string): Promise<SimpleJson> {
-        return await this.client.indices.get({ index }).then((value) => value.body as SimpleJson);
+    async get(param: IndicesGet6 | IndicesGet7): Promise<SimpleJson> {
+        if (isIndicesGet6(param)) {
+            return await this.client.indices.get(param).then((value) => value.body as SimpleJson);
+        }
+        return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
     }
 
     async deleteDocument(indexName: string, body: any): Promise<any> {

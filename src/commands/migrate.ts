@@ -73,7 +73,7 @@ export default class Migrate extends AbstractCommand {
             lastApplied: ''
         };
         if (flags.showDiff && (await elasticsearchClient.exists({ index: flags.indexName }))) {
-            beforeIndex = await elasticsearchClient.get(flags.indexName);
+            beforeIndex = await elasticsearchClient.get({ index: flags.indexName });
         }
         const count = await migrate(
             flags.indexName,
@@ -83,7 +83,7 @@ export default class Migrate extends AbstractCommand {
             this.migrationConfig.elasticsearch
         );
         if (flags.showDiff) {
-            afterIndex = await elasticsearchClient.get(flags.indexName);
+            afterIndex = await elasticsearchClient.get({ index: flags.indexName });
         }
         if (count && count > 0) {
             cli.info(`Migration completed. (count: ${count})`);

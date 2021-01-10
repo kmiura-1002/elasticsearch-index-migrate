@@ -8,6 +8,7 @@ import {
     IndicesPutSettings as IndicesPutSettings6,
     IndicesDelete as IndicesDelete6,
     IndicesGetMapping as IndicesGetMapping6,
+    IndicesGet as IndicesGet6,
     Search as Search6,
     Index as Index6
 } from 'es6/api/requestParams';
@@ -18,6 +19,7 @@ import {
     IndicesPutSettings as IndicesPutSettings7,
     IndicesDelete as IndicesDelete7,
     IndicesGetMapping as IndicesGetMapping7,
+    IndicesGet as IndicesGet7,
     Search as Search7,
     Index as Index7
 } from 'es7/api/requestParams';
@@ -100,7 +102,7 @@ export default class MockElasticsearchClient implements ElasticsearchClient {
         ]);
     }
 
-    get(_index: string): Promise<SimpleJson> {
+    get(_param: IndicesGet6 | IndicesGet7): Promise<SimpleJson> {
         return Promise.resolve({
             settings: {
                 index: {

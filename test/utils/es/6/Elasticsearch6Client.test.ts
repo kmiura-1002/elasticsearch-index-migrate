@@ -9,6 +9,7 @@ import {
     Index,
     IndicesDelete,
     IndicesExists,
+    IndicesGet,
     IndicesGetMapping,
     IndicesPutMapping,
     IndicesPutSettings,
@@ -221,7 +222,7 @@ describe('Elasticsearch6Client test', () => {
         await client.delete({ index });
     });
 
-    it('get mpping return reject args is es7 params', async () => {
+    it('get mpping return reject when args is es7 params', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({
             index,
@@ -267,7 +268,7 @@ describe('Elasticsearch6Client test', () => {
                 }
             }
         });
-        const ret = await client.get(index);
+        const ret = await client.get({ index });
 
         expect((ret as any)[index].mappings).to.eql({
             test: {
@@ -282,6 +283,34 @@ describe('Elasticsearch6Client test', () => {
         expect((ret as any)[index].settings.index.refresh_interval).to.eql('1s');
         expect((ret as any)[index].settings.index.number_of_shards).to.eql('1');
         expect((ret as any)[index].settings.index.number_of_replicas).to.eql('0');
+        await client.delete({ index });
+    });
+
+    it('get return reject when args is es7 params', async () => {
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
+        await client.createIndex({
+            index,
+            body: {
+                settings: {
+                    index: {
+                        refresh_interval: '1s',
+                        number_of_shards: 1,
+                        number_of_replicas: 0
+                    }
+                },
+                mappings: {
+                    test: {
+                        properties: {
+                            test_name: {
+                                type: 'keyword'
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        const param: IndicesGet = { index, expand_wildcards: 'hidden' };
+        expect(client.get(param)).is.rejectedWith(`illegal argument : ${JSON.stringify(param)}`);
         await client.delete({ index });
     });
 
@@ -340,7 +369,7 @@ describe('Elasticsearch6Client test', () => {
         await client.delete({ index });
     });
 
-    it('delete index reject with args is es7 params', async () => {
+    it('delete index reject when args is es7 params', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({ index });
         const param: IndicesDelete = { index, expand_wildcards: 'hidden' };

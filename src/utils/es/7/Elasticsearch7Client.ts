@@ -16,7 +16,8 @@ import {
     IndicesDelete,
     Search,
     Index as Index7,
-    IndicesGetMapping
+    IndicesGetMapping,
+    IndicesGet
 } from 'es7/api/requestParams';
 
 @injectable()
@@ -84,8 +85,8 @@ class Elasticsearch7Client implements ElasticsearchClient {
             .then((value) => convertGetMappingResponse(param, value));
     }
 
-    async get(index: string): Promise<SimpleJson> {
-        return await this.client.indices.get({ index }).then((value) => value.body as SimpleJson);
+    async get(param: IndicesGet): Promise<SimpleJson> {
+        return await this.client.indices.get(param).then((value) => value.body as SimpleJson);
     }
 
     deleteDocument(indexName: string, body: any): Promise<any> {
