@@ -9,7 +9,8 @@ import {
     IndicesGetMapping as IndicesGetMapping6,
     IndicesGet as IndicesGet6,
     Search as Search6,
-    Index as Index6
+    Index as Index6,
+    DeleteByQuery as DeleteByQuery6
 } from 'es6/api/requestParams';
 import {
     ClusterHealth as ClusterHealth7,
@@ -21,7 +22,8 @@ import {
     IndicesGetMapping as IndicesGetMapping7,
     IndicesGet as IndicesGet7,
     Search as Search7,
-    Index as Index7
+    Index as Index7,
+    DeleteByQuery as DeleteByQuery7
 } from 'es7/api/requestParams';
 import { ApiResponse as ApiResponse6 } from 'es6/lib/Transport';
 import { ApiResponse as ApiResponse7 } from 'es7/lib/Transport';
@@ -51,7 +53,7 @@ export default interface ElasticsearchClient {
 
     get: (param: IndicesGet6 | IndicesGet7) => Promise<SimpleJson>;
 
-    deleteDocument: (indexName: string, body?: any) => Promise<any>;
+    deleteDocument: (param: DeleteByQuery6 | DeleteByQuery7) => Promise<any>;
 }
 
 function expandWildcardsCheck(param?: string) {
@@ -138,6 +140,13 @@ export function isIndicesGetMapping6(
 }
 
 export function isIndicesGet6(param: IndicesGet6 | IndicesGet7): param is IndicesGet6 {
+    return expandWildcardsCheck(param.expand_wildcards);
+}
+
+export function isDeleteByQuery6(param: DeleteByQuery6 | DeleteByQuery7): param is DeleteByQuery6 {
+    if (Object.keys(param).includes('max_docs')) {
+        return false;
+    }
     return expandWildcardsCheck(param.expand_wildcards);
 }
 

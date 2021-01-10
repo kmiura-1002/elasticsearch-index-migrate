@@ -210,11 +210,14 @@ describe('Elasticsearch7Client test', () => {
         });
 
         await client
-            .deleteDocument(index, {
-                query: {
-                    term: {
-                        test: {
-                            value: 'foobaz'
+            .deleteDocument({
+                index,
+                body: {
+                    query: {
+                        term: {
+                            test: {
+                                value: 'foobaz'
+                            }
                         }
                     }
                 }

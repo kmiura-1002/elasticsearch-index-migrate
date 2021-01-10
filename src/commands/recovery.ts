@@ -57,25 +57,28 @@ export default class Recovery extends AbstractCommand {
             const sw = new StopWatch();
             sw.start();
             await elasticsearchClient
-                .deleteDocument(MAPPING_HISTORY_INDEX_NAME, {
-                    query: {
-                        bool: {
-                            must: [
-                                {
-                                    term: {
-                                        index_name: {
-                                            value: flags.indexName
+                .deleteDocument({
+                    index: MAPPING_HISTORY_INDEX_NAME,
+                    body: {
+                        query: {
+                            bool: {
+                                must: [
+                                    {
+                                        term: {
+                                            index_name: {
+                                                value: flags.indexName
+                                            }
+                                        }
+                                    },
+                                    {
+                                        term: {
+                                            success: {
+                                                value: 'false'
+                                            }
                                         }
                                     }
-                                },
-                                {
-                                    term: {
-                                        success: {
-                                            value: 'false'
-                                        }
-                                    }
-                                }
-                            ]
+                                ]
+                            }
                         }
                     }
                 })

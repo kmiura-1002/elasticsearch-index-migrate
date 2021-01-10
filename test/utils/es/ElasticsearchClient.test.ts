@@ -1,5 +1,6 @@
 import {
     convertGetMappingResponse,
+    isDeleteByQuery6,
     isIndex6,
     isIndex7,
     isIndicesExists6,
@@ -12,14 +13,16 @@ import {
     IndicesPutSettings as IndicesPutSettings6,
     Search as Search6,
     Index as Index6,
-    IndicesGetMapping as IndicesGetMapping6
+    IndicesGetMapping as IndicesGetMapping6,
+    DeleteByQuery as DeleteByQuery6
 } from 'es6/api/requestParams';
 import {
     IndicesExists as IndicesExists7,
     IndicesPutMapping as IndicesPutMapping7,
     IndicesPutSettings as IndicesPutSettings7,
     Search as Search7,
-    Index as Index7
+    Index as Index7,
+    DeleteByQuery as DeleteByQuery7
 } from 'es7/api/requestParams';
 import { expect } from 'chai';
 import { ApiResponse as ApiResponse6 } from 'es6/lib/Transport';
@@ -46,6 +49,11 @@ type SearchTestType = {
 
 type IndexTestType = {
     param: Index6 | Index7;
+    expected: boolean;
+};
+
+type DeleteByQueryTestType = {
+    param: DeleteByQuery6 | DeleteByQuery7;
     expected: boolean;
 };
 
@@ -505,5 +513,77 @@ describe('ElasticsearchClient', () => {
         const actual = convertGetMappingResponse(param, res);
         expect(actual).is.an('array').lengthOf(1);
         expect(actual).is.deep.eq(expected);
+    });
+
+    const DeleteByQueryTestData: DeleteByQueryTestType[] = [
+        {
+            param: {
+                index: 'index',
+                type: 'type',
+                body: {}
+            },
+            expected: true
+        },
+        {
+            param: {
+                index: 'index',
+                type: 'type',
+                body: {},
+                max_docs: 1
+            },
+            expected: false
+        },
+        {
+            param: {
+                index: 'index',
+                type: 'type',
+                body: {},
+                expand_wildcards: 'hidden'
+            },
+            expected: false
+        },
+        {
+            param: {
+                index: 'index',
+                type: 'type',
+                body: {},
+                expand_wildcards: 'all'
+            },
+            expected: true
+        },
+        {
+            param: {
+                index: 'index',
+                type: 'type',
+                body: {},
+                expand_wildcards: 'closed'
+            },
+            expected: true
+        },
+        {
+            param: {
+                index: 'index',
+                type: 'type',
+                body: {},
+                expand_wildcards: 'none'
+            },
+            expected: true
+        },
+        {
+            param: {
+                index: 'index',
+                type: 'type',
+                body: {},
+                expand_wildcards: 'open'
+            },
+            expected: true
+        }
+    ];
+    DeleteByQueryTestData.forEach((testData) => {
+        it(`isDeleteByQuery6 fnc return ${testData.expected} when param is ${JSON.stringify(
+            testData.param
+        )}`, () => {
+            expect(isDeleteByQuery6(testData.param)).is.eq(testData.expected);
+        });
     });
 });

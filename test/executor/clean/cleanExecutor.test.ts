@@ -4,8 +4,14 @@ import { expect } from 'chai';
 import { cleanExecutor } from '../../../src/executor/clean/CleanExecutor';
 import { MAPPING_HISTORY_INDEX_NAME } from '../../../src/model/types';
 import { cli } from 'cli-ux';
-import { IndicesDelete as IndicesDelete6 } from 'es6/api/requestParams';
-import { IndicesDelete as IndicesDelete7 } from 'es7/api/requestParams';
+import {
+    IndicesDelete as IndicesDelete6,
+    DeleteByQuery as DeleteByQuery6
+} from 'es6/api/requestParams';
+import {
+    IndicesDelete as IndicesDelete7,
+    DeleteByQuery as DeleteByQuery7
+} from 'es7/api/requestParams';
 
 describe('CleanExecutor test', () => {
     let sandbox: sinon.SinonSandbox;
@@ -19,17 +25,20 @@ describe('CleanExecutor test', () => {
     it('documents are removed from migration_history', async () => {
         type mockEsClient = Partial<ElasticsearchClient>;
         const client: mockEsClient = {
-            deleteDocument: (_indexName: string, _body?: any) => Promise.resolve('success')
+            deleteDocument: (_param: DeleteByQuery6 | DeleteByQuery7) => Promise.resolve('success')
         };
         const stub = sandbox.stub(client, 'deleteDocument').returns(Promise.resolve('success'));
         await cleanExecutor(client as ElasticsearchClient, 'test', 'history');
         expect(stub.calledOnce).is.true;
         expect(
-            stub.calledWith(MAPPING_HISTORY_INDEX_NAME, {
-                query: {
-                    term: {
-                        index_name: {
-                            value: 'test'
+            stub.calledWith({
+                index: MAPPING_HISTORY_INDEX_NAME,
+                body: {
+                    query: {
+                        term: {
+                            index_name: {
+                                value: 'test'
+                            }
                         }
                     }
                 }
@@ -41,7 +50,7 @@ describe('CleanExecutor test', () => {
     it('document failed to be removed from migration_history', async () => {
         type mockEsClient = Partial<ElasticsearchClient>;
         const client: mockEsClient = {
-            deleteDocument: (_indexName: string, _body?: any) => Promise.reject('failed')
+            deleteDocument: (_param: DeleteByQuery6 | DeleteByQuery7) => Promise.reject('failed')
         };
         const clientStub = sandbox.stub(client, 'deleteDocument').returns(Promise.reject('failed'));
         const errorStub = sandbox.stub(cli, 'error');
@@ -82,7 +91,7 @@ describe('CleanExecutor test', () => {
         type mockEsClient = Partial<ElasticsearchClient>;
         const client: mockEsClient = {
             delete: (_param: IndicesDelete6 | IndicesDelete7) => Promise.resolve('success'),
-            deleteDocument: (_indexName: string, _body?: any) => Promise.resolve('success')
+            deleteDocument: (_param: DeleteByQuery6 | DeleteByQuery7) => Promise.resolve('success')
         };
         const deleteDocumentStub = sandbox
             .stub(client, 'deleteDocument')
@@ -91,11 +100,14 @@ describe('CleanExecutor test', () => {
         await cleanExecutor(client as ElasticsearchClient, 'test', 'all');
         expect(deleteDocumentStub.calledOnce).is.true;
         expect(
-            deleteDocumentStub.calledWith(MAPPING_HISTORY_INDEX_NAME, {
-                query: {
-                    term: {
-                        index_name: {
-                            value: 'test'
+            deleteDocumentStub.calledWith({
+                index: MAPPING_HISTORY_INDEX_NAME,
+                body: {
+                    query: {
+                        term: {
+                            index_name: {
+                                value: 'test'
+                            }
                         }
                     }
                 }
@@ -110,7 +122,7 @@ describe('CleanExecutor test', () => {
     it('Deleting the index and deleting the history failed.', async () => {
         type mockEsClient = Partial<ElasticsearchClient>;
         const client: mockEsClient = {
-            deleteDocument: (_indexName: string, _body?: any) => Promise.reject('failed'),
+            deleteDocument: (_param: DeleteByQuery6 | DeleteByQuery7) => Promise.reject('failed'),
             delete: (_param: IndicesDelete6 | IndicesDelete7) => Promise.resolve('failed')
         };
         const deleteDocumentStub = sandbox

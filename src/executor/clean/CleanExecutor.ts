@@ -10,11 +10,14 @@ export async function cleanExecutor(
     switch (target) {
         case 'history':
             await esClient
-                .deleteDocument(MAPPING_HISTORY_INDEX_NAME, {
-                    query: {
-                        term: {
-                            index_name: {
-                                value: indexName
+                .deleteDocument({
+                    index: MAPPING_HISTORY_INDEX_NAME,
+                    body: {
+                        query: {
+                            term: {
+                                index_name: {
+                                    value: indexName
+                                }
                             }
                         }
                     }
@@ -34,11 +37,14 @@ export async function cleanExecutor(
             break;
         case 'all':
             await esClient
-                .deleteDocument(MAPPING_HISTORY_INDEX_NAME, {
-                    query: {
-                        term: {
-                            index_name: {
-                                value: indexName
+                .deleteDocument({
+                    index: MAPPING_HISTORY_INDEX_NAME,
+                    body: {
+                        query: {
+                            term: {
+                                index_name: {
+                                    value: indexName
+                                }
                             }
                         }
                     }

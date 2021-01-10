@@ -10,7 +10,8 @@ import {
     IndicesGetMapping as IndicesGetMapping6,
     IndicesGet as IndicesGet6,
     Search as Search6,
-    Index as Index6
+    Index as Index6,
+    DeleteByQuery as DeleteByQuery6
 } from 'es6/api/requestParams';
 import {
     IndicesCreate as IndicesCreate7,
@@ -21,7 +22,8 @@ import {
     IndicesGetMapping as IndicesGetMapping7,
     IndicesGet as IndicesGet7,
     Search as Search7,
-    Index as Index7
+    Index as Index7,
+    DeleteByQuery as DeleteByQuery7
 } from 'es7/api/requestParams';
 
 export default class MockElasticsearchClient implements ElasticsearchClient {
@@ -174,7 +176,7 @@ export default class MockElasticsearchClient implements ElasticsearchClient {
         });
     }
 
-    deleteDocument(_indexName: string, _body: any): Promise<any> {
+    deleteDocument(_param: DeleteByQuery6 | DeleteByQuery7): Promise<any> {
         return Promise.resolve();
     }
 }

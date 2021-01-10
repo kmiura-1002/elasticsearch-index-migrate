@@ -6,6 +6,7 @@ import { Bindings } from '../../../../src/ioc.bindings';
 import { es6ClientContainer } from '../../ioc-test';
 import chaiAsPromised from 'chai-as-promised';
 import {
+    DeleteByQuery,
     Index,
     IndicesDelete,
     IndicesExists,
@@ -349,7 +350,67 @@ describe('Elasticsearch6Client test', () => {
         });
 
         await client
-            .deleteDocument(index, {
+            .deleteDocument({
+                index,
+                refresh: true,
+                body: {
+                    query: {
+                        term: {
+                            test: {
+                                value: 'foobaz'
+                            }
+                        }
+                    }
+                }
+            })
+            .then((value) => expect(value.statusCode).is.eq(200));
+
+        await client.search({ index }).then((value) => {
+            expect(value).to.be.an('array');
+            expect(value.length).to.eql(0);
+        });
+
+        await client.delete({ index });
+    });
+
+    it('delete document return reject when args is es7 params', async () => {
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
+        await client.createIndex({
+            index,
+            body: {
+                mappings: {
+                    _doc: {
+                        properties: {
+                            test: {
+                                type: 'keyword'
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        await client
+            .postDocument({
+                index,
+                type: '_doc',
+                body: {
+                    test: 'foobaz'
+                },
+                refresh: 'true'
+            })
+            .then((value) => expect(value.statusCode).is.eq(201));
+
+        await client.search({ index }).then((value) => {
+            expect(value).to.be.an('array');
+            expect(value[0]).to.eql({
+                test: 'foobaz'
+            });
+        });
+
+        const param1: DeleteByQuery = {
+            index,
+            max_docs: 1,
+            body: {
                 query: {
                     term: {
                         test: {
@@ -357,14 +418,27 @@ describe('Elasticsearch6Client test', () => {
                         }
                     }
                 }
-            })
-            .then((value) => expect(value.statusCode).is.eq(200));
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-
-        await client.search({ index }).then((value) => {
-            expect(value).to.be.an('array');
-            expect(value.length).to.eql(0);
-        });
+            }
+        };
+        await expect(client.deleteDocument(param1)).is.rejectedWith(
+            `illegal argument : ${JSON.stringify(param1)}`
+        );
+        const param2: DeleteByQuery = {
+            index,
+            expand_wildcards: 'hidden',
+            body: {
+                query: {
+                    term: {
+                        test: {
+                            value: 'foobaz'
+                        }
+                    }
+                }
+            }
+        };
+        await expect(client.deleteDocument(param2)).is.rejectedWith(
+            `illegal argument : ${JSON.stringify(param2)}`
+        );
 
         await client.delete({ index });
     });

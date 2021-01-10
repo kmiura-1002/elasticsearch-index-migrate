@@ -5,6 +5,7 @@ import { inject, injectable } from 'inversify';
 import { Bindings } from '../../../ioc.bindings';
 import ElasticsearchClient, {
     convertGetMappingResponse,
+    isDeleteByQuery6,
     isIndex6,
     isIndicesDelete6,
     isIndicesExists6,
@@ -26,7 +27,8 @@ import {
     IndicesGetMapping as IndicesGetMapping6,
     IndicesGet as IndicesGet6,
     Search as Search6,
-    Index as Index6
+    Index as Index6,
+    DeleteByQuery as DeleteByQuery6
 } from 'es6/api/requestParams';
 import {
     IndicesExists as IndicesExists7,
@@ -36,7 +38,8 @@ import {
     IndicesGetMapping as IndicesGetMapping7,
     IndicesGet as IndicesGet7,
     Search as Search7,
-    Index as Index7
+    Index as Index7,
+    DeleteByQuery as DeleteByQuery7
 } from 'es7/api/requestParams';
 
 @injectable()
@@ -134,8 +137,11 @@ class Elasticsearch6Client implements ElasticsearchClient {
         return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
     }
 
-    async deleteDocument(indexName: string, body: any): Promise<any> {
-        return await this.client.deleteByQuery({ index: indexName, body });
+    async deleteDocument(param: DeleteByQuery6 | DeleteByQuery7): Promise<any> {
+        if (isDeleteByQuery6(param)) {
+            return await this.client.deleteByQuery(param);
+        }
+        return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
     }
 }
 
