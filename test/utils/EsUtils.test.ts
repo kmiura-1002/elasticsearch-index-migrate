@@ -120,6 +120,11 @@ describe('EsUtils test', () => {
             minor: 0,
             patch: 1
         });
+        expect(usedEsVersion('7')).is.deep.eq({
+            major: 7,
+            minor: 0,
+            patch: 0
+        });
         expect(usedEsVersion('foo')).is.eq(undefined);
     });
 });

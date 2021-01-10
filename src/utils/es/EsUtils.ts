@@ -12,13 +12,15 @@ import major from 'semver/functions/major';
 import minor from 'semver/functions/minor';
 import patch from 'semver/functions/patch';
 import valid from 'semver/functions/valid';
+import coerce from 'semver/functions/coerce';
 
 export function usedEsVersion(v?: string): ElasticsearchVersions | undefined {
-    return valid(v)
+    const version = coerce(v);
+    return valid(version)
         ? {
-              major: major(v ?? ''),
-              minor: minor(v ?? ''),
-              patch: patch(v ?? '')
+              major: major(version ?? ''),
+              minor: minor(version ?? ''),
+              patch: patch(version ?? '')
           }
         : undefined;
 }
