@@ -301,7 +301,7 @@ describe('ElasticsearchClient', () => {
                 index: 'index',
                 body: {}
             },
-            expected: false
+            expected: true
         },
         {
             param: {

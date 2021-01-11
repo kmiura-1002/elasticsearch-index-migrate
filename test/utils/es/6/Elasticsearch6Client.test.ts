@@ -165,7 +165,6 @@ describe('Elasticsearch6Client test', () => {
         await client.createIndex({ index });
         const ret = await client.postDocument({
             index,
-            type: '_doc',
             body: {
                 test: 'foo baz'
             }
@@ -180,6 +179,7 @@ describe('Elasticsearch6Client test', () => {
         await client.createIndex({ index });
         const param: Index = {
             index,
+            refresh: true,
             body: {
                 test: 'foo baz'
             }

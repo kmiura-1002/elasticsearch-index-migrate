@@ -108,7 +108,8 @@ class Elasticsearch6Client implements ElasticsearchClient {
     async postDocument(param: Index6 | Index7) {
         if (isIndex6(param)) {
             return await this.client.index({
-                ...param
+                ...param,
+                type: param.type ? param.type : '_doc'
             });
         }
         return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);

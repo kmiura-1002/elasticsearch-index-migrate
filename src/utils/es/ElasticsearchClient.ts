@@ -113,9 +113,9 @@ export function isIndex6(param: Index6 | Index7): param is Index6 {
     if (Object.keys(param).includes('parent')) {
         return true;
     }
-    if (param.type === undefined) {
-        return false;
-    }
+    // if (param.type === undefined) {
+    //     return false;
+    // }
     return !(param.refresh && typeof param.refresh === 'boolean');
 }
 
