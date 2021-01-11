@@ -76,9 +76,10 @@ export type ResolvedMigration = {
     type: MigrationType;
     // index_name: string;
     version: string;
-    description: string;
+    description?: string;
     physicalLocation: ParsedPath;
     migrate_script: any;
+    query_parameters?: any;
 };
 
 export type AppliedMigration = {
