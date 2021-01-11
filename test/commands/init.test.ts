@@ -219,13 +219,13 @@ describe('Setup elasticsearch index migrate env test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '0.0.0',
+            ELASTICSEARCH_VERSION: '0',
             ELASTICSEARCH_HOST: 'http://localhost:9201'
         })
         .stdout()
         .command(['init'])
         .catch((err) =>
-            expect(err.message).to.eq('0.0.0 is unsupported. support version is 6.x or 7.x.')
+            expect(err.message).to.eq('Unknown version:0. support version is 6.x or 7.x.')
         )
         .it('unsupported support version');
 });
