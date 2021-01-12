@@ -16,11 +16,11 @@ import coerce from 'semver/functions/coerce';
 
 export function usedEsVersion(v?: string): ElasticsearchVersions | undefined {
     const version = coerce(v);
-    return valid(version)
+    return valid(version) && version
         ? {
-              major: major(version ?? ''),
-              minor: minor(version ?? ''),
-              patch: patch(version ?? '')
+              major: major(version),
+              minor: minor(version),
+              patch: patch(version)
           }
         : undefined;
 }
@@ -29,9 +29,9 @@ export function esClientBind(esConfig: ESConfig) {
     const container = new Container();
     container.bind<ESConnectConfig>(Bindings.ESConfig).toConstantValue(esConfig.connect);
 
-    const version = valid(esConfig.version);
+    const version = usedEsVersion(esConfig.version)?.major;
     if (version) {
-        switch (usedEsVersion(version)?.major) {
+        switch (version) {
             case 6:
                 container
                     .bind<ElasticsearchClient>(Bindings.ElasticsearchClient)
