@@ -74,11 +74,10 @@ export type MigrationType = typeof MigrationTypes[keyof typeof MigrationTypes];
 
 export type ResolvedMigration = {
     type: MigrationType;
-    // index_name: string;
     version: string;
     description?: string;
     physicalLocation: ParsedPath;
-    migrate_script: any;
+    migrate_script?: any;
     query_parameters?: any;
 };
 

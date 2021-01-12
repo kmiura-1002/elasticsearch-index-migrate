@@ -13,7 +13,7 @@ export const esExecutor: Map<MigrationType, ExecutorFnc> = new Map([
         (name, esClient, resolvedMigration) =>
             esClient.putMapping({
                 index: name,
-                body: resolvedMigration?.migrate_script,
+                body: resolvedMigration.migrate_script,
                 ...resolvedMigration.query_parameters
             })
     ],
@@ -22,7 +22,7 @@ export const esExecutor: Map<MigrationType, ExecutorFnc> = new Map([
         (name, esClient, resolvedMigration) =>
             esClient.createIndex({
                 index: name,
-                body: resolvedMigration?.migrate_script,
+                body: resolvedMigration.migrate_script,
                 ...resolvedMigration.query_parameters
             })
     ],
@@ -36,7 +36,7 @@ export const esExecutor: Map<MigrationType, ExecutorFnc> = new Map([
         (name, esClient, resolvedMigration) =>
             esClient.putSetting({
                 index: name,
-                body: resolvedMigration?.migrate_script,
+                body: resolvedMigration.migrate_script,
                 ...resolvedMigration.query_parameters
             })
     ]
