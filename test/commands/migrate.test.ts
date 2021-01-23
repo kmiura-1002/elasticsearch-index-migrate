@@ -11,18 +11,20 @@ import { MAPPING_HISTORY_INDEX_NAME } from '../../src/model/types';
 import { cli } from 'cli-ux';
 import * as sinon from 'sinon';
 import * as create from '../../src/executor/init/MigrationInitExecutor';
+import { IndicesExists as IndicesExists6 } from 'es6/api/requestParams';
+import { IndicesExists as IndicesExists7 } from 'es7/api/requestParams';
 
 describe('Migrates Elasticsearch index to the latest version.', () => {
     after(async () => {
         const client = es7ClientContainer().get<ElasticsearchClient>(Bindings.ElasticsearchClient);
-        await client.delete('test*');
+        await client.delete({ index: 'test*' });
     });
 
     test.stub(MigrationExecutor, 'migrate', () => Promise.resolve(1))
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stub(EsUtils, 'default', () => new MockElasticsearchClient())
@@ -38,7 +40,7 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -54,7 +56,7 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .command(['migrate', '-i', 'not_fount'])
@@ -68,7 +70,7 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -82,13 +84,16 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
                 Bindings.ElasticsearchClient
             );
 
-            const searchRet = await client.search<MigrateIndex>(testMigrateHistory, {
-                query: {
-                    match_all: {}
+            const searchRet = await client.search<MigrateIndex>({
+                index: testMigrateHistory,
+                body: {
+                    query: {
+                        match_all: {}
+                    }
                 }
             });
-            await client.delete('test3');
-            await client.delete(testMigrateHistory);
+            await client.delete({ index: 'test3' });
+            await client.delete({ index: testMigrateHistory });
             client.close();
             expect(searchRet[0].index_name).to.eq('test3');
             expect(searchRet[0].migrate_version).to.eq('v1.0.0');
@@ -103,7 +108,7 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -119,13 +124,16 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
                     Bindings.ElasticsearchClient
                 );
 
-                const searchRet = await client.search<MigrateIndex>(testMigrateHistory, {
-                    query: {
-                        match_all: {}
+                const searchRet = await client.search<MigrateIndex>({
+                    index: testMigrateHistory,
+                    body: {
+                        query: {
+                            match_all: {}
+                        }
                     }
                 });
-                await client.delete('test4');
-                await client.delete(testMigrateHistory);
+                await client.delete({ index: 'test4' });
+                await client.delete({ index: testMigrateHistory });
                 client.close();
                 expect(searchRet.length).to.eq(2);
                 expect(searchRet[0].index_name).to.eq('test4');
@@ -148,7 +156,7 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -168,9 +176,11 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
                 execution_time: 1,
                 success: true
             };
-            await client.postDocument(testMigrateHistory, history);
-            // Processing to wait for elasticsearch refresh time
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+            await client.postDocument({
+                index: testMigrateHistory,
+                body: history,
+                refresh: true
+            });
         })
         .command(['migrate', '-i', 'test5'])
         .it('There is no error if you run it again after the migration is done.', async () => {
@@ -184,7 +194,7 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
             'default',
             () =>
                 new (class extends MockElasticsearchClient {
-                    exists(_index: string) {
+                    exists(_param: IndicesExists6 | IndicesExists7) {
                         return Promise.resolve(false);
                     }
                 })()
@@ -192,7 +202,7 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -215,7 +225,7 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
             'default',
             () =>
                 new (class extends MockElasticsearchClient {
-                    exists(_index: string) {
+                    exists(_param: IndicesExists6 | IndicesExists7) {
                         return Promise.resolve(false);
                     }
                 })()
@@ -223,7 +233,7 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -241,7 +251,7 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -256,25 +266,28 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .do(async () => {
             const client = es7ClientContainer().get<ElasticsearchClient>(
                 Bindings.ElasticsearchClient
             );
-            await client.createIndex('test7', {
-                settings: {
-                    index: {
-                        refresh_interval: '1s',
-                        number_of_shards: 1,
-                        number_of_replicas: 0
-                    }
-                },
-                mappings: {
-                    properties: {
-                        name: {
-                            type: 'text'
+            await client.createIndex({
+                index: 'test7',
+                body: {
+                    settings: {
+                        index: {
+                            refresh_interval: '1s',
+                            number_of_shards: 1,
+                            number_of_replicas: 0
+                        }
+                    },
+                    mappings: {
+                        properties: {
+                            name: {
+                                type: 'text'
+                            }
                         }
                     }
                 }

@@ -1,5 +1,6 @@
-import { MigrationPlanExecutorRet, MigrationStates, VERSION_REGEX } from '../../model/types';
+import { MigrationPlanExecutorRet, MigrationStates } from '../../model/types';
 import { generateDescription, generateVersion, MigrationPlan } from '../plan/MigrationPlan';
+import valid from 'semver/functions/valid';
 
 export function migrationPlanValidate(migratePlan: MigrationPlan): string | undefined {
     const version = generateVersion(migratePlan.resolvedMigration, migratePlan.appliedMigration);
@@ -7,7 +8,7 @@ export function migrationPlanValidate(migratePlan: MigrationPlan): string | unde
         generateDescription(migratePlan.resolvedMigration, migratePlan.appliedMigration) ??
         '[empty description]';
 
-    if (!version?.match(VERSION_REGEX)) {
+    if (!valid(version)) {
         return 'Unknown version migration detected';
     }
 

@@ -2,6 +2,7 @@ import { ApiResponse, MigrationType, MigrationTypes, ResolvedMigration } from '.
 import ElasticsearchClient from '../../utils/es/ElasticsearchClient';
 
 export type ExecutorFnc = (
+    name: string,
     esClient: ElasticsearchClient,
     resolvedMigration: ResolvedMigration
 ) => Promise<ApiResponse>;
@@ -9,21 +10,34 @@ export type ExecutorFnc = (
 export const esExecutor: Map<MigrationType, ExecutorFnc> = new Map([
     [
         MigrationTypes.ADD_FIELD,
-        (esClient, resolvedMigration) =>
-            esClient.putMapping(resolvedMigration.index_name, resolvedMigration?.migrate_script)
+        (name, esClient, resolvedMigration) =>
+            esClient.putMapping({
+                index: name,
+                body: resolvedMigration.migrate_script,
+                ...resolvedMigration.query_parameters
+            })
     ],
     [
         MigrationTypes.CREATE_INDEX,
-        (esClient, resolvedMigration) =>
-            esClient.createIndex(resolvedMigration.index_name, resolvedMigration?.migrate_script)
+        (name, esClient, resolvedMigration) =>
+            esClient.createIndex({
+                index: name,
+                body: resolvedMigration.migrate_script,
+                ...resolvedMigration.query_parameters
+            })
     ],
     [
         MigrationTypes.DELETE_INDEX,
-        (esClient, resolvedMigration) => esClient.delete(resolvedMigration.index_name)
+        (name, esClient, resolvedMigration) =>
+            esClient.delete({ index: name, ...resolvedMigration.query_parameters })
     ],
     [
         MigrationTypes.ALTER_SETTING,
-        (esClient, resolvedMigration) =>
-            esClient.putSetting(resolvedMigration.index_name, resolvedMigration?.migrate_script)
+        (name, esClient, resolvedMigration) =>
+            esClient.putSetting({
+                index: name,
+                body: resolvedMigration.migrate_script,
+                ...resolvedMigration.query_parameters
+            })
     ]
 ]);

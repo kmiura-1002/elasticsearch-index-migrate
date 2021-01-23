@@ -4,30 +4,40 @@ import { ClientOptions as ClientOptions7 } from 'es7';
 import fs from 'fs';
 import { Bindings } from '../../ioc.bindings';
 import ElasticsearchClient from './ElasticsearchClient';
-import { ESConfig, ESConnectConfig } from '../../model/types';
+import { ElasticsearchVersions, ESConfig, ESConnectConfig } from '../../model/types';
 import { Container } from 'inversify';
 import Elasticsearch6Client from './6/Elasticsearch6Client';
 import Elasticsearch7Client from './7/Elasticsearch7Client';
+import major from 'semver/functions/major';
+import minor from 'semver/functions/minor';
+import patch from 'semver/functions/patch';
+import valid from 'semver/functions/valid';
+import coerce from 'semver/functions/coerce';
 
-export function usedEsVersion(esConfig: ESConfig) {
-    const versionRegex = /^([1-9]\d{0,4}|0)(\.(([1-9]\d{0,4})|0)){0,3}$/;
-    const versionMatch = esConfig.version?.match(versionRegex);
-    return versionMatch ? versionMatch[1] : undefined;
+export function usedEsVersion(v?: string): ElasticsearchVersions | undefined {
+    const version = coerce(v);
+    return valid(version) && version
+        ? {
+              major: major(version),
+              minor: minor(version),
+              patch: patch(version)
+          }
+        : undefined;
 }
 
 export function esClientBind(esConfig: ESConfig) {
     const container = new Container();
     container.bind<ESConnectConfig>(Bindings.ESConfig).toConstantValue(esConfig.connect);
-    const version = usedEsVersion(esConfig);
 
+    const version = usedEsVersion(esConfig.version)?.major;
     if (version) {
         switch (version) {
-            case '6':
+            case 6:
                 container
                     .bind<ElasticsearchClient>(Bindings.ElasticsearchClient)
                     .to(Elasticsearch6Client);
                 break;
-            case '7':
+            case 7:
                 container
                     .bind<ElasticsearchClient>(Bindings.ElasticsearchClient)
                     .to(Elasticsearch7Client);
@@ -48,9 +58,9 @@ export default function getElasticsearchClient(esConfig: ESConfig) {
     return container.get<ElasticsearchClient>(Bindings.ElasticsearchClient);
 }
 
-export function esConnectConf(conf: ESConnectConfig) {
+export function esConnectConf(conf: ESConnectConfig): ClientOptions6 | ClientOptions7 {
     const { host, sslCa, cloudId, username, password } = conf;
-    let opts: ClientOptions6 | ClientOptions7 = {};
+    let opts: ClientOptions6 | ClientOptions7;
     if (cloudId && username && password) {
         opts = {
             cloud: {

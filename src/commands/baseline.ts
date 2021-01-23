@@ -23,26 +23,29 @@ export default class Baseline extends AbstractCommand {
         const baselineVersion = this.migrationConfig.migration.baselineVersion;
 
         const results = await elasticsearchClient
-            .search<MigrateIndex>(MAPPING_HISTORY_INDEX_NAME, {
-                size: 10000,
-                query: {
-                    bool: {
-                        must: [
-                            {
-                                term: {
-                                    index_name: {
-                                        value: flags.indexName
+            .search<MigrateIndex>({
+                index: MAPPING_HISTORY_INDEX_NAME,
+                body: {
+                    size: 10000,
+                    query: {
+                        bool: {
+                            must: [
+                                {
+                                    term: {
+                                        index_name: {
+                                            value: flags.indexName
+                                        }
+                                    }
+                                },
+                                {
+                                    term: {
+                                        migrate_version: {
+                                            value: baselineVersion
+                                        }
                                     }
                                 }
-                            },
-                            {
-                                term: {
-                                    migrate_version: {
-                                        value: baselineVersion
-                                    }
-                                }
-                            }
-                        ]
+                            ]
+                        }
                     }
                 }
             })
@@ -54,15 +57,18 @@ export default class Baseline extends AbstractCommand {
             cli.info('Baseline history does not exist.');
             cli.info(`Create baseline in ${baselineVersion}.`);
             await elasticsearchClient
-                .postDocument(MAPPING_HISTORY_INDEX_NAME, {
-                    index_name: flags.indexName,
-                    migrate_version: baselineVersion,
-                    description: flags.description ?? 'Migration baseline',
-                    script_name: '',
-                    script_type: '',
-                    installed_on: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss"),
-                    execution_time: 0,
-                    success: true
+                .postDocument({
+                    index: MAPPING_HISTORY_INDEX_NAME,
+                    body: {
+                        index_name: flags.indexName,
+                        migrate_version: baselineVersion,
+                        description: flags.description ?? 'Migration baseline',
+                        script_name: '',
+                        script_type: '',
+                        installed_on: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss"),
+                        execution_time: 0,
+                        success: true
+                    }
                 })
                 .then(() => {
                     cli.info(`Successfully created a baseline in ${baselineVersion}.`);

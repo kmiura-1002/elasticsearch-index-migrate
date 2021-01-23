@@ -17,8 +17,26 @@ describe('MigrationValidation test', () => {
             migrationPlanValidate({
                 resolvedMigration: {
                     type: MigrationTypes.ADD_FIELD,
-                    index_name: 'test',
                     version: '',
+                    description: '',
+                    physicalLocation: {
+                        name: '',
+                        base: '',
+                        dir: '',
+                        ext: '',
+                        root: ''
+                    },
+                    migrate_script: {}
+                },
+                context: migrationPlanContext,
+                baseline: false
+            })
+        ).is.eq('Unknown version migration detected');
+        expect(
+            migrationPlanValidate({
+                resolvedMigration: {
+                    type: MigrationTypes.ADD_FIELD,
+                    version: 'v2.0',
                     description: '',
                     physicalLocation: {
                         name: '',
@@ -50,6 +68,21 @@ describe('MigrationValidation test', () => {
         ).is.eq('Unknown version migration detected');
         expect(
             migrationPlanValidate({
+                appliedMigration: {
+                    version: '1',
+                    description: '',
+                    type: MigrationTypes.ADD_FIELD,
+                    script: '',
+                    installedOn: new Date(),
+                    executionTime: 0,
+                    success: true
+                },
+                context: migrationPlanContext,
+                baseline: false
+            })
+        ).is.eq('Unknown version migration detected');
+        expect(
+            migrationPlanValidate({
                 context: migrationPlanContext,
                 baseline: false
             })
@@ -60,7 +93,6 @@ describe('MigrationValidation test', () => {
         const ret = migrationPlanValidate({
             resolvedMigration: {
                 type: MigrationTypes.ADD_FIELD,
-                index_name: 'test',
                 version: 'v1.0.1',
                 description: '',
                 physicalLocation: {
@@ -84,7 +116,6 @@ describe('MigrationValidation test', () => {
         const ret = migrationPlanValidate({
             resolvedMigration: {
                 type: MigrationTypes.ADD_FIELD,
-                index_name: 'test',
                 version: 'v1.0.1',
                 description: '',
                 physicalLocation: {
@@ -136,7 +167,6 @@ describe('MigrationValidation test', () => {
             },
             resolvedMigration: {
                 type: MigrationTypes.CREATE_INDEX,
-                index_name: 'test',
                 version: 'v1.0.1',
                 description: '',
                 physicalLocation: {
@@ -163,7 +193,6 @@ describe('MigrationValidation test', () => {
                     type: MigrationTypes.CREATE_INDEX,
                     version: 'v1.20.0',
                     description: '',
-                    index_name: 'test',
                     physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
                 }
             ],
@@ -212,7 +241,6 @@ describe('MigrationValidation test', () => {
                     type: MigrationTypes.CREATE_INDEX,
                     version: 'v1.0.0',
                     description: '',
-                    index_name: 'test',
                     physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
                 }
             ],
