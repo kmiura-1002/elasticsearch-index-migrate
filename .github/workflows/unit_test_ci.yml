@@ -24,7 +24,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - name: Docker setup
-      run: docker-compose -f docker-compose-test.yaml up -d --build
+      run: docker-compose -f docker-compose-ci.yaml up -d --build
     - name: Sleep for 30 seconds
       uses: jakejarvis/wait-action@master
       with:
