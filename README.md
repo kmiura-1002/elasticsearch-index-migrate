@@ -35,7 +35,7 @@ $ npm install -g elasticsearch-index-migrate
 $ elasticsearch-index-migrate COMMAND
 running command...
 $ elasticsearch-index-migrate (-v|--version|version)
-elasticsearch-index-migrate/0.5.2 darwin-x64 node-v12.14.0
+elasticsearch-index-migrate/0.6.0 darwin-x64 node-v12.14.0
 $ elasticsearch-index-migrate --help [COMMAND]
 USAGE
   $ elasticsearch-index-migrate COMMAND
@@ -280,7 +280,7 @@ OPTIONS
                                                        processed.
 ```
 
-_See code: [src/commands/baseline.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.5.2/src/commands/baseline.ts)_
+_See code: [src/commands/baseline.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.6.0/src/commands/baseline.ts)_
 
 ## `elasticsearch-index-migrate clean`
 
@@ -331,7 +331,7 @@ OPTIONS
   -y, --yes                                            Always answer "yes" to any prompt that appears during processing
 ```
 
-_See code: [src/commands/clean.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.5.2/src/commands/clean.ts)_
+_See code: [src/commands/clean.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.6.0/src/commands/clean.ts)_
 
 ## `elasticsearch-index-migrate help [COMMAND]`
 
@@ -389,7 +389,7 @@ OPTIONS
   -h, --help                                           show CLI help
 ```
 
-_See code: [src/commands/init.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.5.2/src/commands/init.ts)_
+_See code: [src/commands/init.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.6.0/src/commands/init.ts)_
 
 ## `elasticsearch-index-migrate migrate`
 
@@ -439,7 +439,7 @@ OPTIONS
                                                        the end.
 ```
 
-_See code: [src/commands/migrate.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.5.2/src/commands/migrate.ts)_
+_See code: [src/commands/migrate.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.6.0/src/commands/migrate.ts)_
 
 ## `elasticsearch-index-migrate plan`
 
@@ -486,7 +486,7 @@ OPTIONS
                                                        processed.
 ```
 
-_See code: [src/commands/plan.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.5.2/src/commands/plan.ts)_
+_See code: [src/commands/plan.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.6.0/src/commands/plan.ts)_
 
 ## `elasticsearch-index-migrate recovery`
 
@@ -533,7 +533,7 @@ OPTIONS
                                                        processed.
 ```
 
-_See code: [src/commands/recovery.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.5.2/src/commands/recovery.ts)_
+_See code: [src/commands/recovery.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.6.0/src/commands/recovery.ts)_
 <!-- commandsstop -->
 
 # Quick start with Docker
