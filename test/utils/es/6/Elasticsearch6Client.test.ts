@@ -223,6 +223,36 @@ describe('Elasticsearch6Client test', () => {
         await client.delete({ index });
     });
 
+    it('return mpping when query params is include_type_name=true', async () => {
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
+        await client.createIndex({
+            index,
+            body: {
+                mappings: {
+                    my_type: {
+                        properties: {
+                            test_name: {
+                                type: 'keyword'
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        const ret = await client.getMapping({ index, include_type_name: false });
+        expect(ret).is.an('array').lengthOf(1);
+        expect(ret[0]).to.eql({
+            mappings: {
+                properties: {
+                    test_name: {
+                        type: 'keyword'
+                    }
+                }
+            }
+        });
+        await client.delete({ index });
+    });
+
     it('get mpping return reject when args is es7 params', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({
