@@ -10,11 +10,21 @@ import { cli } from 'cli-ux';
 import * as sinon from 'sinon';
 import * as create from '../../src/executor/init/MigrationInitExecutor';
 import * as MigrationExecutor from '../../src/executor/migration/MigrationExecutor';
+import {
+    IndicesExists as IndicesExists6,
+    Search as Search6,
+    Index as Index6
+} from 'es6/api/requestParams';
+import {
+    IndicesExists as IndicesExists7,
+    Search as Search7,
+    Index as Index7
+} from 'es7/api/requestParams';
 
 describe('baseline command test', () => {
     after(async () => {
         const client = es7ClientContainer().get<ElasticsearchClient>(Bindings.ElasticsearchClient);
-        await client.delete('test*');
+        await client.delete({ index: 'test*' });
     });
 
     test.stub(cli, 'error', sinon.stub())
@@ -23,7 +33,7 @@ describe('baseline command test', () => {
             'default',
             () =>
                 new (class extends MockElasticsearchClient {
-                    exists(_index: string) {
+                    exists(_param: IndicesExists6 | IndicesExists7) {
                         return Promise.resolve(false);
                     }
                 })()
@@ -31,7 +41,7 @@ describe('baseline command test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -55,7 +65,7 @@ describe('baseline command test', () => {
             'default',
             () =>
                 new (class extends MockElasticsearchClient {
-                    exists(_index: string) {
+                    exists(_param: IndicesExists6 | IndicesExists7) {
                         return Promise.resolve(false);
                     }
                 })()
@@ -63,7 +73,7 @@ describe('baseline command test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -80,7 +90,7 @@ describe('baseline command test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -95,25 +105,28 @@ describe('baseline command test', () => {
             );
             // Processing to wait for elasticsearch refresh time
             await new Promise((resolve) => setTimeout(resolve, 2000));
-            const ret = await client.search<MigrateIndex>('test1_migrate_history', {
-                query: {
-                    bool: {
-                        must: [
-                            {
-                                term: {
-                                    index_name: {
-                                        value: 'test2'
+            const ret = await client.search<MigrateIndex>({
+                index: 'test1_migrate_history',
+                body: {
+                    query: {
+                        bool: {
+                            must: [
+                                {
+                                    term: {
+                                        index_name: {
+                                            value: 'test2'
+                                        }
+                                    }
+                                },
+                                {
+                                    term: {
+                                        migrate_version: {
+                                            value: 'v1.0.0'
+                                        }
                                     }
                                 }
-                            },
-                            {
-                                term: {
-                                    migrate_version: {
-                                        value: 'v1.0.0'
-                                    }
-                                }
-                            }
-                        ]
+                            ]
+                        }
                     }
                 }
             });
@@ -126,7 +139,7 @@ describe('baseline command test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -141,25 +154,28 @@ describe('baseline command test', () => {
             );
             // Processing to wait for elasticsearch refresh time
             await new Promise((resolve) => setTimeout(resolve, 2000));
-            const ret = await client.search<MigrateIndex>('test2_migrate_history', {
-                query: {
-                    bool: {
-                        must: [
-                            {
-                                term: {
-                                    index_name: {
-                                        value: 'test3'
+            const ret = await client.search<MigrateIndex>({
+                index: 'test2_migrate_history',
+                body: {
+                    query: {
+                        bool: {
+                            must: [
+                                {
+                                    term: {
+                                        index_name: {
+                                            value: 'test3'
+                                        }
+                                    }
+                                },
+                                {
+                                    term: {
+                                        migrate_version: {
+                                            value: 'v1.0.0'
+                                        }
                                     }
                                 }
-                            },
-                            {
-                                term: {
-                                    migrate_version: {
-                                        value: 'v1.0.0'
-                                    }
-                                }
-                            }
-                        ]
+                            ]
+                        }
                     }
                 }
             });
@@ -172,7 +188,7 @@ describe('baseline command test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .command(['init'])
@@ -191,9 +207,7 @@ describe('baseline command test', () => {
                 execution_time: 1,
                 success: false
             };
-            await client.postDocument(testMigrateHistory, history);
-            // Processing to wait for elasticsearch refresh time
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+            await client.postDocument({ index: testMigrateHistory, body: history, refresh: true });
         })
         .stdout()
         .command(['baseline', '-i', 'test1'])
@@ -207,10 +221,10 @@ describe('baseline command test', () => {
         'default',
         () =>
             new (class extends MockElasticsearchClient {
-                search(_index: string, _query?: any) {
+                search(_param: Search6 | Search7) {
                     return Promise.reject('failed search');
                 }
-                exists(_index: string): Promise<boolean> {
+                exists(_param: IndicesExists6 | IndicesExists7): Promise<boolean> {
                     return Promise.resolve(true);
                 }
             })()
@@ -219,7 +233,7 @@ describe('baseline command test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -238,13 +252,13 @@ describe('baseline command test', () => {
         'default',
         () =>
             new (class extends MockElasticsearchClient {
-                search(_index: string, _query?: any) {
+                search(_param: Search6 | Search7) {
                     return Promise.resolve<MigrateIndex[]>([]);
                 }
-                exists(_index: string): Promise<boolean> {
+                exists(_param: IndicesExists6 | IndicesExists7): Promise<boolean> {
                     return Promise.resolve(true);
                 }
-                postDocument(_indexName: string, _body: any): Promise<any> {
+                postDocument(_param: Index6 | Index7): Promise<any> {
                     return Promise.reject('failed post document');
                 }
             })()
@@ -254,7 +268,7 @@ describe('baseline command test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -269,55 +283,6 @@ describe('baseline command test', () => {
 
                 const error = (cli.error as unknown) as sinon.SinonStub;
                 expect(error.calledWith('failed post document')).is.true;
-            }
-        );
-
-    test.stub(types, 'MAPPING_HISTORY_INDEX_NAME', 'test8_migrate_history')
-        .stub(cli, 'error', sinon.stub())
-        .stub(cli, 'info', sinon.stub())
-        .env({
-            ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
-            ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
-            ELASTICSEARCH_HOST: 'http://localhost:9202'
-        })
-        .stdout()
-        .command(['baseline', '-i', 'test8'])
-        .do(async () => {
-            const client = es7ClientContainer().get<ElasticsearchClient>(
-                Bindings.ElasticsearchClient
-            );
-
-            await client.createIndex('test8', {
-                settings: {
-                    index: {
-                        refresh_interval: '1s',
-                        number_of_shards: 1,
-                        number_of_replicas: 0
-                    }
-                },
-                mappings: {
-                    properties: {
-                        name: {
-                            type: 'text'
-                        }
-                    }
-                }
-            });
-            // Processing to wait for elasticsearch refresh time
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-        })
-        .command(['migrate', '-i', 'test8', '--showDiff'])
-        .it(
-            'The migrate command must succeed after the baseline command is executed.',
-            async () => {
-                const info = cli.info as sinon.SinonStub;
-                expect(info.calledWith('migrate_history index does not exist.')).is.true;
-                expect(info.calledWith('Create a migrate_history index for the first time.')).is
-                    .true;
-                expect(info.calledWith('The creation of the index has been completed.')).is.true;
-                expect(info.calledWith('Migration completed. (count: 1)')).is.true;
-                expect(info.calledWith('Display of the result difference.')).is.true;
             }
         );
 });

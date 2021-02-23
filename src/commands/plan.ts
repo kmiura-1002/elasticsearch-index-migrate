@@ -21,7 +21,7 @@ export default class Plan extends AbstractCommand {
         await this.createHistoryIndex();
         const locations = this.migrationConfig.migration.locations;
         const baselineVersion = this.migrationConfig.migration.baselineVersion;
-        const migrationFilePaths: string[] = findAllFiles(locations);
+        const migrationFilePaths = findAllFiles(locations);
         const migrationFileParsedPath = loadMigrationScriptFilePaths(
             flags.indexName,
             migrationFilePaths
@@ -32,16 +32,19 @@ export default class Plan extends AbstractCommand {
             cli.exit(1);
         }
 
-        const migrationScripts = loadMigrationScripts(migrationFileParsedPath, flags.indexName);
+        const migrationScripts = loadMigrationScripts(migrationFileParsedPath);
         const elasticsearchClient = getElasticsearchClient(this.migrationConfig.elasticsearch);
 
         const results = await elasticsearchClient
-            .search<MigrateIndex>(MAPPING_HISTORY_INDEX_NAME, {
-                size: 10000,
-                query: {
-                    term: {
-                        index_name: {
-                            value: flags.indexName
+            .search<MigrateIndex>({
+                index: MAPPING_HISTORY_INDEX_NAME,
+                body: {
+                    size: 10000,
+                    query: {
+                        term: {
+                            index_name: {
+                                value: flags.indexName
+                            }
                         }
                     }
                 }

@@ -15,17 +15,18 @@ You can see [a sample of this tool here](https://github.com/kmiura-1002/sample-e
 * [Usage](#usage)
 * [Setting](#setting)
 * [Migration script](#migration-script)
+* [Query parameters](#query-parameters)
 * [Where to store migration scripts](#where-to-store-migration-scripts)
 * [Commands](#commands)
 * [Quick start with Docker](#quick-start-with-docker)
 <!-- tocstop -->
 
 # Requirements
-* node.js (>=10.15.0)  
-* npm (>=6.9)  
+* node.js (>=12.14.0)  
+* npm (>=6.14.7)  
 * elasticsearch 6.x and 7.x  
 
-This project has been tested with node.js(v10.15.3, v12.14.0), npm(6.14.3) and elasticsearch(6.8.9 and 7.7.0).
+This project has been tested with node.js(v12.14.0, v14.15.5), npm(6.14.7) and elasticsearch(6.8.12 and 7.7.1).
 
 # Usage
 <!-- usage -->
@@ -34,7 +35,7 @@ $ npm install -g elasticsearch-index-migrate
 $ elasticsearch-index-migrate COMMAND
 running command...
 $ elasticsearch-index-migrate (-v|--version|version)
-elasticsearch-index-migrate/0.5.2 darwin-x64 node-v12.14.0
+elasticsearch-index-migrate/0.6.0 darwin-x64 node-v12.14.0
 $ elasticsearch-index-migrate --help [COMMAND]
 USAGE
   $ elasticsearch-index-migrate COMMAND
@@ -166,6 +167,40 @@ In the case of ALTER_SETTING scripts, write a Request body that can be executed 
 }
 ```
 
+# Query parameters
+Query parameters can be specified in JSON format in the migration script. 
+You can use the query parameters according to the migration type. 
+For more information, please check out [Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/current/rest-apis.html).
+
+For Example:
+```
+{
+  "type": "CREATE_INDEX",
+  "description": "description",
+  "migrate_script": {
+    "settings": {
+        "index": {
+            "refresh_interval": "1s",
+            "number_of_shards": 1,
+            "number_of_replicas": 0
+        }
+    },
+    "mappings": {
+        "properties": {
+          "user_id": {
+            "type": "keyword"
+          },
+          ...
+        }
+    }
+  },
+  "query_parameters": {
+    "include_type_name": true,
+    "timeout": 10
+  }
+}
+```
+
 # Where to store migration scripts
 Save your migration script to the directory you set up in ELASTICSEARCH_MIGRATION_LOCATIONS or JSON's migration.locations.
 If the storage location is /elasticsearch/migration, store the script in a directory like the following.
@@ -245,7 +280,7 @@ OPTIONS
                                                        processed.
 ```
 
-_See code: [src/commands/baseline.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.5.2/src/commands/baseline.ts)_
+_See code: [src/commands/baseline.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.6.0/src/commands/baseline.ts)_
 
 ## `elasticsearch-index-migrate clean`
 
@@ -296,7 +331,7 @@ OPTIONS
   -y, --yes                                            Always answer "yes" to any prompt that appears during processing
 ```
 
-_See code: [src/commands/clean.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.5.2/src/commands/clean.ts)_
+_See code: [src/commands/clean.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.6.0/src/commands/clean.ts)_
 
 ## `elasticsearch-index-migrate help [COMMAND]`
 
@@ -354,7 +389,7 @@ OPTIONS
   -h, --help                                           show CLI help
 ```
 
-_See code: [src/commands/init.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.5.2/src/commands/init.ts)_
+_See code: [src/commands/init.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.6.0/src/commands/init.ts)_
 
 ## `elasticsearch-index-migrate migrate`
 
@@ -404,7 +439,7 @@ OPTIONS
                                                        the end.
 ```
 
-_See code: [src/commands/migrate.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.5.2/src/commands/migrate.ts)_
+_See code: [src/commands/migrate.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.6.0/src/commands/migrate.ts)_
 
 ## `elasticsearch-index-migrate plan`
 
@@ -451,7 +486,7 @@ OPTIONS
                                                        processed.
 ```
 
-_See code: [src/commands/plan.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.5.2/src/commands/plan.ts)_
+_See code: [src/commands/plan.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.6.0/src/commands/plan.ts)_
 
 ## `elasticsearch-index-migrate recovery`
 
@@ -498,7 +533,7 @@ OPTIONS
                                                        processed.
 ```
 
-_See code: [src/commands/recovery.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.5.2/src/commands/recovery.ts)_
+_See code: [src/commands/recovery.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.6.0/src/commands/recovery.ts)_
 <!-- commandsstop -->
 
 # Quick start with Docker

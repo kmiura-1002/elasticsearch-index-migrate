@@ -8,21 +8,29 @@ import * as types from '../../src/model/types';
 import { es6ClientContainer, es7ClientContainer } from '../utils/ioc-test';
 import ElasticsearchClient from '../../src/utils/es/ElasticsearchClient';
 import { Bindings } from '../../src/ioc.bindings';
+import {
+    IndicesCreate as IndicesCreate6,
+    IndicesExists as IndicesExists6
+} from 'es6/api/requestParams';
+import {
+    IndicesCreate as IndicesCreate7,
+    IndicesExists as IndicesExists7
+} from 'es7/api/requestParams';
 
 describe('Setup elasticsearch index migrate env test', () => {
     after(async () => {
         const client7 = es7ClientContainer().get<ElasticsearchClient>(Bindings.ElasticsearchClient);
-        await client7.delete('test*');
+        await client7.delete({ index: 'test*' });
 
         const client6 = es6ClientContainer().get<ElasticsearchClient>(Bindings.ElasticsearchClient);
-        await client6.delete('test*');
+        await client6.delete({ index: 'test*' });
     });
 
     test.stub(EsUtils, 'default', () => new MockElasticsearchClient())
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -47,12 +55,12 @@ describe('Setup elasticsearch index migrate env test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
         .command(['init'])
-        .it('runs init cluster Status yellow ', (ctx) => {
+        .it('runs init cluster Status yellow ', () => {
             const info = cli.info as sinon.SinonStub;
             expect(info.called).is.true;
             expect(info.calledWith('cluster status is yellow.')).is.true;
@@ -74,7 +82,7 @@ describe('Setup elasticsearch index migrate env test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -91,7 +99,7 @@ describe('Setup elasticsearch index migrate env test', () => {
         'default',
         () =>
             new (class extends MockElasticsearchClient {
-                exists(index: string) {
+                exists(_param: IndicesExists6 | IndicesExists7) {
                     return Promise.resolve(true);
                 }
                 healthCheck(): Promise<{ status: string }> {
@@ -103,7 +111,7 @@ describe('Setup elasticsearch index migrate env test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -121,10 +129,10 @@ describe('Setup elasticsearch index migrate env test', () => {
         'default',
         () =>
             new (class extends MockElasticsearchClient {
-                createIndex(index: string, body?: any) {
+                createIndex(_param: IndicesCreate6 | IndicesCreate7) {
                     return Promise.resolve({ statusCode: 400 });
                 }
-                exists(index: string) {
+                exists(_param: IndicesExists6 | IndicesExists7) {
                     return Promise.resolve(false);
                 }
             })()
@@ -133,7 +141,7 @@ describe('Setup elasticsearch index migrate env test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -150,10 +158,10 @@ describe('Setup elasticsearch index migrate env test', () => {
         'default',
         () =>
             new (class extends MockElasticsearchClient {
-                createIndex(index: string, body?: any) {
+                createIndex(_param: IndicesCreate6 | IndicesCreate7) {
                     return Promise.reject();
                 }
-                exists(index: string) {
+                exists(_param: IndicesExists6 | IndicesExists7) {
                     return Promise.resolve(false);
                 }
             })()
@@ -162,7 +170,7 @@ describe('Setup elasticsearch index migrate env test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -211,13 +219,13 @@ describe('Setup elasticsearch index migrate env test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '0.0.0',
+            ELASTICSEARCH_VERSION: '0',
             ELASTICSEARCH_HOST: 'http://localhost:9201'
         })
         .stdout()
         .command(['init'])
         .catch((err) =>
-            expect(err.message).to.eq('0.0.0 is unsupported. support version is 6.x or 7.x.')
+            expect(err.message).to.eq('Unknown version:0. support version is 6.x or 7.x.')
         )
         .it('unsupported support version');
 });

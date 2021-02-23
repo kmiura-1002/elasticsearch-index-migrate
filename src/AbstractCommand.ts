@@ -106,14 +106,14 @@ export default abstract class AbstractCommand extends Command {
     async createHistoryIndex() {
         const { flags } = this.parse();
         const elasticsearchClient = getElasticsearchClient(this.migrationConfig.elasticsearch);
-        const exists = await elasticsearchClient.exists(MAPPING_HISTORY_INDEX_NAME);
+        const exists = await elasticsearchClient.exists({ index: MAPPING_HISTORY_INDEX_NAME });
         const { init } = flags as any;
         if (init && !exists) {
             cli.info('migrate_history index does not exist.');
             cli.info('Create a migrate_history index for the first time.');
             await createHistoryIndex(
                 elasticsearchClient,
-                usedEsVersion(this.migrationConfig.elasticsearch) ?? ''
+                usedEsVersion(this.migrationConfig.elasticsearch.version)
             );
             cli.info('The creation of the index has been completed.');
         } else if (!exists) {

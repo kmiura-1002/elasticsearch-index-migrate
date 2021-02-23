@@ -34,7 +34,7 @@ export default class Migrate extends AbstractCommand {
         await this.createHistoryIndex();
         const locations = this.migrationConfig.migration.locations;
         const baselineVersion = this.migrationConfig.migration.baselineVersion;
-        const migrationFilePaths: string[] = findAllFiles(locations);
+        const migrationFilePaths = findAllFiles(locations);
         const migrationFileParsedPath = loadMigrationScriptFilePaths(
             flags.indexName,
             migrationFilePaths
@@ -47,16 +47,19 @@ export default class Migrate extends AbstractCommand {
             cli.exit(1);
         }
 
-        const migrationScripts = loadMigrationScripts(migrationFileParsedPath, flags.indexName);
+        const migrationScripts = loadMigrationScripts(migrationFileParsedPath);
         const elasticsearchClient = getElasticsearchClient(this.migrationConfig.elasticsearch);
 
         const results = await elasticsearchClient
-            .search<MigrateIndex>(MAPPING_HISTORY_INDEX_NAME, {
-                size: 10000,
-                query: {
-                    term: {
-                        index_name: {
-                            value: flags.indexName
+            .search<MigrateIndex>({
+                index: MAPPING_HISTORY_INDEX_NAME,
+                body: {
+                    size: 10000,
+                    query: {
+                        term: {
+                            index_name: {
+                                value: flags.indexName
+                            }
                         }
                     }
                 }
@@ -69,17 +72,18 @@ export default class Migrate extends AbstractCommand {
             lastResolved: '',
             lastApplied: ''
         };
-        if (flags.showDiff && (await elasticsearchClient.exists(flags.indexName))) {
-            beforeIndex = await elasticsearchClient.get(flags.indexName);
+        if (flags.showDiff && (await elasticsearchClient.exists({ index: flags.indexName }))) {
+            beforeIndex = await elasticsearchClient.get({ index: flags.indexName });
         }
         const count = await migrate(
+            flags.indexName,
             migrationScripts,
             results,
             context,
             this.migrationConfig.elasticsearch
         );
         if (flags.showDiff) {
-            afterIndex = await elasticsearchClient.get(flags.indexName);
+            afterIndex = await elasticsearchClient.get({ index: flags.indexName });
         }
         if (count && count > 0) {
             cli.info(`Migration completed. (count: ${count})`);

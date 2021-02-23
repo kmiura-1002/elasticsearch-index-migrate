@@ -10,11 +10,21 @@ import { cli } from 'cli-ux';
 import * as sinon from 'sinon';
 import * as create from '../../src/executor/init/MigrationInitExecutor';
 import * as MigrationExecutor from '../../src/executor/migration/MigrationExecutor';
+import {
+    IndicesExists as IndicesExists6,
+    Search as Search6,
+    DeleteByQuery as DeleteByQuery6
+} from 'es6/api/requestParams';
+import {
+    IndicesExists as IndicesExists7,
+    Search as Search7,
+    DeleteByQuery as DeleteByQuery7
+} from 'es7/api/requestParams';
 
 describe('recovery command test', () => {
     after(async () => {
         const client = es7ClientContainer().get<ElasticsearchClient>(Bindings.ElasticsearchClient);
-        await client.delete('test*');
+        await client.delete({ index: 'test*' });
     });
 
     test.stub(cli, 'error', sinon.stub())
@@ -23,7 +33,7 @@ describe('recovery command test', () => {
             'default',
             () =>
                 new (class extends MockElasticsearchClient {
-                    exists(_index: string) {
+                    exists(_param: IndicesExists6 | IndicesExists7) {
                         return Promise.resolve(false);
                     }
                 })()
@@ -31,7 +41,7 @@ describe('recovery command test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -55,7 +65,7 @@ describe('recovery command test', () => {
             'default',
             () =>
                 new (class extends MockElasticsearchClient {
-                    exists(_index: string) {
+                    exists(_param: IndicesExists6 | IndicesExists7) {
                         return Promise.resolve(false);
                     }
                 })()
@@ -80,7 +90,7 @@ describe('recovery command test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .command(['init'])
@@ -100,10 +110,12 @@ describe('recovery command test', () => {
                     execution_time: 1,
                     success: false
                 };
-                await client.postDocument(testMigrateHistory, history);
+                await client.postDocument({
+                    index: testMigrateHistory,
+                    body: history,
+                    refresh: true
+                });
             }
-            // Processing to wait for elasticsearch refresh time
-            await new Promise((resolve) => setTimeout(resolve, 2000));
         })
         .stdout()
         .command(['recovery', '-i', 'test1'])
@@ -120,26 +132,29 @@ describe('recovery command test', () => {
             );
             // Processing to wait for elasticsearch refresh time
             await new Promise((resolve) => setTimeout(resolve, 2000));
-            const ret = await client.search<MigrateIndex>('test1_migrate_history', {
-                size: 10000,
-                query: {
-                    bool: {
-                        must: [
-                            {
-                                term: {
-                                    index_name: {
-                                        value: 'test1'
+            const ret = await client.search<MigrateIndex>({
+                index: 'test1_migrate_history',
+                body: {
+                    size: 10000,
+                    query: {
+                        bool: {
+                            must: [
+                                {
+                                    term: {
+                                        index_name: {
+                                            value: 'test1'
+                                        }
+                                    }
+                                },
+                                {
+                                    term: {
+                                        success: {
+                                            value: 'false'
+                                        }
                                     }
                                 }
-                            },
-                            {
-                                term: {
-                                    success: {
-                                        value: 'false'
-                                    }
-                                }
-                            }
-                        ]
+                            ]
+                        }
                     }
                 }
             });
@@ -151,7 +166,7 @@ describe('recovery command test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -166,10 +181,10 @@ describe('recovery command test', () => {
         'default',
         () =>
             new (class extends MockElasticsearchClient {
-                search(_index: string, _query?: any) {
+                search(_param: Search6 | Search7) {
                     return Promise.reject('failed search');
                 }
-                exists(_index: string): Promise<boolean> {
+                exists(_param: IndicesExists6 | IndicesExists7): Promise<boolean> {
                     return Promise.resolve(true);
                 }
             })()
@@ -178,7 +193,7 @@ describe('recovery command test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
@@ -197,7 +212,7 @@ describe('recovery command test', () => {
         'default',
         () =>
             new (class extends MockElasticsearchClient {
-                search(_index: string, _query?: any) {
+                search(_param: Search6 | Search7) {
                     return Promise.resolve<MigrateIndex[]>([
                         {
                             index_name: 'test',
@@ -211,10 +226,10 @@ describe('recovery command test', () => {
                         }
                     ]);
                 }
-                exists(_index: string): Promise<boolean> {
+                exists(_param: IndicesExists6 | IndicesExists7): Promise<boolean> {
                     return Promise.resolve(true);
                 }
-                deleteDocument(_indexName: string, _body: any): Promise<any> {
+                deleteDocument(_param: DeleteByQuery6 | DeleteByQuery7): Promise<any> {
                     return Promise.reject('failed delete document');
                 }
             })()
@@ -224,7 +239,7 @@ describe('recovery command test', () => {
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
-            ELASTICSEARCH_VERSION: '7',
+            ELASTICSEARCH_VERSION: '7.0.0',
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()

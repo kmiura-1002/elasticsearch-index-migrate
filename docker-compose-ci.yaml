@@ -1,0 +1,18 @@
+version: '3'
+services:
+  elasticsearch6x:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.8.12
+    container_name: elasticsearch6.8.12
+    ports:
+      - 9201:9200
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms400m -Xmx400m
+  elasticsearch7x:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.7.1
+    container_name: elasticsearch7.7.1
+    ports:
+      - 9202:9200
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms400m -Xmx400m

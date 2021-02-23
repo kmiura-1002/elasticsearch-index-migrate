@@ -62,13 +62,13 @@ describe('EsUtils test', () => {
 
     it('get es connect failed:unsupported version', () => {
         const esConfig: ESConfig = {
-            version: '1',
+            version: '1.0.0',
             connect: {
                 host: 'host'
             }
         };
         expect(() => esClientBind(esConfig)).to.throw(
-            '1 is unsupported. support version is 6.x or 7.x.'
+            '1.0.0 is unsupported. support version is 6.x or 7.x.'
         );
     });
 
@@ -87,7 +87,7 @@ describe('EsUtils test', () => {
 
     it('get es6 connect', () => {
         const esConfig: ESConfig = {
-            version: '6',
+            version: '6.0.0',
             connect: {
                 host: 'http://0.0.0.0:9200'
             }
@@ -99,7 +99,7 @@ describe('EsUtils test', () => {
 
     it('get es7 connect', () => {
         const esConfig: ESConfig = {
-            version: '7',
+            version: '7.0.0',
             connect: {
                 host: 'http://0.0.0.0:9200'
             }
@@ -110,29 +110,21 @@ describe('EsUtils test', () => {
     });
 
     it('The number of the major version to be returned', () => {
-        expect(
-            usedEsVersion({
-                version: '6.0.1',
-                connect: {
-                    host: 'http://0.0.0.0:9201'
-                }
-            })
-        ).is.eq('6');
-        expect(
-            usedEsVersion({
-                version: '7.0.1',
-                connect: {
-                    host: 'http://0.0.0.0:9201'
-                }
-            })
-        ).is.eq('7');
-        expect(
-            usedEsVersion({
-                version: 'foo',
-                connect: {
-                    host: 'http://0.0.0.0:9201'
-                }
-            })
-        ).is.eq(undefined);
+        expect(usedEsVersion('6.0.1')).is.deep.eq({
+            major: 6,
+            minor: 0,
+            patch: 1
+        });
+        expect(usedEsVersion('7.0.1')).is.deep.eq({
+            major: 7,
+            minor: 0,
+            patch: 1
+        });
+        expect(usedEsVersion('7')).is.deep.eq({
+            major: 7,
+            minor: 0,
+            patch: 0
+        });
+        expect(usedEsVersion('foo')).is.eq(undefined);
     });
 });

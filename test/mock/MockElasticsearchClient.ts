@@ -1,51 +1,57 @@
 import ElasticsearchClient from '../../src/utils/es/ElasticsearchClient';
 import { cli } from 'cli-ux';
 import { ClusterStatuses, SimpleJson } from '../../src/model/types';
+import {
+    IndicesCreate as IndicesCreate6,
+    IndicesExists as IndicesExists6,
+    IndicesPutMapping as IndicesPutMapping6,
+    IndicesPutSettings as IndicesPutSettings6,
+    IndicesDelete as IndicesDelete6,
+    IndicesGetMapping as IndicesGetMapping6,
+    IndicesGet as IndicesGet6,
+    Search as Search6,
+    Index as Index6,
+    DeleteByQuery as DeleteByQuery6
+} from 'es6/api/requestParams';
+import {
+    IndicesCreate as IndicesCreate7,
+    IndicesExists as IndicesExists7,
+    IndicesPutMapping as IndicesPutMapping7,
+    IndicesPutSettings as IndicesPutSettings7,
+    IndicesDelete as IndicesDelete7,
+    IndicesGetMapping as IndicesGetMapping7,
+    IndicesGet as IndicesGet7,
+    Search as Search7,
+    Index as Index7,
+    DeleteByQuery as DeleteByQuery7
+} from 'es7/api/requestParams';
 
 export default class MockElasticsearchClient implements ElasticsearchClient {
     close() {
         cli.debug('Called MockElasticsearchClient.close');
     }
-    createIndex(index: string, body?: any) {
-        cli.debug(
-            `Called MockElasticsearchClient.createIndex: index=${index}, body=${JSON.stringify(
-                body
-            )}`
-        );
+    createIndex(param: IndicesCreate6 | IndicesCreate7) {
+        cli.debug(`Called MockElasticsearchClient.createIndex: param=${JSON.stringify(param)}`);
         return Promise.resolve({ statusCode: 200 });
     }
-    exists(index: string) {
-        cli.debug(`Called MockElasticsearchClient.exists: index=${index}`);
+    exists(param: IndicesExists6 | IndicesExists7) {
+        cli.debug(`Called MockElasticsearchClient.exists: index=${param.index}`);
         return Promise.resolve(false);
     }
-    postDocument(index: string, body?: any, id?: string) {
-        cli.debug(
-            `Called MockElasticsearchClient.postDocument: index=${index}, body=${JSON.stringify(
-                body
-            )}, id=${id}`
-        );
+    postDocument(param: Index6 | Index7) {
+        cli.debug(`Called MockElasticsearchClient.postDocument: param=${JSON.stringify(param)}`);
         return Promise.resolve({ statusCode: 200 });
     }
-    putMapping(index: string, body: any) {
-        cli.debug(
-            `Called MockElasticsearchClient.putMapping: index=${index}, body=${JSON.stringify(
-                body
-            )}`
-        );
+    putMapping(param: IndicesPutMapping6 | IndicesPutMapping7) {
+        cli.debug(`Called MockElasticsearchClient.putMapping: param=${JSON.stringify(param)}`);
         return Promise.resolve({ statusCode: 200 });
     }
-    putSetting(index: string, body: any) {
-        cli.debug(
-            `Called MockElasticsearchClient.putSetting: index=${index}, body=${JSON.stringify(
-                body
-            )}`
-        );
+    putSetting(param: IndicesPutSettings6 | IndicesPutSettings7) {
+        cli.debug(`Called MockElasticsearchClient.putSetting: param=${JSON.stringify(param)}`);
         return Promise.resolve({ statusCode: 200 });
     }
-    search(index: string, query?: any): Promise<any[]> {
-        cli.debug(
-            `Called MockElasticsearchClient.search: index=${index}, query=${JSON.stringify(query)}`
-        );
+    search(param: Search6 | Search7): Promise<any[]> {
+        cli.debug(`Called MockElasticsearchClient.search: param=${JSON.stringify(param)}`);
         return Promise.resolve([]);
     }
     version() {
@@ -56,47 +62,49 @@ export default class MockElasticsearchClient implements ElasticsearchClient {
         return Promise.resolve({ status: ClusterStatuses.GREEN });
     }
 
-    delete(_index: string | string[]) {
-        cli.debug(`Called MockElasticsearchClient.delete: index=${_index}`);
+    delete(param: IndicesDelete6 | IndicesDelete7) {
+        cli.debug(`Called MockElasticsearchClient.delete: param=${JSON.stringify(param)}`);
         return Promise.resolve({ statusCode: 200 });
     }
 
-    getMapping(_index: string): Promise<SimpleJson> {
-        return Promise.resolve({
-            migrate_history: {
-                mappings: {
-                    properties: {
-                        description: {
-                            type: 'text'
-                        },
-                        execution_time: {
-                            type: 'long'
-                        },
-                        index_name: {
-                            type: 'keyword'
-                        },
-                        installed_on: {
-                            type: 'date'
-                        },
-                        migrate_version: {
-                            type: 'keyword'
-                        },
-                        script_name: {
-                            type: 'keyword'
-                        },
-                        script_type: {
-                            type: 'keyword'
-                        },
-                        success: {
-                            type: 'boolean'
+    getMapping(_param: IndicesGetMapping6 | IndicesGetMapping7): Promise<Array<SimpleJson>> {
+        return Promise.resolve([
+            {
+                migrate_history: {
+                    mappings: {
+                        properties: {
+                            description: {
+                                type: 'text'
+                            },
+                            execution_time: {
+                                type: 'long'
+                            },
+                            index_name: {
+                                type: 'keyword'
+                            },
+                            installed_on: {
+                                type: 'date'
+                            },
+                            migrate_version: {
+                                type: 'keyword'
+                            },
+                            script_name: {
+                                type: 'keyword'
+                            },
+                            script_type: {
+                                type: 'keyword'
+                            },
+                            success: {
+                                type: 'boolean'
+                            }
                         }
                     }
                 }
             }
-        });
+        ]);
     }
 
-    get(_index: string): Promise<SimpleJson> {
+    get(_param: IndicesGet6 | IndicesGet7): Promise<SimpleJson> {
         return Promise.resolve({
             settings: {
                 index: {
@@ -168,7 +176,7 @@ export default class MockElasticsearchClient implements ElasticsearchClient {
         });
     }
 
-    deleteDocument(_indexName: string, _body: any): Promise<any> {
+    deleteDocument(_param: DeleteByQuery6 | DeleteByQuery7): Promise<any> {
         return Promise.resolve();
     }
 }

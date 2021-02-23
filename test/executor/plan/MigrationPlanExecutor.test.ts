@@ -94,7 +94,6 @@ describe('MigrationPlanExecutor test', () => {
                     type: MigrationTypes.CREATE_INDEX,
                     version: 'Unknown version',
                     description: '',
-                    index_name: 'test',
                     physicalLocation: { name: '', ext: '', dir: '', base: '', root: '' }
                 }
             ],

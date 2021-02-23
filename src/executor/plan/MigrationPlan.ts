@@ -63,7 +63,8 @@ export function generateState(
     if (
         valid(appliedMigration?.version) &&
         valid(context.baseline) &&
-        appliedMigration?.version === context.baseline
+        appliedMigration?.version === context.baseline &&
+        appliedMigration?.success
     ) {
         return MigrationStateInfo.get(MigrationStates.BASELINE);
     }
