@@ -15,6 +15,7 @@ You can see [a sample of this tool here](https://github.com/kmiura-1002/sample-e
 * [Usage](#usage)
 * [Setting](#setting)
 * [Migration script](#migration-script)
+* [Query parameters](#query-parameters)
 * [Where to store migration scripts](#where-to-store-migration-scripts)
 * [Commands](#commands)
 * [Quick start with Docker](#quick-start-with-docker)
@@ -162,6 +163,40 @@ In the case of ALTER_SETTING scripts, write a Request body that can be executed 
     "index" : {
         "number_of_replicas" : 1
     }
+  }
+}
+```
+
+# Query parameters
+Query parameters can be specified in JSON format in the migration script. 
+You can use the query parameters according to the migration type. 
+For more information, please check out [Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/current/rest-apis.html).
+
+For Example:
+```
+{
+  "type": "CREATE_INDEX",
+  "description": "description",
+  "migrate_script": {
+    "settings": {
+        "index": {
+            "refresh_interval": "1s",
+            "number_of_shards": 1,
+            "number_of_replicas": 0
+        }
+    },
+    "mappings": {
+        "properties": {
+          "user_id": {
+            "type": "keyword"
+          },
+          ...
+        }
+    }
+  },
+  "query_parameters": {
+    "include_type_name": true,
+    "timeout": 10
   }
 }
 ```

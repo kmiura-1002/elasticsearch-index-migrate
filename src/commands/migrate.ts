@@ -34,7 +34,7 @@ export default class Migrate extends AbstractCommand {
         await this.createHistoryIndex();
         const locations = this.migrationConfig.migration.locations;
         const baselineVersion = this.migrationConfig.migration.baselineVersion;
-        const migrationFilePaths: string[] = findAllFiles(locations);
+        const migrationFilePaths = findAllFiles(locations);
         const migrationFileParsedPath = loadMigrationScriptFilePaths(
             flags.indexName,
             migrationFilePaths
