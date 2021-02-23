@@ -22,11 +22,11 @@ You can see [a sample of this tool here](https://github.com/kmiura-1002/sample-e
 <!-- tocstop -->
 
 # Requirements
-* node.js (>=10.15.0)  
-* npm (>=6.9)  
+* node.js (>=12.14.0)  
+* npm (>=6.14.7)  
 * elasticsearch 6.x and 7.x  
 
-This project has been tested with node.js(v10.15.3, v12.14.0), npm(6.14.3) and elasticsearch(6.8.9 and 7.7.0).
+This project has been tested with node.js(v12.14.0, v14.15.5), npm(6.14.7) and elasticsearch(6.8.12 and 7.7.1).
 
 # Usage
 <!-- usage -->
