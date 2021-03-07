@@ -10,7 +10,7 @@ export default class Init extends AbstractCommand {
         ...DefaultOptions
     };
 
-    async run() {
+    async run(): Promise<void> {
         this.parse(Init);
         const client = getElasticsearchClient(this.migrationConfig.elasticsearch);
         const health = await client.healthCheck();

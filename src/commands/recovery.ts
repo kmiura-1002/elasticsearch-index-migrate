@@ -10,7 +10,7 @@ export default class Recovery extends AbstractCommand {
         ...CommandOptions
     };
 
-    async run() {
+    async run(): Promise<void> {
         const { flags } = this.parse(Recovery);
         await this.createHistoryIndex();
         const elasticsearchClient = getElasticsearchClient(this.migrationConfig.elasticsearch);

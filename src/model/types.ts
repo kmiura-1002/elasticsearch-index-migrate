@@ -241,7 +241,11 @@ export type MigrationPlanExecutorRet = {
     pending: MigrationPlan[];
 };
 
-export type JsonPrimitiveType = boolean | number | string | null | undefined | object | {};
+type EmptyObject = {
+    [K in any]: never;
+};
+
+export type JsonPrimitiveType = boolean | number | string | null | undefined | EmptyObject;
 
 export type JsonArrayType = JsonPrimitiveType[] | JsonObjectType[];
 

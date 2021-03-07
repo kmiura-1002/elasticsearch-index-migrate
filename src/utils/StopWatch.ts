@@ -9,11 +9,11 @@ export default class StopWatch {
         this.stopTime = 0;
     }
 
-    start() {
+    start(): void {
         this.startTime = performance.now();
     }
 
-    stop() {
+    stop(): void {
         if (!this.startTime) {
             throw new Error('Call the start function before calling the stop function.');
         }
@@ -21,7 +21,7 @@ export default class StopWatch {
     }
 
     // return milliseconds
-    read() {
+    read(): number {
         if (!this.startTime || !this.stopTime) {
             throw new Error('Call the stop function before calling the read function.');
         }

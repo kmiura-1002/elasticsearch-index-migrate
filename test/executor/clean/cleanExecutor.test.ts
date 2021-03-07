@@ -25,7 +25,8 @@ describe('CleanExecutor test', () => {
     it('documents are removed from migration_history', async () => {
         type mockEsClient = Partial<ElasticsearchClient>;
         const client: mockEsClient = {
-            deleteDocument: (_param: DeleteByQuery6 | DeleteByQuery7) => Promise.resolve('success')
+            deleteDocument: (_param: DeleteByQuery6 | DeleteByQuery7): Promise<any> =>
+                Promise.resolve('success')
         };
         const stub = sandbox.stub(client, 'deleteDocument').returns(Promise.resolve('success'));
         await cleanExecutor(client as ElasticsearchClient, 'test', 'history');
@@ -64,7 +65,8 @@ describe('CleanExecutor test', () => {
     it('delete index from elasticsearch', async () => {
         type mockEsClient = Partial<ElasticsearchClient>;
         const client: mockEsClient = {
-            delete: (_param: IndicesDelete6 | IndicesDelete7) => Promise.resolve('success')
+            delete: (_param: IndicesDelete6 | IndicesDelete7): Promise<any> =>
+                Promise.resolve('success')
         };
         const stub = sandbox.stub(client, 'delete').returns(Promise.resolve('success'));
         await cleanExecutor(client as ElasticsearchClient, 'test', 'index');
@@ -76,7 +78,8 @@ describe('CleanExecutor test', () => {
     it('Failed to delete the index from elasticsearch', async () => {
         type mockEsClient = Partial<ElasticsearchClient>;
         const client: mockEsClient = {
-            delete: (_param: IndicesDelete6 | IndicesDelete7) => Promise.resolve('failed')
+            delete: (_param: IndicesDelete6 | IndicesDelete7): Promise<any> =>
+                Promise.resolve('failed')
         };
         const clientStub = sandbox.stub(client, 'delete').returns(Promise.reject('failed'));
         const errorStub = sandbox.stub(cli, 'error');
@@ -90,8 +93,10 @@ describe('CleanExecutor test', () => {
     it('delete index and migration history', async () => {
         type mockEsClient = Partial<ElasticsearchClient>;
         const client: mockEsClient = {
-            delete: (_param: IndicesDelete6 | IndicesDelete7) => Promise.resolve('success'),
-            deleteDocument: (_param: DeleteByQuery6 | DeleteByQuery7) => Promise.resolve('success')
+            delete: (_param: IndicesDelete6 | IndicesDelete7): Promise<any> =>
+                Promise.resolve('success'),
+            deleteDocument: (_param: DeleteByQuery6 | DeleteByQuery7): Promise<any> =>
+                Promise.resolve('success')
         };
         const deleteDocumentStub = sandbox
             .stub(client, 'deleteDocument')
@@ -123,7 +128,8 @@ describe('CleanExecutor test', () => {
         type mockEsClient = Partial<ElasticsearchClient>;
         const client: mockEsClient = {
             deleteDocument: (_param: DeleteByQuery6 | DeleteByQuery7) => Promise.reject('failed'),
-            delete: (_param: IndicesDelete6 | IndicesDelete7) => Promise.resolve('failed')
+            delete: (_param: IndicesDelete6 | IndicesDelete7): Promise<any> =>
+                Promise.resolve('failed')
         };
         const deleteDocumentStub = sandbox
             .stub(client, 'deleteDocument')

@@ -25,6 +25,8 @@ import {
     Index as Index7,
     DeleteByQuery as DeleteByQuery7
 } from 'es7/api/requestParams';
+import { ApiResponse as ApiResponse6 } from 'es6';
+import { ApiResponse as ApiResponse7 } from 'es7';
 
 export default class MockElasticsearchClient implements ElasticsearchClient {
     close() {
@@ -32,7 +34,7 @@ export default class MockElasticsearchClient implements ElasticsearchClient {
     }
     createIndex(param: IndicesCreate6 | IndicesCreate7) {
         cli.debug(`Called MockElasticsearchClient.createIndex: param=${JSON.stringify(param)}`);
-        return Promise.resolve({ statusCode: 200 });
+        return Promise.resolve({ statusCode: 200 } as ApiResponse6 | ApiResponse7);
     }
     exists(param: IndicesExists6 | IndicesExists7) {
         cli.debug(`Called MockElasticsearchClient.exists: index=${param.index}`);
@@ -40,15 +42,15 @@ export default class MockElasticsearchClient implements ElasticsearchClient {
     }
     postDocument(param: Index6 | Index7) {
         cli.debug(`Called MockElasticsearchClient.postDocument: param=${JSON.stringify(param)}`);
-        return Promise.resolve({ statusCode: 200 });
+        return Promise.resolve({ statusCode: 200 } as ApiResponse6 | ApiResponse7);
     }
     putMapping(param: IndicesPutMapping6 | IndicesPutMapping7) {
         cli.debug(`Called MockElasticsearchClient.putMapping: param=${JSON.stringify(param)}`);
-        return Promise.resolve({ statusCode: 200 });
+        return Promise.resolve({ statusCode: 200 } as ApiResponse6 | ApiResponse7);
     }
     putSetting(param: IndicesPutSettings6 | IndicesPutSettings7) {
         cli.debug(`Called MockElasticsearchClient.putSetting: param=${JSON.stringify(param)}`);
-        return Promise.resolve({ statusCode: 200 });
+        return Promise.resolve({ statusCode: 200 } as ApiResponse6 | ApiResponse7);
     }
     search(param: Search6 | Search7): Promise<any[]> {
         cli.debug(`Called MockElasticsearchClient.search: param=${JSON.stringify(param)}`);
@@ -64,7 +66,7 @@ export default class MockElasticsearchClient implements ElasticsearchClient {
 
     delete(param: IndicesDelete6 | IndicesDelete7) {
         cli.debug(`Called MockElasticsearchClient.delete: param=${JSON.stringify(param)}`);
-        return Promise.resolve({ statusCode: 200 });
+        return Promise.resolve({ statusCode: 200 } as ApiResponse6 | ApiResponse7);
     }
 
     getMapping(_param: IndicesGetMapping6 | IndicesGetMapping7): Promise<Array<SimpleJson>> {

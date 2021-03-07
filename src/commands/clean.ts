@@ -28,7 +28,7 @@ export default class Clean extends AbstractCommand {
         })
     };
 
-    async run() {
+    async run(): Promise<void> {
         const { flags } = this.parse(Clean);
         const client = getElasticsearchClient(this.migrationConfig.elasticsearch);
 

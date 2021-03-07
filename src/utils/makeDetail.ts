@@ -6,7 +6,7 @@ function getVersion(migrationPlan: MigrationPlan) {
     return migrationPlan.version ?? '';
 }
 
-export function formatDateAsIsoString(date?: Date) {
+export function formatDateAsIsoString(date?: Date): string {
     return date ? format(date, "yyyy-MM-dd'T'HH:mm:ss") : '';
 }
 
