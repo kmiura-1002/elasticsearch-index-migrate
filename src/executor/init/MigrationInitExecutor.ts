@@ -7,7 +7,7 @@ import v6Mapping from '../../resources/mapping/migrate_history_esV6.json';
 export async function createHistoryIndex(
     esClient: ElasticsearchClient,
     esVersion?: ElasticsearchVersions
-) {
+): Promise<void> {
     const mappingData = esVersion?.major === 7 ? v7Mapping : v6Mapping;
     const ret = await esClient
         .createIndex({ index: MAPPING_HISTORY_INDEX_NAME, body: mappingData })

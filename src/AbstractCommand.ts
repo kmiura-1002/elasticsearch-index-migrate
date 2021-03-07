@@ -103,7 +103,7 @@ export default abstract class AbstractCommand extends Command {
         }
     };
 
-    async createHistoryIndex() {
+    async createHistoryIndex(): Promise<void> {
         const { flags } = this.parse();
         const elasticsearchClient = getElasticsearchClient(this.migrationConfig.elasticsearch);
         const exists = await elasticsearchClient.exists({ index: MAPPING_HISTORY_INDEX_NAME });
@@ -124,7 +124,7 @@ export default abstract class AbstractCommand extends Command {
         }
     }
 
-    async init() {
+    async init(): Promise<void> {
         const { flags } = this.parse();
         const {
             migration_locations,

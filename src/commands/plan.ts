@@ -16,7 +16,7 @@ export default class Plan extends AbstractCommand {
         ...CommandOptions
     };
 
-    async run() {
+    async run(): Promise<void> {
         const { flags } = this.parse(Plan);
         await this.createHistoryIndex();
         const locations = this.migrationConfig.migration.locations;

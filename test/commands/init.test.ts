@@ -16,6 +16,8 @@ import {
     IndicesCreate as IndicesCreate7,
     IndicesExists as IndicesExists7
 } from 'es7/api/requestParams';
+import { ApiResponse as ApiResponse6 } from 'es6';
+import { ApiResponse as ApiResponse7 } from 'es7';
 
 describe('Setup elasticsearch index migrate env test', () => {
     after(async () => {
@@ -130,7 +132,7 @@ describe('Setup elasticsearch index migrate env test', () => {
         () =>
             new (class extends MockElasticsearchClient {
                 createIndex(_param: IndicesCreate6 | IndicesCreate7) {
-                    return Promise.resolve({ statusCode: 400 });
+                    return Promise.resolve({ statusCode: 400 } as ApiResponse6 | ApiResponse7);
                 }
                 exists(_param: IndicesExists6 | IndicesExists7) {
                     return Promise.resolve(false);

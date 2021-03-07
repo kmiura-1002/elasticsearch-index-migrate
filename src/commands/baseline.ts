@@ -16,7 +16,7 @@ export default class Baseline extends AbstractCommand {
         })
     };
 
-    async run() {
+    async run(): Promise<void> {
         const { flags } = this.parse(Baseline);
         await this.createHistoryIndex();
         const elasticsearchClient = getElasticsearchClient(this.migrationConfig.elasticsearch);

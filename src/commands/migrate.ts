@@ -29,7 +29,7 @@ export default class Migrate extends AbstractCommand {
         })
     };
 
-    async run() {
+    async run(): Promise<void> {
         const { flags } = this.parse(Migrate);
         await this.createHistoryIndex();
         const locations = this.migrationConfig.migration.locations;
