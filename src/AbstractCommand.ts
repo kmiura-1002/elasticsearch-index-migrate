@@ -91,10 +91,17 @@ export const CommandOptions = {
             'If the init command has not been executed in advance, the migration will be performed after initialization has been processed.',
         default: true
     }),
-    naturalName: flags.boolean({
+    'natural-name': flags.boolean({
+        char: 'n',
         allowNo: true,
-        description: 'test',
-        default: true
+        description: 'Set to true if the index name contains _ or -(Ex: my-index).',
+        default: false
+    }),
+    'index-version': flags.string({
+        char: 'v',
+        description:
+            'index version. (Ex: For my-index_1970.01.01, the version is 1970.01.01. For my-index_v1, the version is v1.)',
+        dependsOn: ['natural-name']
     })
 };
 
