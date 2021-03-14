@@ -36,7 +36,11 @@ export default class Migrate extends AbstractCommand {
         const baselineVersion = this.migrationConfig.migration.baselineVersion;
         const migrationFilePaths = findAllFiles(locations);
         const indexName = flags['index-name'] ?? flags.indexName;
-        const migrationFileParsedPath = loadMigrationScriptFilePaths(indexName, migrationFilePaths);
+        const migrationFileParsedPath = loadMigrationScriptFilePaths(
+            indexName,
+            migrationFilePaths,
+            flags['index-version']
+        );
         let beforeIndex: SimpleJson = {};
         let afterIndex: SimpleJson = {};
 

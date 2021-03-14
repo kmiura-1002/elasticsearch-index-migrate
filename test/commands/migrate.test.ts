@@ -35,6 +35,21 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
             expect(ctx.stdout).to.not.contain('Display of the result difference.');
         });
 
+    test.stub(MigrationExecutor, 'migrate', () => Promise.resolve(1))
+        .env({
+            ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
+            ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
+            ELASTICSEARCH_VERSION: '7.0.0',
+            ELASTICSEARCH_HOST: 'http://localhost:9202'
+        })
+        .stub(EsUtils, 'default', () => new MockElasticsearchClient())
+        .stdout()
+        .command(['migrate', '-i', 'test1', '-n', '-v', '1970.01.01'])
+        .it('success migrate when natural name option on', (ctx) => {
+            expect(ctx.stdout).to.contain('Migration completed. (count: 1)');
+            expect(ctx.stdout).to.not.contain('Display of the result difference.');
+        });
+
     test.stub(MigrationExecutor, 'migrate', () => Promise.resolve(undefined))
         .stub(cli, 'error', sinon.stub())
         .env({

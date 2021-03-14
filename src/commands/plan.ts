@@ -23,7 +23,11 @@ export default class Plan extends AbstractCommand {
         const baselineVersion = this.migrationConfig.migration.baselineVersion;
         const migrationFilePaths = findAllFiles(locations);
         const indexName = flags['index-name'] ?? flags.indexName;
-        const migrationFileParsedPath = loadMigrationScriptFilePaths(indexName, migrationFilePaths);
+        const migrationFileParsedPath = loadMigrationScriptFilePaths(
+            indexName,
+            migrationFilePaths,
+            flags['index-version']
+        );
 
         if (migrationFileParsedPath.length === 0) {
             cli.error('Migration file not found.');
