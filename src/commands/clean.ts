@@ -14,6 +14,9 @@ export default class Clean extends AbstractCommand {
             description: 'migration index name.',
             required: true
         }),
+        'index-name': flags.string({
+            description: 'migration index name.'
+        }),
         target: flags.enum({
             description:
                 'Selecting what to delete \nhistory : Delete the target index migration history from migration_history\nindex : Delete the target index from elasticsearch\nall : Delete both migration history and index',
@@ -32,17 +35,18 @@ export default class Clean extends AbstractCommand {
         const { flags } = this.parse(Clean);
         const client = getElasticsearchClient(this.migrationConfig.elasticsearch);
 
+        const indexName = flags['index-name'] ?? flags.indexName;
         switch (flags.target) {
             case 'history':
-                cli.info(`Delete ${flags.indexName} index history from migration history.`);
+                cli.info(`Delete ${indexName} index history from migration history.`);
                 break;
             case 'index':
-                cli.info(`Delete ${flags.indexName} index from elasticsearch.`);
+                cli.info(`Delete ${indexName} index from elasticsearch.`);
                 break;
             case 'all':
-                cli.info(`Delete ${flags.indexName} index from elasticsearch.`);
+                cli.info(`Delete ${indexName} index from elasticsearch.`);
                 cli.info(
-                    `In addition to this, Delete ${flags.indexName} index history from migration history.`
+                    `In addition to this, Delete ${indexName} index history from migration history.`
                 );
                 break;
         }
@@ -51,7 +55,7 @@ export default class Clean extends AbstractCommand {
             cli.exit();
         }
         cli.info('Start delete data.');
-        await cleanExecutor(client, flags.indexName, flags.target as CLEAN_TARGET);
+        await cleanExecutor(client, indexName, flags.target as CLEAN_TARGET);
         cli.info('Finish delete data.');
     }
 }

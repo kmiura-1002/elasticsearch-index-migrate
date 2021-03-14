@@ -22,10 +22,8 @@ export default class Plan extends AbstractCommand {
         const locations = this.migrationConfig.migration.locations;
         const baselineVersion = this.migrationConfig.migration.baselineVersion;
         const migrationFilePaths = findAllFiles(locations);
-        const migrationFileParsedPath = loadMigrationScriptFilePaths(
-            flags.indexName,
-            migrationFilePaths
-        );
+        const indexName = flags['index-name'] ?? flags.indexName;
+        const migrationFileParsedPath = loadMigrationScriptFilePaths(indexName, migrationFilePaths);
 
         if (migrationFileParsedPath.length === 0) {
             cli.error('Migration file not found.');
@@ -43,7 +41,7 @@ export default class Plan extends AbstractCommand {
                     query: {
                         term: {
                             index_name: {
-                                value: flags.indexName
+                                value: indexName
                             }
                         }
                     }

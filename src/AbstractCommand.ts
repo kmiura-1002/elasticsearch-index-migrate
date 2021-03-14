@@ -82,10 +82,18 @@ export const CommandOptions = {
         description: 'migration index name.',
         required: true
     }),
+    'index-name': flags.string({
+        description: 'migration index name.'
+    }),
     init: flags.boolean({
         allowNo: true,
         description:
             'If the init command has not been executed in advance, the migration will be performed after initialization has been processed.',
+        default: true
+    }),
+    naturalName: flags.boolean({
+        allowNo: true,
+        description: 'test',
         default: true
     })
 };
