@@ -10,6 +10,26 @@ import {
 } from '../../src/utils/fileUtils';
 import { MockStats } from '../mock/MockStats';
 
+describe('loadMigrationScriptFilePaths', () => {
+    it('return path when args is indexName and migrationFilePaths', () => {
+        const paths = loadMigrationScriptFilePaths('test1', [
+            `${process.cwd()}/test/data/migration/indices/test1/v1.0.0__test1.json`
+        ]);
+        expect(paths).to.be.an('array').to.lengthOf(1);
+        expect(paths[0].name).eq('v1.0.0__test1');
+    });
+
+    it('loadMigrationScriptFilePaths  is indexName and migrationFilePaths, indexVersion', () => {
+        const paths = loadMigrationScriptFilePaths(
+            'test1',
+            [`${process.cwd()}/test/data/migration/indices/test1/1970.01.01/v1.0.0__test1.json`],
+            '1970.01.01'
+        );
+        expect(paths).to.be.an('array').to.lengthOf(1);
+        expect(paths[0].name).eq('v1.0.0__test1');
+    });
+});
+
 describe('fileUtils test', () => {
     it('findFiles test', () => {
         const fsMock = sinon.mock(fs);
@@ -28,14 +48,6 @@ describe('fileUtils test', () => {
             .to.be.an('array')
             .to.lengthOf(1)
             .to.include(`${process.cwd()}/test/data/migration/indices/test1/v1.0.0__test1.json`);
-    });
-
-    it('loadMigrationScriptFilePaths test', () => {
-        const paths = loadMigrationScriptFilePaths('test1', [
-            `${process.cwd()}/test/data/migration/indices/test1/v1.0.0__test1.json`
-        ]);
-        expect(paths).to.be.an('array').to.lengthOf(1);
-        expect(paths[0].name).eq('v1.0.0__test1');
     });
 
     it('loadMigrationScripts test', () => {

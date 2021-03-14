@@ -29,11 +29,14 @@ export function findAllFiles(dir: string[]): string[] {
 
 export function loadMigrationScriptFilePaths(
     indexName: string,
-    migrationFilePaths: string[]
+    migrationFilePaths: string[],
+    indexVersion?: string
 ): path.ParsedPath[] {
     return migrationFilePaths
         .filter((value) => {
-            const parentPath = indexName.split(indexNameRegexp).join('/');
+            const parentPath = indexVersion
+                ? indexName + '/' + indexVersion
+                : indexName.split(indexNameRegexp).join('/');
             const migrationFilePath = path.parse(value);
             return (
                 migrationFilePath.dir.includes(parentPath) &&
