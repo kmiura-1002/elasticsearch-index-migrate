@@ -46,7 +46,7 @@ describe('fileUtils test', () => {
         const paths = findAllFiles([`${process.cwd()}/test/data/migration/indices/test1`]);
         expect(paths)
             .to.be.an('array')
-            .to.lengthOf(1)
+            .to.lengthOf(2)
             .to.include(`${process.cwd()}/test/data/migration/indices/test1/v1.0.0__test1.json`);
     });
 
