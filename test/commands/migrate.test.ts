@@ -44,7 +44,7 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
         })
         .stub(EsUtils, 'default', () => new MockElasticsearchClient())
         .stdout()
-        .command(['migrate', '-i', 'test1', '-n', '-v', '1970.01.01'])
+        .command(['migrate', '-i', 'test1', '-n', '-v', '1970.01.01', '-D', '_'])
         .it('success migrate when natural name option on', (ctx) => {
             expect(ctx.stdout).to.contain('Migration completed. (count: 1)');
             expect(ctx.stdout).to.not.contain('Display of the result difference.');

@@ -15,7 +15,7 @@ export default class Recovery extends AbstractCommand {
         await this.createHistoryIndex();
         const elasticsearchClient = getElasticsearchClient(this.migrationConfig.elasticsearch);
 
-        const indexName = flags['index-name'] ?? flags.indexName;
+        const indexName = this.indexName(flags);
         const results = await elasticsearchClient
             .search<MigrateIndex>({
                 index: MAPPING_HISTORY_INDEX_NAME,

@@ -22,7 +22,7 @@ export default class Baseline extends AbstractCommand {
         const elasticsearchClient = getElasticsearchClient(this.migrationConfig.elasticsearch);
         const baselineVersion = this.migrationConfig.migration.baselineVersion;
 
-        const indexName = flags['index-name'] ?? flags.indexName;
+        const indexName = this.indexName(flags);
         const results = await elasticsearchClient
             .search<MigrateIndex>({
                 index: MAPPING_HISTORY_INDEX_NAME,

@@ -7,6 +7,7 @@ import { cli } from 'cli-ux';
 import merge from 'lodash.merge';
 import { createHistoryIndex } from './executor/init/MigrationInitExecutor';
 import getElasticsearchClient, { usedEsVersion } from './utils/es/EsUtils';
+import { OutputFlags } from '@oclif/parser/lib/parse';
 
 export const DefaultOptions = {
     help: flags.help({ char: 'h' }),
@@ -82,9 +83,6 @@ export const CommandOptions = {
         description: 'migration index name.',
         required: true
     }),
-    'index-name': flags.string({
-        description: 'migration index name.'
-    }),
     init: flags.boolean({
         allowNo: true,
         description:
@@ -102,6 +100,11 @@ export const CommandOptions = {
         description:
             'index version. (Ex: For my-index_1970.01.01, the version is 1970.01.01. For my-index_v1, the version is v1.)',
         dependsOn: ['natural-name']
+    }),
+    delimiter: flags.string({
+        char: 'D',
+        description: 'The separator between index name and index version.',
+        dependsOn: ['natural-name']
     })
 };
 
@@ -117,6 +120,10 @@ export default abstract class AbstractCommand extends Command {
             baselineVersion: ''
         }
     };
+
+    indexName(options: OutputFlags<any>): string {
+        return `${options.indexName}${options.delimiter ?? ''}${options['index-version'] ?? ''}`;
+    }
 
     async createHistoryIndex(): Promise<void> {
         const { flags } = this.parse();

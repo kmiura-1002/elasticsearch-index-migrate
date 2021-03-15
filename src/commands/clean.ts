@@ -2,21 +2,13 @@ import { flags } from '@oclif/command';
 import getElasticsearchClient from '../utils/es/EsUtils';
 import { CLEAN_TARGET, cleanTargets } from '../model/types';
 import { cli } from 'cli-ux';
-import AbstractCommand, { DefaultOptions } from '../AbstractCommand';
+import AbstractCommand, { CommandOptions } from '../AbstractCommand';
 import { cleanExecutor } from '../executor/clean/CleanExecutor';
 
 export default class Clean extends AbstractCommand {
     static description = 'Delete all history stored in the migration_history index';
     static flags = {
-        ...DefaultOptions,
-        indexName: flags.string({
-            char: 'i',
-            description: 'migration index name.',
-            required: true
-        }),
-        'index-name': flags.string({
-            description: 'migration index name.'
-        }),
+        ...CommandOptions,
         target: flags.enum({
             description:
                 'Selecting what to delete \nhistory : Delete the target index migration history from migration_history\nindex : Delete the target index from elasticsearch\nall : Delete both migration history and index',
@@ -34,8 +26,7 @@ export default class Clean extends AbstractCommand {
     async run(): Promise<void> {
         const { flags } = this.parse(Clean);
         const client = getElasticsearchClient(this.migrationConfig.elasticsearch);
-
-        const indexName = flags['index-name'] ?? flags.indexName;
+        const indexName = this.indexName(flags);
         switch (flags.target) {
             case 'history':
                 cli.info(`Delete ${indexName} index history from migration history.`);

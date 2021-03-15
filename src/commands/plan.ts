@@ -22,11 +22,12 @@ export default class Plan extends AbstractCommand {
         const locations = this.migrationConfig.migration.locations;
         const baselineVersion = this.migrationConfig.migration.baselineVersion;
         const migrationFilePaths = findAllFiles(locations);
-        const indexName = flags['index-name'] ?? flags.indexName;
+        const indexVersion = flags['index-version'];
+        const indexName = this.indexName(flags);
         const migrationFileParsedPath = loadMigrationScriptFilePaths(
-            indexName,
+            flags.indexName,
             migrationFilePaths,
-            flags['index-version']
+            indexVersion
         );
 
         if (migrationFileParsedPath.length === 0) {

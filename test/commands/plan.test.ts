@@ -72,7 +72,7 @@ describe('plan command test', () => {
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
-        .command(['plan', '-i', 'test2', '-n', '-v', '2020.01.01'])
+        .command(['plan', '-i', 'test2', '-n', '-v', '2020.01.01', '-D', '_'])
         .it('success plan when natural name option on', (ctx) => {
             expect(ctx.stdout).to.contain(
                 'Version Description Type      Installedon State   \nv1.0.0  description ADD_FIELD             PENDING \n'
