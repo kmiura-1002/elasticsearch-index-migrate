@@ -35,7 +35,7 @@ $ npm install -g elasticsearch-index-migrate
 $ elasticsearch-index-migrate COMMAND
 running command...
 $ elasticsearch-index-migrate (-v|--version|version)
-elasticsearch-index-migrate/0.6.0 darwin-x64 node-v12.14.0
+elasticsearch-index-migrate/0.7.0 darwin-x64 node-v12.14.0
 $ elasticsearch-index-migrate --help [COMMAND]
 USAGE
   $ elasticsearch-index-migrate COMMAND
@@ -248,6 +248,8 @@ OPTIONS
   -C, --elasticsearch_cloudid=elasticsearch_cloudid    Connect to Elasticsearch with the value set in the
                                                        ELASTICSEARCH_CLOUDID environment variable
 
+  -D, --delimiter=delimiter                            The separator between index name and index version.
+
   -H, --elasticsearch_host=elasticsearch_host          Connect to Elasticsearch with the value set in the
                                                        ELASTICSEARCH_HOST environment variable
 
@@ -275,12 +277,17 @@ OPTIONS
 
   -i, --indexName=indexName                            (required) migration index name.
 
+  -n, --[no-]natural-name                              Set to true if the index name contains _ or -(Ex: my-index).
+
+  -v, --index-version=index-version                    index version. (Ex: For my-index_1970.01.01, the version is
+                                                       1970.01.01. For my-index_v1, the version is v1.)
+
   --[no-]init                                          If the init command has not been executed in advance, the
                                                        migration will be performed after initialization has been
                                                        processed.
 ```
 
-_See code: [src/commands/baseline.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.6.0/src/commands/baseline.ts)_
+_See code: [src/commands/baseline.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.0/src/commands/baseline.ts)_
 
 ## `elasticsearch-index-migrate clean`
 
@@ -296,6 +303,8 @@ OPTIONS
 
   -C, --elasticsearch_cloudid=elasticsearch_cloudid    Connect to Elasticsearch with the value set in the
                                                        ELASTICSEARCH_CLOUDID environment variable
+
+  -D, --delimiter=delimiter                            The separator between index name and index version.
 
   -H, --elasticsearch_host=elasticsearch_host          Connect to Elasticsearch with the value set in the
                                                        ELASTICSEARCH_HOST environment variable
@@ -322,16 +331,25 @@ OPTIONS
 
   -i, --indexName=indexName                            (required) migration index name.
 
+  -n, --[no-]natural-name                              Set to true if the index name contains _ or -(Ex: my-index).
+
   -t, --target=(history|index|all)                     [default: history] Selecting what to delete
                                                        history : Delete the target index migration history from
                                                        migration_history
                                                        index : Delete the target index from elasticsearch
                                                        all : Delete both migration history and index
 
+  -v, --index-version=index-version                    index version. (Ex: For my-index_1970.01.01, the version is
+                                                       1970.01.01. For my-index_v1, the version is v1.)
+
   -y, --yes                                            Always answer "yes" to any prompt that appears during processing
+
+  --[no-]init                                          If the init command has not been executed in advance, the
+                                                       migration will be performed after initialization has been
+                                                       processed.
 ```
 
-_See code: [src/commands/clean.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.6.0/src/commands/clean.ts)_
+_See code: [src/commands/clean.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.0/src/commands/clean.ts)_
 
 ## `elasticsearch-index-migrate help [COMMAND]`
 
@@ -389,7 +407,7 @@ OPTIONS
   -h, --help                                           show CLI help
 ```
 
-_See code: [src/commands/init.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.6.0/src/commands/init.ts)_
+_See code: [src/commands/init.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.0/src/commands/init.ts)_
 
 ## `elasticsearch-index-migrate migrate`
 
@@ -406,6 +424,8 @@ OPTIONS
   -C, --elasticsearch_cloudid=elasticsearch_cloudid    Connect to Elasticsearch with the value set in the
                                                        ELASTICSEARCH_CLOUDID environment variable
 
+  -D, --delimiter=delimiter                            The separator between index name and index version.
+
   -H, --elasticsearch_host=elasticsearch_host          Connect to Elasticsearch with the value set in the
                                                        ELASTICSEARCH_HOST environment variable
 
@@ -431,6 +451,11 @@ OPTIONS
 
   -i, --indexName=indexName                            (required) migration index name.
 
+  -n, --[no-]natural-name                              Set to true if the index name contains _ or -(Ex: my-index).
+
+  -v, --index-version=index-version                    index version. (Ex: For my-index_1970.01.01, the version is
+                                                       1970.01.01. For my-index_v1, the version is v1.)
+
   --[no-]init                                          If the init command has not been executed in advance, the
                                                        migration will be performed after initialization has been
                                                        processed.
@@ -439,7 +464,7 @@ OPTIONS
                                                        the end.
 ```
 
-_See code: [src/commands/migrate.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.6.0/src/commands/migrate.ts)_
+_See code: [src/commands/migrate.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.0/src/commands/migrate.ts)_
 
 ## `elasticsearch-index-migrate plan`
 
@@ -456,6 +481,8 @@ OPTIONS
   -C, --elasticsearch_cloudid=elasticsearch_cloudid    Connect to Elasticsearch with the value set in the
                                                        ELASTICSEARCH_CLOUDID environment variable
 
+  -D, --delimiter=delimiter                            The separator between index name and index version.
+
   -H, --elasticsearch_host=elasticsearch_host          Connect to Elasticsearch with the value set in the
                                                        ELASTICSEARCH_HOST environment variable
 
@@ -481,12 +508,17 @@ OPTIONS
 
   -i, --indexName=indexName                            (required) migration index name.
 
+  -n, --[no-]natural-name                              Set to true if the index name contains _ or -(Ex: my-index).
+
+  -v, --index-version=index-version                    index version. (Ex: For my-index_1970.01.01, the version is
+                                                       1970.01.01. For my-index_v1, the version is v1.)
+
   --[no-]init                                          If the init command has not been executed in advance, the
                                                        migration will be performed after initialization has been
                                                        processed.
 ```
 
-_See code: [src/commands/plan.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.6.0/src/commands/plan.ts)_
+_See code: [src/commands/plan.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.0/src/commands/plan.ts)_
 
 ## `elasticsearch-index-migrate recovery`
 
@@ -503,6 +535,8 @@ OPTIONS
   -C, --elasticsearch_cloudid=elasticsearch_cloudid    Connect to Elasticsearch with the value set in the
                                                        ELASTICSEARCH_CLOUDID environment variable
 
+  -D, --delimiter=delimiter                            The separator between index name and index version.
+
   -H, --elasticsearch_host=elasticsearch_host          Connect to Elasticsearch with the value set in the
                                                        ELASTICSEARCH_HOST environment variable
 
@@ -528,12 +562,17 @@ OPTIONS
 
   -i, --indexName=indexName                            (required) migration index name.
 
+  -n, --[no-]natural-name                              Set to true if the index name contains _ or -(Ex: my-index).
+
+  -v, --index-version=index-version                    index version. (Ex: For my-index_1970.01.01, the version is
+                                                       1970.01.01. For my-index_v1, the version is v1.)
+
   --[no-]init                                          If the init command has not been executed in advance, the
                                                        migration will be performed after initialization has been
                                                        processed.
 ```
 
-_See code: [src/commands/recovery.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.6.0/src/commands/recovery.ts)_
+_See code: [src/commands/recovery.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.0/src/commands/recovery.ts)_
 <!-- commandsstop -->
 
 # Quick start with Docker
