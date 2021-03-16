@@ -6,7 +6,7 @@ import { ParsedPath } from 'path';
 export const indexNameRegexp = /[-_]/;
 export const fileNameRegexp = /^([v][0-9]+.[0-9]+.[0-9]+)__([0-9a-zA-Z]+)/;
 
-export function findFiles(dir: string, callback?: (data: string) => void) {
+export function findFiles(dir: string, callback?: (data: string) => void): void {
     const filenames = fs.readdirSync(path.relative(process.cwd(), dir));
     filenames.forEach((filename) => {
         const fullPath = path.join(dir, filename);
@@ -27,10 +27,26 @@ export function findAllFiles(dir: string[]): string[] {
     return paths;
 }
 
-export function loadMigrationScriptFilePaths(indexName: string, migrationFilePaths: string[]) {
+function makeParentPath(
+    indexName: string,
+    isNaturalIndexName: boolean,
+    indexVersion?: string
+): string {
+    if (isNaturalIndexName) {
+        return indexVersion ? indexName + '/' + indexVersion : indexName;
+    }
+    return indexName.split(indexNameRegexp).join('/');
+}
+
+export function loadMigrationScriptFilePaths(
+    indexName: string,
+    migrationFilePaths: string[],
+    isNaturalIndexName: boolean,
+    indexVersion?: string
+): path.ParsedPath[] {
     return migrationFilePaths
         .filter((value) => {
-            const parentPath = indexName.split(indexNameRegexp).join('/');
+            const parentPath = makeParentPath(indexName, isNaturalIndexName, indexVersion);
             const migrationFilePath = path.parse(value);
             return (
                 migrationFilePath.dir.includes(parentPath) &&
@@ -42,7 +58,7 @@ export function loadMigrationScriptFilePaths(indexName: string, migrationFilePat
         .filter((value) => value.ext === '.json');
 }
 
-export function loadMigrationScripts(migrationFileParsedPath: ParsedPath[]) {
+export function loadMigrationScripts(migrationFileParsedPath: ParsedPath[]): ResolvedMigration[] {
     return migrationFileParsedPath.map((value) => {
         const resolvedMigration = JSON.parse(
             fs.readFileSync(path.join(value.dir, value.base), 'utf8')

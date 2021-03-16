@@ -31,9 +31,13 @@ import { ApiResponse as ApiResponse7 } from 'es7/lib/Transport';
 export default interface ElasticsearchClient {
     healthCheck(param?: ClusterHealth6 | ClusterHealth7): Promise<{ status: string }>;
 
-    putMapping: (param: IndicesPutMapping6 | IndicesPutMapping7) => Promise<any>;
+    putMapping: (
+        param: IndicesPutMapping6 | IndicesPutMapping7
+    ) => Promise<ApiResponse6<any, any> | ApiResponse7<any, any>>;
 
-    createIndex: (param: IndicesCreate6 | IndicesCreate7) => Promise<any>;
+    createIndex: (
+        param: IndicesCreate6 | IndicesCreate7
+    ) => Promise<ApiResponse6<any, any> | ApiResponse7<any, any>>;
 
     search: <R>(param: Search6 | Search7) => Promise<R[]>;
 
@@ -41,19 +45,27 @@ export default interface ElasticsearchClient {
 
     version: () => string;
 
-    putSetting: (param: IndicesPutSettings6 | IndicesPutSettings7) => Promise<any>;
+    putSetting: (
+        param: IndicesPutSettings6 | IndicesPutSettings7
+    ) => Promise<ApiResponse6<any, any> | ApiResponse7<any, any>>;
 
-    delete: (param: IndicesDelete6 | IndicesDelete7) => Promise<any>;
+    delete: (
+        param: IndicesDelete6 | IndicesDelete7
+    ) => Promise<ApiResponse6<any, any> | ApiResponse7<any, any>>;
 
-    postDocument: (param: Index6 | Index7) => Promise<any>;
+    postDocument: (
+        param: Index6 | Index7
+    ) => Promise<ApiResponse6<any, any> | ApiResponse7<any, any>>;
 
-    close: () => void;
+    close: () => void | Promise<void>;
 
     getMapping: (param: IndicesGetMapping6 | IndicesGetMapping7) => Promise<Array<SimpleJson>>;
 
     get: (param: IndicesGet6 | IndicesGet7) => Promise<SimpleJson>;
 
-    deleteDocument: (param: DeleteByQuery6 | DeleteByQuery7) => Promise<any>;
+    deleteDocument: (
+        param: DeleteByQuery6 | DeleteByQuery7
+    ) => Promise<ApiResponse6<any, any> | ApiResponse7<any, any>>;
 }
 
 function expandWildcardsCheck(param?: string) {

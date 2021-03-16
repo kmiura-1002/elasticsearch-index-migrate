@@ -1,6 +1,6 @@
 import { esConnectConf } from '../EsUtils';
 import { Client } from 'es6';
-import { ApiResponse } from 'es6/lib/Transport';
+import { ApiResponse as ApiResponse6, ApiResponse } from 'es6/lib/Transport';
 import { inject, injectable } from 'inversify';
 import { Bindings } from '../../../ioc.bindings';
 import ElasticsearchClient, {
@@ -53,8 +53,8 @@ class Elasticsearch6Client implements ElasticsearchClient {
         this.client = new Client(esConnectConf(connectConf) as ClientOptions);
     }
 
-    async createIndex(param: IndicesCreate6) {
-        return await this.client.indices.create(param);
+    createIndex(param: IndicesCreate6): Promise<ApiResponse6<any, any>> {
+        return this.client.indices.create(param);
     }
 
     async exists(param: IndicesExists6 | IndicesExists7): Promise<boolean> {
@@ -69,9 +69,9 @@ class Elasticsearch6Client implements ElasticsearchClient {
         return { status: healthCheck.body.status };
     }
 
-    async putMapping(param: IndicesPutMapping6 | IndicesPutMapping7) {
+    putMapping(param: IndicesPutMapping6 | IndicesPutMapping7): Promise<ApiResponse6<any, any>> {
         if (isIndicesPutMapping6(param)) {
-            return await this.client.indices.putMapping({
+            return this.client.indices.putMapping({
                 ...param,
                 type: param.type ? param.type : '_doc'
             });
@@ -79,9 +79,9 @@ class Elasticsearch6Client implements ElasticsearchClient {
         return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
     }
 
-    async search<R>(param: Search6 | Search7) {
+    search<R>(param: Search6 | Search7): Promise<R[]> {
         if (isSearch6(param)) {
-            return await this.client
+            return this.client
                 .search(param)
                 .then((value: ApiResponse<IndexSearchResults6<R>>) =>
                     value.body.hits.hits.map((hit) => hit._source as R)
@@ -90,9 +90,9 @@ class Elasticsearch6Client implements ElasticsearchClient {
         return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
     }
 
-    async putSetting(param: IndicesPutSettings6 | IndicesPutSettings7): Promise<any> {
+    putSetting(param: IndicesPutSettings6 | IndicesPutSettings7): Promise<ApiResponse6<any, any>> {
         if (isIndicesPutSettings6(param)) {
-            return await this.client.indices.putSettings(param);
+            return this.client.indices.putSettings(param);
         }
         return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
     }
@@ -101,13 +101,13 @@ class Elasticsearch6Client implements ElasticsearchClient {
         return '6.x';
     }
 
-    async close() {
-        await this.client.close();
+    close(): void | Promise<void> {
+        return this.client.close();
     }
 
-    async postDocument(param: Index6 | Index7) {
+    postDocument(param: Index6 | Index7): Promise<ApiResponse6<any, any>> {
         if (isIndex6(param)) {
-            return await this.client.index({
+            return this.client.index({
                 ...param,
                 type: param.type ? param.type : '_doc'
             });
@@ -115,32 +115,32 @@ class Elasticsearch6Client implements ElasticsearchClient {
         return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
     }
 
-    async delete(param: IndicesDelete6 | IndicesDelete7) {
+    delete(param: IndicesDelete6 | IndicesDelete7): Promise<ApiResponse6<any, any>> {
         if (isIndicesDelete6(param)) {
-            return await this.client.indices.delete(param);
+            return this.client.indices.delete(param);
         }
         return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
     }
 
-    async getMapping(param: IndicesGetMapping6 | IndicesGetMapping7): Promise<Array<SimpleJson>> {
+    getMapping(param: IndicesGetMapping6 | IndicesGetMapping7): Promise<Array<SimpleJson>> {
         if (isIndicesGetMapping6(param)) {
-            return await this.client.indices
+            return this.client.indices
                 .getMapping(param)
                 .then((value) => convertGetMappingResponse(param, value));
         }
         return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
     }
 
-    async get(param: IndicesGet6 | IndicesGet7): Promise<SimpleJson> {
+    get(param: IndicesGet6 | IndicesGet7): Promise<SimpleJson> {
         if (isIndicesGet6(param)) {
-            return await this.client.indices.get(param).then((value) => value.body as SimpleJson);
+            return this.client.indices.get(param).then((value) => value.body as SimpleJson);
         }
         return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
     }
 
-    async deleteDocument(param: DeleteByQuery6 | DeleteByQuery7): Promise<any> {
+    deleteDocument(param: DeleteByQuery6 | DeleteByQuery7): Promise<ApiResponse6<any, any>> {
         if (isDeleteByQuery6(param)) {
-            return await this.client.deleteByQuery(param);
+            return this.client.deleteByQuery(param);
         }
         return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
     }

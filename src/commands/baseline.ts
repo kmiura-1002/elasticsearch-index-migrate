@@ -16,12 +16,13 @@ export default class Baseline extends AbstractCommand {
         })
     };
 
-    async run() {
+    async run(): Promise<void> {
         const { flags } = this.parse(Baseline);
         await this.createHistoryIndex();
         const elasticsearchClient = getElasticsearchClient(this.migrationConfig.elasticsearch);
         const baselineVersion = this.migrationConfig.migration.baselineVersion;
 
+        const indexName = this.indexName(flags);
         const results = await elasticsearchClient
             .search<MigrateIndex>({
                 index: MAPPING_HISTORY_INDEX_NAME,
@@ -33,7 +34,7 @@ export default class Baseline extends AbstractCommand {
                                 {
                                     term: {
                                         index_name: {
-                                            value: flags.indexName
+                                            value: indexName
                                         }
                                     }
                                 },
@@ -60,7 +61,7 @@ export default class Baseline extends AbstractCommand {
                 .postDocument({
                     index: MAPPING_HISTORY_INDEX_NAME,
                     body: {
-                        index_name: flags.indexName,
+                        index_name: indexName,
                         migrate_version: baselineVersion,
                         description: flags.description ?? 'Migration baseline',
                         script_name: '',

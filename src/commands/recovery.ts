@@ -10,11 +10,12 @@ export default class Recovery extends AbstractCommand {
         ...CommandOptions
     };
 
-    async run() {
+    async run(): Promise<void> {
         const { flags } = this.parse(Recovery);
         await this.createHistoryIndex();
         const elasticsearchClient = getElasticsearchClient(this.migrationConfig.elasticsearch);
 
+        const indexName = this.indexName(flags);
         const results = await elasticsearchClient
             .search<MigrateIndex>({
                 index: MAPPING_HISTORY_INDEX_NAME,
@@ -26,7 +27,7 @@ export default class Recovery extends AbstractCommand {
                                 {
                                     term: {
                                         index_name: {
-                                            value: flags.indexName
+                                            value: indexName
                                         }
                                     }
                                 },
@@ -66,7 +67,7 @@ export default class Recovery extends AbstractCommand {
                                     {
                                         term: {
                                             index_name: {
-                                                value: flags.indexName
+                                                value: indexName
                                             }
                                         }
                                     },

@@ -4,6 +4,8 @@ import * as sinon from 'sinon';
 import MockElasticsearchClient from '../../mock/MockElasticsearchClient';
 import { esExecutor, ExecutorFnc } from '../../../src/executor/es/esExecutor';
 import { MigrationTypes, ResolvedMigration } from '../../../src/model/types';
+import { ApiResponse as ApiResponse6 } from 'es6';
+import { ApiResponse as ApiResponse7 } from 'es7';
 
 describe('esExecutor test', () => {
     const indexName = 'index_name';
@@ -18,7 +20,7 @@ describe('esExecutor test', () => {
         const client = new MockElasticsearchClient();
         const stub = sandbox
             .stub(client, 'putMapping')
-            .returns(Promise.resolve({ statusCode: 200 }));
+            .returns(Promise.resolve({ statusCode: 200 } as ApiResponse6 | ApiResponse7));
         const executor = esExecutor.get(MigrationTypes.ADD_FIELD) as ExecutorFnc;
         const param: ResolvedMigration = {
             type: MigrationTypes.ADD_FIELD,
@@ -57,7 +59,7 @@ describe('esExecutor test', () => {
         const client = new MockElasticsearchClient();
         const stub = sandbox
             .stub(client, 'createIndex')
-            .returns(Promise.resolve({ statusCode: 200 }));
+            .returns(Promise.resolve({ statusCode: 200 } as ApiResponse6 | ApiResponse7));
         const executor = esExecutor.get(MigrationTypes.CREATE_INDEX) as ExecutorFnc;
         const param: ResolvedMigration = {
             type: MigrationTypes.CREATE_INDEX,
@@ -97,7 +99,9 @@ describe('esExecutor test', () => {
 
     it('The ability to deleteIndex', async () => {
         const client = new MockElasticsearchClient();
-        const stub = sandbox.stub(client, 'delete').returns(Promise.resolve({ statusCode: 200 }));
+        const stub = sandbox
+            .stub(client, 'delete')
+            .returns(Promise.resolve({ statusCode: 200 } as ApiResponse6<any, any>));
         const executor = esExecutor.get(MigrationTypes.DELETE_INDEX) as ExecutorFnc;
         const param: ResolvedMigration = {
             type: MigrationTypes.DELETE_INDEX,
@@ -126,7 +130,9 @@ describe('esExecutor test', () => {
 
     it('The ability to alterSetting', async () => {
         const client = new MockElasticsearchClient();
-        const stub = sandbox.stub(client).putSetting.returns(Promise.resolve({ statusCode: 200 }));
+        const stub = sandbox
+            .stub(client)
+            .putSetting.returns(Promise.resolve({ statusCode: 200 } as ApiResponse6<any, any>));
         const executor = esExecutor.get(MigrationTypes.ALTER_SETTING) as ExecutorFnc;
         const param: ResolvedMigration = {
             type: MigrationTypes.ALTER_SETTING,

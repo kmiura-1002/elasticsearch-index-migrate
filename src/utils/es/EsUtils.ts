@@ -25,7 +25,7 @@ export function usedEsVersion(v?: string): ElasticsearchVersions | undefined {
         : undefined;
 }
 
-export function esClientBind(esConfig: ESConfig) {
+export function esClientBind(esConfig: ESConfig): Container {
     const container = new Container();
     container.bind<ESConnectConfig>(Bindings.ESConfig).toConstantValue(esConfig.connect);
 
@@ -53,7 +53,7 @@ export function esClientBind(esConfig: ESConfig) {
     }
 }
 
-export default function getElasticsearchClient(esConfig: ESConfig) {
+export default function getElasticsearchClient(esConfig: ESConfig): ElasticsearchClient {
     const container = esClientBind(esConfig);
     return container.get<ElasticsearchClient>(Bindings.ElasticsearchClient);
 }

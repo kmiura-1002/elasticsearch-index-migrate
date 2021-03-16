@@ -15,7 +15,10 @@ import getElasticsearchClient from '../../utils/es/EsUtils';
 import { esExecutor, ExecutorFnc } from '../es/esExecutor';
 import { formatDateAsIsoString } from '../../utils/makeDetail';
 
-export async function addMigrationHistory(esClient: ElasticsearchClient, history: MigrateIndex) {
+export async function addMigrationHistory(
+    esClient: ElasticsearchClient,
+    history: MigrateIndex
+): Promise<void> {
     await esClient
         .postDocument({ index: MAPPING_HISTORY_INDEX_NAME, body: history })
         .then(() => cli.debug('POST Success. Migration history saved successfully.'))
@@ -54,7 +57,7 @@ export async function applyMigration(
     name: string,
     esClient: ElasticsearchClient,
     migrationPlan: MigrationPlan
-) {
+): Promise<1 | 0> {
     const resolvedMigration = migrationPlan.resolvedMigration;
     if (resolvedMigration) {
         const type = resolvedMigration.type;
@@ -107,7 +110,7 @@ export async function migrate(
     appliedMigrations: MigrateIndex[],
     context: MigrationPlanContext,
     esConfig: ESConfig
-) {
+): Promise<number | undefined> {
     const migratePlan = MigrationPlanExecutor(resolvedMigrations, appliedMigrations, context);
     const esClient = getElasticsearchClient(esConfig);
     cli.info('Start validate of migration data.');
@@ -117,6 +120,9 @@ export async function migrate(
             code: 'validate_error'
         });
         return;
+        // return Promise.reject(
+        //     `Migration data problem detected:\n${validateErrorMessages.join('\n')}`
+        // );
     }
 
     cli.info('Start migration!');
@@ -128,7 +134,7 @@ export async function migrate(
     }
 
     sw.stop();
-    esClient.close();
+    await esClient.close();
     cli.info(`Finished migration! (time: ${sw.read()} ms)`);
     return count;
 }

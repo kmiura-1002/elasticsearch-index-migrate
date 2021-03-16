@@ -6,7 +6,7 @@ export async function cleanExecutor(
     esClient: ElasticsearchClient,
     indexName: string,
     target: CLEAN_TARGET
-) {
+): Promise<void> {
     switch (target) {
         case 'history':
             await esClient

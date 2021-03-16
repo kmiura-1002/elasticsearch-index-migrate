@@ -27,6 +27,8 @@ import {
     IndicesPutMapping as IndicesPutMapping7,
     Index as Index7
 } from 'es7/api/requestParams';
+import { ApiResponse as ApiResponse6 } from 'es6';
+import { ApiResponse as ApiResponse7 } from 'es7';
 
 describe('MigrationExecutor test', () => {
     let sandbox: sinon.SinonSandbox;
@@ -53,7 +55,7 @@ describe('MigrationExecutor test', () => {
         const debugStub = sandbox.stub(cli, 'debug');
         type mockEsClient = Partial<ElasticsearchClient>;
         const client: mockEsClient = {
-            postDocument: (_param: Index6 | Index7) => Promise.resolve()
+            postDocument: (_param: Index6 | Index7): Promise<any> => Promise.resolve()
         };
         await addMigrationHistory(client as ElasticsearchClient, {} as MigrateIndex);
         expect(debugStub.calledOnce).is.true;
@@ -107,10 +109,10 @@ describe('MigrationExecutor test', () => {
         } as ElasticsearchClient;
         const createIndexStub = sandbox
             .stub(tmpClient, 'createIndex')
-            .returns(Promise.resolve({ statusCode: 200 }));
+            .returns(Promise.resolve({ statusCode: 200 } as ApiResponse6 | ApiResponse7));
         const postDocumentStub = sandbox
             .stub(tmpClient, 'postDocument')
-            .returns(Promise.resolve({ statusCode: 200 }));
+            .returns(Promise.resolve({ statusCode: 200 } as ApiResponse6 | ApiResponse7));
         const cliInfoStub = sandbox.stub(cli, 'info');
         const cliWarnStub = sandbox.stub(cli, 'warn');
 
@@ -155,10 +157,10 @@ describe('MigrationExecutor test', () => {
         } as ElasticsearchClient;
         const putMappingStub = sandbox
             .stub(tmpClient, 'putMapping')
-            .returns(Promise.resolve({ statusCode: 200 }));
+            .returns(Promise.resolve({ statusCode: 200 } as ApiResponse6 | ApiResponse7));
         const postDocumentStub = sandbox
             .stub(tmpClient, 'postDocument')
-            .returns(Promise.resolve({ statusCode: 200 }));
+            .returns(Promise.resolve({ statusCode: 200 } as ApiResponse6 | ApiResponse7));
         const cliInfoStub = sandbox.stub(cli, 'info');
         const cliWarnStub = sandbox.stub(cli, 'warn');
 

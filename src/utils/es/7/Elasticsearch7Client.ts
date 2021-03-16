@@ -1,6 +1,6 @@
 import { esConnectConf } from '../EsUtils';
 import { Client } from 'es7';
-import { ApiResponse } from 'es7/lib/Transport';
+import { ApiResponse as ApiResponse7, ApiResponse } from 'es7/lib/Transport';
 import { injectable, inject } from 'inversify';
 import { Bindings } from '../../../ioc.bindings';
 import ElasticsearchClient, { convertGetMappingResponse, isIndex7 } from '../ElasticsearchClient';
@@ -29,12 +29,12 @@ class Elasticsearch7Client implements ElasticsearchClient {
         this.client = new Client(esConnectConf(connectConf) as ClientOptions);
     }
 
-    createIndex(param: IndicesCreate) {
+    createIndex(param: IndicesCreate): Promise<ApiResponse7<any, any>> {
         return this.client.indices.create(param);
     }
 
-    async exists(param: IndicesExists): Promise<boolean> {
-        return await this.client.indices.exists(param).then((value) => value.body as boolean);
+    exists(param: IndicesExists): Promise<boolean> {
+        return this.client.indices.exists(param).then((value) => value.body as boolean);
     }
 
     async healthCheck(param?: ClusterHealth): Promise<{ status: string }> {
@@ -42,11 +42,11 @@ class Elasticsearch7Client implements ElasticsearchClient {
         return { status: healthCheck.body.status };
     }
 
-    async putMapping(param: IndicesPutMapping) {
+    putMapping(param: IndicesPutMapping): Promise<ApiResponse7<any, any>> {
         return this.client.indices.putMapping(param);
     }
 
-    search<R>(param: Search) {
+    search<R>(param: Search): Promise<R[]> {
         return this.client
             .search(param)
             .then((value: ApiResponse<Record<string, IndexSearchResults7<R>>>) =>
@@ -54,7 +54,7 @@ class Elasticsearch7Client implements ElasticsearchClient {
             );
     }
 
-    async putSetting(param: IndicesPutSettings): Promise<any> {
+    putSetting(param: IndicesPutSettings): Promise<ApiResponse7<any, any>> {
         return this.client.indices.putSettings(param);
     }
 
@@ -62,11 +62,11 @@ class Elasticsearch7Client implements ElasticsearchClient {
         return '7.x';
     }
 
-    async close() {
-        await this.client.close();
+    close(): Promise<void> {
+        return this.client.close();
     }
 
-    postDocument(param: Index6 | Index7) {
+    postDocument(param: Index6 | Index7): Promise<ApiResponse7<any, any>> {
         if (isIndex7(param)) {
             return this.client.index({
                 ...param,
@@ -76,21 +76,21 @@ class Elasticsearch7Client implements ElasticsearchClient {
         return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
     }
 
-    delete(param: IndicesDelete) {
+    delete(param: IndicesDelete): Promise<ApiResponse7<any, any>> {
         return this.client.indices.delete(param);
     }
 
-    async getMapping(param: IndicesGetMapping): Promise<Array<SimpleJson>> {
-        return await this.client.indices
+    getMapping(param: IndicesGetMapping): Promise<Array<SimpleJson>> {
+        return this.client.indices
             .getMapping(param)
             .then((value) => convertGetMappingResponse(param, value));
     }
 
-    async get(param: IndicesGet): Promise<SimpleJson> {
-        return await this.client.indices.get(param).then((value) => value.body as SimpleJson);
+    get(param: IndicesGet): Promise<SimpleJson> {
+        return this.client.indices.get(param).then((value) => value.body as SimpleJson);
     }
 
-    deleteDocument(param: DeleteByQuery): Promise<any> {
+    deleteDocument(param: DeleteByQuery): Promise<ApiResponse7<any, any>> {
         return this.client.deleteByQuery(param);
     }
 }
