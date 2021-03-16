@@ -40,6 +40,7 @@ export default class Migrate extends AbstractCommand {
         const migrationFileParsedPath = loadMigrationScriptFilePaths(
             flags.indexName,
             migrationFilePaths,
+            flags['natural-name'],
             indexVersion
         );
         let beforeIndex: SimpleJson = {};

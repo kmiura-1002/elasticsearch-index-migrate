@@ -27,6 +27,7 @@ export default class Plan extends AbstractCommand {
         const migrationFileParsedPath = loadMigrationScriptFilePaths(
             flags.indexName,
             migrationFilePaths,
+            flags['natural-name'],
             indexVersion
         );
 

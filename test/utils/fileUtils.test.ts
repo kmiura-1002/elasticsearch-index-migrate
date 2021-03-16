@@ -12,18 +12,31 @@ import { MockStats } from '../mock/MockStats';
 
 describe('loadMigrationScriptFilePaths', () => {
     it('return path when args is indexName and migrationFilePaths', () => {
-        const paths = loadMigrationScriptFilePaths('test1', [
-            `${process.cwd()}/test/data/migration/indices/test1/v1.0.0__test1.json`
-        ]);
+        const paths = loadMigrationScriptFilePaths(
+            'test1',
+            [`${process.cwd()}/test/data/migration/indices/test1/v1.0.0__test1.json`],
+            false
+        );
         expect(paths).to.be.an('array').to.lengthOf(1);
         expect(paths[0].name).eq('v1.0.0__test1');
     });
 
-    it('loadMigrationScriptFilePaths  is indexName and migrationFilePaths, indexVersion', () => {
+    it('return path when args is natural indexName and migrationFilePaths, index version', () => {
         const paths = loadMigrationScriptFilePaths(
             'test1',
             [`${process.cwd()}/test/data/migration/indices/test1/1970.01.01/v1.0.0__test1.json`],
+            true,
             '1970.01.01'
+        );
+        expect(paths).to.be.an('array').to.lengthOf(1);
+        expect(paths[0].name).eq('v1.0.0__test1');
+    });
+
+    it('return path when args is natural indexName and migrationFilePaths', () => {
+        const paths = loadMigrationScriptFilePaths(
+            'test_1970.01.01',
+            [`${process.cwd()}/test/data/migration/indices/test_1970.01.01/v1.0.0__test1.json`],
+            true
         );
         expect(paths).to.be.an('array').to.lengthOf(1);
         expect(paths[0].name).eq('v1.0.0__test1');

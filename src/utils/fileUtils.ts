@@ -27,16 +27,26 @@ export function findAllFiles(dir: string[]): string[] {
     return paths;
 }
 
+function makeParentPath(
+    indexName: string,
+    isNaturalIndexName: boolean,
+    indexVersion?: string
+): string {
+    if (isNaturalIndexName) {
+        return indexVersion ? indexName + '/' + indexVersion : indexName;
+    }
+    return indexName.split(indexNameRegexp).join('/');
+}
+
 export function loadMigrationScriptFilePaths(
     indexName: string,
     migrationFilePaths: string[],
+    isNaturalIndexName: boolean,
     indexVersion?: string
 ): path.ParsedPath[] {
     return migrationFilePaths
         .filter((value) => {
-            const parentPath = indexVersion
-                ? indexName + '/' + indexVersion
-                : indexName.split(indexNameRegexp).join('/');
+            const parentPath = makeParentPath(indexName, isNaturalIndexName, indexVersion);
             const migrationFilePath = path.parse(value);
             return (
                 migrationFilePath.dir.includes(parentPath) &&
