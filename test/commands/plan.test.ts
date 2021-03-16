@@ -72,6 +72,21 @@ describe('plan command test', () => {
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .stdout()
+        .command(['plan', '-i', 'test2', '-n', '-v', '2020.01.01', '-D', '_'])
+        .it('success plan when natural name option on', (ctx) => {
+            expect(ctx.stdout).to.contain(
+                'Version Description Type      Installedon State   \nv1.0.0  description ADD_FIELD             PENDING \n'
+            );
+        });
+
+    test.stub(EsUtils, 'default', () => new MockElasticsearchClient())
+        .env({
+            ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
+            ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
+            ELASTICSEARCH_VERSION: '7.0.0',
+            ELASTICSEARCH_HOST: 'http://localhost:9202'
+        })
+        .stdout()
         .command(['plan', '-i', 'test2_2020.01.01'])
         .it('plan other versiond index test', (ctx) => {
             expect(ctx.stdout).to.contain(

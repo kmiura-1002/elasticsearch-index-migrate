@@ -22,9 +22,13 @@ export default class Plan extends AbstractCommand {
         const locations = this.migrationConfig.migration.locations;
         const baselineVersion = this.migrationConfig.migration.baselineVersion;
         const migrationFilePaths = findAllFiles(locations);
+        const indexVersion = flags['index-version'];
+        const indexName = this.indexName(flags);
         const migrationFileParsedPath = loadMigrationScriptFilePaths(
             flags.indexName,
-            migrationFilePaths
+            migrationFilePaths,
+            flags['natural-name'],
+            indexVersion
         );
 
         if (migrationFileParsedPath.length === 0) {
@@ -43,7 +47,7 @@ export default class Plan extends AbstractCommand {
                     query: {
                         term: {
                             index_name: {
-                                value: flags.indexName
+                                value: indexName
                             }
                         }
                     }
