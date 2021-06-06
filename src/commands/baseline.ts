@@ -51,7 +51,7 @@ export default class Baseline extends AbstractCommand {
                 }
             })
             .catch((reason) => {
-                cli.error(reason);
+                cli.error(JSON.stringify(reason));
                 cli.exit(1);
             });
         if (results.length === 0) {
@@ -75,7 +75,7 @@ export default class Baseline extends AbstractCommand {
                     cli.info(`Successfully created a baseline in ${baselineVersion}.`);
                 })
                 .catch((reason) => {
-                    cli.error(reason);
+                    cli.error(JSON.stringify(reason));
                     cli.exit(1);
                 });
         } else {
