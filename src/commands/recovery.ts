@@ -44,7 +44,7 @@ export default class Recovery extends AbstractCommand {
                 }
             })
             .catch((reason) => {
-                cli.error(reason);
+                cli.error(JSON.stringify(reason));
                 cli.exit(1);
             });
 
@@ -84,7 +84,7 @@ export default class Recovery extends AbstractCommand {
                     }
                 })
                 .catch((reason) => {
-                    cli.error(reason);
+                    cli.error(JSON.stringify(reason));
                     cli.exit(1);
                 });
             sw.stop();

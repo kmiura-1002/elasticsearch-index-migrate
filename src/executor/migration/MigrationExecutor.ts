@@ -73,7 +73,7 @@ export async function applyMigration(
                         makeMigrateHistory(name, migrationPlan, sw.read(), false)
                     );
                     cli.error(
-                        `Migration failed. statusCode: ${value.statusCode}, version: ${resolvedMigration.version}`
+                        `Migration failed. statusCode: ${value.statusCode}\nversion: ${resolvedMigration.version}`
                     );
                 } else {
                     await addMigrationHistory(
@@ -94,7 +94,8 @@ export async function applyMigration(
                     makeMigrateHistory(name, migrationPlan, sw.read(), false)
                 );
                 cli.error(
-                    `executor error: val=${JSON.stringify(resolvedMigration)}, reason=${reason}`
+                    `executor error: val=${JSON.stringify(resolvedMigration)}
+                    \nreason=${JSON.stringify(reason)}`
                 );
             });
         return 1;
