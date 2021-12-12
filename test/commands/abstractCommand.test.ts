@@ -103,10 +103,8 @@ describe('abstract command test', () => {
                     }
                 })
             ).is.true;
-            expect(ctx.stdout).to.contain(
-                'Version Description Type      Installedon State   \n' +
-                    'v1.0.0  description ADD_FIELD             PENDING \n'
-            );
+            expect(ctx.stdout).to.contain('Version Description Type      Installedon State');
+            expect(ctx.stdout).to.contain('v1.0.0  description ADD_FIELD             PENDING \n');
         });
 
     test.stub(EsUtils, 'default', sinon.stub().returns(new MockElasticsearchClient()))
@@ -143,9 +141,8 @@ describe('abstract command test', () => {
                     }
                 })
             ).is.true;
-            expect(ctx.stdout).to.contain(
-                'Version Description Type      Installedon State   \nv1.0.0  description ADD_FIELD             PENDING \n'
-            );
+            expect(ctx.stdout).to.contain('Version Description Type      Installedon State   \n');
+            expect(ctx.stdout).to.contain('v1.0.0  description ADD_FIELD             PENDING \n');
         });
 
     test.stub(EsUtils, 'default', sinon.stub().returns(new MockElasticsearchClient()))
@@ -170,9 +167,8 @@ describe('abstract command test', () => {
         .it('oclif custom config loading test', (ctx) => {
             const findAllFilesStub = findAllFiles as sinon.SinonStub;
             expect(findAllFilesStub.calledWith(['test_location'])).is.true;
-            expect(ctx.stdout).to.contain(
-                'Version Description Type      Installedon State   \nv1.0.0  description ADD_FIELD             PENDING \n'
-            );
+            expect(ctx.stdout).to.contain('Version Description Type      Installedon State   \n');
+            expect(ctx.stdout).to.contain('v1.0.0  description ADD_FIELD             PENDING \n');
         });
 
     test.stdout()
@@ -284,10 +280,8 @@ describe('abstract command test', () => {
                     }
                 })
             ).is.true;
-            expect(ctx.stdout).to.contain(
-                'Version Description Type      Installedon State   \n' +
-                    'v1.0.0  description ADD_FIELD             PENDING \n'
-            );
+            expect(ctx.stdout).to.contain('Version Description Type      Installedon State   \n');
+            expect(ctx.stdout).to.contain('v1.0.0  description ADD_FIELD             PENDING \n');
         });
 
     test.stub(EsUtils, 'default', sinon.stub().returns(new MockElasticsearchClient()))
@@ -344,10 +338,8 @@ describe('abstract command test', () => {
                     }
                 })
             ).is.true;
-            expect(ctx.stdout).to.contain(
-                'Version Description Type      Installedon State   \n' +
-                    'v1.0.0  description ADD_FIELD             PENDING \n'
-            );
+            expect(ctx.stdout).to.contain('Version Description Type      Installedon State   \n');
+            expect(ctx.stdout).to.contain('v1.0.0  description ADD_FIELD             PENDING \n');
         });
 
     test.stub(EsUtils, 'default', sinon.stub().returns(new MockElasticsearchClient()))
@@ -407,8 +399,10 @@ describe('abstract command test', () => {
                     })
                 ).is.true;
                 expect(ctx.stdout).to.contain(
-                    'Version Description Type      Installedon State   \n' +
-                        'v1.0.0  description ADD_FIELD             PENDING \n'
+                    'Version Description Type      Installedon State   \n'
+                );
+                expect(ctx.stdout).to.contain(
+                    'v1.0.0  description ADD_FIELD             PENDING \n'
                 );
             }
         );
@@ -448,9 +442,8 @@ describe('abstract command test', () => {
                     }
                 })
             ).is.true;
-            expect(ctx.stdout).to.contain(
-                'Version Description Type      Installedon State   \nv1.0.0  description ADD_FIELD             PENDING \n'
-            );
+            expect(ctx.stdout).to.contain('Version Description Type      Installedon State   \n');
+            expect(ctx.stdout).to.contain('v1.0.0  description ADD_FIELD             PENDING \n');
         });
 
     test.stub(EsUtils, 'default', sinon.stub().returns(new MockElasticsearchClient()))
@@ -489,9 +482,8 @@ describe('abstract command test', () => {
                     }
                 })
             ).is.true;
-            expect(ctx.stdout).to.contain(
-                'Version Description Type      Installedon State   \nv1.0.0  description ADD_FIELD             PENDING \n'
-            );
+            expect(ctx.stdout).to.contain('Version Description Type      Installedon State   \n');
+            expect(ctx.stdout).to.contain('v1.0.0  description ADD_FIELD             PENDING \n');
         });
 
     test.stub(EsUtils, 'default', sinon.stub().returns(new MockElasticsearchClient()))
@@ -531,9 +523,8 @@ describe('abstract command test', () => {
                     }
                 })
             ).is.true;
-            expect(ctx.stdout).to.contain(
-                'Version Description Type      Installedon State   \nv1.0.0  description ADD_FIELD             PENDING \n'
-            );
+            expect(ctx.stdout).to.contain('Version Description Type      Installedon State   \n');
+            expect(ctx.stdout).to.contain('v1.0.0  description ADD_FIELD             PENDING \n');
         });
 
     test.stub(EsUtils, 'default', sinon.stub().returns(new MockElasticsearchClient()))
@@ -576,9 +567,8 @@ describe('abstract command test', () => {
                 })
             ).is.true;
             expect(findAllFilesStub.calledWith(['test_location'])).is.true;
-            expect(ctx.stdout).to.contain(
-                'Version Description Type      Installedon State   \nv1.0.0  description ADD_FIELD             PENDING \n'
-            );
+            expect(ctx.stdout).to.contain('Version Description Type      Installedon State   \n');
+            expect(ctx.stdout).to.contain('v1.0.0  description ADD_FIELD             PENDING \n');
         });
 
     test.stub(EsUtils, 'default', sinon.stub().returns(new MockElasticsearchClient()))
@@ -622,9 +612,8 @@ describe('abstract command test', () => {
                 })
             ).is.true;
             expect(findAllFilesStub.calledWith(['test_location'])).is.true;
-            expect(ctx.stdout).to.contain(
-                'Version Description Type      Installedon State   \nv1.0.0  description ADD_FIELD             PENDING \n'
-            );
+            expect(ctx.stdout).to.contain('Version Description Type      Installedon State   \n');
+            expect(ctx.stdout).to.contain('v1.0.0  description ADD_FIELD             PENDING \n');
         });
 
     test.stub(EsUtils, 'default', sinon.stub().returns(new MockElasticsearchClient()))
@@ -669,8 +658,7 @@ describe('abstract command test', () => {
                 })
             ).is.true;
             expect(findAllFilesStub.calledWith(['test_location'])).is.true;
-            expect(ctx.stdout).to.contain(
-                'Version Description Type      Installedon State   \nv1.0.0  description ADD_FIELD             PENDING \n'
-            );
+            expect(ctx.stdout).to.contain('Version Description Type      Installedon State   \n');
+            expect(ctx.stdout).to.contain('v1.0.0  description ADD_FIELD             PENDING \n');
         });
 });

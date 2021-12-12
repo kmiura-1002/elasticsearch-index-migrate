@@ -44,9 +44,8 @@ describe('plan command test', () => {
         .stdout()
         .command(['plan', '-i', 'test1'])
         .it('plan test', (ctx) => {
-            expect(ctx.stdout).to.contain(
-                'Version Description Type      Installedon State   \nv1.0.0  description ADD_FIELD             PENDING \n'
-            );
+            expect(ctx.stdout).to.contain('Version Description Type      Installedon State   \n');
+            expect(ctx.stdout).to.contain('v1.0.0  description ADD_FIELD             PENDING \n');
         });
 
     test.stub(EsUtils, 'default', () => new MockElasticsearchClient())
@@ -59,9 +58,8 @@ describe('plan command test', () => {
         .stdout()
         .command(['plan', '-i', 'test2-2020.01.01'])
         .it('plan versiond index test', (ctx) => {
-            expect(ctx.stdout).to.contain(
-                'Version Description Type      Installedon State   \nv1.0.0  description ADD_FIELD             PENDING \n'
-            );
+            expect(ctx.stdout).to.contain('Version Description Type      Installedon State   \n');
+            expect(ctx.stdout).to.contain('v1.0.0  description ADD_FIELD             PENDING \n');
         });
 
     test.stub(EsUtils, 'default', () => new MockElasticsearchClient())
@@ -74,9 +72,8 @@ describe('plan command test', () => {
         .stdout()
         .command(['plan', '-i', 'test2', '-n', '-v', '2020.01.01', '-D', '_'])
         .it('success plan when natural name option on', (ctx) => {
-            expect(ctx.stdout).to.contain(
-                'Version Description Type      Installedon State   \nv1.0.0  description ADD_FIELD             PENDING \n'
-            );
+            expect(ctx.stdout).to.contain('Version Description Type      Installedon State   \n');
+            expect(ctx.stdout).to.contain('v1.0.0  description ADD_FIELD             PENDING \n');
         });
 
     test.stub(EsUtils, 'default', () => new MockElasticsearchClient())
@@ -89,9 +86,8 @@ describe('plan command test', () => {
         .stdout()
         .command(['plan', '-i', 'test2_2020.01.01'])
         .it('plan other versiond index test', (ctx) => {
-            expect(ctx.stdout).to.contain(
-                'Version Description Type      Installedon State   \nv1.0.0  description ADD_FIELD             PENDING \n'
-            );
+            expect(ctx.stdout).to.contain('Version Description Type      Installedon State   \n');
+            expect(ctx.stdout).to.contain('v1.0.0  description ADD_FIELD             PENDING \n');
         });
 
     test.stub(types, 'MAPPING_HISTORY_INDEX_NAME', 'test6_migrate_history')
