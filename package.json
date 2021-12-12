@@ -79,7 +79,20 @@
         "bin": "elasticsearch-index-migrate",
         "plugins": [
             "@oclif/plugin-help"
-        ]
+        ],
+        "topicSeparator": ":",
+        "topics": {
+            "baseline:esindex": { "description": "plan:index" },
+            "baseline:template": { "description": "plan:template" },
+            "clean:esindex": { "description": "plan:index" },
+            "clean:template": { "description": "plan:template" },
+            "plan:esindex": { "description": "plan:index" },
+            "plan:template": { "description": "plan:template" },
+            "migrate:esindex": { "description": "plan:index" },
+            "migrate:template": { "description": "plan:template" },
+            "validate:esindex": { "description": "plan:index" },
+            "validate:template": { "description": "plan:template" }
+        }
     },
     "repository": "kmiura-1002/elasticsearch-index-migrate",
     "scripts": {
