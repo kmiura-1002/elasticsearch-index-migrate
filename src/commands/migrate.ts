@@ -69,7 +69,7 @@ export default class Migrate extends AbstractCommand {
                 }
             })
             .catch((reason) => {
-                cli.error(reason, { exit: 1 });
+                cli.error(JSON.stringify(reason), { exit: 1 });
             });
         const context: MigrationPlanContext = {
             baseline: baselineVersion,

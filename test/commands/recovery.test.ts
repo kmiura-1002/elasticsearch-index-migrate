@@ -203,7 +203,7 @@ describe('recovery command test', () => {
             'To terminate the process with an error message when the search for the migration history fails.',
             async () => {
                 const error = (cli.error as unknown) as sinon.SinonStub;
-                expect(error.calledWith('failed search')).is.true;
+                expect(error.calledWith('"failed search"')).is.true;
             }
         );
 
@@ -254,7 +254,7 @@ describe('recovery command test', () => {
                 expect(info.calledWith('I will delete the above history.')).is.true;
 
                 const error = (cli.error as unknown) as sinon.SinonStub;
-                expect(error.calledWith('failed delete document')).is.true;
+                expect(error.calledWith('"failed delete document"')).is.true;
             }
         );
 });
