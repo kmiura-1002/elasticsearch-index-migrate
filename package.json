@@ -92,6 +92,9 @@
             "migrate:template": { "description": "plan:template" },
             "validate:esindex": { "description": "plan:index" },
             "validate:template": { "description": "plan:template" }
+        },
+        "hooks": {
+            "setUpMigrationEnv": "./lib/hooks/init/setUpMigrationEnv"
         }
     },
     "repository": "kmiura-1002/elasticsearch-index-migrate",

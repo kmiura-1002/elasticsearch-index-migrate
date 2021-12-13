@@ -1,4 +1,4 @@
-import { readOptions } from '../../../src/common/flags/flagsLoader';
+import { readOptions } from '../../../src/flags/flagsLoader';
 import * as Config from '@oclif/config';
 import { expect } from 'chai';
 
