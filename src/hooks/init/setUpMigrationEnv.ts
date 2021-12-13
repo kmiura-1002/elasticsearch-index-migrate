@@ -17,8 +17,12 @@ const hook = async function (options: SetUpMigrationEnvOptions) {
     const migrationConfig = await readOptions(options.flags, options.config);
     const elasticsearchClient = getElasticsearchClient(migrationConfig.elasticsearch);
     const exists = await elasticsearchClient
-      .exists({ index: MAPPING_HISTORY_INDEX_NAME })
-      .catch(reason => cli.error(`ConnectionError:Check your elasticsearch connection config.\nreason:[${reason}]`));
+        .exists({ index: MAPPING_HISTORY_INDEX_NAME })
+        .catch((reason) =>
+            cli.error(
+                `ConnectionError:Check your elasticsearch connection config.\nreason:[${reason}]`
+            )
+        );
 
     if (!exists) {
         cli.info('migrate_history index does not exist.');

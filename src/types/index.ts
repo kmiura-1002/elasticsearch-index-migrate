@@ -1,4 +1,4 @@
-import { ParsedPath } from "path";
+import { ParsedPath } from 'path';
 
 export interface ESConnectConfig {
     host?: string;
