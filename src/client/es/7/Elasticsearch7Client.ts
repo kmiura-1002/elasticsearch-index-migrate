@@ -4,7 +4,7 @@ import { ApiResponse as ApiResponse7, ApiResponse } from 'es7/lib/Transport';
 import { injectable, inject } from 'inversify';
 import { Bindings } from '../../../ioc.bindings';
 import ElasticsearchClient, { convertGetMappingResponse, isIndex7 } from '../ElasticsearchClient';
-import { ESConnectConfig, IndexSearchResults7, SimpleJson } from '../../../types';
+import { ELASTICSEARCH_VERSION, ESConnectConfig, IndexSearchResults7, SimpleJson } from "../../../types";
 import { ClientOptions } from 'es7';
 import { Index as Index6 } from 'es6/api/requestParams';
 import {
@@ -58,7 +58,7 @@ class Elasticsearch7Client implements ElasticsearchClient {
         return this.client.indices.putSettings(param);
     }
 
-    version(): string {
+    version(): ELASTICSEARCH_VERSION {
         return '7.x';
     }
 

@@ -1,5 +1,8 @@
 import { ParsedPath } from 'path';
 
+const ELASTICSEARCH_VERSIONS = ['6.x', '7.x'] as const ;
+export type ELASTICSEARCH_VERSION = typeof ELASTICSEARCH_VERSIONS[number]
+
 export interface ESConnectConfig {
     host?: string;
     sslCa?: string;

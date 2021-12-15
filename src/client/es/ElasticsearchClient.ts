@@ -27,6 +27,7 @@ import {
 } from 'es7/api/requestParams';
 import { ApiResponse as ApiResponse6 } from 'es6/lib/Transport';
 import { ApiResponse as ApiResponse7 } from 'es7/lib/Transport';
+import { ELASTICSEARCH_VERSION } from "../../types";
 
 export default interface ElasticsearchClient {
     healthCheck(param?: ClusterHealth6 | ClusterHealth7): Promise<{ status: string }>;
@@ -43,7 +44,7 @@ export default interface ElasticsearchClient {
 
     exists: (param: IndicesExists6 | IndicesExists7) => Promise<boolean>;
 
-    version: () => string;
+    version: () => ELASTICSEARCH_VERSION;
 
     putSetting: (
         param: IndicesPutSettings6 | IndicesPutSettings7

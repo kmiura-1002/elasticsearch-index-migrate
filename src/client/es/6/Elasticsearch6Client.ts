@@ -15,7 +15,7 @@ import ElasticsearchClient, {
     isIndicesPutSettings6,
     isSearch6
 } from '../ElasticsearchClient';
-import { ESConnectConfig, IndexSearchResults6, SimpleJson } from '../../../types';
+import { ELASTICSEARCH_VERSION, ESConnectConfig, IndexSearchResults6, SimpleJson } from "../../../types";
 import { ClientOptions } from 'es6';
 import {
     ClusterHealth as ClusterHealth6,
@@ -97,7 +97,7 @@ class Elasticsearch6Client implements ElasticsearchClient {
         return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
     }
 
-    version(): string {
+    version(): ELASTICSEARCH_VERSION {
         return '6.x';
     }
 
