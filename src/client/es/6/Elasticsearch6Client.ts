@@ -15,7 +15,12 @@ import ElasticsearchClient, {
     isIndicesPutSettings6,
     isSearch6
 } from '../ElasticsearchClient';
-import { ELASTICSEARCH_VERSION, ESConnectConfig, IndexSearchResults6, SimpleJson } from "../../../types";
+import {
+    ELASTICSEARCH_VERSION,
+    ESConnectConfig,
+    IndexSearchResults6,
+    SimpleJson
+} from '../../../types';
 import { ClientOptions } from 'es6';
 import {
     ClusterHealth as ClusterHealth6,

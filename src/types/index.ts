@@ -1,7 +1,9 @@
 import { ParsedPath } from 'path';
+import { IndicesCreate as IndicesCreate6 } from 'es6/api/requestParams';
+import { IndicesCreate as IndicesCreate7 } from 'es7/api/requestParams';
 
-const ELASTICSEARCH_VERSIONS = ['6.x', '7.x'] as const ;
-export type ELASTICSEARCH_VERSION = typeof ELASTICSEARCH_VERSIONS[number]
+const ELASTICSEARCH_VERSIONS = ['6.x', '7.x'] as const;
+export type ELASTICSEARCH_VERSION = typeof ELASTICSEARCH_VERSIONS[number];
 
 export interface ESConnectConfig {
     host?: string;
@@ -20,6 +22,7 @@ export type MigrationConfig = {
     migration: {
         locations: string[];
         baselineVersion: string;
+        historyIndexRequestBody?: IndicesCreate6 | IndicesCreate7;
     };
 };
 

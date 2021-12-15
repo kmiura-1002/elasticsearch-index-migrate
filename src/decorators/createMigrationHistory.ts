@@ -3,11 +3,12 @@ import { IConfig } from '@oclif/config';
 import { Input } from '@oclif/command/lib/flags';
 import { readOptions } from '../flags/flagsLoader';
 import getElasticsearchClient, { usedEsVersion } from '../../src_old/utils/es/EsUtils';
-import { ElasticsearchVersions, MAPPING_HISTORY_INDEX_NAME } from '../../src_old/model/types';
+import { MAPPING_HISTORY_INDEX_NAME } from '../../src_old/model/types';
 import { cli } from 'cli-ux';
 import ElasticsearchClient from '../../src_old/utils/es/ElasticsearchClient';
 import v7Mapping from '../resources/mapping/migrate_history_esV7.json';
 import v6Mapping from '../resources/mapping/migrate_history_esV6.json';
+import { MigrationConfig } from '../types';
 
 export function CreateMigrationHistoryIfNotExists() {
     return function (
@@ -50,19 +51,16 @@ const setUpMigrationEnv = async function (options: SetUpMigrationEnvOptions) {
     if (!exists) {
         cli.info('migrate_history index does not exist.');
         cli.info('Create a migrate_history index for the first time.');
-        await createHistoryIndex(
-            elasticsearchClient,
-            usedEsVersion(migrationConfig.elasticsearch.version)
-        );
+        await createHistoryIndex(elasticsearchClient, migrationConfig);
         cli.info('The creation of the index has been completed.');
     }
 };
 
 async function createHistoryIndex(
     esClient: ElasticsearchClient,
-    esVersion?: ElasticsearchVersions
+    config: MigrationConfig
 ): Promise<void> {
-    const mappingData = esVersion?.major === 7 ? v7Mapping : v6Mapping;
+    const mappingData = getHistoryIndexRequestBody(config);
     const ret = await esClient
         .createIndex({ index: MAPPING_HISTORY_INDEX_NAME, body: mappingData })
         .catch((reason) => {
@@ -71,4 +69,11 @@ async function createHistoryIndex(
     if (!ret || ret.statusCode !== 200) {
         cli.error('Failed to create index for migrate.', { exit: 1 });
     }
+}
+
+function getHistoryIndexRequestBody(config: MigrationConfig) {
+    if (config.migration.historyIndexRequestBody) {
+        return config.migration.historyIndexRequestBody;
+    }
+    return usedEsVersion(config.elasticsearch.version)?.major === 7 ? v7Mapping : v6Mapping;
 }
