@@ -1,6 +1,5 @@
-import { readOptions } from '../../../src/flags/flagsLoader';
+import { readOptions } from '../flagsLoader';
 import * as Config from '@oclif/config';
-import { expect } from 'chai';
 
 describe('readOptions', () => {
     it('can be return MigrationConfig when connect with ssl ', async () => {
@@ -14,7 +13,8 @@ describe('readOptions', () => {
             },
             {} as Config.IConfig
         );
-        expect(actual).to.deep.equal({
+
+        expect(actual).toEqual({
             elasticsearch: {
                 connect: {
                     cloudId: undefined,
@@ -42,7 +42,7 @@ describe('readOptions', () => {
             },
             {} as Config.IConfig
         );
-        expect(actual).to.deep.equal({
+        expect(actual).toEqual({
             elasticsearch: {
                 connect: {
                     cloudId: undefined,
@@ -72,7 +72,7 @@ describe('readOptions', () => {
             },
             {} as Config.IConfig
         );
-        expect(actual).to.deep.equal({
+        expect(actual).toEqual({
             elasticsearch: {
                 connect: {
                     cloudId: 'elasticsearch_cloudid',
@@ -97,11 +97,11 @@ describe('readOptions', () => {
                 elasticsearch_cloudid: 'elasticsearch_cloudid',
                 elasticsearch_username: 'elasticsearch_username',
                 elasticsearch_password: 'elasticsearch_password',
-                option_file: `${process.cwd()}/test/data/test.config.json`
+                option_file: `${process.cwd()}/src/testsUtils/testsData/test.config.json`
             },
             {} as Config.IConfig
         );
-        expect(actual).to.deep.equal({
+        expect(actual).toEqual({
             elasticsearch: {
                 connect: {
                     cloudId: 'elasticsearch_cloudid',
@@ -124,11 +124,11 @@ describe('readOptions', () => {
             {
                 elasticsearch_version: 'elasticsearch_version',
                 elasticsearch_host: 'elasticsearch_host',
-                option_file: `${process.cwd()}/test/data/test.config.json`
+                option_file: `${process.cwd()}/src/testsUtils/testsData/test.config.json`
             },
             {} as Config.IConfig
         );
-        expect(actual).to.deep.equal({
+        expect(actual).toEqual({
             elasticsearch: {
                 connect: {
                     cloudId: undefined,
@@ -152,11 +152,11 @@ describe('readOptions', () => {
                 elasticsearch_version: 'elasticsearch_version',
                 elasticsearch_ssl: 'elasticsearch_ssl',
                 elasticsearch_host: 'elasticsearch_host',
-                option_file: `${process.cwd()}/test/data/test.config.json`
+                option_file: `${process.cwd()}/src/testsUtils/testsData/test.config.json`
             },
             {} as Config.IConfig
         );
-        expect(actual).to.deep.equal({
+        expect(actual).toEqual({
             elasticsearch: {
                 connect: {
                     cloudId: undefined,
@@ -181,9 +181,9 @@ describe('readOptions', () => {
                 elasticsearch_ssl: 'elasticsearch_ssl',
                 elasticsearch_host: 'elasticsearch_host'
             },
-            { configDir: `${process.cwd()}/test/data` } as Config.IConfig
+            { configDir: `${process.cwd()}/src/testsUtils/testsData` } as Config.IConfig
         );
-        expect(actual).to.deep.equal({
+        expect(actual).toEqual({
             elasticsearch: {
                 connect: {
                     cloudId: undefined,
@@ -207,9 +207,9 @@ describe('readOptions', () => {
                 elasticsearch_version: 'elasticsearch_version',
                 elasticsearch_host: 'elasticsearch_host'
             },
-            { configDir: `${process.cwd()}/test/data` } as Config.IConfig
+            { configDir: `${process.cwd()}/src/testsUtils/testsData` } as Config.IConfig
         );
-        expect(actual).to.deep.equal({
+        expect(actual).toEqual({
             elasticsearch: {
                 connect: {
                     cloudId: undefined,
@@ -235,9 +235,9 @@ describe('readOptions', () => {
                 elasticsearch_username: 'elasticsearch_username',
                 elasticsearch_password: 'elasticsearch_password'
             },
-            { configDir: `${process.cwd()}/test/data` } as Config.IConfig
+            { configDir: `${process.cwd()}/src/testsUtils/testsData` } as Config.IConfig
         );
-        expect(actual).to.deep.equal({
+        expect(actual).toEqual({
             elasticsearch: {
                 connect: {
                     cloudId: 'elasticsearch_cloudid',
@@ -256,9 +256,9 @@ describe('readOptions', () => {
     });
     it('can be return MigrationConfig when connect with option_file', async () => {
         const actual = await readOptions({}, {
-            configDir: `${process.cwd()}/test/data`
+            configDir: `${process.cwd()}/src/testsUtils/testsData`
         } as Config.IConfig);
-        expect(actual).to.deep.equal({
+        expect(actual).toEqual({
             elasticsearch: {
                 connect: {
                     host: 'http://0.0.0.0:9202'
@@ -274,10 +274,10 @@ describe('readOptions', () => {
 
     it('can be return MigrationConfig when connect with config', async () => {
         const actual = await readOptions(
-            { option_file: `${process.cwd()}/test/data/test.config.json` },
+            { option_file: `${process.cwd()}/src/testsUtils/testsData/test.config.json` },
             {} as Config.IConfig
         );
-        expect(actual).to.deep.equal({
+        expect(actual).toEqual({
             elasticsearch: {
                 connect: {
                     host: 'http://0.0.0.0:9202'
@@ -295,7 +295,7 @@ describe('readOptions', () => {
         try {
             await readOptions({}, { configDir: '' } as Config.IConfig);
         } catch (e) {
-            expect(e).to.eq(
+            expect(e).toEqual(
                 'No config. You can specify environment variables or files with the -O option and place config.json in ~/.config/elasticsearch-index-migrate. You should set one of these.'
             );
         }

@@ -1,0 +1,6 @@
+{
+    "migration": {
+        "locations": ["test_location"],
+        "baselineVersion": "v1.0.0"
+    }
+}

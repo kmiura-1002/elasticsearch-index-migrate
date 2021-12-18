@@ -11,7 +11,7 @@
       "node",
       "inversify",
       "reflect-metadata",
-      "mocha"
+      "jest"
     ],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,

@@ -28,29 +28,24 @@
     "devDependencies": {
         "@oclif/dev-cli": "^1",
         "@oclif/test": "^1",
-        "@types/chai": "^4.3.0",
-        "@types/chai-as-promised": "^7.1.4",
         "@types/inversify": "^2.0.33",
-        "@types/mocha": "^9.0.0",
+        "@types/jest": "^27.0.3",
         "@types/node": "^16.11.12",
         "@types/power-assert": "^1.5.8",
         "@types/semver": "^7.3.9",
-        "@types/sinon": "^10.0.6",
         "@typescript-eslint/eslint-plugin": "^5.6.0",
         "@typescript-eslint/parser": "^5.6.0",
-        "chai": "^4.3.4",
-        "chai-as-promised": "^7.1.1",
         "eslint": "^8.4.1",
         "eslint-config-oclif-typescript": "^1.0.2",
         "eslint-config-prettier": "^8.3.0",
         "eslint-plugin-prettier": "^4.0.0",
         "globby": "^11.0.0",
         "husky": "^5.1.3",
+        "jest": "^27.4.5",
         "lint-staged": "^10.5.4",
-        "mocha": "^9.1.3",
         "nyc": "^15.1.0",
         "power-assert": "^1.6.1",
-        "sinon": "^12.0.1",
+        "ts-jest": "^27.1.1",
         "ts-node": "^10.4.0",
         "typescript": "^4.5.3",
         "yarn-audit-fix": "^7.0.4"
@@ -82,16 +77,36 @@
         ],
         "topicSeparator": ":",
         "topics": {
-            "baseline:esindex": { "description": "plan:index" },
-            "baseline:template": { "description": "plan:template" },
-            "clean:esindex": { "description": "plan:index" },
-            "clean:template": { "description": "plan:template" },
-            "plan:esindex": { "description": "plan:index" },
-            "plan:template": { "description": "plan:template" },
-            "migrate:esindex": { "description": "plan:index" },
-            "migrate:template": { "description": "plan:template" },
-            "validate:esindex": { "description": "plan:index" },
-            "validate:template": { "description": "plan:template" }
+            "baseline:esindex": {
+                "description": "plan:index"
+            },
+            "baseline:template": {
+                "description": "plan:template"
+            },
+            "clean:esindex": {
+                "description": "plan:index"
+            },
+            "clean:template": {
+                "description": "plan:template"
+            },
+            "plan:esindex": {
+                "description": "plan:index"
+            },
+            "plan:template": {
+                "description": "plan:template"
+            },
+            "migrate:esindex": {
+                "description": "plan:index"
+            },
+            "migrate:template": {
+                "description": "plan:template"
+            },
+            "validate:esindex": {
+                "description": "plan:index"
+            },
+            "validate:template": {
+                "description": "plan:template"
+            }
         },
         "hooks": {}
     },
@@ -102,7 +117,7 @@
         "postpack": "rm -f oclif.manifest.json",
         "posttest": "yarn lint",
         "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
-        "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+        "test": "jest --colors --coverage",
         "version": "oclif-dev readme",
         "docker:build": "docker build -t kmiura1002/elasticsearch-index-migrate:`npx -c 'echo \"$npm_package_version\"'` ./docker",
         "readme": "oclif-dev readme",
