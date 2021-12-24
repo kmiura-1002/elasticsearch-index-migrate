@@ -30,7 +30,7 @@ describe('plan command test', () => {
         .command(['plan', '-i', 'test'])
         .exit(1)
         .it('An error occurs when there is no migration target.', async () => {
-            const error = cli.error as unknown as sinon.SinonStub;
+            const error = (cli.error as unknown) as sinon.SinonStub;
             expect(error.calledWith('Migration file not found.')).is.true;
         });
 
@@ -148,7 +148,7 @@ describe('plan command test', () => {
         .command(['plan', '-i', 'test1', '--no-init'])
         .exit(1)
         .it('If there is no migration environment, an error will occur.', async () => {
-            const error = cli.error as unknown as sinon.SinonStub;
+            const error = (cli.error as unknown) as sinon.SinonStub;
             expect(
                 error.calledWith(
                     'Migration environment is not ready. Execute the init command. Or, run the command with "--init"'
