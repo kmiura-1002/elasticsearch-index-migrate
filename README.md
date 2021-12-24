@@ -73,7 +73,7 @@ If you want to use a JSON file, please use the following.
 }
 
 ```
-* elasticsearch.version : Enter the version of Elasticsearch you are using.
+* elasticsearch.version : Enter the version of Elasticsearch you are using. If you are using OpenSearch, please write 'opensearch'.
 * elasticsearch.connect.host :  Enter the Elasticsearch Host you are using.
 * elasticsearch.connect.sslCa : Fill in the location of your Elasticsearch SSL certificate.
 * elasticsearch.connect.cloudId : Enter your Elasticsearch Cloud ID.
