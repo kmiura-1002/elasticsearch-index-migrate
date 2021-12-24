@@ -58,7 +58,7 @@ class OpenSearchClient implements ElasticsearchClient {
     }
 
     version(): string {
-        return '7.x';
+        return 'opensearch';
     }
 
     close(): Promise<void> {
