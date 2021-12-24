@@ -1,5 +1,3 @@
-src_old/
-test_old/
 node_modules/
 npm-debug.log*
 yarn-debug.log*
