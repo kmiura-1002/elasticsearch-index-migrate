@@ -48,7 +48,7 @@ describe('recovery command test', () => {
         .command(['recovery', '-i', 'test1', '--no-init'])
         .exit(1)
         .it('If there is no migration environment, an error will occur.', async () => {
-            const error = (cli.error as unknown) as sinon.SinonStub;
+            const error = cli.error as unknown as sinon.SinonStub;
             expect(
                 error.calledWith(
                     'Migration environment is not ready. Execute the init command. Or, run the command with "--init"'
@@ -202,7 +202,7 @@ describe('recovery command test', () => {
         .it(
             'To terminate the process with an error message when the search for the migration history fails.',
             async () => {
-                const error = (cli.error as unknown) as sinon.SinonStub;
+                const error = cli.error as unknown as sinon.SinonStub;
                 expect(error.calledWith('"failed search"')).is.true;
             }
         );
@@ -253,7 +253,7 @@ describe('recovery command test', () => {
                 expect(info.calledWith('Failed migration of test.')).is.true;
                 expect(info.calledWith('I will delete the above history.')).is.true;
 
-                const error = (cli.error as unknown) as sinon.SinonStub;
+                const error = cli.error as unknown as sinon.SinonStub;
                 expect(error.calledWith('"failed delete document"')).is.true;
             }
         );

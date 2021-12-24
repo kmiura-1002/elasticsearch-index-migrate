@@ -91,7 +91,7 @@ describe('Setup elasticsearch index migrate env test', () => {
         .command(['init'])
         .exit(1)
         .it('runs init cluster Status red ', () => {
-            const error = (cli.error as unknown) as sinon.SinonStub;
+            const error = cli.error as unknown as sinon.SinonStub;
             expect(error.called).is.true;
             expect(error.calledWith('cluster status is red.')).is.true;
         });
@@ -150,7 +150,7 @@ describe('Setup elasticsearch index migrate env test', () => {
         .command(['init'])
         .exit(1)
         .it('Failed to create index for migrate.', () => {
-            const error = (cli.error as unknown) as sinon.SinonStub;
+            const error = cli.error as unknown as sinon.SinonStub;
             expect(error.calledOnce).is.true;
             expect(error.calledWith('Failed to create index for migrate.')).is.true;
         });
@@ -179,7 +179,7 @@ describe('Setup elasticsearch index migrate env test', () => {
         .command(['init'])
         .exit(1)
         .it('Failed to create index', () => {
-            const error = (cli.error as unknown) as sinon.SinonStub;
+            const error = cli.error as unknown as sinon.SinonStub;
             expect(error.calledOnce).is.true;
             expect(error.calledWith('Failed to create index: undefined')).is.true;
         });

@@ -48,7 +48,7 @@ describe('baseline command test', () => {
         .command(['baseline', '-i', 'test1', '--no-init'])
         .exit(1)
         .it('If there is no migration environment, an error will occur.', async () => {
-            const error = (cli.error as unknown) as sinon.SinonStub;
+            const error = cli.error as unknown as sinon.SinonStub;
             expect(
                 error.calledWith(
                     'Migration environment is not ready. Execute the init command. Or, run the command with "--init"'
@@ -242,7 +242,7 @@ describe('baseline command test', () => {
         .it(
             'To terminate the process with an error message when the search for the migration history fails.',
             async () => {
-                const error = (cli.error as unknown) as sinon.SinonStub;
+                const error = cli.error as unknown as sinon.SinonStub;
                 expect(error.calledWith('"failed search"')).is.true;
             }
         );
@@ -281,7 +281,7 @@ describe('baseline command test', () => {
                 expect(info.calledWith('Baseline history does not exist.')).is.true;
                 expect(info.calledWith('Create baseline in v1.0.0.')).is.true;
 
-                const error = (cli.error as unknown) as sinon.SinonStub;
+                const error = cli.error as unknown as sinon.SinonStub;
                 expect(error.calledWith('"failed post document"')).is.true;
             }
         );
