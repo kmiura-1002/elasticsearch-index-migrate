@@ -35,7 +35,7 @@ $ npm install -g elasticsearch-index-migrate
 $ elasticsearch-index-migrate COMMAND
 running command...
 $ elasticsearch-index-migrate (-v|--version|version)
-elasticsearch-index-migrate/0.7.3 darwin-x64 node-v14.17.6
+elasticsearch-index-migrate/0.8.0 darwin-x64 node-v14.17.6
 $ elasticsearch-index-migrate --help [COMMAND]
 USAGE
   $ elasticsearch-index-migrate COMMAND
@@ -253,6 +253,8 @@ OPTIONS
   -H, --elasticsearch_host=elasticsearch_host          Connect to Elasticsearch with the value set in the
                                                        ELASTICSEARCH_HOST environment variable
 
+  -I, --elasticsearch_ssl_insecure                     If true, allow insecure server connections when using SSL.
+
   -L, --migration_locations=migration_locations        Read the migration file from the directory set in the
                                                        $ELASTICSEARCH_MIGRATION_LOCATIONS environment variable
 
@@ -287,7 +289,7 @@ OPTIONS
                                                        processed.
 ```
 
-_See code: [src/commands/baseline.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/commands/baseline.ts)_
+_See code: [src/commands/baseline.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.8.0/src/commands/baseline.ts)_
 
 ## `elasticsearch-index-migrate clean`
 
@@ -308,6 +310,8 @@ OPTIONS
 
   -H, --elasticsearch_host=elasticsearch_host          Connect to Elasticsearch with the value set in the
                                                        ELASTICSEARCH_HOST environment variable
+
+  -I, --elasticsearch_ssl_insecure                     If true, allow insecure server connections when using SSL.
 
   -L, --migration_locations=migration_locations        Read the migration file from the directory set in the
                                                        $ELASTICSEARCH_MIGRATION_LOCATIONS environment variable
@@ -349,7 +353,7 @@ OPTIONS
                                                        processed.
 ```
 
-_See code: [src/commands/clean.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/commands/clean.ts)_
+_See code: [src/commands/clean.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.8.0/src/commands/clean.ts)_
 
 ## `elasticsearch-index-migrate help [COMMAND]`
 
@@ -386,6 +390,8 @@ OPTIONS
   -H, --elasticsearch_host=elasticsearch_host          Connect to Elasticsearch with the value set in the
                                                        ELASTICSEARCH_HOST environment variable
 
+  -I, --elasticsearch_ssl_insecure                     If true, allow insecure server connections when using SSL.
+
   -L, --migration_locations=migration_locations        Read the migration file from the directory set in the
                                                        $ELASTICSEARCH_MIGRATION_LOCATIONS environment variable
 
@@ -407,7 +413,7 @@ OPTIONS
   -h, --help                                           show CLI help
 ```
 
-_See code: [src/commands/init.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/commands/init.ts)_
+_See code: [src/commands/init.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.8.0/src/commands/init.ts)_
 
 ## `elasticsearch-index-migrate migrate`
 
@@ -428,6 +434,8 @@ OPTIONS
 
   -H, --elasticsearch_host=elasticsearch_host          Connect to Elasticsearch with the value set in the
                                                        ELASTICSEARCH_HOST environment variable
+
+  -I, --elasticsearch_ssl_insecure                     If true, allow insecure server connections when using SSL.
 
   -L, --migration_locations=migration_locations        Read the migration file from the directory set in the
                                                        $ELASTICSEARCH_MIGRATION_LOCATIONS environment variable
@@ -464,7 +472,7 @@ OPTIONS
                                                        the end.
 ```
 
-_See code: [src/commands/migrate.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/commands/migrate.ts)_
+_See code: [src/commands/migrate.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.8.0/src/commands/migrate.ts)_
 
 ## `elasticsearch-index-migrate plan`
 
@@ -486,6 +494,8 @@ OPTIONS
   -H, --elasticsearch_host=elasticsearch_host          Connect to Elasticsearch with the value set in the
                                                        ELASTICSEARCH_HOST environment variable
 
+  -I, --elasticsearch_ssl_insecure                     If true, allow insecure server connections when using SSL.
+
   -L, --migration_locations=migration_locations        Read the migration file from the directory set in the
                                                        $ELASTICSEARCH_MIGRATION_LOCATIONS environment variable
 
@@ -518,7 +528,7 @@ OPTIONS
                                                        processed.
 ```
 
-_See code: [src/commands/plan.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/commands/plan.ts)_
+_See code: [src/commands/plan.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.8.0/src/commands/plan.ts)_
 
 ## `elasticsearch-index-migrate recovery`
 
@@ -540,6 +550,8 @@ OPTIONS
   -H, --elasticsearch_host=elasticsearch_host          Connect to Elasticsearch with the value set in the
                                                        ELASTICSEARCH_HOST environment variable
 
+  -I, --elasticsearch_ssl_insecure                     If true, allow insecure server connections when using SSL.
+
   -L, --migration_locations=migration_locations        Read the migration file from the directory set in the
                                                        $ELASTICSEARCH_MIGRATION_LOCATIONS environment variable
 
@@ -572,7 +584,7 @@ OPTIONS
                                                        processed.
 ```
 
-_See code: [src/commands/recovery.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/commands/recovery.ts)_
+_See code: [src/commands/recovery.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.8.0/src/commands/recovery.ts)_
 <!-- commandsstop -->
 
 # Quick start with Docker
