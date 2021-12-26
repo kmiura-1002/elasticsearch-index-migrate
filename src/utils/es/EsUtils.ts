@@ -67,7 +67,7 @@ export default function getElasticsearchClient(esConfig: ESConfig): Elasticsearc
 export function esConnectConf(
     conf: ESConnectConfig
 ): ClientOptions6 | ClientOptions7 | ClientOptions {
-    const { host, sslCa, cloudId, username, password } = conf;
+    const { host, sslCa, cloudId, username, password, insecure } = conf;
     let opts: ClientOptions6 | ClientOptions7 | ClientOptions;
     if (cloudId && username && password) {
         opts = {
@@ -88,6 +88,9 @@ export function esConnectConf(
         opts = {
             node: host
         };
+    }
+    if (insecure !== undefined) {
+        opts = { ...opts, ssl: { ...opts.ssl, rejectUnauthorized: insecure } };
     }
     return opts;
 }

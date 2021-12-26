@@ -99,7 +99,8 @@ describe('abstract command test', () => {
                         sslCa: 'test_ELASTICSEARCH_SSL',
                         cloudId: 'test_ELASTICSEARCH_CLOUDID',
                         username: 'test_ELASTICSEARCH_USERNAME',
-                        password: 'test_ELASTICSEARCH_PASSWORD'
+                        password: 'test_ELASTICSEARCH_PASSWORD',
+                        insecure: undefined
                     }
                 })
             ).is.true;
@@ -276,7 +277,8 @@ describe('abstract command test', () => {
                         sslCa: undefined,
                         cloudId: undefined,
                         username: undefined,
-                        password: undefined
+                        password: undefined,
+                        insecure: undefined
                     }
                 })
             ).is.true;
@@ -334,7 +336,8 @@ describe('abstract command test', () => {
                         sslCa: 'test_ELASTICSEARCH_SSL',
                         cloudId: undefined,
                         username: undefined,
-                        password: undefined
+                        password: undefined,
+                        insecure: undefined
                     }
                 })
             ).is.true;
@@ -394,7 +397,8 @@ describe('abstract command test', () => {
                             sslCa: undefined,
                             cloudId: 'test_ELASTICSEARCH_CLOUDID',
                             username: 'test_ELASTICSEARCH_USERNAME',
-                            password: 'test_ELASTICSEARCH_PASSWORD'
+                            password: 'test_ELASTICSEARCH_PASSWORD',
+                            insecure: undefined
                         }
                     })
                 ).is.true;
@@ -438,7 +442,8 @@ describe('abstract command test', () => {
                         sslCa: undefined,
                         cloudId: undefined,
                         username: undefined,
-                        password: undefined
+                        password: undefined,
+                        insecure: undefined
                     }
                 })
             ).is.true;
@@ -478,7 +483,8 @@ describe('abstract command test', () => {
                         sslCa: 'test_ELASTICSEARCH_SSL',
                         cloudId: undefined,
                         username: undefined,
-                        password: undefined
+                        password: undefined,
+                        insecure: undefined
                     }
                 })
             ).is.true;
@@ -519,7 +525,8 @@ describe('abstract command test', () => {
                         sslCa: undefined,
                         cloudId: 'test_ELASTICSEARCH_CLOUDID',
                         username: 'test_ELASTICSEARCH_USERNAME',
-                        password: 'test_ELASTICSEARCH_PASSWORD'
+                        password: 'test_ELASTICSEARCH_PASSWORD',
+                        insecure: undefined
                     }
                 })
             ).is.true;
@@ -562,7 +569,8 @@ describe('abstract command test', () => {
                         sslCa: undefined,
                         cloudId: undefined,
                         username: undefined,
-                        password: undefined
+                        password: undefined,
+                        insecure: undefined
                     }
                 })
             ).is.true;
@@ -607,7 +615,8 @@ describe('abstract command test', () => {
                         sslCa: 'test_ELASTICSEARCH_SSL',
                         cloudId: undefined,
                         username: undefined,
-                        password: undefined
+                        password: undefined,
+                        insecure: undefined
                     }
                 })
             ).is.true;
@@ -653,7 +662,8 @@ describe('abstract command test', () => {
                         sslCa: undefined,
                         cloudId: 'test_ELASTICSEARCH_CLOUDID',
                         username: 'test_ELASTICSEARCH_USERNAME',
-                        password: 'test_ELASTICSEARCH_PASSWORD'
+                        password: 'test_ELASTICSEARCH_PASSWORD',
+                        insecure: undefined
                     }
                 })
             ).is.true;

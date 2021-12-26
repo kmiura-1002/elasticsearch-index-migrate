@@ -11,13 +11,14 @@ export type ApiResponse<T = any, C = any> =
 export const MAPPING_HISTORY_INDEX_NAME = 'migrate_history';
 export const OPENSEARCH = 'opensearch';
 
-export interface ESConnectConfig {
+export type ESConnectConfig = {
     host?: string;
     sslCa?: string;
     cloudId?: string;
     username?: string;
     password?: string;
-}
+    insecure?: boolean;
+};
 export type ESConfig = {
     version?: string | 'opensearch';
     connect: ESConnectConfig;

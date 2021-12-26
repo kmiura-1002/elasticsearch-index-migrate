@@ -40,7 +40,7 @@ services:
       ELASTICSEARCH_HOSTS: http://elasticsearch6x:9200
     ports:
       - 5601:5601
-    depends_on:
+    links:
       - elasticsearch6x
   elasticsearch7x:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.7.1
@@ -57,5 +57,26 @@ services:
       ELASTICSEARCH_HOSTS: http://elasticsearch7x:9200
     ports:
       - 5602:5601
-    depends_on:
+    links:
       - elasticsearch7x
+  opensearch:
+    image: opensearchproject/opensearch:1.2.3
+    container_name: opensearch
+    environment:
+      - discovery.type=single-node
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 9203:9200
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:1.2.3
+    container_name: opensearch-dashboards
+    environment:
+      OPENSEARCH_HOSTS: "https://opensearch:9200"
+    ports:
+      - 5603:5601
+    links:
+      - opensearch

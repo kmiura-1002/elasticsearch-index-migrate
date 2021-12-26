@@ -27,7 +27,8 @@ export function es7ClientContainer() {
 export function openSearchClientContainer() {
     const container = new Container();
     container.bind<ESConnectConfig>(Bindings.ESConfig).toConstantValue({
-        host: 'http://localhost:9202'
+        host: 'https://admin:admin@localhost:9203',
+        insecure: false
     });
     container.bind<ElasticsearchClient>(Bindings.ElasticsearchClient).to(OpenSearchClient);
     return container;
