@@ -4,6 +4,7 @@ import { Container } from 'inversify';
 import { Bindings } from '../../src/ioc.bindings';
 import Elasticsearch7Client from '../../src/utils/es/7/Elasticsearch7Client';
 import { ESConnectConfig } from '../../src/model/types';
+import OpenSearchClient from '../../src/utils/es/opensearch/OpenSearchClient';
 
 export function es6ClientContainer() {
     const container = new Container();
@@ -20,5 +21,15 @@ export function es7ClientContainer() {
         host: 'http://localhost:9202'
     });
     container.bind<ElasticsearchClient>(Bindings.ElasticsearchClient).to(Elasticsearch7Client);
+    return container;
+}
+
+export function openSearchClientContainer() {
+    const container = new Container();
+    container.bind<ESConnectConfig>(Bindings.ESConfig).toConstantValue({
+        host: 'https://admin:admin@localhost:9203',
+        insecure: false
+    });
+    container.bind<ElasticsearchClient>(Bindings.ElasticsearchClient).to(OpenSearchClient);
     return container;
 }

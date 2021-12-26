@@ -47,6 +47,12 @@ export const DefaultOptions = {
         description:
             'Connect to Elasticsearch with the value set in the ELASTICSEARCH_SSL environment variable'
     }),
+    elasticsearch_ssl_insecure: flags.boolean({
+        required: false,
+        env: 'ELASTICSEARCH_SSL_INSECURE',
+        char: 'I',
+        description: 'If true, allow insecure server connections when using SSL.'
+    }),
     elasticsearch_cloudid: flags.string({
         required: false,
         env: 'ELASTICSEARCH_CLOUDID',
@@ -154,6 +160,7 @@ export default abstract class AbstractCommand extends Command {
             elasticsearch_version,
             elasticsearch_host,
             elasticsearch_ssl,
+            elasticsearch_ssl_insecure,
             elasticsearch_cloudid,
             elasticsearch_username,
             elasticsearch_password,
@@ -163,8 +170,11 @@ export default abstract class AbstractCommand extends Command {
             migration_locations &&
             baseline_version &&
             elasticsearch_version &&
-            ((elasticsearch_ssl && elasticsearch_host) ||
+            ((elasticsearch_ssl &&
+                elasticsearch_host &&
+                elasticsearch_ssl_insecure !== undefined) ||
                 elasticsearch_host ||
+                (elasticsearch_host && elasticsearch_ssl_insecure !== undefined) ||
                 (elasticsearch_cloudid && elasticsearch_username && elasticsearch_password))
         ) {
             this.migrationConfig = {
@@ -174,7 +184,8 @@ export default abstract class AbstractCommand extends Command {
                         sslCa: elasticsearch_ssl,
                         cloudId: elasticsearch_cloudid,
                         username: elasticsearch_username,
-                        password: elasticsearch_password
+                        password: elasticsearch_password,
+                        insecure: elasticsearch_ssl_insecure
                     },
                     version: elasticsearch_version
                 },
@@ -189,6 +200,7 @@ export default abstract class AbstractCommand extends Command {
         } else if (
             ((elasticsearch_ssl && elasticsearch_host) ||
                 elasticsearch_host ||
+                (elasticsearch_host && elasticsearch_ssl_insecure !== undefined) ||
                 (elasticsearch_cloudid && elasticsearch_username && elasticsearch_password)) &&
             option_file
         ) {
@@ -200,7 +212,8 @@ export default abstract class AbstractCommand extends Command {
                             sslCa: elasticsearch_ssl,
                             cloudId: elasticsearch_cloudid,
                             username: elasticsearch_username,
-                            password: elasticsearch_password
+                            password: elasticsearch_password,
+                            insecure: elasticsearch_ssl_insecure
                         },
                         version: elasticsearch_version
                     },
@@ -214,6 +227,7 @@ export default abstract class AbstractCommand extends Command {
         } else if (
             ((elasticsearch_ssl && elasticsearch_host) ||
                 elasticsearch_host ||
+                (elasticsearch_host && elasticsearch_ssl_insecure !== undefined) ||
                 (elasticsearch_cloudid && elasticsearch_username && elasticsearch_password)) &&
             fs.existsSync(path.join(this.config.configDir, 'config.json'))
         ) {
@@ -225,7 +239,8 @@ export default abstract class AbstractCommand extends Command {
                             sslCa: elasticsearch_ssl,
                             cloudId: elasticsearch_cloudid,
                             username: elasticsearch_username,
-                            password: elasticsearch_password
+                            password: elasticsearch_password,
+                            insecure: elasticsearch_ssl_insecure
                         },
                         version: elasticsearch_version
                     },

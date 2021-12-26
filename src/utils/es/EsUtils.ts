@@ -4,7 +4,7 @@ import { ClientOptions as ClientOptions7 } from 'es7';
 import fs from 'fs';
 import { Bindings } from '../../ioc.bindings';
 import ElasticsearchClient from './ElasticsearchClient';
-import { ElasticsearchVersions, ESConfig, ESConnectConfig } from '../../model/types';
+import { ElasticsearchVersions, ESConfig, ESConnectConfig, OPENSEARCH } from '../../model/types';
 import { Container } from 'inversify';
 import Elasticsearch6Client from './6/Elasticsearch6Client';
 import Elasticsearch7Client from './7/Elasticsearch7Client';
@@ -13,6 +13,8 @@ import minor from 'semver/functions/minor';
 import patch from 'semver/functions/patch';
 import valid from 'semver/functions/valid';
 import coerce from 'semver/functions/coerce';
+import { ClientOptions } from '@opensearch-project/opensearch';
+import OpenSearchClient from './opensearch/OpenSearchClient';
 
 export function usedEsVersion(v?: string): ElasticsearchVersions | undefined {
     const version = coerce(v);
@@ -28,6 +30,10 @@ export function usedEsVersion(v?: string): ElasticsearchVersions | undefined {
 export function esClientBind(esConfig: ESConfig): Container {
     const container = new Container();
     container.bind<ESConnectConfig>(Bindings.ESConfig).toConstantValue(esConfig.connect);
+
+    if (esConfig.version === OPENSEARCH) {
+        container.bind<ElasticsearchClient>(Bindings.ElasticsearchClient).to(OpenSearchClient);
+    }
 
     const version = usedEsVersion(esConfig.version)?.major;
     if (version) {
@@ -58,9 +64,11 @@ export default function getElasticsearchClient(esConfig: ESConfig): Elasticsearc
     return container.get<ElasticsearchClient>(Bindings.ElasticsearchClient);
 }
 
-export function esConnectConf(conf: ESConnectConfig): ClientOptions6 | ClientOptions7 {
-    const { host, sslCa, cloudId, username, password } = conf;
-    let opts: ClientOptions6 | ClientOptions7;
+export function esConnectConf(
+    conf: ESConnectConfig
+): ClientOptions6 | ClientOptions7 | ClientOptions {
+    const { host, sslCa, cloudId, username, password, insecure } = conf;
+    let opts: ClientOptions6 | ClientOptions7 | ClientOptions;
     if (cloudId && username && password) {
         opts = {
             cloud: {
@@ -80,6 +88,9 @@ export function esConnectConf(conf: ESConnectConfig): ClientOptions6 | ClientOpt
         opts = {
             node: host
         };
+    }
+    if (insecure !== undefined) {
+        opts = { ...opts, ssl: { ...opts.ssl, rejectUnauthorized: insecure } };
     }
     return opts;
 }

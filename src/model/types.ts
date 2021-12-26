@@ -1,19 +1,26 @@
 import { ParsedPath } from 'path';
 import { ApiResponse as ApiResponse6 } from 'es6';
 import { ApiResponse as ApiResponse7 } from 'es7';
+import { ApiResponse as ApiResponseOS } from '@opensearch-project/opensearch';
 import { MigrationPlan } from '../executor/plan/MigrationPlan';
 
-export type ApiResponse<T = any, C = any> = ApiResponse6<T, C> | ApiResponse7<T, C>;
+export type ApiResponse<T = any, C = any> =
+    | ApiResponse6<T, C>
+    | ApiResponse7<T, C>
+    | ApiResponseOS<T, C>;
 export const MAPPING_HISTORY_INDEX_NAME = 'migrate_history';
-export interface ESConnectConfig {
+export const OPENSEARCH = 'opensearch';
+
+export type ESConnectConfig = {
     host?: string;
     sslCa?: string;
     cloudId?: string;
     username?: string;
     password?: string;
-}
+    insecure?: boolean;
+};
 export type ESConfig = {
-    version?: string;
+    version?: string | 'opensearch';
     connect: ESConnectConfig;
 };
 export type MigrationConfigType = {

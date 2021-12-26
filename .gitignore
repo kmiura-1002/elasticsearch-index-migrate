@@ -6,3 +6,5 @@ yarn-error.log*
 /lib
 oclif.manifest.json
 .idea
+coverage/
+src/coverage

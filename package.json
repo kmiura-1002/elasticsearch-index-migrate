@@ -12,6 +12,7 @@
         "@oclif/command": "^1.6.1",
         "@oclif/config": "^1.15.1",
         "@oclif/plugin-help": "^3.0.1",
+        "@opensearch-project/opensearch": "^1.0.2",
         "@types/lodash.merge": "^4.6.6",
         "cli-ux": "^5.4.6",
         "date-fns": "^2.19.0",

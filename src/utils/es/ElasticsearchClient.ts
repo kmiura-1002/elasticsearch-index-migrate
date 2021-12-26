@@ -27,45 +27,63 @@ import {
 } from 'es7/api/requestParams';
 import { ApiResponse as ApiResponse6 } from 'es6/lib/Transport';
 import { ApiResponse as ApiResponse7 } from 'es7/lib/Transport';
+import { ApiResponse } from '@opensearch-project/opensearch';
+import {
+    ClusterHealth,
+    DeleteByQuery,
+    Index,
+    IndicesCreate,
+    IndicesDelete,
+    IndicesExists,
+    IndicesGet,
+    IndicesGetMapping,
+    IndicesPutMapping,
+    IndicesPutSettings,
+    Search
+} from '@opensearch-project/opensearch/api/requestParams';
 
 export default interface ElasticsearchClient {
-    healthCheck(param?: ClusterHealth6 | ClusterHealth7): Promise<{ status: string }>;
+    healthCheck(
+        param?: ClusterHealth6 | ClusterHealth7 | ClusterHealth
+    ): Promise<{ status: string }>;
 
     putMapping: (
-        param: IndicesPutMapping6 | IndicesPutMapping7
-    ) => Promise<ApiResponse6<any, any> | ApiResponse7<any, any>>;
+        param: IndicesPutMapping6 | IndicesPutMapping7 | IndicesPutMapping
+    ) => Promise<ApiResponse6<any, any> | ApiResponse7<any, any> | ApiResponse<any, any>>;
 
     createIndex: (
-        param: IndicesCreate6 | IndicesCreate7
-    ) => Promise<ApiResponse6<any, any> | ApiResponse7<any, any>>;
+        param: IndicesCreate6 | IndicesCreate7 | IndicesCreate
+    ) => Promise<ApiResponse6<any, any> | ApiResponse7<any, any> | ApiResponse<any, any>>;
 
-    search: <R>(param: Search6 | Search7) => Promise<R[]>;
+    search: <R>(param: Search6 | Search7 | Search) => Promise<R[]>;
 
-    exists: (param: IndicesExists6 | IndicesExists7) => Promise<boolean>;
+    exists: (param: IndicesExists6 | IndicesExists7 | IndicesExists) => Promise<boolean>;
 
     version: () => string;
 
     putSetting: (
-        param: IndicesPutSettings6 | IndicesPutSettings7
-    ) => Promise<ApiResponse6<any, any> | ApiResponse7<any, any>>;
+        param: IndicesPutSettings6 | IndicesPutSettings7 | IndicesPutSettings
+    ) => Promise<ApiResponse6<any, any> | ApiResponse7<any, any> | ApiResponse<any, any>>;
 
     delete: (
-        param: IndicesDelete6 | IndicesDelete7
-    ) => Promise<ApiResponse6<any, any> | ApiResponse7<any, any>>;
+        param: IndicesDelete6 | IndicesDelete7 | IndicesDelete
+    ) => Promise<ApiResponse6<any, any> | ApiResponse7<any, any> | ApiResponse<any, any>>;
 
     postDocument: (
-        param: Index6 | Index7
-    ) => Promise<ApiResponse6<any, any> | ApiResponse7<any, any>>;
+        param: Index6 | Index7 | Index
+    ) => Promise<ApiResponse6<any, any> | ApiResponse7<any, any> | ApiResponse<any, any>>;
 
     close: () => void | Promise<void>;
 
-    getMapping: (param: IndicesGetMapping6 | IndicesGetMapping7) => Promise<Array<SimpleJson>>;
+    getMapping: (
+        param: IndicesGetMapping6 | IndicesGetMapping7 | IndicesGetMapping
+    ) => Promise<Array<SimpleJson>>;
 
-    get: (param: IndicesGet6 | IndicesGet7) => Promise<SimpleJson>;
+    get: (param: IndicesGet6 | IndicesGet7 | IndicesGet) => Promise<SimpleJson>;
 
     deleteDocument: (
-        param: DeleteByQuery6 | DeleteByQuery7
-    ) => Promise<ApiResponse6<any, any> | ApiResponse7<any, any>>;
+        param: DeleteByQuery6 | DeleteByQuery7 | DeleteByQuery
+    ) => Promise<ApiResponse6<any, any> | ApiResponse7<any, any> | ApiResponse<any, any>>;
 }
 
 function expandWildcardsCheck(param?: string) {
@@ -164,7 +182,7 @@ export function isDeleteByQuery6(param: DeleteByQuery6 | DeleteByQuery7): param 
 
 export function convertGetMappingResponse(
     param: IndicesGetMapping6 | IndicesGetMapping7,
-    res: ApiResponse6 | ApiResponse7
+    res: ApiResponse6 | ApiResponse7 | ApiResponse
 ): Array<SimpleJson> {
     if (param.index === undefined) {
         return [res.body] as SimpleJson[];
