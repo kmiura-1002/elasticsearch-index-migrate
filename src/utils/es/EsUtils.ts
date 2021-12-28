@@ -4,7 +4,7 @@ import { ClientOptions as ClientOptions7 } from 'es7';
 import fs from 'fs';
 import { Bindings } from '../../ioc.bindings';
 import ElasticsearchClient from './ElasticsearchClient';
-import { ElasticsearchVersions, ESConfig, ESConnectConfig, OPENSEARCH } from '../../model/types';
+import { ESConfig, ESConnectConfig, OPENSEARCH, SearchEngineVersion } from '../../model/types';
 import { Container } from 'inversify';
 import Elasticsearch6Client from './6/Elasticsearch6Client';
 import Elasticsearch7Client from './7/Elasticsearch7Client';
@@ -16,10 +16,19 @@ import coerce from 'semver/functions/coerce';
 import { ClientOptions } from '@opensearch-project/opensearch';
 import OpenSearchClient from './opensearch/OpenSearchClient';
 
-export function usedEsVersion(v?: string): ElasticsearchVersions | undefined {
+export function usedEsVersion(v?: string): SearchEngineVersion | undefined {
+    if (v === OPENSEARCH) {
+        return {
+            engine: 'OpenSearch',
+            major: 1,
+            minor: 0,
+            patch: 0
+        };
+    }
     const version = coerce(v);
     return valid(version) && version
         ? {
+              engine: 'Elasticsearch',
               major: major(version),
               minor: minor(version),
               patch: patch(version)
@@ -33,6 +42,7 @@ export function esClientBind(esConfig: ESConfig): Container {
 
     if (esConfig.version === OPENSEARCH) {
         container.bind<ElasticsearchClient>(Bindings.ElasticsearchClient).to(OpenSearchClient);
+        return container;
     }
 
     const version = usedEsVersion(esConfig.version)?.major;
@@ -90,7 +100,7 @@ export function esConnectConf(
         };
     }
     if (insecure !== undefined) {
-        opts = { ...opts, ssl: { ...opts.ssl, rejectUnauthorized: insecure } };
+        opts = { ...opts, ssl: { ...opts.ssl, rejectUnauthorized: !insecure } };
     }
     return opts;
 }

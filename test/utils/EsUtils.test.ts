@@ -109,19 +109,40 @@ describe('EsUtils test', () => {
         expect(client.version()).to.eq('7.x');
     });
 
+    it('can be get OpenSearch connection', () => {
+        const esConfig: ESConfig = {
+            version: 'opensearch',
+            connect: {
+                host: 'http://0.0.0.0:9200'
+            }
+        };
+
+        const client = getElasticsearchClient(esConfig);
+        expect(client.version()).to.eq('opensearch');
+    });
+
     it('The number of the major version to be returned', () => {
         expect(usedEsVersion('6.0.1')).is.deep.eq({
+            engine: 'Elasticsearch',
             major: 6,
             minor: 0,
             patch: 1
         });
         expect(usedEsVersion('7.0.1')).is.deep.eq({
+            engine: 'Elasticsearch',
             major: 7,
             minor: 0,
             patch: 1
         });
         expect(usedEsVersion('7')).is.deep.eq({
+            engine: 'Elasticsearch',
             major: 7,
+            minor: 0,
+            patch: 0
+        });
+        expect(usedEsVersion('opensearch')).is.deep.eq({
+            engine: 'OpenSearch',
+            major: 1,
             minor: 0,
             patch: 0
         });
