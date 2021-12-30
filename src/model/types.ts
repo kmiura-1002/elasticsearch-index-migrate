@@ -266,7 +266,17 @@ export const cleanTargets = ['history', 'index', 'all'] as const;
 
 export type CLEAN_TARGET = typeof cleanTargets[number];
 
+export type SearchEngineVersion = ElasticsearchVersions | OpenSearchVersions;
+
 export type ElasticsearchVersions = {
+    engine: 'Elasticsearch';
+    major: number;
+    minor: number;
+    patch: number;
+};
+
+export type OpenSearchVersions = {
+    engine: 'OpenSearch';
     major: number;
     minor: number;
     patch: number;

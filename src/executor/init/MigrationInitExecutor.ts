@@ -1,14 +1,14 @@
 import ElasticsearchClient from '../../utils/es/ElasticsearchClient';
-import { ElasticsearchVersions, MAPPING_HISTORY_INDEX_NAME } from '../../model/types';
+import { MAPPING_HISTORY_INDEX_NAME, SearchEngineVersion } from '../../model/types';
 import { cli } from 'cli-ux';
 import v7Mapping from '../../resources/mapping/migrate_history_esV7.json';
 import v6Mapping from '../../resources/mapping/migrate_history_esV6.json';
 
 export async function createHistoryIndex(
     esClient: ElasticsearchClient,
-    esVersion?: ElasticsearchVersions
+    esVersion?: SearchEngineVersion
 ): Promise<void> {
-    const mappingData = esVersion?.major === 7 ? v7Mapping : v6Mapping;
+    const mappingData = mapping(esVersion);
     const ret = await esClient
         .createIndex({ index: MAPPING_HISTORY_INDEX_NAME, body: mappingData })
         .catch((reason) => {
@@ -20,3 +20,11 @@ export async function createHistoryIndex(
         cli.exit(1);
     }
 }
+
+const mapping = (esVersion?: SearchEngineVersion) => {
+    if (esVersion?.engine === 'OpenSearch') {
+        return v7Mapping;
+    } else {
+        return esVersion?.major === 7 ? v7Mapping : v6Mapping;
+    }
+};
