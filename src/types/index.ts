@@ -1,8 +1,7 @@
 import { ParsedPath } from 'path';
-import { IndicesCreate as IndicesCreate6 } from 'es6/api/requestParams';
-import { IndicesCreate as IndicesCreate7 } from 'es7/api/requestParams';
 
-const ELASTICSEARCH_VERSIONS = ['6.x', '7.x'] as const;
+export const MAPPING_HISTORY_INDEX_NAME = 'migrate_history';
+const ELASTICSEARCH_VERSIONS = ['6.x', '7.x', 'opensearch'] as const;
 export type ELASTICSEARCH_VERSION = typeof ELASTICSEARCH_VERSIONS[number];
 
 export interface ESConnectConfig {
@@ -22,7 +21,7 @@ export type MigrationConfig = {
     migration: {
         locations: string[];
         baselineVersion: string;
-        historyIndexRequestBody?: IndicesCreate6 | IndicesCreate7;
+        historyIndexRequestBody?: SimpleJson;
     };
 };
 
@@ -273,7 +272,17 @@ export const cleanTargets = ['history', 'index', 'all'] as const;
 
 export type CLEAN_TARGET = typeof cleanTargets[number];
 
+export type SearchEngineVersion = ElasticsearchVersions | OpenSearchVersions;
+
 export type ElasticsearchVersions = {
+    engine: 'Elasticsearch';
+    major: number;
+    minor: number;
+    patch: number;
+};
+
+export type OpenSearchVersions = {
+    engine: 'OpenSearch';
     major: number;
     minor: number;
     patch: number;

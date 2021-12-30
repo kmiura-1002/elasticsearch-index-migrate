@@ -97,7 +97,7 @@ describe('readOptions', () => {
                 elasticsearch_cloudid: 'elasticsearch_cloudid',
                 elasticsearch_username: 'elasticsearch_username',
                 elasticsearch_password: 'elasticsearch_password',
-                option_file: `${process.cwd()}/src/testsUtils/testsData/test.config.json`
+                option_file: `${process.cwd()}/src/__mocks__/testsData/test.config.json`
             },
             {} as Config.IConfig
         );
@@ -124,7 +124,7 @@ describe('readOptions', () => {
             {
                 elasticsearch_version: 'elasticsearch_version',
                 elasticsearch_host: 'elasticsearch_host',
-                option_file: `${process.cwd()}/src/testsUtils/testsData/test.config.json`
+                option_file: `${process.cwd()}/src/__mocks__/testsData/test.config.json`
             },
             {} as Config.IConfig
         );
@@ -152,7 +152,7 @@ describe('readOptions', () => {
                 elasticsearch_version: 'elasticsearch_version',
                 elasticsearch_ssl: 'elasticsearch_ssl',
                 elasticsearch_host: 'elasticsearch_host',
-                option_file: `${process.cwd()}/src/testsUtils/testsData/test.config.json`
+                option_file: `${process.cwd()}/src/__mocks__/testsData/test.config.json`
             },
             {} as Config.IConfig
         );
@@ -181,7 +181,7 @@ describe('readOptions', () => {
                 elasticsearch_ssl: 'elasticsearch_ssl',
                 elasticsearch_host: 'elasticsearch_host'
             },
-            { configDir: `${process.cwd()}/src/testsUtils/testsData` } as Config.IConfig
+            { configDir: `${process.cwd()}/src/__mocks__/testsData` } as Config.IConfig
         );
         expect(actual).toEqual({
             elasticsearch: {
@@ -207,7 +207,7 @@ describe('readOptions', () => {
                 elasticsearch_version: 'elasticsearch_version',
                 elasticsearch_host: 'elasticsearch_host'
             },
-            { configDir: `${process.cwd()}/src/testsUtils/testsData` } as Config.IConfig
+            { configDir: `${process.cwd()}/src/__mocks__/testsData` } as Config.IConfig
         );
         expect(actual).toEqual({
             elasticsearch: {
@@ -235,7 +235,7 @@ describe('readOptions', () => {
                 elasticsearch_username: 'elasticsearch_username',
                 elasticsearch_password: 'elasticsearch_password'
             },
-            { configDir: `${process.cwd()}/src/testsUtils/testsData` } as Config.IConfig
+            { configDir: `${process.cwd()}/src/__mocks__/testsData` } as Config.IConfig
         );
         expect(actual).toEqual({
             elasticsearch: {
@@ -256,7 +256,7 @@ describe('readOptions', () => {
     });
     it('can be return MigrationConfig when connect with option_file', async () => {
         const actual = await readOptions({}, {
-            configDir: `${process.cwd()}/src/testsUtils/testsData`
+            configDir: `${process.cwd()}/src/__mocks__/testsData`
         } as Config.IConfig);
         expect(actual).toEqual({
             elasticsearch: {
@@ -274,7 +274,7 @@ describe('readOptions', () => {
 
     it('can be return MigrationConfig when connect with config', async () => {
         const actual = await readOptions(
-            { option_file: `${process.cwd()}/src/testsUtils/testsData/test.config.json` },
+            { option_file: `${process.cwd()}/src/__mocks__/testsData/test.config.json` },
             {} as Config.IConfig
         );
         expect(actual).toEqual({

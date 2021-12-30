@@ -1,5 +1,5 @@
-import { MigrateIndex, MigrationTypes } from '../../src/model/types';
 import { format } from 'date-fns';
+import { MigrateIndex, MigrationTypes } from '../../types';
 
 export const migrateIndices = (installed_on: Date): MigrateIndex[] => [
     {

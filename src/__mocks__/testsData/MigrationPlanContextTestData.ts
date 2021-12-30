@@ -1,4 +1,4 @@
-import { MigrationPlanContext } from '../../src/model/types';
+import { MigrationPlanContext } from '../../types';
 
 export const migrationPlanContext: MigrationPlanContext = {
     baseline: 'v1.0.0',

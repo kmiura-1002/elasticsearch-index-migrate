@@ -2,13 +2,12 @@ import type Command from '@oclif/command';
 import { IConfig } from '@oclif/config';
 import { Input } from '@oclif/command/lib/flags';
 import { readOptions } from '../flags/flagsLoader';
-import getElasticsearchClient, { usedEsVersion } from '../../src_old/utils/es/EsUtils';
-import { MAPPING_HISTORY_INDEX_NAME } from '../../src_old/model/types';
 import { cli } from 'cli-ux';
-import ElasticsearchClient from '../../src_old/utils/es/ElasticsearchClient';
 import v7Mapping from '../resources/mapping/migrate_history_esV7.json';
 import v6Mapping from '../resources/mapping/migrate_history_esV6.json';
-import { MigrationConfig } from '../types';
+import { MAPPING_HISTORY_INDEX_NAME, MigrationConfig } from '../types';
+import getElasticsearchClient, { usedEsVersion } from '../client/es/EsUtils';
+import ElasticsearchClient from '../client/es/ElasticsearchClient';
 
 export function CreateMigrationHistoryIfNotExists() {
     return function (
@@ -64,7 +63,7 @@ async function createHistoryIndex(
     const ret = await esClient
         .createIndex({ index: MAPPING_HISTORY_INDEX_NAME, body: mappingData })
         .catch((reason) => {
-            cli.error(`Failed to create index. \nreason:[${JSON.stringify(reason)}]`, { exit: 1 });
+            cli.error(`Failed to create index.\nreason:[${JSON.stringify(reason)}]`, { exit: 1 });
         });
     if (!ret || ret.statusCode !== 200) {
         cli.error('Failed to create index for migrate.', { exit: 1 });
@@ -75,5 +74,11 @@ function getHistoryIndexRequestBody(config: MigrationConfig) {
     if (config.migration.historyIndexRequestBody) {
         return config.migration.historyIndexRequestBody;
     }
-    return usedEsVersion(config.elasticsearch.version)?.major === 7 ? v7Mapping : v6Mapping;
+    const esVersion = usedEsVersion(config.elasticsearch.version);
+
+    if (esVersion?.engine === 'OpenSearch') {
+        return v7Mapping;
+    } else {
+        return esVersion?.major === 7 ? v7Mapping : v6Mapping;
+    }
 }
