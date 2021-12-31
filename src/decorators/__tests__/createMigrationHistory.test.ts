@@ -3,7 +3,6 @@ import { fancyIt } from '../../__mocks__/fancyIt';
 import { getFakeCommand } from '../../__mocks__/command/fakeCommand';
 import { getMockElasticsearchClient } from '../../__mocks__/client/mockEsUtils';
 import { readOptions } from '../../flags/flagsLoader';
-import { mocked } from 'ts-jest/utils';
 import {
     mockReadOptions,
     mockReadOptionsWithHistoryIndexRequestBody
@@ -20,6 +19,7 @@ import {
 import { cli } from 'cli-ux';
 import { ApiResponse as ApiResponse6 } from 'es6/lib/Transport';
 import { ApiResponse as ApiResponse7 } from 'es7/lib/Transport';
+import { mocked } from 'jest-mock';
 
 jest.mock('../../flags/flagsLoader');
 jest.mock('../../client/es/EsUtils');
