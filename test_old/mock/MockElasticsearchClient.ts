@@ -1,4 +1,4 @@
-import ElasticsearchClient from '../../src/client/es/ElasticsearchClient';
+import ElasticsearchClient from '../../src/app/client/es/ElasticsearchClient';
 import { cli } from 'cli-ux';
 import { ClusterStatuses, SimpleJson } from '../../src/model/types';
 import {

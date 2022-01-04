@@ -1,9 +1,9 @@
 import { expect, test } from '@oclif/test';
-import * as EsUtils from '../../src/client/es/EsUtils';
+import * as EsUtils from '../../src/app/client/es/EsUtils';
 import * as sinon from 'sinon';
 import * as fileUtils from '../../src/utils/fileUtils';
 import { findAllFiles, findFiles } from '../../src/utils/fileUtils';
-import getElasticsearchClient from '../../src/client/es/EsUtils';
+import getElasticsearchClient from '../../src/app/client/es/EsUtils';
 import MockElasticsearchClient from '../mock/MockElasticsearchClient';
 import fs from 'fs';
 import { MigrationConfigType } from '../../src/model/types';

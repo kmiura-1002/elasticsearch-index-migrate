@@ -1,13 +1,4 @@
 import {
-    convertGetMappingResponse,
-    isDeleteByQuery6,
-    isIndex6,
-    isIndex7,
-    isIndicesExists6,
-    isIndicesPutMapping6,
-    isSearch6
-} from '../../../src/app/client/es/ElasticsearchClient';
-import {
     IndicesExists as IndicesExists6,
     IndicesPutMapping as IndicesPutMapping6,
     IndicesPutSettings as IndicesPutSettings6,
@@ -24,8 +15,16 @@ import {
     Index as Index7,
     DeleteByQuery as DeleteByQuery7
 } from 'es7/api/requestParams';
-import { expect } from 'chai';
 import { ApiResponse as ApiResponse6 } from 'es6/lib/Transport';
+import {
+    convertGetMappingResponse,
+    isDeleteByQuery6,
+    isIndex6,
+    isIndex7,
+    isIndicesExists6,
+    isIndicesPutMapping6,
+    isSearch6
+} from '../../es/ElasticsearchClient';
 
 type IndicesExistsTestType = {
     param: IndicesExists6 | IndicesExists7;
@@ -106,7 +105,7 @@ describe('ElasticsearchClient', () => {
         it(`isIndicesExists6 fnc return ${testData.expected} when param is ${JSON.stringify(
             testData.param
         )}`, () => {
-            expect(isIndicesExists6(testData.param)).is.eq(testData.expected);
+            expect(isIndicesExists6(testData.param)).toEqual(testData.expected);
         });
     });
 
@@ -164,7 +163,7 @@ describe('ElasticsearchClient', () => {
         it(`isIndicesPutMapping6 fnc return ${testData.expected} when param is ${JSON.stringify(
             testData.param
         )}`, () => {
-            expect(isIndicesPutMapping6(testData.param)).is.eq(testData.expected);
+            expect(isIndicesPutMapping6(testData.param)).toEqual(testData.expected);
         });
     });
 
@@ -231,7 +230,7 @@ describe('ElasticsearchClient', () => {
         it(`isSearch6 fnc return ${testData.expected} when param is ${JSON.stringify(
             testData.param
         )}`, () => {
-            expect(isSearch6(testData.param)).is.eq(testData.expected);
+            expect(isSearch6(testData.param)).toEqual(testData.expected);
         });
     });
 
@@ -282,7 +281,7 @@ describe('ElasticsearchClient', () => {
         it(`isIndicesPutSettings6 fnc return ${testData.expected} when param is ${JSON.stringify(
             testData.param
         )}`, () => {
-            expect(isSearch6(testData.param)).is.eq(testData.expected);
+            expect(isSearch6(testData.param)).toEqual(testData.expected);
         });
     });
 
@@ -361,7 +360,7 @@ describe('ElasticsearchClient', () => {
         it(`isIndex6 fnc return ${testData.expected} when param is ${JSON.stringify(
             testData.param
         )}`, () => {
-            expect(isIndex6(testData.param)).is.eq(testData.expected);
+            expect(isIndex6(testData.param)).toEqual(testData.expected);
         });
     });
 
@@ -449,7 +448,7 @@ describe('ElasticsearchClient', () => {
         it(`isIndex7 fnc return ${testData.expected} when param is ${JSON.stringify(
             testData.param
         )}`, () => {
-            expect(isIndex7(testData.param)).is.eq(testData.expected);
+            expect(isIndex7(testData.param)).toEqual(testData.expected);
         });
     });
 
@@ -466,8 +465,8 @@ describe('ElasticsearchClient', () => {
             warnings: null
         };
         const actual = convertGetMappingResponse(param, res);
-        expect(actual).is.an('array').lengthOf(1);
-        expect(actual[0]).is.eq(expected);
+        expect(actual).toHaveLength(1);
+        expect(actual[0]).toEqual(expected);
     });
 
     it('convertGetMappingResponse return json array with param.index is array', () => {
@@ -490,8 +489,8 @@ describe('ElasticsearchClient', () => {
             warnings: null
         };
         const actual = convertGetMappingResponse(param, res);
-        expect(actual).is.an('array').lengthOf(2);
-        expect(actual).is.deep.eq(expected);
+        expect(actual).toHaveLength(2);
+        expect(actual).toEqual(expected);
     });
 
     it('convertGetMappingResponse return json array with param.index is string type', () => {
@@ -511,8 +510,8 @@ describe('ElasticsearchClient', () => {
             warnings: null
         };
         const actual = convertGetMappingResponse(param, res);
-        expect(actual).is.an('array').lengthOf(1);
-        expect(actual).is.deep.eq(expected);
+        expect(actual).toHaveLength(1);
+        expect(actual).toEqual(expected);
     });
 
     const DeleteByQueryTestData: DeleteByQueryTestType[] = [
@@ -583,7 +582,7 @@ describe('ElasticsearchClient', () => {
         it(`isDeleteByQuery6 fnc return ${testData.expected} when param is ${JSON.stringify(
             testData.param
         )}`, () => {
-            expect(isDeleteByQuery6(testData.param)).is.eq(testData.expected);
+            expect(isDeleteByQuery6(testData.param)).toEqual(testData.expected);
         });
     });
 });

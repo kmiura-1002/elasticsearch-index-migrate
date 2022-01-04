@@ -1,10 +1,3 @@
-import 'mocha';
-import { expect } from 'chai';
-import * as chai from 'chai';
-import ElasticsearchClient from '../../../../src/app/client/es/ElasticsearchClient';
-import { Bindings } from 'app/ioc.bindings';
-import { es6ClientContainer } from '../../ioc-test';
-import chaiAsPromised from 'chai-as-promised';
 import {
     DeleteByQuery,
     Index,
@@ -16,63 +9,67 @@ import {
     IndicesPutSettings,
     Search
 } from 'es7/api/requestParams';
+import { es6ClientContainer } from "../../../../../__mocks__/ioc-test";
+import ElasticsearchClient from "../../../es/ElasticsearchClient";
+import { Bindings } from "../../../../ioc.bindings";
 
-chai.use(chaiAsPromised);
-
-describe('Elasticsearch6Client test', () => {
+describe('Elasticsearch6Client', () => {
     const client = es6ClientContainer().get<ElasticsearchClient>(Bindings.ElasticsearchClient);
 
-    it('version check', () => {
-        expect(client.version()).is.eq('6.x');
+    it('can get version', () => {
+        expect(client.version()).toEqual('6.x');
     });
 
-    it('exist check', async () => {
+    it('can call Exist api', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         const exists = await client.exists({ index });
-        expect(exists).is.false;
+        expect(exists).toBeFalsy();
     });
 
-    it('exist check with args is es7 params', async () => {
+    it('can call Exist api when args is es7 params', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         const param: IndicesExists = { index, expand_wildcards: 'hidden' };
-        await expect(client.exists(param)).is.rejectedWith(
+        await expect(client.exists(param)).rejects.toEqual(
             `illegal argument : ${JSON.stringify(param)}`
         );
     });
 
-    it('create index', async () => {
+    it('can call Create index api', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         const create = await client.createIndex({ index });
-        expect(create.statusCode).is.eq(200);
+        expect(create.statusCode).toEqual(200);
         await client.delete({ index });
     });
 
-    it('search', async () => {
+    it('can call search api', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({ index });
         const ret = await client.search({ index });
-        expect(ret).to.be.an('array');
+        expect(ret).toEqual([]);
+        await client.delete({ index });
     });
 
-    it('search with args is es7 params 1', async () => {
+    it('can not call search api when args is es7 params ccs_minimize_roundtrips', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({ index });
         const param: Search = { index, ccs_minimize_roundtrips: false };
-        await expect(client.search(param)).is.rejectedWith(
+        await expect(client.search(param)).rejects.toEqual(
             `illegal argument : ${JSON.stringify(param)}`
         );
+        await client.delete({ index });
     });
 
-    it('search with args is es7 params 2', async () => {
+    it('can not call search api when args is es7 params expand_wildcards', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({ index });
         const param: Search = { index, expand_wildcards: 'hidden' };
-        await expect(client.search(param)).is.rejectedWith(
+        await expect(client.search(param)).rejects.toEqual(
             `illegal argument : ${JSON.stringify(param)}`
         );
+        await client.delete({ index });
     });
 
-    it('put mapping', async () => {
+    it('can call mapping api', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({ index });
         const ret = await client.putMapping({
@@ -86,11 +83,11 @@ describe('Elasticsearch6Client test', () => {
                 }
             }
         });
-        expect(ret.statusCode).is.eq(200);
+        expect(ret.statusCode).toEqual(200);
         await client.delete({ index });
     });
 
-    it('put mapping with args is es7 params', async () => {
+    it('can not call mapping api when args is es7 params', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({ index });
         const param: IndicesPutMapping = {
@@ -104,13 +101,13 @@ describe('Elasticsearch6Client test', () => {
                 }
             }
         };
-        await expect(client.putMapping(param)).is.rejectedWith(
+        await expect(client.putMapping(param)).rejects.toEqual(
             `illegal argument : ${JSON.stringify(param)}`
         );
         await client.delete({ index });
     });
 
-    it('put mapping not exists type param', async () => {
+    it('can not call mapping api when not exists type param', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({ index });
         const ret = await client.putMapping({
@@ -123,11 +120,11 @@ describe('Elasticsearch6Client test', () => {
                 }
             }
         });
-        expect(ret.statusCode).is.eq(200);
+        expect(ret.statusCode).toEqual(200);
         await client.delete({ index });
     });
 
-    it('put settings', async () => {
+    it('can call settings api', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({ index });
         const ret = await client.putSetting({
@@ -138,11 +135,11 @@ describe('Elasticsearch6Client test', () => {
                 }
             }
         });
-        expect(ret.statusCode).is.eq(200);
+        expect(ret.statusCode).toEqual(200);
         await client.delete({ index });
     });
 
-    it('put settings with args is es7 params', async () => {
+    it('can not call settings api when args is es7 params', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({ index });
         const param: IndicesPutSettings = {
@@ -154,13 +151,13 @@ describe('Elasticsearch6Client test', () => {
                 }
             }
         };
-        await expect(client.putSetting(param)).is.rejectedWith(
+        await expect(client.putSetting(param)).rejects.toEqual(
             `illegal argument : ${JSON.stringify(param)}`
         );
         await client.delete({ index });
     });
 
-    it('post document', async () => {
+    it('can call document api', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({ index });
         const ret = await client.postDocument({
@@ -170,11 +167,11 @@ describe('Elasticsearch6Client test', () => {
             }
         });
 
-        expect(ret.statusCode).is.eq(201);
+        expect(ret.statusCode).toEqual(201);
         await client.delete({ index });
     });
 
-    it('post document with args is es7 params', async () => {
+    it('can not call document api when args is es7 params', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({ index });
         const param: Index = {
@@ -185,13 +182,13 @@ describe('Elasticsearch6Client test', () => {
             }
         };
 
-        await expect(client.postDocument(param)).is.rejectedWith(
+        await expect(client.postDocument(param)).rejects.toEqual(
             `illegal argument : ${JSON.stringify(param)}`
         );
         await client.delete({ index });
     });
 
-    it('get mpping', async () => {
+    it('can call get mapping api', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({
             index,
@@ -208,8 +205,8 @@ describe('Elasticsearch6Client test', () => {
             }
         });
         const ret = await client.getMapping({ index });
-        expect(ret).is.an('array').lengthOf(1);
-        expect(ret[0]).to.eql({
+        expect(ret).toHaveLength(1);
+        expect(ret[0]).toEqual({
             mappings: {
                 test: {
                     properties: {
@@ -223,7 +220,7 @@ describe('Elasticsearch6Client test', () => {
         await client.delete({ index });
     });
 
-    it('return mpping when query params is include_type_name=true', async () => {
+    it('can get exclude type name mapping when query params is include_type_name=false', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({
             index,
@@ -240,8 +237,8 @@ describe('Elasticsearch6Client test', () => {
             }
         });
         const ret = await client.getMapping({ index, include_type_name: false });
-        expect(ret).is.an('array').lengthOf(1);
-        expect(ret[0]).to.eql({
+        expect(ret).toHaveLength(1);
+        expect(ret[0]).toEqual({
             mappings: {
                 properties: {
                     test_name: {
@@ -253,7 +250,7 @@ describe('Elasticsearch6Client test', () => {
         await client.delete({ index });
     });
 
-    it('get mpping return reject when args is es7 params', async () => {
+    it('can not get mapping when args is es7 params', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({
             index,
@@ -270,13 +267,13 @@ describe('Elasticsearch6Client test', () => {
             }
         });
         const param: IndicesGetMapping = { index, expand_wildcards: 'hidden' };
-        await expect(client.getMapping(param)).is.rejectedWith(
+        await expect(client.getMapping(param)).rejects.toEqual(
             `illegal argument : ${JSON.stringify(param)}`
         );
         await client.delete({ index });
     });
 
-    it('get', async () => {
+    it('can get index data', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({
             index,
@@ -301,7 +298,7 @@ describe('Elasticsearch6Client test', () => {
         });
         const ret = await client.get({ index });
 
-        expect((ret as any)[index].mappings).to.eql({
+        expect((ret as any)[index].mappings).toEqual({
             test: {
                 properties: {
                     test_name: {
@@ -310,14 +307,14 @@ describe('Elasticsearch6Client test', () => {
                 }
             }
         });
-        expect((ret as any)[index].aliases).to.eql({});
-        expect((ret as any)[index].settings.index.refresh_interval).to.eql('1s');
-        expect((ret as any)[index].settings.index.number_of_shards).to.eql('1');
-        expect((ret as any)[index].settings.index.number_of_replicas).to.eql('0');
+        expect((ret as any)[index].aliases).toEqual({});
+        expect((ret as any)[index].settings.index.refresh_interval).toEqual('1s');
+        expect((ret as any)[index].settings.index.number_of_shards).toEqual('1');
+        expect((ret as any)[index].settings.index.number_of_replicas).toEqual('0');
         await client.delete({ index });
     });
 
-    it('get return reject when args is es7 params', async () => {
+    it('can not get index data when args is es7 params', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({
             index,
@@ -341,11 +338,11 @@ describe('Elasticsearch6Client test', () => {
             }
         });
         const param: IndicesGet = { index, expand_wildcards: 'hidden' };
-        expect(client.get(param)).is.rejectedWith(`illegal argument : ${JSON.stringify(param)}`);
+        expect(client.get(param)).rejects.toEqual(`illegal argument : ${JSON.stringify(param)}`);
         await client.delete({ index });
     });
 
-    it('delete document', async () => {
+    it('can call delete document api', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({
             index,
@@ -370,11 +367,10 @@ describe('Elasticsearch6Client test', () => {
                 },
                 refresh: 'true'
             })
-            .then((value) => expect(value.statusCode).is.eq(201));
+            .then((value) => expect(value.statusCode).toEqual(201));
 
         await client.search({ index }).then((value) => {
-            expect(value).to.be.an('array');
-            expect(value[0]).to.eql({
+            expect(value[0]).toEqual({
                 test: 'foobaz'
             });
         });
@@ -393,17 +389,16 @@ describe('Elasticsearch6Client test', () => {
                     }
                 }
             })
-            .then((value) => expect(value.statusCode).is.eq(200));
+            .then((value) => expect(value.statusCode).toEqual(200));
 
         await client.search({ index }).then((value) => {
-            expect(value).to.be.an('array');
-            expect(value.length).to.eql(0);
+            expect(value).toHaveLength(0);
         });
 
         await client.delete({ index });
     });
 
-    it('delete document return reject when args is es7 params', async () => {
+    it('can not delete document when args is es7 params', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({
             index,
@@ -428,11 +423,11 @@ describe('Elasticsearch6Client test', () => {
                 },
                 refresh: 'true'
             })
-            .then((value) => expect(value.statusCode).is.eq(201));
+            .then((value) => expect(value.statusCode).toEqual(201));
 
         await client.search({ index }).then((value) => {
-            expect(value).to.be.an('array');
-            expect(value[0]).to.eql({
+            // expect(value).to.be.an('array');
+            expect(value[0]).toEqual({
                 test: 'foobaz'
             });
         });
@@ -450,7 +445,7 @@ describe('Elasticsearch6Client test', () => {
                 }
             }
         };
-        await expect(client.deleteDocument(param1)).is.rejectedWith(
+        await expect(client.deleteDocument(param1)).rejects.toEqual(
             `illegal argument : ${JSON.stringify(param1)}`
         );
         const param2: DeleteByQuery = {
@@ -466,24 +461,31 @@ describe('Elasticsearch6Client test', () => {
                 }
             }
         };
-        await expect(client.deleteDocument(param2)).is.rejectedWith(
+        await expect(client.deleteDocument(param2)).rejects.toEqual(
             `illegal argument : ${JSON.stringify(param2)}`
         );
 
         await client.delete({ index });
     });
 
-    it('delete index reject when args is es7 params', async () => {
+    it('can not delete index when args is es7 params', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({ index });
         const param: IndicesDelete = { index, expand_wildcards: 'hidden' };
-        await expect(client.delete(param)).is.rejectedWith(
+        await expect(client.delete(param)).rejects.toEqual(
             `illegal argument : ${JSON.stringify(param)}`
         );
+        await client.delete({ index });
     });
 
-    it('close client', async () => {
+    it('can call health check api', async () => {
+        await expect(client.healthCheck()).resolves.toEqual({
+            status: 'green'
+        });
+    });
+
+    it('can call close client', async () => {
         await client.close();
-        expect(client.healthCheck()).to.be.rejected;
+        await expect(client.healthCheck()).rejects.toThrowError();
     });
 });

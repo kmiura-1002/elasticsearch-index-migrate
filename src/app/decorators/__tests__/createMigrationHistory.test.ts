@@ -1,12 +1,12 @@
 import { CreateMigrationHistoryIfNotExists } from '../createMigrationHistory';
-import { fancyIt } from '../../__mocks__/fancyIt';
-import { getFakeCommand } from '../../__mocks__/command/fakeCommand';
-import { getMockElasticsearchClient } from '../../__mocks__/client/mockEsUtils';
+import { fancyIt } from '../../../__mocks__/fancyIt';
+import { getFakeCommand } from '../../../__mocks__/command/fakeCommand';
+import { getMockElasticsearchClient } from '../../../__mocks__/client/mockEsUtils';
 import { readOptions } from '../../flags/flagsLoader';
 import {
     mockReadOptions,
     mockReadOptionsWithHistoryIndexRequestBody
-} from '../../__mocks__/flags/mockReadOptions';
+} from '../../../__mocks__/flags/mockReadOptions';
 import getElasticsearchClient from '../../client/es/EsUtils';
 import {
     IndicesCreate as IndicesCreate6,

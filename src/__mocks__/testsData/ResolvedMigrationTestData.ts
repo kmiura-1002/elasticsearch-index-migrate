@@ -1,4 +1,4 @@
-import { MigrationTypes, ResolvedMigration } from '../../types';
+import { MigrationTypes, ResolvedMigration } from '../../app/types';
 
 export const resolvedMigrations: ResolvedMigration[] = [
     {

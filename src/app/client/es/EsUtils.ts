@@ -4,7 +4,7 @@ import { ClientOptions as ClientOptions7 } from 'es7';
 import fs from 'fs';
 import { Bindings } from '../../ioc.bindings';
 import ElasticsearchClient from './ElasticsearchClient';
-import { ESConfig, ESConnectConfig, SearchEngineVersion } from '../../types';
+import { ESConfig, ESConnectConfig, OPENSEARCH, SearchEngineVersion } from "../../types";
 import { Container } from 'inversify';
 import Elasticsearch6Client from './6/Elasticsearch6Client';
 import Elasticsearch7Client from './7/Elasticsearch7Client';
@@ -13,7 +13,6 @@ import minor from 'semver/functions/minor';
 import patch from 'semver/functions/patch';
 import valid from 'semver/functions/valid';
 import coerce from 'semver/functions/coerce';
-import { OPENSEARCH } from '../../../lib/model/types';
 
 export function usedEsVersion(v?: string): SearchEngineVersion | undefined {
     if (v === OPENSEARCH) {

@@ -1,4 +1,4 @@
-import { MigrationConfig } from '../../types';
+import { MigrationConfig } from '../../app/types';
 
 export const mockReadOptions = jest.fn().mockImplementation((): Promise<MigrationConfig> => {
     return Promise.resolve({

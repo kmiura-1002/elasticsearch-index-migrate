@@ -1,9 +1,9 @@
-import ElasticsearchClient from '../../src/app/client/es/ElasticsearchClient';
-import Elasticsearch6Client from '../../src/app/client/es/6/Elasticsearch6Client';
+import ElasticsearchClient from '../app/client/es/ElasticsearchClient';
+import Elasticsearch6Client from '../app/client/es/6/Elasticsearch6Client';
 import { Container } from 'inversify';
-import { Bindings } from 'app/ioc.bindings';
-import Elasticsearch7Client from '../../src/app/client/es/7/Elasticsearch7Client';
-import { ESConnectConfig } from '../../src/model/types';
+import Elasticsearch7Client from '../app/client/es/7/Elasticsearch7Client';
+import { ESConnectConfig } from '../app/types';
+import { Bindings } from "../app/ioc.bindings";
 
 export function es6ClientContainer() {
     const container = new Container();

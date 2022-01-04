@@ -1,5 +1,5 @@
 import * as sinon from 'sinon';
-import ElasticsearchClient from '../../../src/client/es/ElasticsearchClient';
+import ElasticsearchClient from '../../../src/app/client/es/ElasticsearchClient';
 import { expect } from 'chai';
 import { cleanExecutor } from '../../../src/executor/clean/CleanExecutor';
 import { MAPPING_HISTORY_INDEX_NAME } from '../../../src/model/types';

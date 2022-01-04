@@ -1,4 +1,4 @@
-import ElasticsearchClient from '../../client/es/ElasticsearchClient';
+import ElasticsearchClient from '../../app/client/es/ElasticsearchClient';
 import { cli } from 'cli-ux';
 import {
     DeleteByQuery as DeleteByQuery6,
@@ -26,7 +26,7 @@ import {
 } from 'es7/api/requestParams';
 import { ApiResponse as ApiResponse6 } from 'es6/lib/Transport';
 import { ApiResponse as ApiResponse7 } from 'es7/lib/Transport';
-import { ClusterStatuses, ELASTICSEARCH_VERSION, SimpleJson } from '../../types';
+import { ClusterStatuses, ELASTICSEARCH_VERSION, SimpleJson } from '../../app/types';
 
 export const getMockElasticsearchClient = jest.fn().mockImplementation(() => {
     return new MockElasticsearchClient();

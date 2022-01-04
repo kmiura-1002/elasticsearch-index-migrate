@@ -1,10 +1,10 @@
 import { expect, test } from '@oclif/test';
-import * as EsUtils from '../../src/client/es/EsUtils';
+import * as EsUtils from '../../src/app/client/es/EsUtils';
 import MockElasticsearchClient from '../mock/MockElasticsearchClient';
 import * as types from '../../src/model/types';
 import { es7ClientContainer } from '../utils/ioc-test';
-import ElasticsearchClient from '../../src/client/es/ElasticsearchClient';
-import { Bindings } from '../../src/ioc.bindings';
+import ElasticsearchClient from '../../src/app/client/es/ElasticsearchClient';
+import { Bindings } from 'app/ioc.bindings';
 import { MAPPING_HISTORY_INDEX_NAME, MigrateIndex } from '../../src/model/types';
 import { cli } from 'cli-ux';
 import * as sinon from 'sinon';

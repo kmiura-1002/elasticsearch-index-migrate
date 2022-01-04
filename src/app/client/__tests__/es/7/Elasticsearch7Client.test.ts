@@ -1,40 +1,37 @@
-import 'mocha';
-import { expect } from 'chai';
-import * as chai from 'chai';
-import ElasticsearchClient from '../../../../src/app/client/es/ElasticsearchClient';
-import { Bindings } from 'app/ioc.bindings';
-import { es7ClientContainer } from '../../ioc-test';
-import chaiAsPromised from 'chai-as-promised';
 import { Index } from 'es6/api/requestParams';
+import { es7ClientContainer } from '../../../../../__mocks__/ioc-test';
+import ElasticsearchClient from '../../../es/ElasticsearchClient';
+import { Bindings } from '../../../../ioc.bindings';
 
-chai.use(chaiAsPromised);
-
-describe('Elasticsearch7Client test', () => {
+describe('Elasticsearch7Client', () => {
     const client = es7ClientContainer().get<ElasticsearchClient>(Bindings.ElasticsearchClient);
 
-    it('version check', () => {
-        expect(client.version()).is.eq('7.x');
+    it('can get version', () => {
+        expect(client.version()).toEqual('7.x');
     });
 
-    it('exist check', async () => {
+    it('can call Exist api', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         const exists = await client.exists({ index });
-        expect(exists).is.false;
+        expect(exists).toBeFalsy();
     });
-    it('create index', async () => {
+
+    it('can call Create index api', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         const create = await client.createIndex({ index });
-        expect(create.statusCode).is.eq(200);
+        expect(create.statusCode).toEqual(200);
         await client.delete({ index });
     });
-    it('search', async () => {
+
+    it('can call search api', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({ index });
         const ret = await client.search({ index });
-        expect(ret).to.be.an('array');
+        expect(ret).toEqual([]);
         await client.delete({ index });
     });
-    it('put mapping', async () => {
+
+    it('can call mapping api', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({ index });
         const ret = await client.putMapping({
@@ -47,11 +44,11 @@ describe('Elasticsearch7Client test', () => {
                 }
             }
         });
-        expect(ret.statusCode).is.eq(200);
+        expect(ret.statusCode).toEqual(200);
         await client.delete({ index });
     });
 
-    it('put settings', async () => {
+    it('can call settings api', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({ index });
         const ret = await client.putSetting({
@@ -62,11 +59,11 @@ describe('Elasticsearch7Client test', () => {
                 }
             }
         });
-        expect(ret.statusCode).is.eq(200);
+        expect(ret.statusCode).toEqual(200);
         await client.delete({ index });
     });
 
-    it('post document', async () => {
+    it('can call document api', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({ index });
         const ret = await client.postDocument({
@@ -76,11 +73,11 @@ describe('Elasticsearch7Client test', () => {
             }
         });
 
-        expect(ret.statusCode).is.eq(201);
+        expect(ret.statusCode).toEqual(201);
         await client.delete({ index });
     });
 
-    it('post document with custom type', async () => {
+    it('can call document api when custom index type is set', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({ index });
         const ret = await client.postDocument({
@@ -91,11 +88,11 @@ describe('Elasticsearch7Client test', () => {
             }
         });
 
-        expect(ret.statusCode).is.eq(201);
+        expect(ret.statusCode).toEqual(201);
         await client.delete({ index });
     });
 
-    it('post document with args is es6 params', async () => {
+    it('can not call document api when args is es6 params', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({ index });
         const param: Index = {
@@ -107,13 +104,13 @@ describe('Elasticsearch7Client test', () => {
             }
         };
 
-        await expect(client.postDocument(param)).is.rejectedWith(
+        await expect(client.postDocument(param)).rejects.toEqual(
             `illegal argument : ${JSON.stringify(param)}`
         );
         await client.delete({ index });
     });
 
-    it('get mpping', async () => {
+    it('can call get mapping api', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({
             index,
@@ -128,8 +125,8 @@ describe('Elasticsearch7Client test', () => {
             }
         });
         const ret = await client.getMapping({ index });
-        expect(ret).is.an('array').lengthOf(1);
-        expect(ret[0]).to.eql({
+        expect(ret).toHaveLength(1);
+        expect(ret[0]).toEqual({
             mappings: {
                 properties: {
                     test_name: {
@@ -141,7 +138,7 @@ describe('Elasticsearch7Client test', () => {
         await client.delete({ index });
     });
 
-    it('return mpping when query params is include_type_name=true', async () => {
+    it('can get exclude type name mapping when query params is include_type_name=false', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({
             index,
@@ -159,8 +156,8 @@ describe('Elasticsearch7Client test', () => {
             }
         });
         const ret = await client.getMapping({ index, include_type_name: false });
-        expect(ret).is.an('array').lengthOf(1);
-        expect(ret[0]).to.eql({
+        expect(ret).toHaveLength(1);
+        expect(ret[0]).toEqual({
             mappings: {
                 properties: {
                     test_name: {
@@ -172,7 +169,7 @@ describe('Elasticsearch7Client test', () => {
         await client.delete({ index });
     });
 
-    it('get', async () => {
+    it('can get index data', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({
             index,
@@ -195,21 +192,21 @@ describe('Elasticsearch7Client test', () => {
         });
         const ret = await client.get({ index });
 
-        expect((ret as any)[index].mappings).to.eql({
+        expect((ret as any)[index].mappings).toEqual({
             properties: {
                 test_name: {
                     type: 'keyword'
                 }
             }
         });
-        expect((ret as any)[index].aliases).to.eql({});
-        expect((ret as any)[index].settings.index.refresh_interval).to.eql('1s');
-        expect((ret as any)[index].settings.index.number_of_shards).to.eql('1');
-        expect((ret as any)[index].settings.index.number_of_replicas).to.eql('0');
+        expect((ret as any)[index].aliases).toEqual({});
+        expect((ret as any)[index].settings.index.refresh_interval).toEqual('1s');
+        expect((ret as any)[index].settings.index.number_of_shards).toEqual('1');
+        expect((ret as any)[index].settings.index.number_of_replicas).toEqual('0');
         await client.delete({ index });
     });
 
-    it('delete document', async () => {
+    it('can call delete document api', async () => {
         const index = `test_index_${Math.random().toString(32).substring(2)}`;
         await client.createIndex({
             index,
@@ -231,11 +228,10 @@ describe('Elasticsearch7Client test', () => {
                 },
                 refresh: true
             })
-            .then((value) => expect(value.statusCode).is.eq(201));
+            .then((value) => expect(value.statusCode).toEqual(201));
 
         await client.search({ index }).then((value) => {
-            expect(value).to.be.an('array');
-            expect(value[0]).to.eql({
+            expect(value[0]).toEqual({
                 test: 'foobaz'
             });
         });
@@ -254,18 +250,23 @@ describe('Elasticsearch7Client test', () => {
                     }
                 }
             })
-            .then((value) => expect(value.statusCode).is.eq(200));
+            .then((value) => expect(value.statusCode).toEqual(200));
 
         await client.search({ index }).then((value) => {
-            expect(value).to.be.an('array');
-            expect(value.length).to.eql(0);
+            expect(value.length).toEqual(0);
         });
 
         await client.delete({ index });
     });
 
-    it('close client', async () => {
+    it('can call health check api', async () => {
+        await expect(client.healthCheck()).resolves.toEqual({
+            status: 'green'
+        });
+    });
+
+    it('can call close client', async () => {
         await client.close();
-        expect(client.healthCheck()).to.be.rejected;
+        await expect(client.healthCheck()).rejects.toThrowError();
     });
 });

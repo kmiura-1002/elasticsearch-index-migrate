@@ -1,13 +1,13 @@
 import { expect, test } from '@oclif/test';
-import * as EsUtils from '../../src/client/es/EsUtils';
+import * as EsUtils from '../../src/app/client/es/EsUtils';
 import MockElasticsearchClient from '../mock/MockElasticsearchClient';
 import * as sinon from 'sinon';
 import { cli } from 'cli-ux';
 import { ClusterStatuses } from '../../src/model/types';
 import * as types from '../../src/model/types';
 import { es6ClientContainer, es7ClientContainer } from '../utils/ioc-test';
-import ElasticsearchClient from '../../src/client/es/ElasticsearchClient';
-import { Bindings } from '../../src/ioc.bindings';
+import ElasticsearchClient from '../../src/app/client/es/ElasticsearchClient';
+import { Bindings } from 'app/ioc.bindings';
 import {
     IndicesCreate as IndicesCreate6,
     IndicesExists as IndicesExists6

@@ -2,7 +2,6 @@ import { esConnectConf } from '../EsUtils';
 import { Client } from 'es6';
 import { ApiResponse as ApiResponse6, ApiResponse } from 'es6/lib/Transport';
 import { inject, injectable } from 'inversify';
-import { Bindings } from '../../../ioc.bindings';
 import ElasticsearchClient, {
     convertGetMappingResponse,
     isDeleteByQuery6,
@@ -14,7 +13,7 @@ import ElasticsearchClient, {
     isIndicesPutMapping6,
     isIndicesPutSettings6,
     isSearch6
-} from '../ElasticsearchClient';
+} from '../../es/ElasticsearchClient';
 import {
     ELASTICSEARCH_VERSION,
     ESConnectConfig,
@@ -46,15 +45,13 @@ import {
     Index as Index7,
     DeleteByQuery as DeleteByQuery7
 } from 'es7/api/requestParams';
+import { Bindings } from "../../../ioc.bindings";
 
 @injectable()
 class Elasticsearch6Client implements ElasticsearchClient {
     client: Client;
 
-    constructor(
-        @inject(Bindings.ESConfig)
-        private readonly connectConf: ESConnectConfig
-    ) {
+    public constructor(@inject(Bindings.ESConfig) connectConf: ESConnectConfig) {
         this.client = new Client(esConnectConf(connectConf) as ClientOptions);
     }
 

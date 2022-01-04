@@ -1,5 +1,5 @@
 import { format } from 'date-fns';
-import { MigrateIndex, MigrationTypes } from '../../types';
+import { MigrateIndex, MigrationTypes } from '../../app/types';
 
 export const migrateIndices = (installed_on: Date): MigrateIndex[] => [
     {

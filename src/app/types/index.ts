@@ -3,6 +3,7 @@ import { ParsedPath } from 'path';
 export const MAPPING_HISTORY_INDEX_NAME = 'migrate_history';
 const ELASTICSEARCH_VERSIONS = ['6.x', '7.x', 'opensearch'] as const;
 export type ELASTICSEARCH_VERSION = typeof ELASTICSEARCH_VERSIONS[number];
+export const OPENSEARCH = 'opensearch';
 
 export interface ESConnectConfig {
     host?: string;

@@ -1,30 +1,24 @@
-import 'mocha';
+import { mocked } from 'jest-mock';
+
+jest.mock('fs', () => ({
+    readFileSync: jest.fn(() => `first¥n second¥n third`)
+}));
 import fs from 'fs';
-import { expect } from 'chai';
-import * as sinon from 'sinon';
-import { ESConfig, ESConnectConfig } from '../../src/model/types';
+import { ESConfig, ESConnectConfig } from '../../../types';
 import getElasticsearchClient, {
     esClientBind,
     esConnectConf,
     usedEsVersion
-} from '../../src/app/client/es/EsUtils';
+} from '../../es/EsUtils';
 
-describe('EsUtils test', () => {
-    let sandbox: sinon.SinonSandbox;
-    before(() => {
-        sandbox = sinon.createSandbox();
-    });
-    afterEach(() => {
-        sandbox.restore();
-    });
-
-    it('cloud connect conf test', () => {
+describe('EsUtils', () => {
+    it('can be connect when cloud id access', () => {
         const conf: ESConnectConfig = {
             cloudId: 'cloudId',
             username: 'username',
             password: 'password'
         };
-        expect(esConnectConf(conf)).is.deep.eq({
+        expect(esConnectConf(conf)).toEqual({
             cloud: {
                 id: conf.cloudId,
                 username: conf.username,
@@ -33,17 +27,17 @@ describe('EsUtils test', () => {
         });
     });
 
-    it('ssl connect conf test', () => {
+    it('can be connect when ssl access', () => {
         const conf: ESConnectConfig = {
             host: 'host',
             sslCa: 'sslCa'
         };
-        const buffer = new Buffer(1);
-        const stub = sandbox.stub(fs, 'readFileSync').returns(buffer);
+        const buffer = Buffer.alloc(1);
+        mocked(fs.readFileSync).mockImplementation(() => buffer);
         const connectConf = esConnectConf(conf);
 
-        expect(stub.calledOnce).is.true;
-        expect(connectConf).is.deep.eq({
+        expect(fs.readFileSync).toHaveBeenCalledTimes(1);
+        expect(connectConf).toEqual({
             node: conf.host,
             ssl: {
                 ca: buffer
@@ -51,28 +45,28 @@ describe('EsUtils test', () => {
         });
     });
 
-    it('node connect conf test', () => {
+    it('can be connect when host access', () => {
         const conf: ESConnectConfig = {
             host: 'host'
         };
-        expect(esConnectConf(conf)).is.deep.eq({
+        expect(esConnectConf(conf)).toEqual({
             node: conf.host
         });
     });
 
-    it('get es connect failed:unsupported version', () => {
+    it('can not be connect when unsupported version', () => {
         const esConfig: ESConfig = {
             version: '1.0.0',
             connect: {
                 host: 'host'
             }
         };
-        expect(() => esClientBind(esConfig)).to.throw(
+        expect(() => esClientBind(esConfig)).toThrow(
             '1.0.0 is unsupported. support version is 6.x or 7.x.'
         );
     });
 
-    it('get es connect failed:Unknown version', () => {
+    it('can not be connect when Unknown version', () => {
         const esConfig: ESConfig = {
             version: 'version',
             connect: {
@@ -80,12 +74,12 @@ describe('EsUtils test', () => {
             }
         };
 
-        expect(() => esClientBind(esConfig)).throw(
+        expect(() => esClientBind(esConfig)).toThrow(
             'Unknown version:version. support version is 6.x or 7.x.'
         );
     });
 
-    it('get es6 connect', () => {
+    it('can be connect when version is es6', () => {
         const esConfig: ESConfig = {
             version: '6.0.0',
             connect: {
@@ -94,10 +88,10 @@ describe('EsUtils test', () => {
         };
 
         const client = getElasticsearchClient(esConfig);
-        expect(client.version()).to.eq('6.x');
+        expect(client.version()).toEqual('6.x');
     });
 
-    it('get es7 connect', () => {
+    it('can be connect when version is es7', () => {
         const esConfig: ESConfig = {
             version: '7.0.0',
             connect: {
@@ -106,25 +100,34 @@ describe('EsUtils test', () => {
         };
 
         const client = getElasticsearchClient(esConfig);
-        expect(client.version()).to.eq('7.x');
+        expect(client.version()).toEqual('7.x');
     });
 
-    it('The number of the major version to be returned', () => {
-        expect(usedEsVersion('6.0.1')).is.deep.eq({
+    it('can get the ES version in use', () => {
+        expect(usedEsVersion('6.0.1')).toEqual({
+            engine: 'Elasticsearch',
             major: 6,
             minor: 0,
             patch: 1
         });
-        expect(usedEsVersion('7.0.1')).is.deep.eq({
+        expect(usedEsVersion('7.0.1')).toEqual({
+            engine: 'Elasticsearch',
             major: 7,
             minor: 0,
             patch: 1
         });
-        expect(usedEsVersion('7')).is.deep.eq({
+        expect(usedEsVersion('7')).toEqual({
+            engine: 'Elasticsearch',
             major: 7,
             minor: 0,
             patch: 0
         });
-        expect(usedEsVersion('foo')).is.eq(undefined);
+        expect(usedEsVersion('opensearch')).toEqual({
+            engine: 'OpenSearch',
+            major: 1,
+            minor: 0,
+            patch: 0
+        });
+        expect(usedEsVersion('foo')).toEqual(undefined);
     });
 });

@@ -1,7 +1,7 @@
 /* eslint-env node, mocha */
 import 'mocha';
 import { expect } from 'chai';
-import ElasticsearchClient from '../../../src/client/es/ElasticsearchClient';
+import ElasticsearchClient from '../../../src/app/client/es/ElasticsearchClient';
 import {
     addMigrationHistory,
     applyMigration,
@@ -15,7 +15,7 @@ import { cli } from 'cli-ux';
 import { generateMigrationPlan } from '../../../src/executor/plan/MigrationPlan';
 import { migrationPlanContext } from '../../data/MigrationPlanContextTestData';
 import { formatDateAsIsoString } from '../../../src/utils/makeDetail';
-import * as EsUtils from '../../../src/client/es/EsUtils';
+import * as EsUtils from '../../../src/app/client/es/EsUtils';
 import MockElasticsearchClient from '../../mock/MockElasticsearchClient';
 import {
     IndicesCreate as IndicesCreate6,
