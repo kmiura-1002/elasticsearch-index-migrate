@@ -182,7 +182,10 @@ const postDocumentApi = (connection: EsConnection, request: Index6 | Index7) => 
     const param = { client: connection.client, request };
 
     if (isE6Client<Index6, Index7>(param, connection.version)) {
-        return param.client.index(param.request);
+        return param.client.index({
+            ...param.request,
+            type: param.request.type ? param.request.type : '_doc'
+        });
     } else if (isE7Client<Index6, Index7>(param, connection.version)) {
         return param.client.index(param.request);
     }
@@ -285,6 +288,7 @@ export default function useElasticsearchClient(connectConf: ESConfig) {
         param: Index6 | Index7
     ): Promise<ApiResponse6<any, any> | ApiResponse7<any, any>> =>
         postDocumentApi(connection, param);
+
     const close = (): Promise<void> => closeConnection(connection);
 
     const getMapping = (

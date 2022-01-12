@@ -18,8 +18,8 @@ import { cli } from 'cli-ux';
 import { ApiResponse as ApiResponse6 } from 'es6/lib/Transport';
 import { ApiResponse as ApiResponse7 } from 'es7/lib/Transport';
 import { mocked } from 'jest-mock';
-import useElasticsearchClient from "../../client/es/ElasticsearchClient";
-import { getMockElasticsearchClient } from "../../../__mocks__/client/es/mockElasticsearchClient";
+import useElasticsearchClient from '../../client/es/ElasticsearchClient';
+import { getMockElasticsearchClient } from '../../../__mocks__/client/es/mockElasticsearchClient';
 
 jest.mock('../../flags/flagsLoader');
 jest.mock('../../client/es/ElasticsearchClient');

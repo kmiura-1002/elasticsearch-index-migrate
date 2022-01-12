@@ -1,588 +1,274 @@
-import {
-    IndicesExists as IndicesExists6,
-    IndicesPutMapping as IndicesPutMapping6,
-    IndicesPutSettings as IndicesPutSettings6,
-    Search as Search6,
-    Index as Index6,
-    IndicesGetMapping as IndicesGetMapping6,
-    DeleteByQuery as DeleteByQuery6
-} from 'es6/api/requestParams';
-import {
-    IndicesExists as IndicesExists7,
-    IndicesPutMapping as IndicesPutMapping7,
-    IndicesPutSettings as IndicesPutSettings7,
-    Search as Search7,
-    Index as Index7,
-    DeleteByQuery as DeleteByQuery7
-} from 'es7/api/requestParams';
-import { ApiResponse as ApiResponse6 } from 'es6/lib/Transport';
-import {
-    convertGetMappingResponse,
-    isDeleteByQuery6,
-    isIndex6,
-    isIndex7,
-    isIndicesExists6,
-    isIndicesPutMapping6,
-    isSearch6
-} from '../../es/ElasticsearchClient';
+import useElasticsearchClient from '../../es/ElasticsearchClient';
 
-type IndicesExistsTestType = {
-    param: IndicesExists6 | IndicesExists7;
-    expected: boolean;
-};
-
-type IndicesPutMappingTestType = {
-    param: IndicesPutMapping6 | IndicesPutMapping7;
-    expected: boolean;
-};
-
-type IndicesPutSettingsTestType = {
-    param: IndicesPutSettings6 | IndicesPutSettings7;
-    expected: boolean;
-};
-
-type SearchTestType = {
-    param: Search6 | Search7;
-    expected: boolean;
-};
-
-type IndexTestType = {
-    param: Index6 | Index7;
-    expected: boolean;
-};
-
-type DeleteByQueryTestType = {
-    param: DeleteByQuery6 | DeleteByQuery7;
-    expected: boolean;
-};
-
-describe('ElasticsearchClient', () => {
-    const indicesExistsTestData: IndicesExistsTestType[] = [
-        {
-            param: {
-                index: 'index',
-                expand_wildcards: 'open'
-            },
-            expected: true
-        },
-        {
-            param: {
-                index: 'index',
-                expand_wildcards: 'closed'
-            },
-            expected: true
-        },
-        {
-            param: {
-                index: 'index',
-                expand_wildcards: 'none'
-            },
-            expected: true
-        },
-        {
-            param: {
-                index: 'index',
-                expand_wildcards: 'all'
-            },
-            expected: true
-        },
-        {
-            param: {
-                index: 'index',
-                expand_wildcards: 'hidden'
-            },
-            expected: false
-        },
-        {
-            param: {
-                index: 'index',
-                expand_wildcards: undefined
-            },
-            expected: true
+describe('Elasticsearch6', () => {
+    const client = useElasticsearchClient({
+        version: '6',
+        connect: {
+            host: 'http://localhost:9201'
         }
-    ];
-    indicesExistsTestData.forEach((testData) => {
-        it(`isIndicesExists6 fnc return ${testData.expected} when param is ${JSON.stringify(
-            testData.param
-        )}`, () => {
-            expect(isIndicesExists6(testData.param)).toEqual(testData.expected);
+    });
+
+    it('can get version', () => {
+        expect(client.version()).toEqual({
+            engine: 'Elasticsearch',
+            major: 6,
+            minor: 0,
+            patch: 0
         });
     });
 
-    const indicesPutMappingTestData: IndicesPutMappingTestType[] = [
-        {
-            param: {
-                body: {},
-                expand_wildcards: 'open'
-            },
-            expected: true
-        },
-        {
-            param: {
-                body: {},
-                expand_wildcards: 'closed'
-            },
-            expected: true
-        },
-        {
-            param: {
-                body: {},
-                expand_wildcards: 'none'
-            },
-            expected: true
-        },
-        {
-            param: {
-                body: {},
-                expand_wildcards: 'all'
-            },
-            expected: true
-        },
-        {
-            param: {
-                body: {},
-                expand_wildcards: 'hidden'
-            },
-            expected: false
-        },
-        {
-            param: {
-                body: {}
-            },
-            expected: true
-        },
-        {
-            param: {
-                body: {},
-                type: 'aaa'
-            },
-            expected: true
-        }
-    ];
-    indicesPutMappingTestData.forEach((testData) => {
-        it(`isIndicesPutMapping6 fnc return ${testData.expected} when param is ${JSON.stringify(
-            testData.param
-        )}`, () => {
-            expect(isIndicesPutMapping6(testData.param)).toEqual(testData.expected);
-        });
+    it('can call Exist api', async () => {
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
+        const exists = await client.exists({ index });
+        expect(exists).toBeFalsy();
     });
 
-    const searchTestData: SearchTestType[] = [
-        {
-            param: {
-                body: {},
-                expand_wildcards: 'open'
-            },
-            expected: true
-        },
-        {
-            param: {
-                body: {},
-                expand_wildcards: 'closed'
-            },
-            expected: true
-        },
-        {
-            param: {
-                body: {},
-                expand_wildcards: 'none'
-            },
-            expected: true
-        },
-        {
-            param: {
-                body: {},
-                expand_wildcards: 'all'
-            },
-            expected: true
-        },
-        {
-            param: {
-                body: {},
-                expand_wildcards: 'hidden'
-            },
-            expected: false
-        },
-        {
-            param: {
-                body: {}
-            },
-            expected: true
-        },
-        {
-            param: {
-                body: {},
-                expand_wildcards: undefined,
-                ccs_minimize_roundtrips: true
-            },
-            expected: false
-        },
-        {
-            param: {
-                body: {},
-                expand_wildcards: undefined,
-                ccs_minimize_roundtrips: false
-            },
-            expected: false
-        }
-    ];
-    searchTestData.forEach((testData) => {
-        it(`isSearch6 fnc return ${testData.expected} when param is ${JSON.stringify(
-            testData.param
-        )}`, () => {
-            expect(isSearch6(testData.param)).toEqual(testData.expected);
-        });
+    it('can call Create index api', async () => {
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
+        const create = await client.createIndex({ index });
+        expect(create.statusCode).toEqual(200);
+        await client.deleteIndex({ index });
     });
 
-    const IndicesPutSettingsTestData: IndicesPutSettingsTestType[] = [
-        {
-            param: {
-                body: {},
-                expand_wildcards: 'open'
-            },
-            expected: true
-        },
-        {
-            param: {
-                body: {},
-                expand_wildcards: 'closed'
-            },
-            expected: true
-        },
-        {
-            param: {
-                body: {},
-                expand_wildcards: 'none'
-            },
-            expected: true
-        },
-        {
-            param: {
-                body: {},
-                expand_wildcards: 'all'
-            },
-            expected: true
-        },
-        {
-            param: {
-                body: {},
-                expand_wildcards: 'hidden'
-            },
-            expected: false
-        },
-        {
-            param: {
-                body: {}
-            },
-            expected: true
-        }
-    ];
-    IndicesPutSettingsTestData.forEach((testData) => {
-        it(`isIndicesPutSettings6 fnc return ${testData.expected} when param is ${JSON.stringify(
-            testData.param
-        )}`, () => {
-            expect(isSearch6(testData.param)).toEqual(testData.expected);
-        });
+    it('can call search api', async () => {
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
+        await client.createIndex({ index });
+        const ret = await client.search({ index });
+        expect(ret).toEqual([]);
+        await client.deleteIndex({ index });
     });
 
-    const Index6TestData: IndexTestType[] = [
-        {
-            param: {
-                index: 'index',
-                type: 'type',
-                body: {},
-                parent: 'parent'
-            },
-            expected: true
-        },
-        {
-            param: {
-                index: 'index',
-                body: {}
-            },
-            expected: true
-        },
-        {
-            param: {
-                index: 'index',
-                type: 'type',
-                body: {},
-                refresh: true
-            },
-            expected: false
-        },
-        {
-            param: {
-                index: 'index',
-                type: 'type',
-                body: {}
-            },
-            expected: true
-        },
-        {
-            param: {
-                index: 'index',
-                type: 'type',
-                body: {},
-                version_type: 'external'
-            },
-            expected: true
-        },
-        {
-            param: {
-                index: 'index',
-                type: 'type',
-                body: {},
-                version_type: 'external_gte'
-            },
-            expected: true
-        },
-        {
-            param: {
-                index: 'index',
-                type: 'type',
-                body: {},
-                version_type: 'force'
-            },
-            expected: true
-        },
-        {
-            param: {
-                index: 'index',
-                type: 'type',
-                body: {},
-                version_type: 'internal'
-            },
-            expected: true
-        }
-    ];
-    Index6TestData.forEach((testData) => {
-        it(`isIndex6 fnc return ${testData.expected} when param is ${JSON.stringify(
-            testData.param
-        )}`, () => {
-            expect(isIndex6(testData.param)).toEqual(testData.expected);
+    it('can call mapping api', async () => {
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
+        await client.createIndex({ index });
+        const ret = await client.putMapping({
+            index,
+            type: '_doc',
+            body: {
+                properties: {
+                    test_id: {
+                        type: 'long'
+                    }
+                }
+            }
         });
+        expect(ret.statusCode).toEqual(200);
+        await client.deleteIndex({ index });
     });
 
-    const Index7TestData: IndexTestType[] = [
-        {
-            param: {
-                index: 'index',
-                type: 'type',
-                body: {},
-                parent: 'parent'
-            },
-            expected: false
-        },
-        {
-            param: {
-                index: 'index',
-                body: {}
-            },
-            expected: true
-        },
-        {
-            param: {
-                index: 'index',
-                type: 'type',
-                body: {},
-                refresh: true
-            },
-            expected: true
-        },
-        {
-            param: {
-                index: 'index',
-                type: 'type',
-                body: {},
+    it('can not call mapping api when not exists type param', async () => {
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
+        await client.createIndex({ index });
+        const ret = await client.putMapping({
+            index,
+            body: {
+                properties: {
+                    test_id: {
+                        type: 'long'
+                    }
+                }
+            }
+        });
+        expect(ret.statusCode).toEqual(200);
+        await client.deleteIndex({ index });
+    });
+
+    it('can call settings api', async () => {
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
+        await client.createIndex({ index });
+        const ret = await client.putSetting({
+            index,
+            body: {
+                index: {
+                    number_of_replicas: 0
+                }
+            }
+        });
+        expect(ret.statusCode).toEqual(200);
+        await client.deleteIndex({ index });
+    });
+
+    it('can call document api', async () => {
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
+        await client.createIndex({ index });
+        const ret = await client.postDocument({
+            index,
+            body: {
+                test: 'foo baz'
+            }
+        });
+
+        expect(ret.statusCode).toEqual(201);
+        await client.deleteIndex({ index });
+    });
+
+    it('can call get mapping api', async () => {
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
+        await client.createIndex({
+            index,
+            body: {
+                mappings: {
+                    test: {
+                        properties: {
+                            test_name: {
+                                type: 'keyword'
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        const ret = await client.getMapping({ index });
+        expect(ret).toHaveLength(1);
+        expect(ret[0]).toEqual({
+            mappings: {
+                test: {
+                    properties: {
+                        test_name: {
+                            type: 'keyword'
+                        }
+                    }
+                }
+            }
+        });
+        await client.deleteIndex({ index });
+    });
+
+    it('can get exclude type name mapping when query params is include_type_name=false', async () => {
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
+        await client.createIndex({
+            index,
+            body: {
+                mappings: {
+                    my_type: {
+                        properties: {
+                            test_name: {
+                                type: 'keyword'
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        const ret = await client.getMapping({ index, include_type_name: false });
+        expect(ret).toHaveLength(1);
+        expect(ret[0]).toEqual({
+            mappings: {
+                properties: {
+                    test_name: {
+                        type: 'keyword'
+                    }
+                }
+            }
+        });
+        await client.deleteIndex({ index });
+    });
+
+    it('can get index data', async () => {
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
+        await client.createIndex({
+            index,
+            body: {
+                settings: {
+                    index: {
+                        refresh_interval: '1s',
+                        number_of_shards: 1,
+                        number_of_replicas: 0
+                    }
+                },
+                mappings: {
+                    test: {
+                        properties: {
+                            test_name: {
+                                type: 'keyword'
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        const ret = await client.getIndex({ index });
+
+        expect((ret as any)[index].mappings).toEqual({
+            test: {
+                properties: {
+                    test_name: {
+                        type: 'keyword'
+                    }
+                }
+            }
+        });
+        expect((ret as any)[index].aliases).toEqual({});
+        expect((ret as any)[index].settings.index.refresh_interval).toEqual('1s');
+        expect((ret as any)[index].settings.index.number_of_shards).toEqual('1');
+        expect((ret as any)[index].settings.index.number_of_replicas).toEqual('0');
+        await client.deleteIndex({ index });
+    });
+
+    it('can call delete document api', async () => {
+        const index = `test_index_${Math.random().toString(32).substring(2)}`;
+        await client.createIndex({
+            index,
+            body: {
+                mappings: {
+                    _doc: {
+                        properties: {
+                            test: {
+                                type: 'keyword'
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        await client
+            .postDocument({
+                index,
+                type: '_doc',
+                body: {
+                    test: 'foobaz'
+                },
                 refresh: 'true'
-            },
-            expected: true
-        },
-        {
-            param: {
-                index: 'index',
-                type: 'type',
-                body: {}
-            },
-            expected: true
-        },
-        {
-            param: {
-                index: 'index',
-                type: 'type',
-                body: {},
-                version_type: 'external'
-            },
-            expected: true
-        },
-        {
-            param: {
-                index: 'index',
-                type: 'type',
-                body: {},
-                version_type: 'external_gte'
-            },
-            expected: true
-        },
-        {
-            param: {
-                index: 'index',
-                type: 'type',
-                body: {},
-                version_type: 'force'
-            },
-            expected: false
-        },
-        {
-            param: {
-                index: 'index',
-                type: 'type',
-                body: {},
-                version_type: 'internal'
-            },
-            expected: true
-        }
-    ];
-    Index7TestData.forEach((testData) => {
-        it(`isIndex7 fnc return ${testData.expected} when param is ${JSON.stringify(
-            testData.param
-        )}`, () => {
-            expect(isIndex7(testData.param)).toEqual(testData.expected);
+            })
+            .then((value) => expect(value.statusCode).toEqual(201));
+
+        await client.search({ index }).then((value) => {
+            expect(value[0]).toEqual({
+                test: 'foobaz'
+            });
+        });
+
+        await client
+            .deleteDocument({
+                index,
+                refresh: true,
+                body: {
+                    query: {
+                        term: {
+                            test: {
+                                value: 'foobaz'
+                            }
+                        }
+                    }
+                }
+            })
+            .then((value) => expect(value.statusCode).toEqual(200));
+
+        await client.search({ index }).then((value) => {
+            expect(value).toHaveLength(0);
+        });
+
+        await client.deleteIndex({ index });
+    });
+
+    it('can call health check api', async () => {
+        await expect(client.healthCheck()).resolves.toEqual({
+            status: 'green'
         });
     });
 
-    it('convertGetMappingResponse return json array with param.index is undefined', () => {
-        const expected = {
-            test: 'abc'
-        };
-        const param: IndicesGetMapping6 = {};
-        const res: ApiResponse6 = {
-            body: expected,
-            headers: {},
-            meta: {} as any,
-            statusCode: 200,
-            warnings: null
-        };
-        const actual = convertGetMappingResponse(param, res);
-        expect(actual).toHaveLength(1);
-        expect(actual[0]).toEqual(expected);
-    });
-
-    it('convertGetMappingResponse return json array with param.index is array', () => {
-        const expected = [
-            {
-                a: 'abc'
-            },
-            {
-                b: 'def'
-            }
-        ];
-        const param: IndicesGetMapping6 = {
-            index: ['test1', 'test2']
-        };
-        const res: ApiResponse6 = {
-            body: { test1: { a: 'abc' }, test2: { b: 'def' } },
-            headers: {},
-            meta: {} as any,
-            statusCode: 200,
-            warnings: null
-        };
-        const actual = convertGetMappingResponse(param, res);
-        expect(actual).toHaveLength(2);
-        expect(actual).toEqual(expected);
-    });
-
-    it('convertGetMappingResponse return json array with param.index is string type', () => {
-        const expected = [
-            {
-                a: 'abc'
-            }
-        ];
-        const param: IndicesGetMapping6 = {
-            index: ['test1']
-        };
-        const res: ApiResponse6 = {
-            body: { test1: { a: 'abc' } },
-            headers: {},
-            meta: {} as any,
-            statusCode: 200,
-            warnings: null
-        };
-        const actual = convertGetMappingResponse(param, res);
-        expect(actual).toHaveLength(1);
-        expect(actual).toEqual(expected);
-    });
-
-    const DeleteByQueryTestData: DeleteByQueryTestType[] = [
-        {
-            param: {
-                index: 'index',
-                type: 'type',
-                body: {}
-            },
-            expected: true
-        },
-        {
-            param: {
-                index: 'index',
-                type: 'type',
-                body: {},
-                max_docs: 1
-            },
-            expected: false
-        },
-        {
-            param: {
-                index: 'index',
-                type: 'type',
-                body: {},
-                expand_wildcards: 'hidden'
-            },
-            expected: false
-        },
-        {
-            param: {
-                index: 'index',
-                type: 'type',
-                body: {},
-                expand_wildcards: 'all'
-            },
-            expected: true
-        },
-        {
-            param: {
-                index: 'index',
-                type: 'type',
-                body: {},
-                expand_wildcards: 'closed'
-            },
-            expected: true
-        },
-        {
-            param: {
-                index: 'index',
-                type: 'type',
-                body: {},
-                expand_wildcards: 'none'
-            },
-            expected: true
-        },
-        {
-            param: {
-                index: 'index',
-                type: 'type',
-                body: {},
-                expand_wildcards: 'open'
-            },
-            expected: true
-        }
-    ];
-    DeleteByQueryTestData.forEach((testData) => {
-        it(`isDeleteByQuery6 fnc return ${testData.expected} when param is ${JSON.stringify(
-            testData.param
-        )}`, () => {
-            expect(isDeleteByQuery6(testData.param)).toEqual(testData.expected);
-        });
+    it('can call close client', async () => {
+        await client.close();
+        await expect(client.healthCheck()).rejects.toThrowError();
     });
 });
