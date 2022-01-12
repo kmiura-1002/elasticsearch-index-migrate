@@ -236,7 +236,7 @@ const deleteDocumentApi = (connection: EsConnection, request: DeleteByQuery6 | D
     return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
 };
 
-export default function ElasticsearchClient(connectConf: ESConfig) {
+export default function useElasticsearchClient(connectConf: ESConfig) {
     const connection = esClientBind(connectConf);
 
     const healthCheck = (request?: ClusterHealth6 | ClusterHealth7): Promise<{ status: string }> =>

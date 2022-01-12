@@ -1,13 +1,11 @@
 import { CreateMigrationHistoryIfNotExists } from '../createMigrationHistory';
 import { fancyIt } from '../../../__mocks__/fancyIt';
 import { getFakeCommand } from '../../../__mocks__/command/fakeCommand';
-import { getMockElasticsearchClient } from '../../../__mocks__/client/mockEsUtils';
 import { readOptions } from '../../flags/flagsLoader';
 import {
     mockReadOptions,
     mockReadOptionsWithHistoryIndexRequestBody
 } from '../../../__mocks__/flags/mockReadOptions';
-import getElasticsearchClient from '../../client/es/EsUtils';
 import {
     IndicesCreate as IndicesCreate6,
     IndicesExists as IndicesExists6
@@ -20,22 +18,24 @@ import { cli } from 'cli-ux';
 import { ApiResponse as ApiResponse6 } from 'es6/lib/Transport';
 import { ApiResponse as ApiResponse7 } from 'es7/lib/Transport';
 import { mocked } from 'jest-mock';
+import useElasticsearchClient from "../../client/es/ElasticsearchClient";
+import { getMockElasticsearchClient } from "../../../__mocks__/client/es/mockElasticsearchClient";
 
 jest.mock('../../flags/flagsLoader');
-jest.mock('../../client/es/EsUtils');
+jest.mock('../../client/es/ElasticsearchClient');
 const spyError = jest.spyOn(cli, 'error');
 
 describe('createMigrationHistory', () => {
     beforeEach(() => {
         mocked(readOptions).mockClear();
-        mocked(getElasticsearchClient).mockClear();
+        mocked(useElasticsearchClient).mockClear();
         mocked(spyError).mockClear();
     });
 
     fancyIt()('can run the original function', async () => {
         // begin
         mocked(readOptions).mockImplementation(mockReadOptions);
-        mocked(getElasticsearchClient).mockImplementation(getMockElasticsearchClient);
+        mocked(useElasticsearchClient).mockImplementation(getMockElasticsearchClient);
         const fakeOriginalFunction = jest.fn();
         const args = ['argument'];
         const flags = {
@@ -56,7 +56,7 @@ describe('createMigrationHistory', () => {
 
         // then
         expect(readOptions).toHaveBeenCalledTimes(1);
-        expect(getElasticsearchClient).toHaveBeenCalledTimes(1);
+        expect(useElasticsearchClient).toHaveBeenCalledTimes(1);
         expect(fakeOriginalFunction).toHaveBeenCalledTimes(1);
     });
 
@@ -65,7 +65,7 @@ describe('createMigrationHistory', () => {
         async () => {
             // begin
             mocked(readOptions).mockImplementation(mockReadOptions);
-            mocked(getElasticsearchClient).mockImplementation(() => {
+            mocked(useElasticsearchClient).mockImplementation(() => {
                 return {
                     ...getMockElasticsearchClient(),
                     exists(_param: IndicesExists6 | IndicesExists7) {
@@ -94,7 +94,7 @@ describe('createMigrationHistory', () => {
             // then
             await expect(actual).rejects.toThrow();
             expect(readOptions).toHaveBeenCalledTimes(1);
-            expect(getElasticsearchClient).toHaveBeenCalledTimes(1);
+            expect(useElasticsearchClient).toHaveBeenCalledTimes(1);
             expect(spyError).toHaveBeenCalledTimes(1);
             expect(spyError.mock.calls[0][0]).toEqual(
                 'ConnectionError:Check your elasticsearch connection config.\nreason:[exists error]'
@@ -106,7 +106,7 @@ describe('createMigrationHistory', () => {
         async () => {
             // begin
             mocked(readOptions).mockImplementation(mockReadOptions);
-            mocked(getElasticsearchClient).mockImplementation(() => {
+            mocked(useElasticsearchClient).mockImplementation(() => {
                 return {
                     ...getMockElasticsearchClient(),
                     createIndex(_param: IndicesCreate6 | IndicesCreate7) {
@@ -138,7 +138,7 @@ describe('createMigrationHistory', () => {
             // then
             await expect(actual).rejects.toThrow();
             expect(readOptions).toHaveBeenCalledTimes(1);
-            expect(getElasticsearchClient).toHaveBeenCalledTimes(1);
+            expect(useElasticsearchClient).toHaveBeenCalledTimes(1);
             expect(spyError).toHaveBeenCalledTimes(1);
             expect(spyError.mock.calls[0][0]).toEqual(
                 'Failed to create index.\nreason:[{"statusCode":500}]'
@@ -149,7 +149,7 @@ describe('createMigrationHistory', () => {
     fancyIt()('can not run the original function when the index creation fails', async () => {
         // begin
         mocked(readOptions).mockImplementation(mockReadOptions);
-        mocked(getElasticsearchClient).mockImplementation(() => {
+        mocked(useElasticsearchClient).mockImplementation(() => {
             return {
                 ...getMockElasticsearchClient(),
                 createIndex(_param: IndicesCreate6 | IndicesCreate7) {
@@ -181,7 +181,7 @@ describe('createMigrationHistory', () => {
         // then
         await expect(actual).rejects.toThrow();
         expect(readOptions).toHaveBeenCalledTimes(1);
-        expect(getElasticsearchClient).toHaveBeenCalledTimes(1);
+        expect(useElasticsearchClient).toHaveBeenCalledTimes(1);
         expect(spyError).toHaveBeenCalledTimes(1);
         expect(spyError.mock.calls[0][0]).toEqual('Failed to create index for migrate.');
     });
@@ -191,7 +191,7 @@ describe('createMigrationHistory', () => {
         async () => {
             // begin
             mocked(readOptions).mockImplementation(mockReadOptionsWithHistoryIndexRequestBody);
-            mocked(getElasticsearchClient).mockImplementation(getMockElasticsearchClient);
+            mocked(useElasticsearchClient).mockImplementation(getMockElasticsearchClient);
             const fakeOriginalFunction = jest.fn();
             const args = ['argument'];
             const flags = {
@@ -212,7 +212,7 @@ describe('createMigrationHistory', () => {
 
             // then
             expect(readOptions).toHaveBeenCalledTimes(1);
-            expect(getElasticsearchClient).toHaveBeenCalledTimes(1);
+            expect(useElasticsearchClient).toHaveBeenCalledTimes(1);
             expect(fakeOriginalFunction).toHaveBeenCalledTimes(1);
         }
     );

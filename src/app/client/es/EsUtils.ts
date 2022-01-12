@@ -1,13 +1,7 @@
-import 'reflect-metadata';
 import { ClientOptions as ClientOptions6 } from 'es6';
 import { ClientOptions as ClientOptions7 } from 'es7';
 import fs from 'fs';
-import { Bindings } from '../../ioc.bindings';
-import OldElasticsearchClient from './ElasticsearchClient';
-import { ESConfig, ESConnectConfig, OPENSEARCH, SearchEngineVersion } from '../../types';
-import { Container } from 'inversify';
-import Elasticsearch6Client from './6/Elasticsearch6Client';
-import Elasticsearch7Client from './7/Elasticsearch7Client';
+import { ESConnectConfig, OPENSEARCH, SearchEngineVersion } from '../../types';
 import major from 'semver/functions/major';
 import minor from 'semver/functions/minor';
 import patch from 'semver/functions/patch';
@@ -32,39 +26,6 @@ export function usedEsVersion(v?: string): SearchEngineVersion | undefined {
               patch: patch(version)
           }
         : undefined;
-}
-
-export function esClientBind(esConfig: ESConfig): Container {
-    const container = new Container();
-    container.bind<ESConnectConfig>(Bindings.ESConfig).toConstantValue(esConfig.connect);
-
-    const version = usedEsVersion(esConfig.version)?.major;
-    if (version) {
-        switch (version) {
-            case 6:
-                container
-                    .bind<OldElasticsearchClient>(Bindings.ElasticsearchClient)
-                    .to(Elasticsearch6Client);
-                break;
-            case 7:
-                container
-                    .bind<OldElasticsearchClient>(Bindings.ElasticsearchClient)
-                    .to(Elasticsearch7Client);
-                break;
-            default:
-                throw new Error(
-                    `${esConfig.version} is unsupported. support version is 6.x or 7.x.`
-                );
-        }
-        return container;
-    } else {
-        throw new Error(`Unknown version:${esConfig.version}. support version is 6.x or 7.x.`);
-    }
-}
-
-export default function getElasticsearchClient(esConfig: ESConfig): OldElasticsearchClient {
-    const container = esClientBind(esConfig);
-    return container.get<OldElasticsearchClient>(Bindings.ElasticsearchClient);
 }
 
 export function esConnectConf(conf: ESConnectConfig): ClientOptions6 | ClientOptions7 {

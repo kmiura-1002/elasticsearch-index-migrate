@@ -1,6 +1,6 @@
-import OldElasticsearchClient from '../../app/client/es/ElasticsearchClient';
-import { cli } from 'cli-ux';
+import { ClusterStatuses, ESConfig, SearchEngineVersion, SimpleJson } from '../../../app/types';
 import {
+    ClusterHealth as ClusterHealth6,
     DeleteByQuery as DeleteByQuery6,
     Index as Index6,
     IndicesCreate as IndicesCreate6,
@@ -13,6 +13,7 @@ import {
     Search as Search6
 } from 'es6/api/requestParams';
 import {
+    ClusterHealth as ClusterHealth7,
     DeleteByQuery as DeleteByQuery7,
     Index as Index7,
     IndicesCreate as IndicesCreate7,
@@ -26,56 +27,74 @@ import {
 } from 'es7/api/requestParams';
 import { ApiResponse as ApiResponse6 } from 'es6/lib/Transport';
 import { ApiResponse as ApiResponse7 } from 'es7/lib/Transport';
-import { ClusterStatuses, ELASTICSEARCH_VERSION, SimpleJson } from '../../app/types';
+import { cli } from 'cli-ux';
 
-export const getMockElasticsearchClient = jest.fn().mockImplementation(() => {
-    return new MockElasticsearchClient();
-});
+export const getMockElasticsearchClient = jest
+    .fn()
+    .mockImplementation(() => useElasticsearchClient({ connect: {} }));
 
-class MockElasticsearchClient implements OldElasticsearchClient {
-    close() {
-        cli.debug('Called MockElasticsearchClient.close');
-    }
-    createIndex(param: IndicesCreate6 | IndicesCreate7) {
-        cli.debug(`Called MockElasticsearchClient.createIndex: param=${JSON.stringify(param)}`);
+export function useElasticsearchClient(_connectConf: ESConfig) {
+    const healthCheck = (_request?: ClusterHealth6 | ClusterHealth7): Promise<{ status: string }> =>
+        Promise.resolve({ status: ClusterStatuses.GREEN });
+
+    const putMapping = (
+        request: IndicesPutMapping6 | IndicesPutMapping7
+    ): Promise<ApiResponse6<any, any> | ApiResponse7<any, any>> => {
+        cli.debug(`Called MockElasticsearchClient.putMapping: param=${JSON.stringify(request)}`);
         return Promise.resolve({ statusCode: 200 } as ApiResponse6 | ApiResponse7);
-    }
-    exists(param: IndicesExists6 | IndicesExists7) {
-        cli.debug(`Called MockElasticsearchClient.exists: index=${param.index}`);
-        return Promise.resolve(false);
-    }
-    postDocument(param: Index6 | Index7) {
-        cli.debug(`Called MockElasticsearchClient.postDocument: param=${JSON.stringify(param)}`);
+    };
+
+    const createIndex = (
+        request: IndicesCreate6 | IndicesCreate7
+    ): Promise<ApiResponse6<any, any> | ApiResponse7<any, any>> => {
+        cli.debug(`Called MockElasticsearchClient.createIndex: param=${JSON.stringify(request)}`);
         return Promise.resolve({ statusCode: 200 } as ApiResponse6 | ApiResponse7);
-    }
-    putMapping(param: IndicesPutMapping6 | IndicesPutMapping7) {
-        cli.debug(`Called MockElasticsearchClient.putMapping: param=${JSON.stringify(param)}`);
-        return Promise.resolve({ statusCode: 200 } as ApiResponse6 | ApiResponse7);
-    }
-    putSetting(param: IndicesPutSettings6 | IndicesPutSettings7) {
-        cli.debug(`Called MockElasticsearchClient.putSetting: param=${JSON.stringify(param)}`);
-        return Promise.resolve({ statusCode: 200 } as ApiResponse6 | ApiResponse7);
-    }
-    search(param: Search6 | Search7): Promise<any[]> {
+    };
+
+    const search = <R>(param: Search6 | Search7): Promise<R[]> => {
         cli.debug(`Called MockElasticsearchClient.search: param=${JSON.stringify(param)}`);
         return Promise.resolve([]);
-    }
+    };
 
-    version(): ELASTICSEARCH_VERSION {
-        return '7.x';
-    }
+    const exists = (param: IndicesExists6 | IndicesExists7): Promise<boolean> => {
+        cli.debug(`Called MockElasticsearchClient.exists: index=${param.index}`);
+        return Promise.resolve(false);
+    };
 
-    healthCheck(): Promise<{ status: string }> {
-        return Promise.resolve({ status: ClusterStatuses.GREEN });
-    }
+    const version = (): SearchEngineVersion => ({
+        engine: 'Elasticsearch',
+        major: 7,
+        minor: 7,
+        patch: 0
+    });
 
-    delete(param: IndicesDelete6 | IndicesDelete7) {
+    const putSetting = (
+        param: IndicesPutSettings6 | IndicesPutSettings7
+    ): Promise<ApiResponse6<any, any> | ApiResponse7<any, any>> => {
+        cli.debug(`Called MockElasticsearchClient.putSetting: param=${JSON.stringify(param)}`);
+        return Promise.resolve({ statusCode: 200 } as ApiResponse6 | ApiResponse7);
+    };
+
+    const deleteIndex = (
+        param: IndicesDelete6 | IndicesDelete7
+    ): Promise<ApiResponse6<any, any> | ApiResponse7<any, any>> => {
         cli.debug(`Called MockElasticsearchClient.delete: param=${JSON.stringify(param)}`);
         return Promise.resolve({ statusCode: 200 } as ApiResponse6 | ApiResponse7);
-    }
+    };
 
-    getMapping(_param: IndicesGetMapping6 | IndicesGetMapping7): Promise<Array<SimpleJson>> {
-        return Promise.resolve([
+    const postDocument = (
+        param: Index6 | Index7
+    ): Promise<ApiResponse6<any, any> | ApiResponse7<any, any>> => {
+        cli.debug(`Called MockElasticsearchClient.postDocument: param=${JSON.stringify(param)}`);
+        return Promise.resolve({ statusCode: 200 } as ApiResponse6 | ApiResponse7);
+    };
+
+    const close = (): Promise<void> => Promise.resolve();
+
+    const getMapping = (
+        _param: IndicesGetMapping6 | IndicesGetMapping7
+    ): Promise<Array<SimpleJson>> =>
+        Promise.resolve([
             {
                 migrate_history: {
                     mappings: {
@@ -109,10 +128,9 @@ class MockElasticsearchClient implements OldElasticsearchClient {
                 }
             }
         ]);
-    }
 
-    get(_param: IndicesGet6 | IndicesGet7): Promise<SimpleJson> {
-        return Promise.resolve({
+    const getIndex = (_param: IndicesGet6 | IndicesGet7): Promise<SimpleJson> =>
+        Promise.resolve({
             settings: {
                 index: {
                     refresh_interval: '1s',
@@ -181,9 +199,23 @@ class MockElasticsearchClient implements OldElasticsearchClient {
                 }
             }
         });
-    }
 
-    deleteDocument(_param: DeleteByQuery6 | DeleteByQuery7): Promise<any> {
-        return Promise.resolve();
-    }
+    const deleteDocument = (_param: DeleteByQuery6 | DeleteByQuery7): Promise<any> =>
+        Promise.resolve();
+
+    return {
+        healthCheck,
+        putMapping,
+        createIndex,
+        search,
+        exists,
+        version,
+        putSetting,
+        deleteIndex,
+        postDocument,
+        close,
+        getMapping,
+        getIndex,
+        deleteDocument
+    };
 }
