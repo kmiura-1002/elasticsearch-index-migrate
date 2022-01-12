@@ -1,4 +1,4 @@
-import ElasticsearchClient from '../../src/app/client/es/ElasticsearchClient';
+import OldElasticsearchClient from '../../src/app/client/es/ElasticsearchClient';
 import { cli } from 'cli-ux';
 import { ClusterStatuses, SimpleJson } from '../../src/model/types';
 import {
@@ -28,7 +28,7 @@ import {
 import { ApiResponse as ApiResponse6 } from 'es6';
 import { ApiResponse as ApiResponse7 } from 'es7';
 
-export default class MockElasticsearchClient implements ElasticsearchClient {
+export default class MockElasticsearchClient implements OldElasticsearchClient {
     close() {
         cli.debug('Called MockElasticsearchClient.close');
     }

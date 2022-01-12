@@ -1,10 +1,10 @@
 import { Index } from 'es6/api/requestParams';
 import { es7ClientContainer } from '../../../../../__mocks__/ioc-test';
-import ElasticsearchClient from '../../../es/ElasticsearchClient';
+import OldElasticsearchClient from '../../../es/ElasticsearchClient';
 import { Bindings } from '../../../../ioc.bindings';
 
 describe('Elasticsearch7Client', () => {
-    const client = es7ClientContainer().get<ElasticsearchClient>(Bindings.ElasticsearchClient);
+    const client = es7ClientContainer().get<OldElasticsearchClient>(Bindings.ElasticsearchClient);
 
     it('can get version', () => {
         expect(client.version()).toEqual('7.x');

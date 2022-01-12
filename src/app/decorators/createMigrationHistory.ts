@@ -7,7 +7,7 @@ import v7Mapping from '../resources/mapping/migrate_history_esV7.json';
 import v6Mapping from '../resources/mapping/migrate_history_esV6.json';
 import { MAPPING_HISTORY_INDEX_NAME, MigrationConfig } from '../types';
 import getElasticsearchClient, { usedEsVersion } from '../client/es/EsUtils';
-import ElasticsearchClient from '../client/es/ElasticsearchClient';
+import OldElasticsearchClient from '../client/es/ElasticsearchClient';
 
 export function CreateMigrationHistoryIfNotExists() {
     return function (
@@ -56,7 +56,7 @@ const setUpMigrationEnv = async function (options: SetUpMigrationEnvOptions) {
 };
 
 async function createHistoryIndex(
-    esClient: ElasticsearchClient,
+    esClient: OldElasticsearchClient,
     config: MigrationConfig
 ): Promise<void> {
     const mappingData = getHistoryIndexRequestBody(config);

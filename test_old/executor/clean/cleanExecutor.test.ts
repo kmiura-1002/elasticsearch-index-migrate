@@ -1,5 +1,5 @@
 import * as sinon from 'sinon';
-import ElasticsearchClient from '../../../src/app/client/es/ElasticsearchClient';
+import OldElasticsearchClient from '../../../src/app/client/es/ElasticsearchClient';
 import { expect } from 'chai';
 import { cleanExecutor } from '../../../src/executor/clean/CleanExecutor';
 import { MAPPING_HISTORY_INDEX_NAME } from '../../../src/model/types';
@@ -23,13 +23,13 @@ describe('CleanExecutor test', () => {
     });
 
     it('documents are removed from migration_history', async () => {
-        type mockEsClient = Partial<ElasticsearchClient>;
+        type mockEsClient = Partial<OldElasticsearchClient>;
         const client: mockEsClient = {
             deleteDocument: (_param: DeleteByQuery6 | DeleteByQuery7): Promise<any> =>
                 Promise.resolve('success')
         };
         const stub = sandbox.stub(client, 'deleteDocument').returns(Promise.resolve('success'));
-        await cleanExecutor(client as ElasticsearchClient, 'test', 'history');
+        await cleanExecutor(client as OldElasticsearchClient, 'test', 'history');
         expect(stub.calledOnce).is.true;
         expect(
             stub.calledWith({
@@ -49,13 +49,13 @@ describe('CleanExecutor test', () => {
     });
 
     it('document failed to be removed from migration_history', async () => {
-        type mockEsClient = Partial<ElasticsearchClient>;
+        type mockEsClient = Partial<OldElasticsearchClient>;
         const client: mockEsClient = {
             deleteDocument: (_param: DeleteByQuery6 | DeleteByQuery7) => Promise.reject('failed')
         };
         const clientStub = sandbox.stub(client, 'deleteDocument').returns(Promise.reject('failed'));
         const errorStub = sandbox.stub(cli, 'error');
-        await cleanExecutor(client as ElasticsearchClient, 'test', 'history');
+        await cleanExecutor(client as OldElasticsearchClient, 'test', 'history');
         expect(clientStub.calledOnce).is.true;
         expect(errorStub.calledOnce).is.true;
         expect(errorStub.calledWith('An error occurred during the deletion process : "failed"')).is
@@ -63,27 +63,27 @@ describe('CleanExecutor test', () => {
     });
 
     it('delete index from elasticsearch', async () => {
-        type mockEsClient = Partial<ElasticsearchClient>;
+        type mockEsClient = Partial<OldElasticsearchClient>;
         const client: mockEsClient = {
             delete: (_param: IndicesDelete6 | IndicesDelete7): Promise<any> =>
                 Promise.resolve('success')
         };
         const stub = sandbox.stub(client, 'delete').returns(Promise.resolve('success'));
-        await cleanExecutor(client as ElasticsearchClient, 'test', 'index');
+        await cleanExecutor(client as OldElasticsearchClient, 'test', 'index');
         expect(stub.calledOnce).is.true;
         expect(stub.calledWith({ index: 'test' })).is.true;
         expect(stub.returned(Promise.resolve('success'))).is.true;
     });
 
     it('Failed to delete the index from elasticsearch', async () => {
-        type mockEsClient = Partial<ElasticsearchClient>;
+        type mockEsClient = Partial<OldElasticsearchClient>;
         const client: mockEsClient = {
             delete: (_param: IndicesDelete6 | IndicesDelete7): Promise<any> =>
                 Promise.resolve('failed')
         };
         const clientStub = sandbox.stub(client, 'delete').returns(Promise.reject('failed'));
         const errorStub = sandbox.stub(cli, 'error');
-        await cleanExecutor(client as ElasticsearchClient, 'test', 'index');
+        await cleanExecutor(client as OldElasticsearchClient, 'test', 'index');
         expect(clientStub.calledOnce).is.true;
         expect(errorStub.calledOnce).is.true;
         expect(errorStub.calledWith('An error occurred during the deletion process : "failed"')).is
@@ -91,7 +91,7 @@ describe('CleanExecutor test', () => {
     });
 
     it('delete index and migration history', async () => {
-        type mockEsClient = Partial<ElasticsearchClient>;
+        type mockEsClient = Partial<OldElasticsearchClient>;
         const client: mockEsClient = {
             delete: (_param: IndicesDelete6 | IndicesDelete7): Promise<any> =>
                 Promise.resolve('success'),
@@ -102,7 +102,7 @@ describe('CleanExecutor test', () => {
             .stub(client, 'deleteDocument')
             .returns(Promise.resolve('success'));
         const deleteStub = sandbox.stub(client, 'delete').returns(Promise.resolve('success'));
-        await cleanExecutor(client as ElasticsearchClient, 'test', 'all');
+        await cleanExecutor(client as OldElasticsearchClient, 'test', 'all');
         expect(deleteDocumentStub.calledOnce).is.true;
         expect(
             deleteDocumentStub.calledWith({
@@ -125,7 +125,7 @@ describe('CleanExecutor test', () => {
     });
 
     it('Deleting the index and deleting the history failed.', async () => {
-        type mockEsClient = Partial<ElasticsearchClient>;
+        type mockEsClient = Partial<OldElasticsearchClient>;
         const client: mockEsClient = {
             deleteDocument: (_param: DeleteByQuery6 | DeleteByQuery7) => Promise.reject('failed'),
             delete: (_param: IndicesDelete6 | IndicesDelete7): Promise<any> =>
@@ -136,7 +136,7 @@ describe('CleanExecutor test', () => {
             .returns(Promise.reject('failed'));
         const deleteStub = sandbox.stub(client, 'delete').returns(Promise.reject('failed'));
         const errorStub = sandbox.stub(cli, 'error');
-        await cleanExecutor(client as ElasticsearchClient, 'test', 'all');
+        await cleanExecutor(client as OldElasticsearchClient, 'test', 'all');
         expect(deleteDocumentStub.calledOnce).is.true;
         expect(deleteStub.calledOnce).is.true;
         expect(errorStub.calledTwice).is.true;

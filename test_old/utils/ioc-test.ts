@@ -1,4 +1,4 @@
-import ElasticsearchClient from '../../src/app/client/es/ElasticsearchClient';
+import OldElasticsearchClient from '../../src/app/client/es/ElasticsearchClient';
 import Elasticsearch6Client from '../../src/app/client/es/6/Elasticsearch6Client';
 import { Container } from 'inversify';
 import { Bindings } from 'app/ioc.bindings';
@@ -10,7 +10,7 @@ export function es6ClientContainer() {
     container.bind<ESConnectConfig>(Bindings.ESConfig).toConstantValue({
         host: 'http://localhost:9201'
     });
-    container.bind<ElasticsearchClient>(Bindings.ElasticsearchClient).to(Elasticsearch6Client);
+    container.bind<OldElasticsearchClient>(Bindings.ElasticsearchClient).to(Elasticsearch6Client);
     return container;
 }
 
@@ -19,6 +19,6 @@ export function es7ClientContainer() {
     container.bind<ESConnectConfig>(Bindings.ESConfig).toConstantValue({
         host: 'http://localhost:9202'
     });
-    container.bind<ElasticsearchClient>(Bindings.ElasticsearchClient).to(Elasticsearch7Client);
+    container.bind<OldElasticsearchClient>(Bindings.ElasticsearchClient).to(Elasticsearch7Client);
     return container;
 }

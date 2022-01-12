@@ -3,7 +3,7 @@ import * as EsUtils from '../../src/app/client/es/EsUtils';
 import MockElasticsearchClient from '../mock/MockElasticsearchClient';
 import * as types from '../../src/model/types';
 import { es7ClientContainer } from '../utils/ioc-test';
-import ElasticsearchClient from '../../src/app/client/es/ElasticsearchClient';
+import OldElasticsearchClient from '../../src/app/client/es/ElasticsearchClient';
 import { Bindings } from 'app/ioc.bindings';
 import { MigrateIndex } from '../../src/model/types';
 import { cli } from 'cli-ux';
@@ -15,7 +15,7 @@ import { IndicesExists as IndicesExists7 } from 'es7/api/requestParams';
 
 describe('plan command test', () => {
     after(async () => {
-        const client = es7ClientContainer().get<ElasticsearchClient>(Bindings.ElasticsearchClient);
+        const client = es7ClientContainer().get<OldElasticsearchClient>(Bindings.ElasticsearchClient);
         await client.delete({ index: 'test*' });
     });
 
@@ -101,7 +101,7 @@ describe('plan command test', () => {
         .command(['init'])
         .do(async () => {
             const testMigrateHistory = 'test6_migrate_history';
-            const client = es7ClientContainer().get<ElasticsearchClient>(
+            const client = es7ClientContainer().get<OldElasticsearchClient>(
                 Bindings.ElasticsearchClient
             );
             for (let i = 0; i <= 10; i++) {

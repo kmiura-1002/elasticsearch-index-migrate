@@ -3,7 +3,7 @@ import { Client } from 'es7';
 import { ApiResponse as ApiResponse7, ApiResponse } from 'es7/lib/Transport';
 import { injectable, inject } from 'inversify';
 import { Bindings } from '../../../ioc.bindings';
-import ElasticsearchClient, { convertGetMappingResponse, isIndex7 } from '../ElasticsearchClient';
+import OldElasticsearchClient, { convertGetMappingResponse, isIndex7 } from '../ElasticsearchClient';
 import {
     ELASTICSEARCH_VERSION,
     ESConnectConfig,
@@ -27,7 +27,7 @@ import {
 } from 'es7/api/requestParams';
 
 @injectable()
-class Elasticsearch7Client implements ElasticsearchClient {
+class Elasticsearch7Client implements OldElasticsearchClient {
     client: Client;
 
     public constructor(@inject(Bindings.ESConfig) connectConf: ESConnectConfig) {

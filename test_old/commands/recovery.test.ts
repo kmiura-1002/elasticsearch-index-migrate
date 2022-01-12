@@ -3,7 +3,7 @@ import * as EsUtils from '../../src/app/client/es/EsUtils';
 import MockElasticsearchClient from '../mock/MockElasticsearchClient';
 import * as types from '../../src/model/types';
 import { es7ClientContainer } from '../utils/ioc-test';
-import ElasticsearchClient from '../../src/app/client/es/ElasticsearchClient';
+import OldElasticsearchClient from '../../src/app/client/es/ElasticsearchClient';
 import { Bindings } from 'app/ioc.bindings';
 import { MAPPING_HISTORY_INDEX_NAME, MigrateIndex } from '../../src/model/types';
 import { cli } from 'cli-ux';
@@ -23,7 +23,7 @@ import {
 
 describe('recovery command test', () => {
     after(async () => {
-        const client = es7ClientContainer().get<ElasticsearchClient>(Bindings.ElasticsearchClient);
+        const client = es7ClientContainer().get<OldElasticsearchClient>(Bindings.ElasticsearchClient);
         await client.delete({ index: 'test*' });
     });
 
@@ -96,7 +96,7 @@ describe('recovery command test', () => {
         .command(['init'])
         .do(async () => {
             const testMigrateHistory = 'test1_migrate_history';
-            const client = es7ClientContainer().get<ElasticsearchClient>(
+            const client = es7ClientContainer().get<OldElasticsearchClient>(
                 Bindings.ElasticsearchClient
             );
             for (let i = 0; i <= 10; i++) {
@@ -127,7 +127,7 @@ describe('recovery command test', () => {
                     .true;
             });
             expect(info.calledWith('I will delete the above history.')).is.true;
-            const client = es7ClientContainer().get<ElasticsearchClient>(
+            const client = es7ClientContainer().get<OldElasticsearchClient>(
                 Bindings.ElasticsearchClient
             );
             // Processing to wait for elasticsearch refresh time

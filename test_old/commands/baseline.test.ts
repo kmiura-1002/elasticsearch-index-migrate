@@ -3,7 +3,7 @@ import * as EsUtils from '../../src/app/client/es/EsUtils';
 import MockElasticsearchClient from '../mock/MockElasticsearchClient';
 import * as types from '../../src/model/types';
 import { es7ClientContainer } from '../utils/ioc-test';
-import ElasticsearchClient from '../../src/app/client/es/ElasticsearchClient';
+import OldElasticsearchClient from '../../src/app/client/es/ElasticsearchClient';
 import { Bindings } from 'app/ioc.bindings';
 import { MAPPING_HISTORY_INDEX_NAME, MigrateIndex } from '../../src/model/types';
 import { cli } from 'cli-ux';
@@ -23,7 +23,7 @@ import {
 
 describe('baseline command test', () => {
     after(async () => {
-        const client = es7ClientContainer().get<ElasticsearchClient>(Bindings.ElasticsearchClient);
+        const client = es7ClientContainer().get<OldElasticsearchClient>(Bindings.ElasticsearchClient);
         await client.delete({ index: 'test*' });
     });
 
@@ -100,7 +100,7 @@ describe('baseline command test', () => {
             expect(info.calledWith('Baseline history does not exist.')).is.true;
             expect(info.calledWith('Create baseline in v1.0.0.')).is.true;
             expect(info.calledWith('Successfully created a baseline in v1.0.0.')).is.true;
-            const client = es7ClientContainer().get<ElasticsearchClient>(
+            const client = es7ClientContainer().get<OldElasticsearchClient>(
                 Bindings.ElasticsearchClient
             );
             // Processing to wait for elasticsearch refresh time
@@ -149,7 +149,7 @@ describe('baseline command test', () => {
             expect(info.calledWith('Baseline history does not exist.')).is.true;
             expect(info.calledWith('Create baseline in v1.0.0.')).is.true;
             expect(info.calledWith('Successfully created a baseline in v1.0.0.')).is.true;
-            const client = es7ClientContainer().get<ElasticsearchClient>(
+            const client = es7ClientContainer().get<OldElasticsearchClient>(
                 Bindings.ElasticsearchClient
             );
             // Processing to wait for elasticsearch refresh time
@@ -194,7 +194,7 @@ describe('baseline command test', () => {
         .command(['init'])
         .do(async () => {
             const testMigrateHistory = 'test3_migrate_history';
-            const client = es7ClientContainer().get<ElasticsearchClient>(
+            const client = es7ClientContainer().get<OldElasticsearchClient>(
                 Bindings.ElasticsearchClient
             );
             const history: MigrateIndex = {

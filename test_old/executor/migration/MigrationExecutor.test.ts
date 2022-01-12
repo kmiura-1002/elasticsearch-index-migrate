@@ -1,7 +1,7 @@
 /* eslint-env node, mocha */
 import 'mocha';
 import { expect } from 'chai';
-import ElasticsearchClient from '../../../src/app/client/es/ElasticsearchClient';
+import OldElasticsearchClient from '../../../src/app/client/es/ElasticsearchClient';
 import {
     addMigrationHistory,
     applyMigration,
@@ -40,12 +40,12 @@ describe('MigrationExecutor test', () => {
     });
     it('failed addMigrationHistory', async () => {
         const stub = sandbox.stub(cli, 'warn');
-        type mockEsClient = Partial<ElasticsearchClient>;
+        type mockEsClient = Partial<OldElasticsearchClient>;
 
         const client: mockEsClient = {
             postDocument: (_param: Index6 | Index7) => Promise.reject()
         };
-        await addMigrationHistory(client as ElasticsearchClient, {} as MigrateIndex);
+        await addMigrationHistory(client as OldElasticsearchClient, {} as MigrateIndex);
         expect(stub.calledOnce).is.true;
         expect(stub.calledWith('Failed to save history. (Failed Data: {}, response: undefined)')).is
             .true;
@@ -53,11 +53,11 @@ describe('MigrationExecutor test', () => {
 
     it('Migration history saved successfully', async () => {
         const debugStub = sandbox.stub(cli, 'debug');
-        type mockEsClient = Partial<ElasticsearchClient>;
+        type mockEsClient = Partial<OldElasticsearchClient>;
         const client: mockEsClient = {
             postDocument: (_param: Index6 | Index7): Promise<any> => Promise.resolve()
         };
-        await addMigrationHistory(client as ElasticsearchClient, {} as MigrateIndex);
+        await addMigrationHistory(client as OldElasticsearchClient, {} as MigrateIndex);
         expect(debugStub.calledOnce).is.true;
         expect(debugStub.calledWith('POST Success. Migration history saved successfully.')).is.true;
     });
@@ -106,7 +106,7 @@ describe('MigrationExecutor test', () => {
             createIndex: (_param: IndicesCreate6 | IndicesCreate7) =>
                 Promise.resolve({ statusCode: 200 }),
             postDocument: (_param: Index6 | Index7) => Promise.resolve({ statusCode: 200 })
-        } as ElasticsearchClient;
+        } as OldElasticsearchClient;
         const createIndexStub = sandbox
             .stub(tmpClient, 'createIndex')
             .returns(Promise.resolve({ statusCode: 200 } as ApiResponse6 | ApiResponse7));
@@ -154,7 +154,7 @@ describe('MigrationExecutor test', () => {
             putMapping: (_param: IndicesPutMapping6 | IndicesPutMapping7) =>
                 Promise.resolve({ statusCode: 200 }),
             postDocument: (_param: Index6 | Index7) => Promise.resolve({ statusCode: 200 })
-        } as ElasticsearchClient;
+        } as OldElasticsearchClient;
         const putMappingStub = sandbox
             .stub(tmpClient, 'putMapping')
             .returns(Promise.resolve({ statusCode: 200 } as ApiResponse6 | ApiResponse7));
@@ -205,7 +205,7 @@ describe('MigrationExecutor test', () => {
             success: true
         });
 
-        const ret = await applyMigration('test', {} as ElasticsearchClient, info);
+        const ret = await applyMigration('test', {} as OldElasticsearchClient, info);
         expect(ret).is.eq(0);
         expect(cliWarnStub.calledOnce).is.true;
         expect(cliWarnStub.calledWith('No migration target.')).is.true;

@@ -1,4 +1,4 @@
-import ElasticsearchClient from '../../app/client/es/ElasticsearchClient';
+import OldElasticsearchClient from '../../app/client/es/ElasticsearchClient';
 import { cli } from 'cli-ux';
 import {
     DeleteByQuery as DeleteByQuery6,
@@ -32,7 +32,7 @@ export const getMockElasticsearchClient = jest.fn().mockImplementation(() => {
     return new MockElasticsearchClient();
 });
 
-class MockElasticsearchClient implements ElasticsearchClient {
+class MockElasticsearchClient implements OldElasticsearchClient {
     close() {
         cli.debug('Called MockElasticsearchClient.close');
     }

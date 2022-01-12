@@ -3,8 +3,8 @@ import { ClientOptions as ClientOptions6 } from 'es6';
 import { ClientOptions as ClientOptions7 } from 'es7';
 import fs from 'fs';
 import { Bindings } from '../../ioc.bindings';
-import ElasticsearchClient from './ElasticsearchClient';
-import { ESConfig, ESConnectConfig, OPENSEARCH, SearchEngineVersion } from "../../types";
+import OldElasticsearchClient from './ElasticsearchClient';
+import { ESConfig, ESConnectConfig, OPENSEARCH, SearchEngineVersion } from '../../types';
 import { Container } from 'inversify';
 import Elasticsearch6Client from './6/Elasticsearch6Client';
 import Elasticsearch7Client from './7/Elasticsearch7Client';
@@ -43,12 +43,12 @@ export function esClientBind(esConfig: ESConfig): Container {
         switch (version) {
             case 6:
                 container
-                    .bind<ElasticsearchClient>(Bindings.ElasticsearchClient)
+                    .bind<OldElasticsearchClient>(Bindings.ElasticsearchClient)
                     .to(Elasticsearch6Client);
                 break;
             case 7:
                 container
-                    .bind<ElasticsearchClient>(Bindings.ElasticsearchClient)
+                    .bind<OldElasticsearchClient>(Bindings.ElasticsearchClient)
                     .to(Elasticsearch7Client);
                 break;
             default:
@@ -62,9 +62,9 @@ export function esClientBind(esConfig: ESConfig): Container {
     }
 }
 
-export default function getElasticsearchClient(esConfig: ESConfig): ElasticsearchClient {
+export default function getElasticsearchClient(esConfig: ESConfig): OldElasticsearchClient {
     const container = esClientBind(esConfig);
-    return container.get<ElasticsearchClient>(Bindings.ElasticsearchClient);
+    return container.get<OldElasticsearchClient>(Bindings.ElasticsearchClient);
 }
 
 export function esConnectConf(conf: ESConnectConfig): ClientOptions6 | ClientOptions7 {

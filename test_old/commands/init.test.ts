@@ -6,7 +6,7 @@ import { cli } from 'cli-ux';
 import { ClusterStatuses } from '../../src/model/types';
 import * as types from '../../src/model/types';
 import { es6ClientContainer, es7ClientContainer } from '../utils/ioc-test';
-import ElasticsearchClient from '../../src/app/client/es/ElasticsearchClient';
+import OldElasticsearchClient from '../../src/app/client/es/ElasticsearchClient';
 import { Bindings } from 'app/ioc.bindings';
 import {
     IndicesCreate as IndicesCreate6,
@@ -21,10 +21,10 @@ import { ApiResponse as ApiResponse7 } from 'es7';
 
 describe('Setup elasticsearch index migrate env test', () => {
     after(async () => {
-        const client7 = es7ClientContainer().get<ElasticsearchClient>(Bindings.ElasticsearchClient);
+        const client7 = es7ClientContainer().get<OldElasticsearchClient>(Bindings.ElasticsearchClient);
         await client7.delete({ index: 'test*' });
 
-        const client6 = es6ClientContainer().get<ElasticsearchClient>(Bindings.ElasticsearchClient);
+        const client6 = es6ClientContainer().get<OldElasticsearchClient>(Bindings.ElasticsearchClient);
         await client6.delete({ index: 'test*' });
     });
 

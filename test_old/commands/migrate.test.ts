@@ -4,7 +4,7 @@ import * as EsUtils from '../../src/app/client/es/EsUtils';
 import MockElasticsearchClient from '../mock/MockElasticsearchClient';
 import * as types from '../../src/model/types';
 import { es7ClientContainer } from '../utils/ioc-test';
-import ElasticsearchClient from '../../src/app/client/es/ElasticsearchClient';
+import OldElasticsearchClient from '../../src/app/client/es/ElasticsearchClient';
 import { Bindings } from 'app/ioc.bindings';
 import { MigrateIndex } from '../../src/model/types';
 import { MAPPING_HISTORY_INDEX_NAME } from '../../src/model/types';
@@ -16,7 +16,7 @@ import { IndicesExists as IndicesExists7 } from 'es7/api/requestParams';
 
 describe('Migrates Elasticsearch index to the latest version.', () => {
     after(async () => {
-        const client = es7ClientContainer().get<ElasticsearchClient>(Bindings.ElasticsearchClient);
+        const client = es7ClientContainer().get<OldElasticsearchClient>(Bindings.ElasticsearchClient);
         await client.delete({ index: 'test*' });
     });
 
@@ -95,7 +95,7 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
             // Processing to wait for elasticsearch refresh time
             await new Promise((resolve) => setTimeout(resolve, 2000));
             const testMigrateHistory = 'test3_migrate_history';
-            const client = es7ClientContainer().get<ElasticsearchClient>(
+            const client = es7ClientContainer().get<OldElasticsearchClient>(
                 Bindings.ElasticsearchClient
             );
 
@@ -135,7 +135,7 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
                 // Processing to wait for elasticsearch refresh time
                 await new Promise((resolve) => setTimeout(resolve, 2000));
                 const testMigrateHistory = 'test4_migrate_history';
-                const client = es7ClientContainer().get<ElasticsearchClient>(
+                const client = es7ClientContainer().get<OldElasticsearchClient>(
                     Bindings.ElasticsearchClient
                 );
 
@@ -178,7 +178,7 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
         .command(['init'])
         .do(async () => {
             const testMigrateHistory = 'test5_migrate_history';
-            const client = es7ClientContainer().get<ElasticsearchClient>(
+            const client = es7ClientContainer().get<OldElasticsearchClient>(
                 Bindings.ElasticsearchClient
             );
             const history: MigrateIndex = {
@@ -285,7 +285,7 @@ describe('Migrates Elasticsearch index to the latest version.', () => {
             ELASTICSEARCH_HOST: 'http://localhost:9202'
         })
         .do(async () => {
-            const client = es7ClientContainer().get<ElasticsearchClient>(
+            const client = es7ClientContainer().get<OldElasticsearchClient>(
                 Bindings.ElasticsearchClient
             );
             await client.createIndex({

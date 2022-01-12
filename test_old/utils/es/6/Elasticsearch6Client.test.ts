@@ -1,7 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
 import * as chai from 'chai';
-import ElasticsearchClient from '../../../../src/app/client/es/ElasticsearchClient';
+import OldElasticsearchClient from '../../../../src/app/client/es/ElasticsearchClient';
 import { Bindings } from 'app/ioc.bindings';
 import { es6ClientContainer } from '../../ioc-test';
 import chaiAsPromised from 'chai-as-promised';
@@ -20,7 +20,7 @@ import {
 chai.use(chaiAsPromised);
 
 describe('Elasticsearch6Client test', () => {
-    const client = es6ClientContainer().get<ElasticsearchClient>(Bindings.ElasticsearchClient);
+    const client = es6ClientContainer().get<OldElasticsearchClient>(Bindings.ElasticsearchClient);
 
     it('version check', () => {
         expect(client.version()).is.eq('6.x');

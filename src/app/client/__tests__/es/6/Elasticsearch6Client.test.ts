@@ -9,12 +9,12 @@ import {
     IndicesPutSettings,
     Search
 } from 'es7/api/requestParams';
-import { es6ClientContainer } from "../../../../../__mocks__/ioc-test";
-import ElasticsearchClient from "../../../es/ElasticsearchClient";
-import { Bindings } from "../../../../ioc.bindings";
+import { es6ClientContainer } from '../../../../../__mocks__/ioc-test';
+import OldElasticsearchClient from '../../../es/ElasticsearchClient';
+import { Bindings } from '../../../../ioc.bindings';
 
 describe('Elasticsearch6Client', () => {
-    const client = es6ClientContainer().get<ElasticsearchClient>(Bindings.ElasticsearchClient);
+    const client = es6ClientContainer().get<OldElasticsearchClient>(Bindings.ElasticsearchClient);
 
     it('can get version', () => {
         expect(client.version()).toEqual('6.x');
