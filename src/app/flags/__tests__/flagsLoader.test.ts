@@ -5,6 +5,7 @@ describe('readOptions', () => {
     it('can be return MigrationConfig when connect with ssl ', async () => {
         const actual = await readOptions(
             {
+                search_engine: 'search_engine',
                 migration_locations: 'migration_locations',
                 baseline_version: 'baseline_version',
                 elasticsearch_version: 'elasticsearch_version',
@@ -23,6 +24,7 @@ describe('readOptions', () => {
                     sslCa: 'elasticsearch_ssl',
                     username: undefined
                 },
+                searchEngine: 'search_engine',
                 version: 'elasticsearch_version'
             },
             migration: {
@@ -51,6 +53,7 @@ describe('readOptions', () => {
                     sslCa: undefined,
                     username: undefined
                 },
+                searchEngine: 'elasticsearch',
                 version: 'elasticsearch_version'
             },
             migration: {
@@ -65,6 +68,7 @@ describe('readOptions', () => {
             {
                 migration_locations: 'migration_locations',
                 baseline_version: 'baseline_version',
+                search_engine: 'search_engine',
                 elasticsearch_version: 'elasticsearch_version',
                 elasticsearch_cloudid: 'elasticsearch_cloudid',
                 elasticsearch_username: 'elasticsearch_username',
@@ -81,6 +85,7 @@ describe('readOptions', () => {
                     sslCa: undefined,
                     username: 'elasticsearch_username'
                 },
+                searchEngine: 'search_engine',
                 version: 'elasticsearch_version'
             },
             migration: {
@@ -93,6 +98,7 @@ describe('readOptions', () => {
     it('can be return MigrationConfig when connect with option_file and cloud id, user name, password ', async () => {
         const actual = await readOptions(
             {
+                search_engine: 'search_engine',
                 elasticsearch_version: 'elasticsearch_version',
                 elasticsearch_cloudid: 'elasticsearch_cloudid',
                 elasticsearch_username: 'elasticsearch_username',
@@ -110,6 +116,7 @@ describe('readOptions', () => {
                     sslCa: undefined,
                     username: 'elasticsearch_username'
                 },
+                searchEngine: 'search_engine',
                 version: '6'
             },
             migration: {
@@ -137,6 +144,7 @@ describe('readOptions', () => {
                     sslCa: undefined,
                     username: undefined
                 },
+                searchEngine: 'elasticsearch',
                 version: '6'
             },
             migration: {
@@ -165,6 +173,7 @@ describe('readOptions', () => {
                     sslCa: 'elasticsearch_ssl',
                     username: undefined
                 },
+                searchEngine: 'elasticsearch',
                 version: '6'
             },
             migration: {
@@ -192,6 +201,7 @@ describe('readOptions', () => {
                     sslCa: 'elasticsearch_ssl',
                     username: undefined
                 },
+                searchEngine: 'elasticsearch',
                 version: '6'
             },
             migration: {
@@ -218,6 +228,7 @@ describe('readOptions', () => {
                     sslCa: undefined,
                     username: undefined
                 },
+                searchEngine: 'elasticsearch',
                 version: '6'
             },
             migration: {
@@ -246,6 +257,7 @@ describe('readOptions', () => {
                     sslCa: undefined,
                     username: 'elasticsearch_username'
                 },
+                searchEngine: 'elasticsearch',
                 version: '6'
             },
             migration: {
@@ -263,6 +275,7 @@ describe('readOptions', () => {
                 connect: {
                     host: 'http://0.0.0.0:9202'
                 },
+                searchEngine: 'elasticsearch',
                 version: '6'
             },
             migration: {
@@ -282,6 +295,7 @@ describe('readOptions', () => {
                 connect: {
                     host: 'http://0.0.0.0:9202'
                 },
+                searchEngine: 'elasticsearch',
                 version: '6'
             },
             migration: {

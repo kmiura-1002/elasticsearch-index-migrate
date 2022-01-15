@@ -12,6 +12,7 @@ export const readOptions = async (
     const {
         migration_locations,
         baseline_version,
+        search_engine = 'elasticsearch',
         elasticsearch_version,
         elasticsearch_host,
         elasticsearch_ssl,
@@ -23,6 +24,7 @@ export const readOptions = async (
     if (
         migration_locations &&
         baseline_version &&
+        search_engine &&
         elasticsearch_version &&
         ((elasticsearch_ssl && elasticsearch_host) ||
             elasticsearch_host ||
@@ -37,6 +39,7 @@ export const readOptions = async (
                     username: elasticsearch_username,
                     password: elasticsearch_password
                 },
+                searchEngine: search_engine,
                 version: elasticsearch_version
             },
             migration: {
@@ -63,6 +66,7 @@ export const readOptions = async (
                         username: elasticsearch_username,
                         password: elasticsearch_password
                     },
+                    searchEngine: search_engine,
                     version: elasticsearch_version
                 },
                 migration: {
@@ -88,6 +92,7 @@ export const readOptions = async (
                         username: elasticsearch_username,
                         password: elasticsearch_password
                     },
+                    searchEngine: search_engine,
                     version: elasticsearch_version
                 },
                 migration: {
@@ -100,11 +105,25 @@ export const readOptions = async (
             } as MigrationConfig
         );
     } else if (option_file) {
-        return { ...(await loadJSON(option_file)) };
+        return merge(
+            {
+                elasticsearch: {
+                    searchEngine: search_engine
+                }
+            },
+            { ...(await loadJSON(option_file)) }
+        );
     } else if (fs.existsSync(path.join(config.configDir, 'config.json'))) {
-        return {
-            ...(await loadJSON(path.join(config.configDir, 'config.json')))
-        } as MigrationConfig;
+        return merge(
+            {
+                elasticsearch: {
+                    searchEngine: search_engine
+                }
+            },
+            {
+                ...(await loadJSON(path.join(config.configDir, 'config.json')))
+            } as MigrationConfig
+        );
     } else {
         return Promise.reject(
             'No config. You can specify environment variables or files with the -O option and place config.json in ~/.config/elasticsearch-index-migrate. You should set one of these.'

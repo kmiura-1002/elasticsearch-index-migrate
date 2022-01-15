@@ -4,6 +4,9 @@ export const MAPPING_HISTORY_INDEX_NAME = 'migrate_history';
 const ELASTICSEARCH_VERSIONS = ['6.x', '7.x', 'opensearch'] as const;
 export type ELASTICSEARCH_VERSION = typeof ELASTICSEARCH_VERSIONS[number];
 export const OPENSEARCH = 'opensearch';
+export const ELASTICSEARCH = 'elasticsearch';
+const SearchEngines = ['opensearch', 'elasticsearch'] as const;
+export type SearchEngine = typeof SearchEngines[number];
 
 export interface ESConnectConfig {
     host?: string;
@@ -13,7 +16,8 @@ export interface ESConnectConfig {
     password?: string;
 }
 export type ESConfig = {
-    version?: string;
+    searchEngine: SearchEngine
+    version: string;
     connect: ESConnectConfig;
 };
 

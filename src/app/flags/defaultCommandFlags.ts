@@ -1,12 +1,19 @@
 import { flags } from '@oclif/command';
 
 export const esConnectionFlags = {
+    search_engine: flags.string({
+        required: false,
+        env: 'SEARCH_ENGINE',
+        char: 'E',
+        description:
+            'Connect assuming the search engine (Elasticsearch or Opensearch) set in the SEARCH_ENGINE environment variable'
+    }),
     elasticsearch_version: flags.string({
         required: false,
         env: 'ELASTICSEARCH_VERSION',
         char: 'V',
         description:
-            'Run migration with Elasticsearch version set in ELASTICSEARCH_VERSION environment variable'
+          'Run migration with Elasticsearch version set in ELASTICSEARCH_VERSION environment variable'
     }),
     elasticsearch_host: flags.string({
         required: false,
