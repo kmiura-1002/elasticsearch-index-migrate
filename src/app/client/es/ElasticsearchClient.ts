@@ -40,7 +40,10 @@ type EsConnection = {
 
 function esClientBind(esConfig: ESConfig): EsConnection {
     const connectConf = esConnectConf(esConfig.connect);
-    const version = usedEsVersion(esConfig.version);
+    const version = usedEsVersion({
+        version: esConfig.version,
+        searchEngine: esConfig.searchEngine
+    });
     const majorVersion = version?.major;
 
     if (majorVersion) {

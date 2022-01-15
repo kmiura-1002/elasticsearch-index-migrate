@@ -29,9 +29,13 @@ import { ApiResponse as ApiResponse6 } from 'es6/lib/Transport';
 import { ApiResponse as ApiResponse7 } from 'es7/lib/Transport';
 import { cli } from 'cli-ux';
 
-export const getMockElasticsearchClient = jest
-    .fn()
-    .mockImplementation(() => useElasticsearchClient({ connect: {} }));
+export const getMockElasticsearchClient = jest.fn().mockImplementation(() =>
+    useElasticsearchClient({
+        version: '7',
+        searchEngine: 'elasticsearch',
+        connect: {}
+    })
+);
 
 export function useElasticsearchClient(_connectConf: ESConfig) {
     const healthCheck = (_request?: ClusterHealth6 | ClusterHealth7): Promise<{ status: string }> =>

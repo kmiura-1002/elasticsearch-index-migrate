@@ -13,7 +13,7 @@ export const esConnectionFlags = {
         env: 'ELASTICSEARCH_VERSION',
         char: 'V',
         description:
-          'Run migration with Elasticsearch version set in ELASTICSEARCH_VERSION environment variable'
+            'Run migration with Elasticsearch version set in ELASTICSEARCH_VERSION environment variable'
     }),
     elasticsearch_host: flags.string({
         required: false,

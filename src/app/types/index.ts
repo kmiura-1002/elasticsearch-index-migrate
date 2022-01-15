@@ -15,8 +15,14 @@ export interface ESConnectConfig {
     username?: string;
     password?: string;
 }
+
+export type Engine = {
+    searchEngine: SearchEngine;
+    version: string;
+};
+
 export type ESConfig = {
-    searchEngine: SearchEngine
+    searchEngine: SearchEngine;
     version: string;
     connect: ESConnectConfig;
 };

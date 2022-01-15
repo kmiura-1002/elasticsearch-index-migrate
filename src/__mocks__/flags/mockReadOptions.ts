@@ -6,6 +6,7 @@ export const mockReadOptions = jest.fn().mockImplementation((): Promise<Migratio
             connect: {
                 host: 'http://localhost:9202'
             },
+            searchEngine: 'elasticsearch',
             version: '7.7.0'
         },
         migration: {
@@ -23,6 +24,7 @@ export const mockReadOptionsWithHistoryIndexRequestBody = jest
                 connect: {
                     host: 'http://localhost:9202'
                 },
+                searchEngine: 'elasticsearch',
                 version: '7.7.0'
             },
             migration: {

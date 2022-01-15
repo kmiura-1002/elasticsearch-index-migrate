@@ -51,30 +51,50 @@ describe('EsUtils', () => {
     });
 
     it('can get the ES version in use', () => {
-        expect(usedEsVersion('6.0.1')).toEqual({
+        expect(
+            usedEsVersion({
+                version: '6.0.1',
+                searchEngine: 'elasticsearch'
+            })
+        ).toEqual({
             engine: 'Elasticsearch',
             major: 6,
             minor: 0,
             patch: 1
         });
-        expect(usedEsVersion('7.0.1')).toEqual({
+        expect(
+            usedEsVersion({
+                version: '7.0.1',
+                searchEngine: 'elasticsearch'
+            })
+        ).toEqual({
             engine: 'Elasticsearch',
             major: 7,
             minor: 0,
             patch: 1
         });
-        expect(usedEsVersion('7')).toEqual({
+        expect(
+            usedEsVersion({
+                version: '7',
+                searchEngine: 'elasticsearch'
+            })
+        ).toEqual({
             engine: 'Elasticsearch',
             major: 7,
             minor: 0,
             patch: 0
         });
-        expect(usedEsVersion('opensearch')).toEqual({
+        expect(usedEsVersion({ version: '1', searchEngine: 'opensearch' })).toEqual({
             engine: 'OpenSearch',
             major: 1,
             minor: 0,
             patch: 0
         });
-        expect(usedEsVersion('foo')).toEqual(undefined);
+        expect(
+            usedEsVersion({
+                version: '',
+                searchEngine: 'opensearch'
+            })
+        ).toEqual(undefined);
     });
 });

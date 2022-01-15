@@ -4,6 +4,7 @@ import { ResponseError } from 'es7/lib/errors';
 describe('Elasticsearch6', () => {
     const client = useElasticsearchClient({
         version: '6',
+        searchEngine: 'elasticsearch',
         connect: {
             host: 'http://localhost:9201'
         }
@@ -460,6 +461,7 @@ describe('Elasticsearch6', () => {
 describe('Elasticsearch7', () => {
     const client = useElasticsearchClient({
         version: '7',
+        searchEngine: 'elasticsearch',
         connect: {
             host: 'http://localhost:9202'
         }

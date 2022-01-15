@@ -65,7 +65,10 @@ function getHistoryIndexRequestBody(config: MigrationConfig) {
     if (config.migration.historyIndexRequestBody) {
         return config.migration.historyIndexRequestBody;
     }
-    const esVersion = usedEsVersion(config.elasticsearch.version);
+    const esVersion = usedEsVersion({
+        version: config.elasticsearch.version,
+        searchEngine: config.elasticsearch.searchEngine
+    });
 
     if (esVersion?.engine === 'OpenSearch') {
         return v7Mapping;
