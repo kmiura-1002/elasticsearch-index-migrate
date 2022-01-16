@@ -305,6 +305,15 @@ describe('readOptions', () => {
         });
     });
 
+    it('can not be return MigrationConfig when unknown format config file', async () => {
+        await expect(
+            readOptions(
+                { option_file: `${process.cwd()}/src/__mocks__/testsData/unknown.config.json` },
+                {} as Config.IConfig
+            )
+        ).rejects.toEqual('There is an invalid config item.');
+    });
+
     it('can not be return MigrationConfig', async () => {
         try {
             await readOptions({}, { configDir: '' } as Config.IConfig);

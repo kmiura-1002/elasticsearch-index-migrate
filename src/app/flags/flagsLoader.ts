@@ -4,6 +4,49 @@ import fs from 'fs';
 import path from 'path';
 import * as Config from '@oclif/config';
 import { MigrationConfig } from '../types';
+import { createSchema as S, TsjsonParser } from 'ts-json-validator';
+
+const configParser = new TsjsonParser(
+    S({
+        type: 'object',
+        maxProperties: 2,
+        properties: {
+            elasticsearch: S({
+                type: 'object',
+                maxProperties: 3,
+                properties: {
+                    searchEngine: S({ type: 'string' }),
+                    version: S({ type: 'string' }),
+                    connect: S({
+                        type: 'object',
+                        properties: {
+                            host: S({ type: 'string' }),
+                            sslCa: S({ type: 'string' }),
+                            cloudId: S({ type: 'string' }),
+                            username: S({ type: 'string' }),
+                            password: S({ type: 'string' }),
+                            insecure: S({ type: 'boolean' })
+                        }
+                    })
+                }
+            }),
+            migration: S({
+                type: 'object',
+                maxProperties: 3,
+                properties: {
+                    locations: S({ type: 'array', title: 'This is field A' }),
+                    baselineVersion: S({
+                        if: S({ type: 'string' }),
+                        else: S({
+                            type: 'object'
+                        })
+                    }),
+                    historyIndexRequestBody: S({ type: 'object' })
+                }
+            })
+        }
+    })
+);
 
 export const readOptions = async (
     flags: { [name: string]: any },
@@ -56,6 +99,9 @@ export const readOptions = async (
             (elasticsearch_cloudid && elasticsearch_username && elasticsearch_password)) &&
         option_file
     ) {
+        if (!configParser.validates(await loadJSON(option_file))) {
+            return Promise.reject('There is an invalid config item.');
+        }
         return merge(
             {
                 elasticsearch: {
@@ -82,6 +128,9 @@ export const readOptions = async (
             (elasticsearch_cloudid && elasticsearch_username && elasticsearch_password)) &&
         fs.existsSync(path.join(config.configDir, 'config.json'))
     ) {
+        if (!configParser.validates(await loadJSON(path.join(config.configDir, 'config.json')))) {
+            return Promise.reject('There is an invalid config item.');
+        }
         return merge(
             {
                 elasticsearch: {
@@ -105,6 +154,9 @@ export const readOptions = async (
             } as MigrationConfig
         );
     } else if (option_file) {
+        if (!configParser.validates(await loadJSON(option_file))) {
+            return Promise.reject('There is an invalid config item.');
+        }
         return merge(
             {
                 elasticsearch: {
@@ -114,6 +166,9 @@ export const readOptions = async (
             { ...(await loadJSON(option_file)) }
         );
     } else if (fs.existsSync(path.join(config.configDir, 'config.json'))) {
+        if (!configParser.validates(await loadJSON(path.join(config.configDir, 'config.json')))) {
+            return Promise.reject('There is an invalid config item.');
+        }
         return merge(
             {
                 elasticsearch: {

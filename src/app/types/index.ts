@@ -14,6 +14,7 @@ export interface ESConnectConfig {
     cloudId?: string;
     username?: string;
     password?: string;
+    insecure?: boolean;
 }
 
 export type Engine = {
@@ -28,10 +29,14 @@ export type ESConfig = {
 };
 
 export type MigrationConfig = {
-    elasticsearch: ESConfig;
-    migration: {
+    elasticsearch?: ESConfig;
+    migration?: {
         locations: string[];
-        baselineVersion: string;
+        baselineVersion:
+            | string
+            | {
+                  [key: string]: string; // indexName : version
+              };
         historyIndexRequestBody?: SimpleJson;
     };
 };

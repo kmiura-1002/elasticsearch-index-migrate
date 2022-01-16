@@ -1245,6 +1245,11 @@
     jest-diff "^27.0.0"
     pretty-format "^27.0.0"
 
+"@types/js-yaml@^4.0.5":
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/@types/js-yaml/-/js-yaml-4.0.5.tgz#738dd390a6ecc5442f35e7f03fa1431353f7e138"
+  integrity sha512-FhpRzf927MNQdRZP0J5DLIdTXhjLYzeUTmLAu69mnVksLH9CJY3IuSeEgbKUki7GQZm0WqDkGzyxju2EZGD2wA==
+
 "@types/json-schema@^7.0.7", "@types/json-schema@^7.0.9":
   version "7.0.9"
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.9.tgz#97edc9037ea0c38585320b28964dde3b39e4660d"
@@ -1578,7 +1583,7 @@ aggregate-error@^3.0.0:
     clean-stack "^2.0.0"
     indent-string "^4.0.0"
 
-ajv@^6.10.0, ajv@^6.12.3, ajv@^6.12.4:
+ajv@^6.10.0, ajv@^6.12.3, ajv@^6.12.4, ajv@^6.12.6:
   version "6.12.6"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.12.6.tgz#baf5a62e802b07d977034586f8c3baf5adf26df4"
   integrity sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==
@@ -6835,6 +6840,13 @@ ts-jest@^27.1.2:
     make-error "1.x"
     semver "7.x"
     yargs-parser "20.x"
+
+ts-json-validator@^0.7.1:
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/ts-json-validator/-/ts-json-validator-0.7.1.tgz#418df2630986dfd7534505a064f01947d2f07317"
+  integrity sha512-q0T9FUj41/Nqx4zhSIi9371JR1qlv595Ix5cm+fs3i/XfYDcId0qr6+VcUawpOB9jhU+dQ7lKBIZWzcbN3dnVA==
+  dependencies:
+    ajv "^6.12.6"
 
 ts-node@^10.4.0:
   version "10.4.0"
