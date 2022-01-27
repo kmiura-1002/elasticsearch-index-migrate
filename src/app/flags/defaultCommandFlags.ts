@@ -54,21 +54,6 @@ export const esConnectionFlags = {
 
 export const DefaultFlags = {
     help: flags.help({ char: 'h' }),
-    migration_locations: flags.string({
-        multiple: true,
-        required: false,
-        env: 'ELASTICSEARCH_MIGRATION_LOCATIONS',
-        char: 'L',
-        description:
-            'Read the migration file from the directory set in the $ELASTICSEARCH_MIGRATION_LOCATIONS environment variable'
-    }),
-    baseline_version: flags.string({
-        required: false,
-        env: 'ELASTICSEARCH_MIGRATION_BASELINE_VERSION',
-        char: 'B',
-        description:
-            'Migrate from the baseline set in the ELASTICSEARCH_MIGRATION_BASELINE_VERSION environment variable'
-    }),
     option_file: flags.string({
         required: false,
         char: 'O',

@@ -31,12 +31,10 @@ export type ESConfig = {
 export type MigrationConfig = {
     elasticsearch?: ESConfig;
     migration?: {
-        locations: string[];
-        baselineVersion:
-            | string
-            | {
-                  [key: string]: string; // indexName : version
-              };
+        location: string;
+        baselineVersion: {
+            [key: string]: string; // indexName : version
+        };
         historyIndexRequestBody?: SimpleJson;
     };
 };

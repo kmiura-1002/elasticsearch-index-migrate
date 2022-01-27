@@ -3,8 +3,12 @@
         "version": "6",
         "connect": { "host": "http://0.0.0.0:9202" }
     },
-    "migration": [{
-        "locations": ["migration"],
-        "baselineVersion": "v1.0.0"
-    }]
+    "migration": [
+        {
+            "location": "migration",
+            "baselineVersion": {
+                "test_index": "v1.0.0"
+            }
+        }
+    ]
 }

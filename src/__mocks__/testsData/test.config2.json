@@ -1,6 +1,9 @@
 {
     "migration": {
-        "locations": ["test_location"],
-        "baselineVersion": "v1.0.0"
+        "searchEngine": "elasticsearch",
+        "location": "test_location",
+        "baselineVersion": {
+            "test_index": "v1.0.0"
+        }
     }
 }

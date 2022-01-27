@@ -2,99 +2,6 @@ import { readOptions } from '../flagsLoader';
 import * as Config from '@oclif/config';
 
 describe('readOptions', () => {
-    it('can be return MigrationConfig when connect with ssl ', async () => {
-        const actual = await readOptions(
-            {
-                search_engine: 'search_engine',
-                migration_locations: 'migration_locations',
-                baseline_version: 'baseline_version',
-                elasticsearch_version: 'elasticsearch_version',
-                elasticsearch_ssl: 'elasticsearch_ssl',
-                elasticsearch_host: 'elasticsearch_host'
-            },
-            {} as Config.IConfig
-        );
-
-        expect(actual).toEqual({
-            elasticsearch: {
-                connect: {
-                    cloudId: undefined,
-                    host: 'elasticsearch_host',
-                    password: undefined,
-                    sslCa: 'elasticsearch_ssl',
-                    username: undefined
-                },
-                searchEngine: 'search_engine',
-                version: 'elasticsearch_version'
-            },
-            migration: {
-                baselineVersion: 'baseline_version',
-                locations: ['migration_locations']
-            }
-        });
-    });
-
-    it('can be return MigrationConfig when connect with host ', async () => {
-        const actual = await readOptions(
-            {
-                migration_locations: 'migration_locations',
-                baseline_version: 'baseline_version',
-                elasticsearch_version: 'elasticsearch_version',
-                elasticsearch_host: 'elasticsearch_host'
-            },
-            {} as Config.IConfig
-        );
-        expect(actual).toEqual({
-            elasticsearch: {
-                connect: {
-                    cloudId: undefined,
-                    host: 'elasticsearch_host',
-                    password: undefined,
-                    sslCa: undefined,
-                    username: undefined
-                },
-                searchEngine: 'elasticsearch',
-                version: 'elasticsearch_version'
-            },
-            migration: {
-                baselineVersion: 'baseline_version',
-                locations: ['migration_locations']
-            }
-        });
-    });
-
-    it('can be return MigrationConfig when connect with cloud id and user name, password ', async () => {
-        const actual = await readOptions(
-            {
-                migration_locations: 'migration_locations',
-                baseline_version: 'baseline_version',
-                search_engine: 'search_engine',
-                elasticsearch_version: 'elasticsearch_version',
-                elasticsearch_cloudid: 'elasticsearch_cloudid',
-                elasticsearch_username: 'elasticsearch_username',
-                elasticsearch_password: 'elasticsearch_password'
-            },
-            {} as Config.IConfig
-        );
-        expect(actual).toEqual({
-            elasticsearch: {
-                connect: {
-                    cloudId: 'elasticsearch_cloudid',
-                    host: undefined,
-                    password: 'elasticsearch_password',
-                    sslCa: undefined,
-                    username: 'elasticsearch_username'
-                },
-                searchEngine: 'search_engine',
-                version: 'elasticsearch_version'
-            },
-            migration: {
-                baselineVersion: 'baseline_version',
-                locations: ['migration_locations']
-            }
-        });
-    });
-
     it('can be return MigrationConfig when connect with option_file and cloud id, user name, password ', async () => {
         const actual = await readOptions(
             {
@@ -116,12 +23,14 @@ describe('readOptions', () => {
                     sslCa: undefined,
                     username: 'elasticsearch_username'
                 },
-                searchEngine: 'search_engine',
+                searchEngine: 'elasticsearch',
                 version: '6'
             },
             migration: {
-                baselineVersion: 'v1.0.0',
-                locations: ['migration']
+                baselineVersion: {
+                    test_index: 'v1.0.0'
+                },
+                location: 'migration'
             }
         });
     });
@@ -148,8 +57,10 @@ describe('readOptions', () => {
                 version: '6'
             },
             migration: {
-                baselineVersion: 'v1.0.0',
-                locations: ['migration']
+                baselineVersion: {
+                    test_index: 'v1.0.0'
+                },
+                location: 'migration'
             }
         });
     });
@@ -177,8 +88,10 @@ describe('readOptions', () => {
                 version: '6'
             },
             migration: {
-                baselineVersion: 'v1.0.0',
-                locations: ['migration']
+                baselineVersion: {
+                    test_index: 'v1.0.0'
+                },
+                location: 'migration'
             }
         });
     });
@@ -205,8 +118,10 @@ describe('readOptions', () => {
                 version: '6'
             },
             migration: {
-                baselineVersion: 'v1.0.0',
-                locations: ['migration']
+                baselineVersion: {
+                    test_index: 'v1.0.0'
+                },
+                location: 'migration'
             }
         });
     });
@@ -232,8 +147,10 @@ describe('readOptions', () => {
                 version: '6'
             },
             migration: {
-                baselineVersion: 'v1.0.0',
-                locations: ['migration']
+                baselineVersion: {
+                    test_index: 'v1.0.0'
+                },
+                location: 'migration'
             }
         });
     });
@@ -261,8 +178,10 @@ describe('readOptions', () => {
                 version: '6'
             },
             migration: {
-                baselineVersion: 'v1.0.0',
-                locations: ['migration']
+                baselineVersion: {
+                    test_index: 'v1.0.0'
+                },
+                location: 'migration'
             }
         });
     });
@@ -279,8 +198,10 @@ describe('readOptions', () => {
                 version: '6'
             },
             migration: {
-                baselineVersion: 'v1.0.0',
-                locations: ['migration']
+                baselineVersion: {
+                    test_index: 'v1.0.0'
+                },
+                location: 'migration'
             }
         });
     });
@@ -299,8 +220,10 @@ describe('readOptions', () => {
                 version: '6'
             },
             migration: {
-                baselineVersion: 'v1.0.0',
-                locations: ['migration']
+                baselineVersion: {
+                    test_index: 'v1.0.0'
+                },
+                location: 'migration'
             }
         });
     });
