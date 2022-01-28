@@ -8,6 +8,7 @@ import v6Mapping from '../resources/mapping/migrate_history_esV6.json';
 import { MAPPING_HISTORY_INDEX_NAME, MigrationConfig } from '../types';
 import { usedEsVersion } from '../client/es/EsUtils';
 import useElasticsearchClient from '../client/es/ElasticsearchClient';
+import { DeepRequired } from 'ts-essentials';
 
 export function CreateMigrationHistoryIfNotExists() {
     return function (
@@ -61,7 +62,7 @@ const setUpMigrationEnv = async function (options: SetUpMigrationEnvOptions) {
     }
 };
 
-function getHistoryIndexRequestBody(config: MigrationConfig) {
+function getHistoryIndexRequestBody(config: DeepRequired<MigrationConfig>) {
     if (config.migration.historyIndexRequestBody) {
         return config.migration.historyIndexRequestBody;
     }

@@ -10,8 +10,10 @@ export const mockReadOptions = jest.fn().mockImplementation((): Promise<Migratio
             version: '7.7.0'
         },
         migration: {
-            locations: [''],
-            baselineVersion: '1.0.0'
+            location: '',
+            baselineVersion: {
+                test_index: '1.0.0'
+            }
         }
     });
 });
@@ -28,8 +30,10 @@ export const mockReadOptionsWithHistoryIndexRequestBody = jest
                 version: '7.7.0'
             },
             migration: {
-                locations: [''],
-                baselineVersion: '1.0.0',
+                location: '',
+                baselineVersion: {
+                    test_index: '1.0.0'
+                },
                 historyIndexRequestBody: {
                     settings: {
                         index: {

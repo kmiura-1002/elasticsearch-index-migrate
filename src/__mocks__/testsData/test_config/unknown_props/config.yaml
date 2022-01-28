@@ -1,0 +1,7 @@
+elasticsearch:
+    version: test
+    connect:
+        host: http://0.0.0.0:9202
+migration:
+    location: /migration
+    baselineVersion: aaa
