@@ -71,9 +71,9 @@ function getHistoryIndexRequestBody(config: DeepRequired<MigrationConfig>) {
         searchEngine: config.elasticsearch.searchEngine
     });
 
-    if (esVersion?.engine === 'OpenSearch') {
+    if (esVersion.engine === 'OpenSearch') {
         return v7Mapping;
     } else {
-        return esVersion?.major === 7 ? v7Mapping : v6Mapping;
+        return esVersion.major === 7 ? v7Mapping : v6Mapping;
     }
 }

@@ -8,28 +8,28 @@ import patch from 'semver/functions/patch';
 import valid from 'semver/functions/valid';
 import coerce from 'semver/functions/coerce';
 
-export function usedEsVersion(engine: Engine): SearchEngineVersion | undefined {
+export function usedEsVersion(engine: Engine): SearchEngineVersion {
     const version = coerce(engine.version);
-    if (engine.searchEngine === 'opensearch') {
-        return valid(version) && version
-            ? {
-                  engine: 'OpenSearch',
-                  major: major(version),
-                  minor: minor(version),
-                  patch: patch(version)
-              }
-            : undefined;
-    } else if (engine.searchEngine === 'elasticsearch') {
-        return valid(version) && version
-            ? {
-                  engine: 'Elasticsearch',
-                  major: major(version),
-                  minor: minor(version),
-                  patch: patch(version)
-              }
-            : undefined;
+    if (!valid(version) || !version) {
+        throw new Error(`Invalid version of elasticsearch. version:${version}`);
+    } else {
+        if (engine.searchEngine === 'opensearch') {
+            return {
+                engine: 'OpenSearch',
+                major: major(version),
+                minor: minor(version),
+                patch: patch(version)
+            };
+        } else if (engine.searchEngine === 'elasticsearch') {
+            return {
+                engine: 'Elasticsearch',
+                major: major(version),
+                minor: minor(version),
+                patch: patch(version)
+            };
+        }
+        throw new Error(`Unknown search engine: ${engine}`);
     }
-    throw new Error(`Unknown search engine: ${engine}`);
 }
 
 export function esConnectConf(conf: ESConnectConfig): ClientOptions6 | ClientOptions7 {

@@ -35,7 +35,7 @@ import { esConnectConf, usedEsVersion } from './EsUtils';
 
 type EsConnection = {
     client: Es6Client | Es7Client;
-    version: SearchEngineVersion | undefined;
+    version: SearchEngineVersion;
 };
 
 function esClientBind(esConfig: ESConfig): EsConnection {
@@ -44,7 +44,7 @@ function esClientBind(esConfig: ESConfig): EsConnection {
         version: esConfig.version,
         searchEngine: esConfig.searchEngine
     });
-    const majorVersion = version?.major;
+    const majorVersion = version.major;
 
     if (majorVersion) {
         switch (majorVersion) {
@@ -83,16 +83,16 @@ function convertGetMappingResponse(
 
 function isE6Client<ES6Request extends Generic6, ES7Request extends Generic7>(
     param: { client: Es6Client | Es7Client; request?: ES6Request | ES7Request },
-    version: SearchEngineVersion | undefined
+    version: SearchEngineVersion
 ): param is { client: Es6Client; request: ES6Request } {
-    return version?.major === 6;
+    return version.major === 6;
 }
 
 function isE7Client<ES6Request extends Generic6, ES7Request extends Generic7>(
     param: { client: Es6Client | Es7Client; request?: ES6Request | ES7Request },
-    version: SearchEngineVersion | undefined
+    version: SearchEngineVersion
 ): param is { client: Es7Client; request: ES7Request } {
-    return version?.major === 7;
+    return version.major === 7;
 }
 
 const healthCheckApi = (connection: EsConnection, request?: ClusterHealth6 | ClusterHealth7) => {

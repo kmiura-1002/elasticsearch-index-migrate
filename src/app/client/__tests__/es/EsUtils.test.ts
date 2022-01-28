@@ -90,11 +90,11 @@ describe('EsUtils', () => {
             minor: 0,
             patch: 0
         });
-        expect(
+        expect(() =>
             usedEsVersion({
                 version: '',
                 searchEngine: 'opensearch'
             })
-        ).toEqual(undefined);
+        ).toThrowError(new Error('Invalid version of elasticsearch. version:null'));
     });
 });
