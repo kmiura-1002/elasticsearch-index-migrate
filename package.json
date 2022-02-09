@@ -15,6 +15,7 @@
         "@opensearch-project/opensearch": "^1.0.2",
         "@types/js-yaml": "^4.0.5",
         "@types/lodash.merge": "^4.6.6",
+        "checksum": "^1.0.0",
         "cli-ux": "^6.0.6",
         "date-fns": "^2.27.0",
         "es6": "npm:@elastic/elasticsearch@^6.8.8",

@@ -1,6 +1,6 @@
 import { ParsedPath } from 'path';
 
-export const MAPPING_HISTORY_INDEX_NAME = 'migrate_history';
+export const MIGRATE_HISTORY_INDEX_NAME = 'migrate_history';
 const ELASTICSEARCH_VERSIONS = ['6.x', '7.x', 'opensearch'] as const;
 export type ELASTICSEARCH_VERSION = typeof ELASTICSEARCH_VERSIONS[number];
 export const OPENSEARCH = 'opensearch';
@@ -89,6 +89,7 @@ export type MigrateIndex = {
     installed_on: string;
     execution_time: number;
     success: boolean;
+    checksum: number;
 };
 export const MigrationTypes = {
     ADD_FIELD: 'ADD_FIELD',

@@ -5,7 +5,7 @@ import { readOptions } from '../flags/flagsLoader';
 import { cli } from 'cli-ux';
 import v7Mapping from '../../resources/mapping/migrate_history_esV7.json';
 import v6Mapping from '../../resources/mapping/migrate_history_esV6.json';
-import { MAPPING_HISTORY_INDEX_NAME, MigrationConfig } from '../types';
+import { MIGRATE_HISTORY_INDEX_NAME, MigrationConfig } from '../types';
 import { usedEsVersion } from '../client/es/EsUtils';
 import useElasticsearchClient from '../client/es/ElasticsearchClient';
 import { DeepRequired } from 'ts-essentials';
@@ -40,7 +40,7 @@ type SetUpMigrationEnvOptions = {
 const setUpMigrationEnv = async function (options: SetUpMigrationEnvOptions) {
     const migrationConfig = await readOptions(options.flags, options.config);
     const { exists, createIndex } = useElasticsearchClient(migrationConfig.elasticsearch);
-    const isExistsIndex = await exists({ index: MAPPING_HISTORY_INDEX_NAME }).catch((reason) =>
+    const isExistsIndex = await exists({ index: MIGRATE_HISTORY_INDEX_NAME }).catch((reason) =>
         cli.error(`ConnectionError:Check your elasticsearch connection config.\nreason:[${reason}]`)
     );
 
@@ -49,7 +49,7 @@ const setUpMigrationEnv = async function (options: SetUpMigrationEnvOptions) {
         cli.info('Create a migrate_history index for the first time.');
         const mappingData = getHistoryIndexRequestBody(migrationConfig);
         const ret = await createIndex({
-            index: MAPPING_HISTORY_INDEX_NAME,
+            index: MIGRATE_HISTORY_INDEX_NAME,
             body: mappingData
         }).catch((reason) => {
             cli.error(`Failed to create index.\nreason:[${JSON.stringify(reason)}]`, { exit: 1 });
