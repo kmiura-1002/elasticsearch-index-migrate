@@ -63,6 +63,9 @@
             },
             "success": {
                 "type": "boolean"
+            },
+            "checksum": {
+                "type": "long"
             }
         }
     }
