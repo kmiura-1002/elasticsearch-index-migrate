@@ -1,6 +1,6 @@
 import { MIGRATE_HISTORY_INDEX_NAME } from '../../types';
 
-export type migrateHistorySpec = {
+export type MigrateHistorySpec = {
     condition: any;
 };
 
@@ -11,7 +11,7 @@ export const migrateHistorySpecByIndexName = (
         from?: number;
         size?: number;
     }
-): migrateHistorySpec => {
+): MigrateHistorySpec => {
     return {
         condition: {
             index: MIGRATE_HISTORY_INDEX_NAME,
