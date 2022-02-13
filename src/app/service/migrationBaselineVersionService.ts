@@ -19,19 +19,18 @@ export default async function migrationBaselineVersionService(
 
     const makeBaseline = async () => {
         const { findBy, insert } = migrateHistoryRepository(migrationConfig.elasticsearch);
-        const histories = await findBy(
-            migrateHistorySpecByIndexName(flags.index, baselineVersion[flags.index])
-        );
+        const baseline = baselineVersion[flags.index];
+        const histories = await findBy(migrateHistorySpecByIndexName(flags.index, baseline));
         if (histories.length === 0) {
             cli.info('Baseline history does not exist.');
-            cli.info(`Create baseline in ${baselineVersion}.`);
+            cli.info(`Create baseline in ${baseline}.`);
 
             await insert({
                 index_name: flags.index,
-                migrate_version: baselineVersion[flags.index],
+                migrate_version: baseline,
                 description: flags.description
             });
-            cli.info(`Successfully created a baseline in ${baselineVersion}.`);
+            cli.info(`Successfully created a baseline in ${baseline}.`);
         } else {
             cli.info('There is already a baseline history');
         }
