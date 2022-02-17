@@ -24,9 +24,11 @@ export default class EsIndex extends Command {
     @CreateMigrationHistoryIfNotExists()
     async run(): Promise<void> {
         try {
-            await migrationBaselineVersionService(this.parse, this.config);
+            const { flags } = this.parse(EsIndex);
+            const { makeBaseline } = migrationBaselineVersionService(flags, this.config);
+            await makeBaseline();
         } catch (e) {
-            cli.error(JSON.stringify(e));
+            cli.error(`throw error. caused by: ${e}`);
         }
     }
 }
