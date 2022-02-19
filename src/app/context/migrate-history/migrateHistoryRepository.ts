@@ -1,5 +1,5 @@
-import { ESConfig, MIGRATE_HISTORY_INDEX_NAME, MigrateIndex } from '../types';
-import useElasticsearchClient from '../client/es/ElasticsearchClient';
+import { ESConfig, MIGRATE_HISTORY_INDEX_NAME, MigrateIndex } from '../../types';
+import useElasticsearchClient from '../../client/es/ElasticsearchClient';
 import { MigrateHistorySpec } from './spec';
 import { format } from 'date-fns';
 

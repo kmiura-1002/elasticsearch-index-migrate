@@ -1,4 +1,4 @@
-import { MIGRATE_HISTORY_INDEX_NAME } from '../../types';
+import { MIGRATE_HISTORY_INDEX_NAME } from '../../../types';
 
 export type MigrateHistorySpec = {
     condition: any;

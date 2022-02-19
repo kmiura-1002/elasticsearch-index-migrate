@@ -1,8 +1,8 @@
 import * as Config from '@oclif/config';
 import { readOptions } from '../flags/flagsLoader';
 import { cli } from 'cli-ux';
-import migrateHistoryRepository from '../domain/migrateHistoryRepository';
-import { migrateHistorySpecByIndexName } from '../domain/spec';
+import migrateHistoryRepository from '../context/migrate-history/migrateHistoryRepository';
+import { migrateHistorySpecByIndexName } from '../context/migrate-history/spec';
 
 export default function migrationBaselineVersionService(
     flags: { [name: string]: any },

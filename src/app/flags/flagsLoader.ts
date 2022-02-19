@@ -2,7 +2,7 @@ import merge from 'lodash.merge';
 import fs from 'fs';
 import * as Config from '@oclif/config';
 import { MigrationConfig } from '../types';
-import { readConfig, readOclifConfig } from '../common/io/configReader';
+import { readConfig, readOclifConfig } from '../config/io/configReader';
 import { DeepRequired } from 'ts-essentials';
 
 export const readOptions = async (
