@@ -33,7 +33,7 @@ export type MigrationConfig = {
     migration?: {
         location: string;
         baselineVersion: {
-            [key: string]: string; // indexName : version
+            [key: string]: string; // index name or template name : version
         };
         historyIndexRequestBody?: SimpleJson;
     };
