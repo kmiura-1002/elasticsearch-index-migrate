@@ -50,14 +50,14 @@ describe('migrationBaselineVersionService', () => {
                 }
             };
         });
-        const parser = jest.fn().mockImplementationOnce(() => ({
-            flags: {
+
+        const { makeBaseline } = migrationBaselineVersionService(
+            {
                 index: 'test_index',
                 description: ''
-            }
-        }));
-
-        const { makeBaseline } = migrationBaselineVersionService(parser, {} as Config.Config);
+            },
+            {} as Config.Config
+        );
         await makeBaseline();
 
         expect(spyInfo).toHaveBeenCalledTimes(1);

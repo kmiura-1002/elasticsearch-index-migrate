@@ -29,7 +29,7 @@ describe('baseline:esindex', () => {
             .stdout()
             .stderr()
             .command([
-                'baseline:esindex',
+                'baseline',
                 '-i',
                 'test1',
                 '-O',
@@ -61,7 +61,7 @@ describe('baseline:esindex', () => {
             .stdout()
             .stderr()
             .command([
-                'baseline:esindex',
+                'baseline',
                 '-i',
                 'test1',
                 '-O',
