@@ -92,9 +92,6 @@
         ],
         "topicSeparator": " ",
         "topics": {
-            "baseline": {
-                "description": "description:baseline topic"
-            }
         },
         "hooks": {}
     },

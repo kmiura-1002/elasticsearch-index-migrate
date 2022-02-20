@@ -1,8 +1,8 @@
 import * as Config from '@oclif/core';
 import { readOptions } from '../flags/flagsLoader';
-import { cli } from 'cli-ux';
 import migrateHistoryRepository from '../context/migrate-history/migrateHistoryRepository';
 import { migrateHistorySpecByIndexName } from '../context/migrate-history/spec';
+import { CliUx } from '@oclif/core';
 
 export default function migrationBaselineVersionService(
     flags: { [name: string]: any },
@@ -22,19 +22,23 @@ export default function migrationBaselineVersionService(
         const { migrationConfig, baselineVersion } = await readConfig();
         const { findBy, insert } = migrateHistoryRepository(migrationConfig.elasticsearch);
         const baseline = baselineVersion[flags.index];
+
+        if (baseline === undefined) {
+            throw new Error(`The baseline setting for index(${flags.index}) does not exist.`);
+        }
         const histories = await findBy(migrateHistorySpecByIndexName(flags.index, baseline));
         if (histories.length === 0) {
-            cli.info('Baseline history does not exist.');
-            cli.info(`Create baseline in ${baseline}.`);
+            CliUx.ux.info('Baseline history does not exist.');
+            CliUx.ux.info(`Create baseline in ${baseline}.`);
 
             await insert({
                 index_name: flags.index,
                 migrate_version: baseline,
                 description: flags.description
             });
-            cli.info(`Successfully created a baseline in ${baseline}.`);
+            CliUx.ux.info(`Successfully created a baseline in ${baseline}.`);
         } else {
-            cli.info('There is already a baseline history');
+            CliUx.ux.info('There is already a baseline history');
         }
     };
 
