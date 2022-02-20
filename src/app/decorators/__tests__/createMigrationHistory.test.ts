@@ -1,4 +1,4 @@
-import { CreateMigrationHistoryIfNotExists } from '../createMigrationHistory';
+import { createMigrationHistoryIfNotExists } from '../createMigrationHistory';
 import { fancyIt } from '../../../__mocks__/fancyIt';
 import { getFakeCommand } from '../../../__mocks__/command/fakeCommand';
 import { readOptions } from '../../flags/flagsLoader';
@@ -49,7 +49,7 @@ describe('createMigrationHistory', () => {
         const fakeDescriptor = {
             value: fakeOriginalFunction
         };
-        await CreateMigrationHistoryIfNotExists()(fakeCommand, '', fakeDescriptor);
+        await createMigrationHistoryIfNotExists()(fakeCommand, '', fakeDescriptor);
 
         // when
         await fakeDescriptor.value.call(fakeCommand);
@@ -86,7 +86,7 @@ describe('createMigrationHistory', () => {
             const fakeDescriptor = {
                 value: fakeOriginalFunction
             };
-            await CreateMigrationHistoryIfNotExists()(fakeCommand, '', fakeDescriptor);
+            await createMigrationHistoryIfNotExists()(fakeCommand, '', fakeDescriptor);
 
             // when
             const actual = fakeDescriptor.value.call(fakeCommand);
@@ -97,7 +97,7 @@ describe('createMigrationHistory', () => {
             expect(useElasticsearchClient).toHaveBeenCalledTimes(1);
             expect(spyError).toHaveBeenCalledTimes(1);
             expect(spyError.mock.calls[0][0]).toEqual(
-                'ConnectionError:Check your elasticsearch connection config.\nreason:[exists error]'
+                'Initialization process failed.\nreason:["exists error"]'
             );
         }
     );
@@ -130,7 +130,7 @@ describe('createMigrationHistory', () => {
             const fakeDescriptor = {
                 value: fakeOriginalFunction
             };
-            await CreateMigrationHistoryIfNotExists()(fakeCommand, '', fakeDescriptor);
+            await createMigrationHistoryIfNotExists()(fakeCommand, '', fakeDescriptor);
 
             // when
             const actual = fakeDescriptor.value.call(fakeCommand);
@@ -141,7 +141,7 @@ describe('createMigrationHistory', () => {
             expect(useElasticsearchClient).toHaveBeenCalledTimes(1);
             expect(spyError).toHaveBeenCalledTimes(1);
             expect(spyError.mock.calls[0][0]).toEqual(
-                'Failed to create index.\nreason:[{"statusCode":500}]'
+                'Initialization process failed.\nreason:[{"statusCode":500}]'
             );
         }
     );
@@ -173,7 +173,7 @@ describe('createMigrationHistory', () => {
         const fakeDescriptor = {
             value: fakeOriginalFunction
         };
-        await CreateMigrationHistoryIfNotExists()(fakeCommand, '', fakeDescriptor);
+        await createMigrationHistoryIfNotExists()(fakeCommand, '', fakeDescriptor);
 
         // when
         const actual = fakeDescriptor.value.call(fakeCommand);
@@ -182,8 +182,11 @@ describe('createMigrationHistory', () => {
         await expect(actual).rejects.toThrow();
         expect(readOptions).toHaveBeenCalledTimes(1);
         expect(useElasticsearchClient).toHaveBeenCalledTimes(1);
-        expect(spyError).toHaveBeenCalledTimes(1);
+        expect(spyError).toHaveBeenCalledTimes(2);
         expect(spyError.mock.calls[0][0]).toEqual('Failed to create index for migrate.');
+        expect(spyError.mock.calls[1][0]).toEqual(
+            'Initialization process failed.\n' + 'reason:[{"oclif":{"exit":2}}]'
+        );
     });
 
     fancyIt()(
@@ -205,7 +208,7 @@ describe('createMigrationHistory', () => {
             const fakeDescriptor = {
                 value: fakeOriginalFunction
             };
-            await CreateMigrationHistoryIfNotExists()(fakeCommand, '', fakeDescriptor);
+            await createMigrationHistoryIfNotExists()(fakeCommand, '', fakeDescriptor);
 
             // when
             await fakeDescriptor.value.call(fakeCommand);

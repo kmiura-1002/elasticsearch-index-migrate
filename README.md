@@ -35,7 +35,7 @@ $ npm install -g elasticsearch-index-migrate
 $ elasticsearch-index-migrate COMMAND
 running command...
 $ elasticsearch-index-migrate (-v|--version|version)
-elasticsearch-index-migrate/0.7.3 darwin-x64 node-v14.17.6
+elasticsearch-index-migrate/1.0.0 darwin-x64 node-v14.17.6
 $ elasticsearch-index-migrate --help [COMMAND]
 USAGE
   $ elasticsearch-index-migrate COMMAND
@@ -225,9 +225,7 @@ elasticsearch/
 
 # Commands
 <!-- commands -->
-* [`elasticsearch-index-migrate baseline`](#elasticsearch-index-migrate-baseline)
-* [`elasticsearch-index-migrate baseline:esindex`](#elasticsearch-index-migrate-baselineesindex)
-* [`elasticsearch-index-migrate baseline:template [FILE]`](#elasticsearch-index-migrate-baselinetemplate-file)
+* [`elasticsearch-index-migrate baseline [NAME]`](#elasticsearch-index-migrate-baseline-name)
 * [`elasticsearch-index-migrate clean [FILE]`](#elasticsearch-index-migrate-clean-file)
 * [`elasticsearch-index-migrate clean:esindex [FILE]`](#elasticsearch-index-migrate-cleanesindex-file)
 * [`elasticsearch-index-migrate clean:template [FILE]`](#elasticsearch-index-migrate-cleantemplate-file)
@@ -244,13 +242,16 @@ elasticsearch/
 * [`elasticsearch-index-migrate validate:template [FILE]`](#elasticsearch-index-migrate-validatetemplate-file)
 * [`elasticsearch-index-migrate version`](#elasticsearch-index-migrate-version)
 
-## `elasticsearch-index-migrate baseline`
+## `elasticsearch-index-migrate baseline [NAME]`
 
-Create a baseline in migration_history if you were running Elasticsearch before the tool was implemented.
+Create a baseline in migration_history if you were running Elasticsearch before the tool was implemented.(´・ω・｀)ｼｮﾎﾞｰﾝ
 
 ```
 USAGE
-  $ elasticsearch-index-migrate baseline
+  $ elasticsearch-index-migrate baseline [NAME]
+
+ARGUMENTS
+  NAME  migration index or template name.
 
 OPTIONS
   -C, --elasticsearch_cloudid=elasticsearch_cloudid    Connect to Elasticsearch with the value set in the
@@ -281,75 +282,14 @@ OPTIONS
 
   -h, --help                                           Show CLI help.
 
-  -i, --index=index                                    (required) migration index name.
+  -i, --index=index                                    migration index name.
+                                                       The index flags will be removed in the next version. Please use
+                                                       the arguments (name) instead of this flags.
 
   --version                                            Show CLI version.
 ```
 
-_See code: [src/app/commands/baseline/index.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/app/commands/baseline/index.ts)_
-
-## `elasticsearch-index-migrate baseline:esindex`
-
-Create a baseline in migration_history if you were running Elasticsearch before the tool was implemented.
-
-```
-USAGE
-  $ elasticsearch-index-migrate baseline:esindex
-
-OPTIONS
-  -C, --elasticsearch_cloudid=elasticsearch_cloudid    Connect to Elasticsearch with the value set in the
-                                                       ELASTICSEARCH_CLOUDID environment variable
-
-  -E, --search_engine=search_engine                    Connect assuming the search engine (Elasticsearch or Opensearch)
-                                                       set in the SEARCH_ENGINE environment variable
-
-  -H, --elasticsearch_host=elasticsearch_host          Connect to Elasticsearch with the value set in the
-                                                       ELASTICSEARCH_HOST environment variable
-
-  -O, --option_file=option_file                        Load migration setting file (.json) from file path (Environment
-                                                       variables take precedence)
-
-  -P, --elasticsearch_password=elasticsearch_password  Connect to Elasticsearch with the value set in the
-                                                       ELASTICSEARCH_PASSWORD environment variable
-
-  -S, --elasticsearch_ssl=elasticsearch_ssl            Connect to Elasticsearch with the value set in the
-                                                       ELASTICSEARCH_SSL environment variable
-
-  -U, --elasticsearch_username=elasticsearch_username  Connect to Elasticsearch with the value set in the
-                                                       ELASTICSEARCH_USERNAME environment variable
-
-  -V, --elasticsearch_version=elasticsearch_version    Run migration with Elasticsearch version set in
-                                                       ELASTICSEARCH_VERSION environment variable
-
-  -d, --description=description                        Description to be saved to history.
-
-  -h, --help                                           Show CLI help.
-
-  -i, --index=index                                    (required) migration index name.
-
-  --version                                            Show CLI version.
-```
-
-_See code: [src/app/commands/baseline/esindex.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/app/commands/baseline/esindex.ts)_
-
-## `elasticsearch-index-migrate baseline:template [FILE]`
-
-describe the command here
-
-```
-USAGE
-  $ elasticsearch-index-migrate baseline:template [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       Show CLI help.
-  -n, --name=name  name to print
-
-EXAMPLE
-  $ mynewcli hello hello world from ./src/hello.ts!
-```
-
-_See code: [src/app/commands/baseline/template.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/app/commands/baseline/template.ts)_
+_See code: [src/app/commands/baseline/index.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v1.0.0/src/app/commands/baseline/index.ts)_
 
 ## `elasticsearch-index-migrate clean [FILE]`
 
@@ -368,7 +308,7 @@ EXAMPLE
   $ mynewcli hello hello world from ./src/hello.ts!
 ```
 
-_See code: [src/app/commands/clean/index.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/app/commands/clean/index.ts)_
+_See code: [src/app/commands/clean/index.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v1.0.0/src/app/commands/clean/index.ts)_
 
 ## `elasticsearch-index-migrate clean:esindex [FILE]`
 
@@ -387,7 +327,7 @@ EXAMPLE
   $ mynewcli hello hello world from ./src/hello.ts!
 ```
 
-_See code: [src/app/commands/clean/esindex.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/app/commands/clean/esindex.ts)_
+_See code: [src/app/commands/clean/esindex.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v1.0.0/src/app/commands/clean/esindex.ts)_
 
 ## `elasticsearch-index-migrate clean:template [FILE]`
 
@@ -406,7 +346,7 @@ EXAMPLE
   $ mynewcli hello hello world from ./src/hello.ts!
 ```
 
-_See code: [src/app/commands/clean/template.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/app/commands/clean/template.ts)_
+_See code: [src/app/commands/clean/template.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v1.0.0/src/app/commands/clean/template.ts)_
 
 ## `elasticsearch-index-migrate help [COMMAND]`
 
@@ -442,7 +382,7 @@ EXAMPLE
   $ mynewcli hello hello world from ./src/hello.ts!
 ```
 
-_See code: [src/app/commands/migrate/index.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/app/commands/migrate/index.ts)_
+_See code: [src/app/commands/migrate/index.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v1.0.0/src/app/commands/migrate/index.ts)_
 
 ## `elasticsearch-index-migrate migrate:esindex [FILE]`
 
@@ -461,7 +401,7 @@ EXAMPLE
   $ mynewcli hello hello world from ./src/hello.ts!
 ```
 
-_See code: [src/app/commands/migrate/esindex.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/app/commands/migrate/esindex.ts)_
+_See code: [src/app/commands/migrate/esindex.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v1.0.0/src/app/commands/migrate/esindex.ts)_
 
 ## `elasticsearch-index-migrate migrate:template [FILE]`
 
@@ -480,7 +420,7 @@ EXAMPLE
   $ mynewcli hello hello world from ./src/hello.ts!
 ```
 
-_See code: [src/app/commands/migrate/template.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/app/commands/migrate/template.ts)_
+_See code: [src/app/commands/migrate/template.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v1.0.0/src/app/commands/migrate/template.ts)_
 
 ## `elasticsearch-index-migrate plan [FILE]`
 
@@ -527,7 +467,7 @@ EXAMPLE
   $ mynewcli hello hello world from ./src/hello.ts!
 ```
 
-_See code: [src/app/commands/plan/index.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/app/commands/plan/index.ts)_
+_See code: [src/app/commands/plan/index.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v1.0.0/src/app/commands/plan/index.ts)_
 
 ## `elasticsearch-index-migrate plan:esindex [FILE]`
 
@@ -546,7 +486,7 @@ EXAMPLE
   $ mynewcli hello hello world from ./src/hello.ts!
 ```
 
-_See code: [src/app/commands/plan/esindex.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/app/commands/plan/esindex.ts)_
+_See code: [src/app/commands/plan/esindex.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v1.0.0/src/app/commands/plan/esindex.ts)_
 
 ## `elasticsearch-index-migrate plan:template [FILE]`
 
@@ -565,7 +505,7 @@ EXAMPLE
   $ mynewcli hello hello world from ./src/hello.ts!
 ```
 
-_See code: [src/app/commands/plan/template.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/app/commands/plan/template.ts)_
+_See code: [src/app/commands/plan/template.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v1.0.0/src/app/commands/plan/template.ts)_
 
 ## `elasticsearch-index-migrate recovery [FILE]`
 
@@ -584,7 +524,7 @@ EXAMPLE
   $ mynewcli hello hello world from ./src/hello.ts!
 ```
 
-_See code: [src/app/commands/recovery.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/app/commands/recovery.ts)_
+_See code: [src/app/commands/recovery.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v1.0.0/src/app/commands/recovery.ts)_
 
 ## `elasticsearch-index-migrate validate [FILE]`
 
@@ -603,7 +543,7 @@ EXAMPLE
   $ mynewcli hello hello world from ./src/hello.ts!
 ```
 
-_See code: [src/app/commands/validate/index.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/app/commands/validate/index.ts)_
+_See code: [src/app/commands/validate/index.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v1.0.0/src/app/commands/validate/index.ts)_
 
 ## `elasticsearch-index-migrate validate:esindex [FILE]`
 
@@ -622,7 +562,7 @@ EXAMPLE
   $ mynewcli hello hello world from ./src/hello.ts!
 ```
 
-_See code: [src/app/commands/validate/esindex.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/app/commands/validate/esindex.ts)_
+_See code: [src/app/commands/validate/esindex.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v1.0.0/src/app/commands/validate/esindex.ts)_
 
 ## `elasticsearch-index-migrate validate:template [FILE]`
 
@@ -641,7 +581,7 @@ EXAMPLE
   $ mynewcli hello hello world from ./src/hello.ts!
 ```
 
-_See code: [src/app/commands/validate/template.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/app/commands/validate/template.ts)_
+_See code: [src/app/commands/validate/template.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v1.0.0/src/app/commands/validate/template.ts)_
 
 ## `elasticsearch-index-migrate version`
 

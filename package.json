@@ -91,8 +91,7 @@
             "@oclif/plugin-help"
         ],
         "topicSeparator": " ",
-        "topics": {
-        },
+        "topics": {},
         "hooks": {}
     },
     "repository": "kmiura-1002/elasticsearch-index-migrate",
@@ -102,6 +101,7 @@
         "postpack": "rm -f oclif.manifest.json",
         "posttest": "yarn lint",
         "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+        "build": "rm -f oclif.manifest.json && rm -rf lib && tsc -b && oclif-dev manifest",
         "test": "jest --colors --coverage",
         "version": "oclif-dev readme",
         "docker:build": "docker build -t kmiura1002/elasticsearch-index-migrate:`npx -c 'echo \"$npm_package_version\"'` ./docker",

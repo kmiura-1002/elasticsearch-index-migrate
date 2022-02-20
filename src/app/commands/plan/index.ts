@@ -1,6 +1,7 @@
 import { Command, Flags } from '@oclif/core';
-import { CreateMigrationHistoryIfNotExists } from '../../decorators/createMigrationHistory';
+import { createMigrationHistoryIfNotExists } from '../../decorators/createMigrationHistory';
 import { DefaultFlags, esConnectionFlags } from '../../flags/defaultCommandFlags';
+import { validMigrateTarget } from "../../decorators/validMigrateTarget";
 
 export default class Plan extends Command {
     static description = 'describe the command here';
@@ -18,7 +19,8 @@ export default class Plan extends Command {
 
     static args = [{ name: 'file' }];
 
-    @CreateMigrationHistoryIfNotExists()
+    @validMigrateTarget()
+    @createMigrationHistoryIfNotExists()
     async run() {
         const { args, flags } = await this.parse(Plan);
 
