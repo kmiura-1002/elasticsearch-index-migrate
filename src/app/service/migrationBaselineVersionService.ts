@@ -4,10 +4,7 @@ import migrateHistoryRepository from '../context/migrate-history/migrateHistoryR
 import { migrateHistorySpecByIndexName } from '../context/migrate-history/spec';
 import { CliUx } from '@oclif/core';
 
-export default function migrationBaselineVersionService(
-    flags: { [name: string]: any },
-    config: Config.Config
-) {
+const migrationBaselineVersionService = (flags: { [name: string]: any }, config: Config.Config) => {
     const readConfig = async () => {
         const migrationConfig = await readOptions(flags, config);
         const baselineVersion = migrationConfig.migration.baselineVersion;
@@ -45,4 +42,6 @@ export default function migrationBaselineVersionService(
     return {
         makeBaseline
     };
-}
+};
+
+export default migrationBaselineVersionService;
