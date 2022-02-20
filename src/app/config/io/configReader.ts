@@ -2,9 +2,9 @@ import { MigrationConfig } from '../../types';
 import path from 'path';
 import yaml from 'js-yaml';
 import fs from 'fs';
-import { loadJSON } from '@oclif/config/lib/util';
-import * as Config from '@oclif/config';
+import * as Config from '@oclif/core';
 import { createSchema as S, TsjsonParser } from 'ts-json-validator';
+import { loadJSON } from '@oclif/core/lib/config/util';
 
 const configParser = new TsjsonParser(
     S({
@@ -74,7 +74,7 @@ export const readConfig = async (filePath: string): Promise<MigrationConfig> => 
     return config;
 };
 
-export const readOclifConfig = async (config: Config.IConfig): Promise<MigrationConfig> => {
+export const readOclifConfig = async (config: Config.Config): Promise<MigrationConfig> => {
     let migrateCnf;
     if (fs.existsSync(path.join(config.configDir, 'config.yaml'))) {
         migrateCnf = yaml.load(fs.readFileSync(path.join(config.configDir, 'config.yaml'), 'utf8'));

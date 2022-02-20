@@ -10,7 +10,8 @@ export const migrateIndices = (installed_on: Date): MigrateIndex[] => [
         index_name: 'test',
         installed_on: format(installed_on, "yyyy-MM-dd'T'HH:mm:ss"),
         script_type: MigrationTypes.CREATE_INDEX,
-        success: true
+        success: true,
+        checksum: undefined
     },
     {
         script_name: 'v1.0.0__test',
@@ -20,7 +21,8 @@ export const migrateIndices = (installed_on: Date): MigrateIndex[] => [
         index_name: 'test',
         installed_on: format(installed_on, "yyyy-MM-dd'T'HH:mm:ss"),
         script_type: MigrationTypes.ADD_FIELD,
-        success: true
+        success: true,
+        checksum: undefined
     },
     {
         script_name: 'v1.0.0__test',
@@ -30,7 +32,8 @@ export const migrateIndices = (installed_on: Date): MigrateIndex[] => [
         index_name: 'test',
         installed_on: format(installed_on, "yyyy-MM-dd'T'HH:mm:ss"),
         script_type: MigrationTypes.ADD_FIELD,
-        success: true
+        success: true,
+        checksum: undefined
     },
     {
         script_name: 'v1.0.0__test',
@@ -40,6 +43,7 @@ export const migrateIndices = (installed_on: Date): MigrateIndex[] => [
         index_name: 'test',
         installed_on: format(installed_on, "yyyy-MM-dd'T'HH:mm:ss"),
         script_type: MigrationTypes.ADD_FIELD,
-        success: false
+        success: false,
+        checksum: undefined
     }
 ];

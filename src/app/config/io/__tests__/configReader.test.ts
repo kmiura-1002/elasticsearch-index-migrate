@@ -1,5 +1,5 @@
 import { readConfig, readOclifConfig } from '../configReader';
-import * as Config from '@oclif/config';
+import * as Config from '@oclif/core';
 
 describe('configReader', () => {
     it('can be read config file when extension is .json', async () => {
@@ -87,7 +87,7 @@ describe('configReader', () => {
     it('can be read oclif config file when extension is .json', async () => {
         const actual = await readOclifConfig({
             configDir: `${process.cwd()}/src/__mocks__/testsData/test_config/json/`
-        } as Config.IConfig);
+        } as Config.Config);
         expect(actual).toEqual({
             elasticsearch: {
                 connect: {
@@ -109,7 +109,7 @@ describe('configReader', () => {
     it('can be read oclif config file when extension is .yaml', async () => {
         const actual = await readOclifConfig({
             configDir: `${process.cwd()}/src/__mocks__/testsData/test_config/yaml/`
-        } as Config.IConfig);
+        } as Config.Config);
         expect(actual).toEqual({
             elasticsearch: {
                 connect: {
@@ -131,7 +131,7 @@ describe('configReader', () => {
     it('can be read oclif config file when extension is .yml', async () => {
         const actual = await readOclifConfig({
             configDir: `${process.cwd()}/src/__mocks__/testsData/test_config/yml/`
-        } as Config.IConfig);
+        } as Config.Config);
         expect(actual).toEqual({
             elasticsearch: {
                 connect: {
@@ -154,7 +154,7 @@ describe('configReader', () => {
         const configDir = `${process.cwd()}/src/__mocks__/testsData/test_config/other/`;
         const actual = readOclifConfig({
             configDir
-        } as Config.IConfig);
+        } as Config.Config);
         await expect(actual).rejects.toEqual(
             `There is no configuration file that can be loaded into ${configDir}. The configuration file must be yaml or json.`
         );
@@ -163,7 +163,7 @@ describe('configReader', () => {
     it('can not read oclif config file hen there is an unknown value ', async () => {
         const actual = readOclifConfig({
             configDir: `${process.cwd()}/src/__mocks__/testsData/test_config/unknown_props/`
-        } as Config.IConfig);
+        } as Config.Config);
         await expect(actual).rejects.toEqual('There is an invalid config item.');
     });
 });

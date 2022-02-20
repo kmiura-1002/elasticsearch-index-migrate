@@ -1,5 +1,5 @@
 import migrationBaselineVersionService from '../migrationBaselineVersionService';
-import * as Config from '@oclif/config';
+import * as Config from '@oclif/core';
 import { mocked } from 'jest-mock';
 import { readOptions } from '../../flags/flagsLoader';
 import useElasticsearchClient from '../../client/es/ElasticsearchClient';
@@ -29,7 +29,7 @@ describe('migrationBaselineVersionService', () => {
                 index: 'test_index',
                 description: ''
             },
-            {} as Config.IConfig
+            {} as Config.Config
         );
         await makeBaseline();
 
@@ -57,7 +57,7 @@ describe('migrationBaselineVersionService', () => {
             }
         }));
 
-        const { makeBaseline } = migrationBaselineVersionService(parser, {} as Config.IConfig);
+        const { makeBaseline } = migrationBaselineVersionService(parser, {} as Config.Config);
         await makeBaseline();
 
         expect(spyInfo).toHaveBeenCalledTimes(1);

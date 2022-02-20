@@ -1,4 +1,4 @@
-import { Command, flags } from '@oclif/command';
+import { Command, Flags } from '@oclif/core';
 import { cli } from 'cli-ux';
 import { CreateMigrationHistoryIfNotExists } from '../../decorators/createMigrationHistory';
 import { DefaultFlags, esConnectionFlags } from '../../flags/defaultCommandFlags';
@@ -10,12 +10,12 @@ export default class EsIndex extends Command {
     static flags = {
         ...esConnectionFlags,
         ...DefaultFlags,
-        index: flags.string({
+        index: Flags.string({
             char: 'i',
             description: 'migration index name.',
             required: true
         }),
-        description: flags.string({
+        description: Flags.string({
             char: 'd',
             description: 'Description to be saved to history.'
         })
@@ -24,7 +24,7 @@ export default class EsIndex extends Command {
     @CreateMigrationHistoryIfNotExists()
     async run(): Promise<void> {
         try {
-            const { flags } = this.parse(EsIndex);
+            const { flags } = await this.parse(EsIndex);
             const { makeBaseline } = migrationBaselineVersionService(flags, this.config);
             await makeBaseline();
         } catch (e) {

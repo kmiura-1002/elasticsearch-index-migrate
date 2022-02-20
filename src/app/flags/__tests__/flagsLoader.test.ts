@@ -1,5 +1,5 @@
 import { readOptions } from '../flagsLoader';
-import * as Config from '@oclif/config';
+import * as Config from '@oclif/core';
 
 describe('readOptions', () => {
     it('can be return MigrationConfig when connect with option_file and cloud id, user name, password ', async () => {
@@ -12,7 +12,7 @@ describe('readOptions', () => {
                 elasticsearch_password: 'elasticsearch_password',
                 option_file: `${process.cwd()}/src/__mocks__/testsData/test.config.json`
             },
-            {} as Config.IConfig
+            {} as Config.Config
         );
         expect(actual).toEqual({
             elasticsearch: {
@@ -42,7 +42,7 @@ describe('readOptions', () => {
                 elasticsearch_host: 'elasticsearch_host',
                 option_file: `${process.cwd()}/src/__mocks__/testsData/test.config.json`
             },
-            {} as Config.IConfig
+            {} as Config.Config
         );
         expect(actual).toEqual({
             elasticsearch: {
@@ -73,7 +73,7 @@ describe('readOptions', () => {
                 elasticsearch_host: 'elasticsearch_host',
                 option_file: `${process.cwd()}/src/__mocks__/testsData/test.config.json`
             },
-            {} as Config.IConfig
+            {} as Config.Config
         );
         expect(actual).toEqual({
             elasticsearch: {
@@ -103,7 +103,7 @@ describe('readOptions', () => {
                 elasticsearch_ssl: 'elasticsearch_ssl',
                 elasticsearch_host: 'elasticsearch_host'
             },
-            { configDir: `${process.cwd()}/src/__mocks__/testsData` } as Config.IConfig
+            { configDir: `${process.cwd()}/src/__mocks__/testsData` } as Config.Config
         );
         expect(actual).toEqual({
             elasticsearch: {
@@ -132,7 +132,7 @@ describe('readOptions', () => {
                 elasticsearch_version: 'elasticsearch_version',
                 elasticsearch_host: 'elasticsearch_host'
             },
-            { configDir: `${process.cwd()}/src/__mocks__/testsData` } as Config.IConfig
+            { configDir: `${process.cwd()}/src/__mocks__/testsData` } as Config.Config
         );
         expect(actual).toEqual({
             elasticsearch: {
@@ -163,7 +163,7 @@ describe('readOptions', () => {
                 elasticsearch_username: 'elasticsearch_username',
                 elasticsearch_password: 'elasticsearch_password'
             },
-            { configDir: `${process.cwd()}/src/__mocks__/testsData` } as Config.IConfig
+            { configDir: `${process.cwd()}/src/__mocks__/testsData` } as Config.Config
         );
         expect(actual).toEqual({
             elasticsearch: {
@@ -188,7 +188,7 @@ describe('readOptions', () => {
     it('can be return MigrationConfig when connect with option_file', async () => {
         const actual = await readOptions({}, {
             configDir: `${process.cwd()}/src/__mocks__/testsData`
-        } as Config.IConfig);
+        } as Config.Config);
         expect(actual).toEqual({
             elasticsearch: {
                 connect: {
@@ -209,7 +209,7 @@ describe('readOptions', () => {
     it('can be return MigrationConfig when connect with config', async () => {
         const actual = await readOptions(
             { option_file: `${process.cwd()}/src/__mocks__/testsData/test.config.json` },
-            {} as Config.IConfig
+            {} as Config.Config
         );
         expect(actual).toEqual({
             elasticsearch: {
@@ -232,14 +232,14 @@ describe('readOptions', () => {
         await expect(
             readOptions(
                 { option_file: `${process.cwd()}/src/__mocks__/testsData/unknown.config.json` },
-                {} as Config.IConfig
+                {} as Config.Config
             )
         ).rejects.toEqual('There is an invalid config item.');
     });
 
     it('can not be return MigrationConfig', async () => {
         try {
-            await readOptions({}, { configDir: '' } as Config.IConfig);
+            await readOptions({}, { configDir: '' } as Config.Config);
         } catch (e) {
             expect(e).toEqual(
                 'No config. You can specify environment variables or files with the -O option and place config.json in ~/.config/elasticsearch-index-migrate. You should set one of these.'

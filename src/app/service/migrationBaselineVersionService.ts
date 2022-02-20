@@ -1,4 +1,4 @@
-import * as Config from '@oclif/config';
+import * as Config from '@oclif/core';
 import { readOptions } from '../flags/flagsLoader';
 import { cli } from 'cli-ux';
 import migrateHistoryRepository from '../context/migrate-history/migrateHistoryRepository';
@@ -6,7 +6,7 @@ import { migrateHistorySpecByIndexName } from '../context/migrate-history/spec';
 
 export default function migrationBaselineVersionService(
     flags: { [name: string]: any },
-    config: Config.IConfig
+    config: Config.Config
 ) {
     const readConfig = async () => {
         const migrationConfig = await readOptions(flags, config);

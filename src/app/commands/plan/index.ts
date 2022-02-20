@@ -1,4 +1,4 @@
-import { Command, flags } from '@oclif/command';
+import { Command, Flags } from '@oclif/core';
 import { CreateMigrationHistoryIfNotExists } from '../../decorators/createMigrationHistory';
 import { DefaultFlags, esConnectionFlags } from '../../flags/defaultCommandFlags';
 
@@ -11,16 +11,16 @@ export default class Plan extends Command {
         ...DefaultFlags,
         ...esConnectionFlags,
         // flag with a value (-n, --name=VALUE)
-        name: flags.string({ char: 'n', description: 'name to print' }),
+        name: Flags.string({ char: 'n', description: 'name to print' }),
         // flag with no value (-f, --force)
-        force: flags.boolean({ char: 'f' })
+        force: Flags.boolean({ char: 'f' })
     };
 
     static args = [{ name: 'file' }];
 
     @CreateMigrationHistoryIfNotExists()
     async run() {
-        const { args, flags } = this.parse(Plan);
+        const { args, flags } = await this.parse(Plan);
 
         this.log(`plan`);
         if (args.file && flags.force) {

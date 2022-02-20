@@ -9,9 +9,9 @@
     },
     "bugs": "https://github.com/kmiura-1002/elasticsearch-index-migrate/issues",
     "dependencies": {
-        "@oclif/command": "^1.8.16",
-        "@oclif/config": "^1.18.3",
+        "@oclif/core": "^1.3.4",
         "@oclif/plugin-help": "^5.1.11",
+        "@oclif/plugin-version": "^1.0.4",
         "@opensearch-project/opensearch": "^1.0.2",
         "@types/js-yaml": "^4.0.5",
         "@types/lodash.merge": "^4.6.6",
@@ -33,7 +33,7 @@
     },
     "devDependencies": {
         "@oclif/dev-cli": "^1.26.10",
-        "@oclif/test": "^1",
+        "@oclif/test": "^2.1.0",
         "@types/inversify": "^2.0.33",
         "@types/jest": "^27.4.0",
         "@types/node": "^17.0.18",
@@ -78,15 +78,22 @@
     "license": "MIT",
     "main": "lib/index.js",
     "oclif": {
+        "additionalHelpFlags": [
+            "-h"
+        ],
+        "additionalVersionFlags": [
+            "-v"
+        ],
         "commands": "./lib/app/commands",
         "bin": "elasticsearch-index-migrate",
         "plugins": [
+            "@oclif/plugin-version",
             "@oclif/plugin-help"
         ],
         "topicSeparator": " ",
         "topics": {
             "baseline": {
-                "description": "plan:indeaaax"
+                "description": "description:baseline topic"
             }
         },
         "hooks": {}

@@ -1,6 +1,4 @@
-import type Command from '@oclif/command';
-import { IConfig } from '@oclif/config';
-import { Input } from '@oclif/command/lib/flags';
+import { Command, Config, Interfaces } from '@oclif/core';
 import { readOptions } from '../flags/flagsLoader';
 import { cli } from 'cli-ux';
 import v7Mapping from '../../resources/mapping/migrate_history_esV7.json';
@@ -23,18 +21,18 @@ export function CreateMigrationHistoryIfNotExists() {
     };
 }
 async function setUpCommand(this: Command, originalRunCommand: () => Promise<void>) {
-    const { flags } = this.parse();
+    const { flags } = await this.parse();
     await setUpMigrationEnv({
         config: this.config,
-        flags: flags as Input<any>
+        flags: flags as Interfaces.FlagInput<any>
     });
 
     await originalRunCommand.apply(this);
 }
 
 type SetUpMigrationEnvOptions = {
-    config: IConfig;
-    flags: Input<any>;
+    config: Config;
+    flags: Interfaces.FlagInput<any>;
 };
 
 const setUpMigrationEnv = async function (options: SetUpMigrationEnvOptions) {

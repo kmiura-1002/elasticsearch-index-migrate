@@ -89,7 +89,7 @@ export type MigrateIndex = {
     installed_on: string;
     execution_time: number;
     success: boolean;
-    checksum: number;
+    checksum: number | undefined;
 };
 export const MigrationTypes = {
     ADD_FIELD: 'ADD_FIELD',

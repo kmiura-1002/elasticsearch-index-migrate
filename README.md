@@ -226,12 +226,23 @@ elasticsearch/
 # Commands
 <!-- commands -->
 * [`elasticsearch-index-migrate baseline`](#elasticsearch-index-migrate-baseline)
-* [`elasticsearch-index-migrate clean`](#elasticsearch-index-migrate-clean)
+* [`elasticsearch-index-migrate baseline:esindex`](#elasticsearch-index-migrate-baselineesindex)
+* [`elasticsearch-index-migrate baseline:template [FILE]`](#elasticsearch-index-migrate-baselinetemplate-file)
+* [`elasticsearch-index-migrate clean [FILE]`](#elasticsearch-index-migrate-clean-file)
+* [`elasticsearch-index-migrate clean:esindex [FILE]`](#elasticsearch-index-migrate-cleanesindex-file)
+* [`elasticsearch-index-migrate clean:template [FILE]`](#elasticsearch-index-migrate-cleantemplate-file)
 * [`elasticsearch-index-migrate help [COMMAND]`](#elasticsearch-index-migrate-help-command)
-* [`elasticsearch-index-migrate init`](#elasticsearch-index-migrate-init)
-* [`elasticsearch-index-migrate migrate`](#elasticsearch-index-migrate-migrate)
-* [`elasticsearch-index-migrate plan`](#elasticsearch-index-migrate-plan)
-* [`elasticsearch-index-migrate recovery`](#elasticsearch-index-migrate-recovery)
+* [`elasticsearch-index-migrate migrate [FILE]`](#elasticsearch-index-migrate-migrate-file)
+* [`elasticsearch-index-migrate migrate:esindex [FILE]`](#elasticsearch-index-migrate-migrateesindex-file)
+* [`elasticsearch-index-migrate migrate:template [FILE]`](#elasticsearch-index-migrate-migratetemplate-file)
+* [`elasticsearch-index-migrate plan [FILE]`](#elasticsearch-index-migrate-plan-file)
+* [`elasticsearch-index-migrate plan:esindex [FILE]`](#elasticsearch-index-migrate-planesindex-file)
+* [`elasticsearch-index-migrate plan:template [FILE]`](#elasticsearch-index-migrate-plantemplate-file)
+* [`elasticsearch-index-migrate recovery [FILE]`](#elasticsearch-index-migrate-recovery-file)
+* [`elasticsearch-index-migrate validate [FILE]`](#elasticsearch-index-migrate-validate-file)
+* [`elasticsearch-index-migrate validate:esindex [FILE]`](#elasticsearch-index-migrate-validateesindex-file)
+* [`elasticsearch-index-migrate validate:template [FILE]`](#elasticsearch-index-migrate-validatetemplate-file)
+* [`elasticsearch-index-migrate version`](#elasticsearch-index-migrate-version)
 
 ## `elasticsearch-index-migrate baseline`
 
@@ -242,19 +253,14 @@ USAGE
   $ elasticsearch-index-migrate baseline
 
 OPTIONS
-  -B, --baseline_version=baseline_version              Migrate from the baseline set in the
-                                                       ELASTICSEARCH_MIGRATION_BASELINE_VERSION environment variable
-
   -C, --elasticsearch_cloudid=elasticsearch_cloudid    Connect to Elasticsearch with the value set in the
                                                        ELASTICSEARCH_CLOUDID environment variable
 
-  -D, --delimiter=delimiter                            The separator between index name and index version.
+  -E, --search_engine=search_engine                    Connect assuming the search engine (Elasticsearch or Opensearch)
+                                                       set in the SEARCH_ENGINE environment variable
 
   -H, --elasticsearch_host=elasticsearch_host          Connect to Elasticsearch with the value set in the
                                                        ELASTICSEARCH_HOST environment variable
-
-  -L, --migration_locations=migration_locations        Read the migration file from the directory set in the
-                                                       $ELASTICSEARCH_MIGRATION_LOCATIONS environment variable
 
   -O, --option_file=option_file                        Load migration setting file (.json) from file path (Environment
                                                        variables take precedence)
@@ -273,44 +279,32 @@ OPTIONS
 
   -d, --description=description                        Description to be saved to history.
 
-  -h, --help                                           show CLI help
+  -h, --help                                           Show CLI help.
 
-  -i, --indexName=indexName                            (required) migration index name.
+  -i, --index=index                                    (required) migration index name.
 
-  -n, --[no-]natural-name                              Set to true if the index name contains _ or -(Ex: my-index).
-
-  -v, --index-version=index-version                    index version. (Ex: For my-index_1970.01.01, the version is
-                                                       1970.01.01. For my-index_v1, the version is v1.)
-
-  --[no-]init                                          If the init command has not been executed in advance, the
-                                                       migration will be performed after initialization has been
-                                                       processed.
+  --version                                            Show CLI version.
 ```
 
-_See code: [src/commands/baseline.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/commands/baseline.ts)_
+_See code: [src/app/commands/baseline/index.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/app/commands/baseline/index.ts)_
 
-## `elasticsearch-index-migrate clean`
+## `elasticsearch-index-migrate baseline:esindex`
 
-Delete all history stored in the migration_history index
+Create a baseline in migration_history if you were running Elasticsearch before the tool was implemented.
 
 ```
 USAGE
-  $ elasticsearch-index-migrate clean
+  $ elasticsearch-index-migrate baseline:esindex
 
 OPTIONS
-  -B, --baseline_version=baseline_version              Migrate from the baseline set in the
-                                                       ELASTICSEARCH_MIGRATION_BASELINE_VERSION environment variable
-
   -C, --elasticsearch_cloudid=elasticsearch_cloudid    Connect to Elasticsearch with the value set in the
                                                        ELASTICSEARCH_CLOUDID environment variable
 
-  -D, --delimiter=delimiter                            The separator between index name and index version.
+  -E, --search_engine=search_engine                    Connect assuming the search engine (Elasticsearch or Opensearch)
+                                                       set in the SEARCH_ENGINE environment variable
 
   -H, --elasticsearch_host=elasticsearch_host          Connect to Elasticsearch with the value set in the
                                                        ELASTICSEARCH_HOST environment variable
-
-  -L, --migration_locations=migration_locations        Read the migration file from the directory set in the
-                                                       $ELASTICSEARCH_MIGRATION_LOCATIONS environment variable
 
   -O, --option_file=option_file                        Load migration setting file (.json) from file path (Environment
                                                        variables take precedence)
@@ -327,67 +321,184 @@ OPTIONS
   -V, --elasticsearch_version=elasticsearch_version    Run migration with Elasticsearch version set in
                                                        ELASTICSEARCH_VERSION environment variable
 
-  -h, --help                                           show CLI help
+  -d, --description=description                        Description to be saved to history.
 
-  -i, --indexName=indexName                            (required) migration index name.
+  -h, --help                                           Show CLI help.
 
-  -n, --[no-]natural-name                              Set to true if the index name contains _ or -(Ex: my-index).
+  -i, --index=index                                    (required) migration index name.
 
-  -t, --target=(history|index|all)                     [default: history] Selecting what to delete
-                                                       history : Delete the target index migration history from
-                                                       migration_history
-                                                       index : Delete the target index from elasticsearch
-                                                       all : Delete both migration history and index
-
-  -v, --index-version=index-version                    index version. (Ex: For my-index_1970.01.01, the version is
-                                                       1970.01.01. For my-index_v1, the version is v1.)
-
-  -y, --yes                                            Always answer "yes" to any prompt that appears during processing
-
-  --[no-]init                                          If the init command has not been executed in advance, the
-                                                       migration will be performed after initialization has been
-                                                       processed.
+  --version                                            Show CLI version.
 ```
 
-_See code: [src/commands/clean.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/commands/clean.ts)_
+_See code: [src/app/commands/baseline/esindex.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/app/commands/baseline/esindex.ts)_
+
+## `elasticsearch-index-migrate baseline:template [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ elasticsearch-index-migrate baseline:template [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       Show CLI help.
+  -n, --name=name  name to print
+
+EXAMPLE
+  $ mynewcli hello hello world from ./src/hello.ts!
+```
+
+_See code: [src/app/commands/baseline/template.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/app/commands/baseline/template.ts)_
+
+## `elasticsearch-index-migrate clean [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ elasticsearch-index-migrate clean [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       Show CLI help.
+  -n, --name=name  name to print
+
+EXAMPLE
+  $ mynewcli hello hello world from ./src/hello.ts!
+```
+
+_See code: [src/app/commands/clean/index.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/app/commands/clean/index.ts)_
+
+## `elasticsearch-index-migrate clean:esindex [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ elasticsearch-index-migrate clean:esindex [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       Show CLI help.
+  -n, --name=name  name to print
+
+EXAMPLE
+  $ mynewcli hello hello world from ./src/hello.ts!
+```
+
+_See code: [src/app/commands/clean/esindex.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/app/commands/clean/esindex.ts)_
+
+## `elasticsearch-index-migrate clean:template [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ elasticsearch-index-migrate clean:template [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       Show CLI help.
+  -n, --name=name  name to print
+
+EXAMPLE
+  $ mynewcli hello hello world from ./src/hello.ts!
+```
+
+_See code: [src/app/commands/clean/template.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/app/commands/clean/template.ts)_
 
 ## `elasticsearch-index-migrate help [COMMAND]`
 
-display help for elasticsearch-index-migrate
+Display help for elasticsearch-index-migrate.
 
 ```
 USAGE
   $ elasticsearch-index-migrate help [COMMAND]
 
 ARGUMENTS
-  COMMAND  command to show help for
+  COMMAND  Command to show help for.
 
 OPTIONS
-  --all  see all commands in CLI
+  -n, --nested-commands  Include all nested commands in the output.
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.14/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v5.1.11/src/commands/help.ts)_
 
-## `elasticsearch-index-migrate init`
+## `elasticsearch-index-migrate migrate [FILE]`
 
-Set up a migration environment.
+describe the command here
 
 ```
 USAGE
-  $ elasticsearch-index-migrate init
+  $ elasticsearch-index-migrate migrate [FILE]
 
 OPTIONS
-  -B, --baseline_version=baseline_version              Migrate from the baseline set in the
-                                                       ELASTICSEARCH_MIGRATION_BASELINE_VERSION environment variable
+  -f, --force
+  -h, --help       Show CLI help.
+  -n, --name=name  name to print
 
+EXAMPLE
+  $ mynewcli hello hello world from ./src/hello.ts!
+```
+
+_See code: [src/app/commands/migrate/index.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/app/commands/migrate/index.ts)_
+
+## `elasticsearch-index-migrate migrate:esindex [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ elasticsearch-index-migrate migrate:esindex [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       Show CLI help.
+  -n, --name=name  name to print
+
+EXAMPLE
+  $ mynewcli hello hello world from ./src/hello.ts!
+```
+
+_See code: [src/app/commands/migrate/esindex.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/app/commands/migrate/esindex.ts)_
+
+## `elasticsearch-index-migrate migrate:template [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ elasticsearch-index-migrate migrate:template [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       Show CLI help.
+  -n, --name=name  name to print
+
+EXAMPLE
+  $ mynewcli hello hello world from ./src/hello.ts!
+```
+
+_See code: [src/app/commands/migrate/template.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/app/commands/migrate/template.ts)_
+
+## `elasticsearch-index-migrate plan [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ elasticsearch-index-migrate plan [FILE]
+
+OPTIONS
   -C, --elasticsearch_cloudid=elasticsearch_cloudid    Connect to Elasticsearch with the value set in the
                                                        ELASTICSEARCH_CLOUDID environment variable
 
+  -E, --search_engine=search_engine                    Connect assuming the search engine (Elasticsearch or Opensearch)
+                                                       set in the SEARCH_ENGINE environment variable
+
   -H, --elasticsearch_host=elasticsearch_host          Connect to Elasticsearch with the value set in the
                                                        ELASTICSEARCH_HOST environment variable
-
-  -L, --migration_locations=migration_locations        Read the migration file from the directory set in the
-                                                       $ELASTICSEARCH_MIGRATION_LOCATIONS environment variable
 
   -O, --option_file=option_file                        Load migration setting file (.json) from file path (Environment
                                                        variables take precedence)
@@ -404,175 +515,142 @@ OPTIONS
   -V, --elasticsearch_version=elasticsearch_version    Run migration with Elasticsearch version set in
                                                        ELASTICSEARCH_VERSION environment variable
 
-  -h, --help                                           show CLI help
+  -f, --force
+
+  -h, --help                                           Show CLI help.
+
+  -n, --name=name                                      name to print
+
+  --version                                            Show CLI version.
+
+EXAMPLE
+  $ mynewcli hello hello world from ./src/hello.ts!
 ```
 
-_See code: [src/commands/init.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/commands/init.ts)_
+_See code: [src/app/commands/plan/index.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/app/commands/plan/index.ts)_
 
-## `elasticsearch-index-migrate migrate`
+## `elasticsearch-index-migrate plan:esindex [FILE]`
 
-Migrate the index of Elasticsearch to the latest version based on the execution plan.
-
-```
-USAGE
-  $ elasticsearch-index-migrate migrate
-
-OPTIONS
-  -B, --baseline_version=baseline_version              Migrate from the baseline set in the
-                                                       ELASTICSEARCH_MIGRATION_BASELINE_VERSION environment variable
-
-  -C, --elasticsearch_cloudid=elasticsearch_cloudid    Connect to Elasticsearch with the value set in the
-                                                       ELASTICSEARCH_CLOUDID environment variable
-
-  -D, --delimiter=delimiter                            The separator between index name and index version.
-
-  -H, --elasticsearch_host=elasticsearch_host          Connect to Elasticsearch with the value set in the
-                                                       ELASTICSEARCH_HOST environment variable
-
-  -L, --migration_locations=migration_locations        Read the migration file from the directory set in the
-                                                       $ELASTICSEARCH_MIGRATION_LOCATIONS environment variable
-
-  -O, --option_file=option_file                        Load migration setting file (.json) from file path (Environment
-                                                       variables take precedence)
-
-  -P, --elasticsearch_password=elasticsearch_password  Connect to Elasticsearch with the value set in the
-                                                       ELASTICSEARCH_PASSWORD environment variable
-
-  -S, --elasticsearch_ssl=elasticsearch_ssl            Connect to Elasticsearch with the value set in the
-                                                       ELASTICSEARCH_SSL environment variable
-
-  -U, --elasticsearch_username=elasticsearch_username  Connect to Elasticsearch with the value set in the
-                                                       ELASTICSEARCH_USERNAME environment variable
-
-  -V, --elasticsearch_version=elasticsearch_version    Run migration with Elasticsearch version set in
-                                                       ELASTICSEARCH_VERSION environment variable
-
-  -h, --help                                           show CLI help
-
-  -i, --indexName=indexName                            (required) migration index name.
-
-  -n, --[no-]natural-name                              Set to true if the index name contains _ or -(Ex: my-index).
-
-  -v, --index-version=index-version                    index version. (Ex: For my-index_1970.01.01, the version is
-                                                       1970.01.01. For my-index_v1, the version is v1.)
-
-  --[no-]init                                          If the init command has not been executed in advance, the
-                                                       migration will be performed after initialization has been
-                                                       processed.
-
-  --showDiff                                           Outputs the difference between before and after the migration at
-                                                       the end.
-```
-
-_See code: [src/commands/migrate.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/commands/migrate.ts)_
-
-## `elasticsearch-index-migrate plan`
-
-Outputs the migration execution plan.
+describe the command here
 
 ```
 USAGE
-  $ elasticsearch-index-migrate plan
+  $ elasticsearch-index-migrate plan:esindex [FILE]
 
 OPTIONS
-  -B, --baseline_version=baseline_version              Migrate from the baseline set in the
-                                                       ELASTICSEARCH_MIGRATION_BASELINE_VERSION environment variable
+  -f, --force
+  -h, --help       Show CLI help.
+  -n, --name=name  name to print
 
-  -C, --elasticsearch_cloudid=elasticsearch_cloudid    Connect to Elasticsearch with the value set in the
-                                                       ELASTICSEARCH_CLOUDID environment variable
-
-  -D, --delimiter=delimiter                            The separator between index name and index version.
-
-  -H, --elasticsearch_host=elasticsearch_host          Connect to Elasticsearch with the value set in the
-                                                       ELASTICSEARCH_HOST environment variable
-
-  -L, --migration_locations=migration_locations        Read the migration file from the directory set in the
-                                                       $ELASTICSEARCH_MIGRATION_LOCATIONS environment variable
-
-  -O, --option_file=option_file                        Load migration setting file (.json) from file path (Environment
-                                                       variables take precedence)
-
-  -P, --elasticsearch_password=elasticsearch_password  Connect to Elasticsearch with the value set in the
-                                                       ELASTICSEARCH_PASSWORD environment variable
-
-  -S, --elasticsearch_ssl=elasticsearch_ssl            Connect to Elasticsearch with the value set in the
-                                                       ELASTICSEARCH_SSL environment variable
-
-  -U, --elasticsearch_username=elasticsearch_username  Connect to Elasticsearch with the value set in the
-                                                       ELASTICSEARCH_USERNAME environment variable
-
-  -V, --elasticsearch_version=elasticsearch_version    Run migration with Elasticsearch version set in
-                                                       ELASTICSEARCH_VERSION environment variable
-
-  -h, --help                                           show CLI help
-
-  -i, --indexName=indexName                            (required) migration index name.
-
-  -n, --[no-]natural-name                              Set to true if the index name contains _ or -(Ex: my-index).
-
-  -v, --index-version=index-version                    index version. (Ex: For my-index_1970.01.01, the version is
-                                                       1970.01.01. For my-index_v1, the version is v1.)
-
-  --[no-]init                                          If the init command has not been executed in advance, the
-                                                       migration will be performed after initialization has been
-                                                       processed.
+EXAMPLE
+  $ mynewcli hello hello world from ./src/hello.ts!
 ```
 
-_See code: [src/commands/plan.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/commands/plan.ts)_
+_See code: [src/app/commands/plan/esindex.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/app/commands/plan/esindex.ts)_
 
-## `elasticsearch-index-migrate recovery`
+## `elasticsearch-index-migrate plan:template [FILE]`
 
-Delete failed migration history.
+describe the command here
 
 ```
 USAGE
-  $ elasticsearch-index-migrate recovery
+  $ elasticsearch-index-migrate plan:template [FILE]
 
 OPTIONS
-  -B, --baseline_version=baseline_version              Migrate from the baseline set in the
-                                                       ELASTICSEARCH_MIGRATION_BASELINE_VERSION environment variable
+  -f, --force
+  -h, --help       Show CLI help.
+  -n, --name=name  name to print
 
-  -C, --elasticsearch_cloudid=elasticsearch_cloudid    Connect to Elasticsearch with the value set in the
-                                                       ELASTICSEARCH_CLOUDID environment variable
-
-  -D, --delimiter=delimiter                            The separator between index name and index version.
-
-  -H, --elasticsearch_host=elasticsearch_host          Connect to Elasticsearch with the value set in the
-                                                       ELASTICSEARCH_HOST environment variable
-
-  -L, --migration_locations=migration_locations        Read the migration file from the directory set in the
-                                                       $ELASTICSEARCH_MIGRATION_LOCATIONS environment variable
-
-  -O, --option_file=option_file                        Load migration setting file (.json) from file path (Environment
-                                                       variables take precedence)
-
-  -P, --elasticsearch_password=elasticsearch_password  Connect to Elasticsearch with the value set in the
-                                                       ELASTICSEARCH_PASSWORD environment variable
-
-  -S, --elasticsearch_ssl=elasticsearch_ssl            Connect to Elasticsearch with the value set in the
-                                                       ELASTICSEARCH_SSL environment variable
-
-  -U, --elasticsearch_username=elasticsearch_username  Connect to Elasticsearch with the value set in the
-                                                       ELASTICSEARCH_USERNAME environment variable
-
-  -V, --elasticsearch_version=elasticsearch_version    Run migration with Elasticsearch version set in
-                                                       ELASTICSEARCH_VERSION environment variable
-
-  -h, --help                                           show CLI help
-
-  -i, --indexName=indexName                            (required) migration index name.
-
-  -n, --[no-]natural-name                              Set to true if the index name contains _ or -(Ex: my-index).
-
-  -v, --index-version=index-version                    index version. (Ex: For my-index_1970.01.01, the version is
-                                                       1970.01.01. For my-index_v1, the version is v1.)
-
-  --[no-]init                                          If the init command has not been executed in advance, the
-                                                       migration will be performed after initialization has been
-                                                       processed.
+EXAMPLE
+  $ mynewcli hello hello world from ./src/hello.ts!
 ```
 
-_See code: [src/commands/recovery.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/commands/recovery.ts)_
+_See code: [src/app/commands/plan/template.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/app/commands/plan/template.ts)_
+
+## `elasticsearch-index-migrate recovery [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ elasticsearch-index-migrate recovery [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       Show CLI help.
+  -n, --name=name  name to print
+
+EXAMPLE
+  $ mynewcli hello hello world from ./src/hello.ts!
+```
+
+_See code: [src/app/commands/recovery.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/app/commands/recovery.ts)_
+
+## `elasticsearch-index-migrate validate [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ elasticsearch-index-migrate validate [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       Show CLI help.
+  -n, --name=name  name to print
+
+EXAMPLE
+  $ mynewcli hello hello world from ./src/hello.ts!
+```
+
+_See code: [src/app/commands/validate/index.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/app/commands/validate/index.ts)_
+
+## `elasticsearch-index-migrate validate:esindex [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ elasticsearch-index-migrate validate:esindex [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       Show CLI help.
+  -n, --name=name  name to print
+
+EXAMPLE
+  $ mynewcli hello hello world from ./src/hello.ts!
+```
+
+_See code: [src/app/commands/validate/esindex.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/app/commands/validate/esindex.ts)_
+
+## `elasticsearch-index-migrate validate:template [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ elasticsearch-index-migrate validate:template [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       Show CLI help.
+  -n, --name=name  name to print
+
+EXAMPLE
+  $ mynewcli hello hello world from ./src/hello.ts!
+```
+
+_See code: [src/app/commands/validate/template.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.7.3/src/app/commands/validate/template.ts)_
+
+## `elasticsearch-index-migrate version`
+
+```
+USAGE
+  $ elasticsearch-index-migrate version
+```
+
+_See code: [@oclif/plugin-version](https://github.com/oclif/plugin-version/blob/v1.0.4/src/commands/version.ts)_
 <!-- commandsstop -->
 
 # Quick start with Docker
