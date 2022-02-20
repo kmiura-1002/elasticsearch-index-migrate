@@ -14,16 +14,16 @@ import {
     IndicesCreate as IndicesCreate7,
     IndicesExists as IndicesExists7
 } from 'es7/api/requestParams';
-import { cli } from 'cli-ux';
 import { ApiResponse as ApiResponse6 } from 'es6/lib/Transport';
 import { ApiResponse as ApiResponse7 } from 'es7/lib/Transport';
 import { mocked } from 'jest-mock';
 import useElasticsearchClient from '../../client/es/ElasticsearchClient';
 import { getMockElasticsearchClient } from '../../../__mocks__/client/es/mockElasticsearchClient';
+import { CliUx } from '@oclif/core';
 
 jest.mock('../../flags/flagsLoader');
 jest.mock('../../client/es/ElasticsearchClient');
-const spyError = jest.spyOn(cli, 'error');
+const spyError = jest.spyOn(CliUx.ux, 'error');
 
 describe('createMigrationHistory', () => {
     beforeEach(() => {

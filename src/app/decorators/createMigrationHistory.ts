@@ -1,6 +1,5 @@
-import { Command, Config, Interfaces } from '@oclif/core';
+import { CliUx, Command, Config, Interfaces } from '@oclif/core';
 import { readOptions } from '../flags/flagsLoader';
-import { cli } from 'cli-ux';
 import v7Mapping from '../../resources/mapping/migrate_history_esV7.json';
 import v6Mapping from '../../resources/mapping/migrate_history_esV6.json';
 import { MIGRATE_HISTORY_INDEX_NAME, MigrationConfig } from '../types';
@@ -39,24 +38,28 @@ const setUpMigrationEnv = async function (options: SetUpMigrationEnvOptions) {
     const migrationConfig = await readOptions(options.flags, options.config);
     const { exists, createIndex } = useElasticsearchClient(migrationConfig.elasticsearch);
     const isExistsIndex = await exists({ index: MIGRATE_HISTORY_INDEX_NAME }).catch((reason) =>
-        cli.error(`ConnectionError:Check your elasticsearch connection config.\nreason:[${reason}]`)
+        CliUx.ux.error(
+            `ConnectionError:Check your elasticsearch connection config.\nreason:[${reason}]`
+        )
     );
 
     if (!isExistsIndex) {
-        cli.info('migrate_history index does not exist.');
-        cli.info('Create a migrate_history index for the first time.');
+        CliUx.ux.info('migrate_history index does not exist.');
+        CliUx.ux.info('Create a migrate_history index for the first time.');
         const mappingData = getHistoryIndexRequestBody(migrationConfig);
         const ret = await createIndex({
             index: MIGRATE_HISTORY_INDEX_NAME,
             body: mappingData
         }).catch((reason) => {
-            cli.error(`Failed to create index.\nreason:[${JSON.stringify(reason)}]`, { exit: 1 });
+            CliUx.ux.error(`Failed to create index.\nreason:[${JSON.stringify(reason)}]`, {
+                exit: 1
+            });
         });
         if (!ret || ret.statusCode !== 200) {
-            cli.error('Failed to create index for migrate.', { exit: 1 });
+            CliUx.ux.error('Failed to create index for migrate.', { exit: 1 });
         }
 
-        cli.info('The creation of the index has been completed.');
+        CliUx.ux.info('The creation of the index has been completed.');
     }
 };
 
