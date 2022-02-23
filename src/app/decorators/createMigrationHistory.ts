@@ -26,22 +26,14 @@ async function setUpCommand(
     cmdArgs: unknown[]
 ) {
     const { flags } = await this.parse();
-    await setUpMigrationEnv({
-        config: this.config,
-        flags: flags as Interfaces.FlagInput<any>
-    });
+    await setupMigrationEnv(this.config, flags as Interfaces.FlagInput<any>);
 
     await originalRunCommand.apply(this, cmdArgs);
 }
 
-type SetUpMigrationEnvOptions = {
-    config: Config;
-    flags: Interfaces.FlagInput<any>;
-};
-
-const setUpMigrationEnv = async function (options: SetUpMigrationEnvOptions) {
+const setupMigrationEnv = async function (config: Config, flags: Interfaces.FlagInput<any>) {
     try {
-        const migrationConfig = await readOptions(options.flags, options.config);
+        const migrationConfig = await readOptions(flags, config);
         const { exists, createIndex } = useElasticsearchClient(migrationConfig.elasticsearch);
         const isExistsIndex = await exists({ index: MIGRATE_HISTORY_INDEX_NAME });
 
