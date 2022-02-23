@@ -11,6 +11,7 @@ import {
     Search as Search6,
     Index as Index6,
     DeleteByQuery as DeleteByQuery6,
+    Delete as Delete6,
     Generic as Generic6
 } from 'es6/api/requestParams';
 import {
@@ -25,6 +26,7 @@ import {
     Search as Search7,
     Index as Index7,
     DeleteByQuery as DeleteByQuery7,
+    Delete as Delete7,
     Generic as Generic7
 } from 'es7/api/requestParams';
 import { ApiResponse as ApiResponse6 } from 'es6/lib/Transport';
@@ -231,13 +233,24 @@ const getIndexApi = (connection: EsConnection, request: IndicesGet6 | IndicesGet
     return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
 };
 
-const deleteDocumentApi = (connection: EsConnection, request: DeleteByQuery6 | DeleteByQuery7) => {
+const deleteDocumentsApi = (connection: EsConnection, request: DeleteByQuery6 | DeleteByQuery7) => {
     const param = { client: connection.client, request };
 
     if (isE6Client<DeleteByQuery6, DeleteByQuery7>(param, connection.version)) {
         return param.client.deleteByQuery(param.request);
     } else if (isE7Client<DeleteByQuery6, DeleteByQuery7>(param, connection.version)) {
         return param.client.deleteByQuery(param.request);
+    }
+    return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
+};
+
+const deleteDocumentApi = (connection: EsConnection, request: Delete6 | Delete7) => {
+    const param = { client: connection.client, request };
+
+    if (isE6Client<Delete6, Delete7>(param, connection.version)) {
+        return param.client.delete(param.request);
+    } else if (isE7Client<Delete6, Delete7>(param, connection.version)) {
+        return param.client.delete(param.request);
     }
     return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
 };
@@ -302,8 +315,13 @@ export default function useElasticsearchClient(connectConf: ESConfig) {
     const getIndex = (param: IndicesGet6 | IndicesGet7): Promise<SimpleJson> =>
         getIndexApi(connection, param).then((param) => param.body);
 
-    const deleteDocument = (
+    const deleteDocuments = (
         param: DeleteByQuery6 | DeleteByQuery7
+    ): Promise<ApiResponse6<any, any> | ApiResponse7<any, any>> =>
+        deleteDocumentsApi(connection, param);
+
+    const deleteDocument = (
+        param: Delete6 | Delete7
     ): Promise<ApiResponse6<any, any> | ApiResponse7<any, any>> =>
         deleteDocumentApi(connection, param);
 
@@ -320,6 +338,7 @@ export default function useElasticsearchClient(connectConf: ESConfig) {
         close,
         getMapping,
         getIndex,
+        deleteDocuments,
         deleteDocument
     };
 }

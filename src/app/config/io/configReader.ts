@@ -47,7 +47,8 @@ const configParser = new TsjsonParser(
                         }),
                         additionalProperties: S({ type: 'string' })
                     }),
-                    historyIndexRequestBody: S({ type: 'object' })
+                    historyIndexRequestBody: S({ type: 'object' }),
+                    lockIndexRequestBody: S({ type: 'object' })
                 },
                 required: ['location', 'baselineVersion']
             })

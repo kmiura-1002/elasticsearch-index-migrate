@@ -1,6 +1,7 @@
 import { ParsedPath } from 'path';
 
 export const MIGRATE_HISTORY_INDEX_NAME = 'migrate_history';
+export const MIGRATE_LOCK_INDEX_NAME = 'migrate_lock';
 const ELASTICSEARCH_VERSIONS = ['6.x', '7.x', 'opensearch'] as const;
 export type ELASTICSEARCH_VERSION = typeof ELASTICSEARCH_VERSIONS[number];
 export const OPENSEARCH = 'opensearch';
@@ -36,6 +37,7 @@ export type MigrationConfig = {
             [key: string]: string; // index name or template name : version
         };
         historyIndexRequestBody?: SimpleJson;
+        lockIndexRequestBody?: SimpleJson;
     };
 };
 
