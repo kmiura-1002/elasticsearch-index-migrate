@@ -1,5 +1,5 @@
 import { CliUx, Command, Config, Interfaces } from '@oclif/core';
-import { readOptions } from '../flags/flagsLoader';
+import { readOptions } from '../config/flags/flagsLoader';
 import v7Mapping from '../../resources/mapping/migrate_history_esV7.json';
 import v6Mapping from '../../resources/mapping/migrate_history_esV6.json';
 import { MIGRATE_HISTORY_INDEX_NAME, MigrationConfig } from '../types';

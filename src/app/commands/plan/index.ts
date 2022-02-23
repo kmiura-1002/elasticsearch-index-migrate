@@ -1,6 +1,6 @@
 import { Command, Flags } from '@oclif/core';
 import { createMigrationHistoryIfNotExists } from '../../decorators/createMigrationHistory';
-import { DefaultFlags, esConnectionFlags } from '../../flags/defaultCommandFlags';
+import { DefaultFlags, esConnectionFlags } from '../../config/flags/defaultCommandFlags';
 import { validMigrateTarget } from '../../decorators/validMigrateTarget';
 
 export default class Plan extends Command {

@@ -1,5 +1,6 @@
 import { CliUx, Command } from '@oclif/core';
 
+// ToDo Delete this function after removing the flags.
 export function validMigrateTarget() {
     return function (
         _target: Command,

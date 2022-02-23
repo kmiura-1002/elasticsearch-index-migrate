@@ -1,5 +1,5 @@
 import * as Config from '@oclif/core';
-import { readOptions } from '../flags/flagsLoader';
+import { readOptions } from '../config/flags/flagsLoader';
 import migrateHistoryRepository from '../context/migrate-history/migrateHistoryRepository';
 import { migrateHistorySpecByIndexName } from '../context/migrate-history/spec';
 import { CliUx } from '@oclif/core';
@@ -15,6 +15,7 @@ const migrationBaselineVersionService = (flags: { [name: string]: any }, config:
         };
     };
 
+    // ToDo Delete this function after removing the flags.
     const getTargetName = (flags: { [name: string]: any }) => {
         if (flags.index) {
             return flags.index;

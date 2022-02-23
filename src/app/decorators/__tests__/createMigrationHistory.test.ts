@@ -1,7 +1,7 @@
 import { createMigrationHistoryIfNotExists } from '../createMigrationHistory';
 import { fancyIt } from '../../../__mocks__/fancyIt';
 import { getFakeCommand } from '../../../__mocks__/command/fakeCommand';
-import { readOptions } from '../../flags/flagsLoader';
+import { readOptions } from '../../config/flags/flagsLoader';
 import {
     mockReadOptions,
     mockReadOptionsWithHistoryIndexRequestBody
@@ -21,7 +21,7 @@ import useElasticsearchClient from '../../client/es/ElasticsearchClient';
 import { getMockElasticsearchClient } from '../../../__mocks__/client/es/mockElasticsearchClient';
 import { CliUx } from '@oclif/core';
 
-jest.mock('../../flags/flagsLoader');
+jest.mock('../../config/flags/flagsLoader');
 jest.mock('../../client/es/ElasticsearchClient');
 const spyError = jest.spyOn(CliUx.ux, 'error');
 

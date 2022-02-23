@@ -1,7 +1,7 @@
 import migrationBaselineVersionService from '../migrationBaselineVersionService';
 import * as Config from '@oclif/core';
 import { mocked } from 'jest-mock';
-import { readOptions } from '../../flags/flagsLoader';
+import { readOptions } from '../../config/flags/flagsLoader';
 import useElasticsearchClient from '../../client/es/ElasticsearchClient';
 import { mockReadOptions } from '../../../__mocks__/flags/mockReadOptions';
 import { getMockElasticsearchClient } from '../../../__mocks__/client/es/mockElasticsearchClient';
@@ -9,7 +9,7 @@ import { IndicesExists as IndicesExists6 } from 'es6/api/requestParams';
 import { IndicesExists as IndicesExists7 } from 'es7/api/requestParams';
 import { CliUx } from '@oclif/core';
 
-jest.mock('../../flags/flagsLoader');
+jest.mock('../../config/flags/flagsLoader');
 jest.mock('../../client/es/ElasticsearchClient');
 const spyInfo = jest.spyOn(CliUx.ux, 'info');
 

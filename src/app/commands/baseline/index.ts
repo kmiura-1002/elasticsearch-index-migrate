@@ -1,8 +1,9 @@
 import { CliUx, Command, Flags } from '@oclif/core';
 import { createMigrationHistoryIfNotExists } from '../../decorators/createMigrationHistory';
-import { DefaultFlags, esConnectionFlags } from '../../flags/defaultCommandFlags';
+import { DefaultFlags, esConnectionFlags } from '../../config/flags/defaultCommandFlags';
 import migrationBaselineVersionService from '../../service/migrationBaselineVersionService';
 import { validMigrateTarget } from '../../decorators/validMigrateTarget';
+import { DefaultArgs } from '../../config/args/defaultCommandArgs';
 
 export default class Index extends Command {
     static description =
@@ -22,10 +23,7 @@ export default class Index extends Command {
         })
     };
 
-    static args = [
-        // ToDo Set required:true if flags index are removed
-        { name: 'name', description: 'migration index or template name.', required: false }
-    ];
+    static args = [...DefaultArgs];
 
     @validMigrateTarget()
     @createMigrationHistoryIfNotExists()
