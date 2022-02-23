@@ -2,7 +2,7 @@ import { CliUx, Command, Flags } from '@oclif/core';
 import { createMigrationHistoryIfNotExists } from '../../decorators/createMigrationHistory';
 import { DefaultFlags, esConnectionFlags } from '../../flags/defaultCommandFlags';
 import migrationBaselineVersionService from '../../service/migrationBaselineVersionService';
-import { validMigrateTarget } from "../../decorators/validMigrateTarget";
+import { validMigrateTarget } from '../../decorators/validMigrateTarget';
 
 export default class Index extends Command {
     static description =
@@ -12,8 +12,9 @@ export default class Index extends Command {
         ...DefaultFlags,
         index: Flags.string({
             char: 'i',
-            description: 'migration index name.\nThe index flags will be removed in the next version. Please use the arguments (name) instead of this flags.',
-            required: false,
+            description:
+                'migration index name.\nThe index flags will be removed in the next version. Please use the arguments (name) instead of this flags.',
+            required: false
         }),
         description: Flags.string({
             char: 'd',
@@ -21,15 +22,21 @@ export default class Index extends Command {
         })
     };
 
-    static args = [{ name: 'name', description: 'migration index or template name.', required: false }];
+    static args = [
+        // ToDo Set required:true if flags index are removed
+        { name: 'name', description: 'migration index or template name.', required: false }
+    ];
 
     @validMigrateTarget()
     @createMigrationHistoryIfNotExists()
     async run(): Promise<void> {
         try {
-            const { flags } = await this.parse(Index);
-            const { makeBaseline } = migrationBaselineVersionService(flags, this.config);
-            await makeBaseline();
+            const { flags, args } = await this.parse(Index);
+
+            await migrationBaselineVersionService(
+                { ...flags, ...args },
+                this.config
+            ).makeBaseline();
         } catch (e) {
             CliUx.ux.error(`throw error. caused by: ${e}`);
         }

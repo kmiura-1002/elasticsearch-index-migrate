@@ -61,9 +61,7 @@ const setUpMigrationEnv = async function (options: SetUpMigrationEnvOptions) {
             CliUx.ux.info('The creation of the index has been completed.');
         }
     } catch (e) {
-        CliUx.ux.error(
-            `Initialization process failed.\nreason:[${JSON.stringify(e)}]`
-        );
+        CliUx.ux.error(`Initialization process failed.\nreason:[${JSON.stringify(e)}]`);
     }
 };
 

@@ -15,21 +15,32 @@ const migrationBaselineVersionService = (flags: { [name: string]: any }, config:
         };
     };
 
+    const getTargetName = (flags: { [name: string]: any }) => {
+        if (flags.index) {
+            return flags.index;
+        }
+        if (flags.name) {
+            return flags.name;
+        }
+        throw new Error('Migration target is unknown.');
+    };
+
     const makeBaseline = async () => {
         const { migrationConfig, baselineVersion } = await readConfig();
         const { findBy, insert } = migrateHistoryRepository(migrationConfig.elasticsearch);
-        const baseline = baselineVersion[flags.index];
+        const targetName = getTargetName(flags);
+        const baseline = baselineVersion[targetName];
 
         if (baseline === undefined) {
-            throw new Error(`The baseline setting for index(${flags.index}) does not exist.`);
+            throw new Error(`The baseline setting for index(${targetName}) does not exist.`);
         }
-        const histories = await findBy(migrateHistorySpecByIndexName(flags.index, baseline));
+        const histories = await findBy(migrateHistorySpecByIndexName(targetName, baseline));
         if (histories.length === 0) {
             CliUx.ux.info('Baseline history does not exist.');
             CliUx.ux.info(`Create baseline in ${baseline}.`);
 
             await insert({
-                index_name: flags.index,
+                index_name: targetName,
                 migrate_version: baseline,
                 description: flags.description
             });
