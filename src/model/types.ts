@@ -3,12 +3,25 @@ import { ApiResponse as ApiResponse6 } from 'es6';
 import { ApiResponse as ApiResponse7 } from 'es7';
 import { ApiResponse as ApiResponseOS } from '@opensearch-project/opensearch';
 import { MigrationPlan } from '../executor/plan/MigrationPlan';
+import Elasticsearch6Client from '../utils/es/6/Elasticsearch6Client';
 
 export type ApiResponse<T = any, C = any> =
     | ApiResponse6<T, C>
     | ApiResponse7<T, C>
     | ApiResponseOS<T, C>;
 export const MAPPING_HISTORY_INDEX_NAME = 'migrate_history';
+export type MappingHistoryIndex = {
+    settings: {
+        index: {
+            refresh_interval: string;
+            number_of_shards: number;
+            number_of_replicas: number;
+            search: { slowlog: JsonObjectType };
+            indexing: { slowlog: JsonObjectType };
+        };
+    };
+    mappings: JsonObjectType;
+};
 export const OPENSEARCH = 'opensearch';
 
 export type ESConnectConfig = {

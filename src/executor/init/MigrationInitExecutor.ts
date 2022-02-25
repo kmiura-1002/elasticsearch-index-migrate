@@ -1,14 +1,22 @@
 import ElasticsearchClient from '../../utils/es/ElasticsearchClient';
-import { MAPPING_HISTORY_INDEX_NAME, SearchEngineVersion } from '../../model/types';
+import {
+    MappingHistoryIndex,
+    MAPPING_HISTORY_INDEX_NAME,
+    SearchEngineVersion
+} from '../../model/types';
 import { cli } from 'cli-ux';
 import v7Mapping from '../../resources/mapping/migrate_history_esV7.json';
 import v6Mapping from '../../resources/mapping/migrate_history_esV6.json';
 
 export async function createHistoryIndex(
     esClient: ElasticsearchClient,
-    esVersion?: SearchEngineVersion
+    esVersion?: SearchEngineVersion,
+    numShards?: number,
+    numReplica?: number
 ): Promise<void> {
-    const mappingData = mapping(esVersion);
+    const mappingData: MappingHistoryIndex = mapping(esVersion);
+    if (typeof numShards !== 'undefined') mappingData.settings.index.number_of_shards;
+    if (typeof numReplica !== 'undefined') mappingData.settings.index.number_of_replicas;
     const ret = await esClient
         .createIndex({ index: MAPPING_HISTORY_INDEX_NAME, body: mappingData })
         .catch((reason) => {
