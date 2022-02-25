@@ -281,6 +281,10 @@ OPTIONS
 
   -n, --[no-]natural-name                              Set to true if the index name contains _ or -(Ex: my-index).
 
+  -s, --number-of-shards                               number of shards in migration history index (default 1)
+
+  -r, --number-of-replicas                             number of replicas in migration history index (default 2)
+
   -v, --index-version=index-version                    index version. (Ex: For my-index_1970.01.01, the version is
                                                        1970.01.01. For my-index_v1, the version is v1.)
 
@@ -411,6 +415,12 @@ OPTIONS
                                                        ELASTICSEARCH_VERSION environment variable
 
   -h, --help                                           show CLI help
+
+  -s, --number-of-shards                               number of shards in migration history index (default 1)
+
+  -r, --number-of-replicas                             number of replicas in migration history index (default 2)
+
+
 ```
 
 _See code: [src/commands/init.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.8.1/src/commands/init.ts)_
@@ -460,6 +470,10 @@ OPTIONS
   -i, --indexName=indexName                            (required) migration index name.
 
   -n, --[no-]natural-name                              Set to true if the index name contains _ or -(Ex: my-index).
+
+  -s, --number-of-shards                               number of shards in migration history index (default 1)
+
+  -r, --number-of-replicas                             number of replicas in migration history index (default 2)
 
   -v, --index-version=index-version                    index version. (Ex: For my-index_1970.01.01, the version is
                                                        1970.01.01. For my-index_v1, the version is v1.)
@@ -520,6 +534,10 @@ OPTIONS
 
   -n, --[no-]natural-name                              Set to true if the index name contains _ or -(Ex: my-index).
 
+  -s, --number-of-shards                               number of shards in migration history index (default 1)
+
+  -r, --number-of-replicas                             number of replicas in migration history index (default 2)
+
   -v, --index-version=index-version                    index version. (Ex: For my-index_1970.01.01, the version is
                                                        1970.01.01. For my-index_v1, the version is v1.)
 
@@ -575,6 +593,10 @@ OPTIONS
   -i, --indexName=indexName                            (required) migration index name.
 
   -n, --[no-]natural-name                              Set to true if the index name contains _ or -(Ex: my-index).
+
+  -s, --number-of-shards                               number of shards in migration history index (default 1)
+
+  -r, --number-of-replicas                             number of replicas in migration history index (default 2)
 
   -v, --index-version=index-version                    index version. (Ex: For my-index_1970.01.01, the version is
                                                        1970.01.01. For my-index_v1, the version is v1.)
