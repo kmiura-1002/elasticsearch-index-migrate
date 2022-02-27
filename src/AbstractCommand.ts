@@ -82,8 +82,22 @@ export const DefaultOptions = {
     })
 };
 
+export const HistoryIndexOptions = {
+    'number-of-shards': flags.integer({
+        char: 's',
+        description: 'number of shards in migration history index.',
+        default: 1
+    }),
+    'number-of-replicas': flags.integer({
+        char: 'r',
+        description: 'number of replicas in migration history index.',
+        default: 2
+    })
+};
+
 export const CommandOptions = {
     ...DefaultOptions,
+    ...HistoryIndexOptions,
     indexName: flags.string({
         char: 'i',
         description: 'migration index name.',
@@ -132,16 +146,20 @@ export default abstract class AbstractCommand extends Command {
     }
 
     async createHistoryIndex(): Promise<void> {
-        const { flags } = this.parse();
+        const { flags } = this.parse() as any;
         const elasticsearchClient = getElasticsearchClient(this.migrationConfig.elasticsearch);
         const exists = await elasticsearchClient.exists({ index: MAPPING_HISTORY_INDEX_NAME });
         const { init } = flags as any;
+        const number_of_shards = flags['number-of-shards'];
+        const number_of_replicas = flags['number-of-replicas'];
         if (init && !exists) {
             cli.info('migrate_history index does not exist.');
             cli.info('Create a migrate_history index for the first time.');
             await createHistoryIndex(
                 elasticsearchClient,
-                usedEsVersion(this.migrationConfig.elasticsearch.version)
+                usedEsVersion(this.migrationConfig.elasticsearch.version),
+                number_of_shards,
+                number_of_replicas
             );
             cli.info('The creation of the index has been completed.');
         } else if (!exists) {
