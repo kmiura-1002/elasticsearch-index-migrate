@@ -9,6 +9,7 @@ import {
     IndicesGetMapping as IndicesGetMapping6,
     IndicesGet as IndicesGet6,
     Search as Search6,
+    Count as Count6,
     Index as Index6,
     DeleteByQuery as DeleteByQuery6,
     Delete as Delete6,
@@ -24,6 +25,7 @@ import {
     IndicesGetMapping as IndicesGetMapping7,
     IndicesGet as IndicesGet7,
     Search as Search7,
+    Count as Count7,
     Index as Index7,
     DeleteByQuery as DeleteByQuery7,
     Delete as Delete7,
@@ -255,6 +257,17 @@ const deleteDocumentApi = (connection: EsConnection, request: Delete6 | Delete7)
     return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
 };
 
+const countApi = (connection: EsConnection, request: Count6 | Count7) => {
+    const param = { client: connection.client, request };
+
+    if (isE6Client<Count6, Count7>(param, connection.version)) {
+        return param.client.count(param.request);
+    } else if (isE7Client<Count6, Count7>(param, connection.version)) {
+        return param.client.count(param.request);
+    }
+    return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
+};
+
 export default function useElasticsearchClient(connectConf: ESConfig) {
     const connection = esClientBind(connectConf);
 
@@ -325,6 +338,9 @@ export default function useElasticsearchClient(connectConf: ESConfig) {
     ): Promise<ApiResponse6<any, any> | ApiResponse7<any, any>> =>
         deleteDocumentApi(connection, param);
 
+    const count = (param: Count6 | Count7): Promise<number> =>
+        countApi(connection, param).then((value) => value.body.count);
+
     return {
         healthCheck,
         putMapping,
@@ -339,6 +355,7 @@ export default function useElasticsearchClient(connectConf: ESConfig) {
         getMapping,
         getIndex,
         deleteDocuments,
-        deleteDocument
+        deleteDocument,
+        count
     };
 }

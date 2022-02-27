@@ -451,6 +451,13 @@ describe('Elasticsearch client test', () => {
             await client.deleteIndex({ index });
         });
 
+        it('can call count api', async () => {
+            const index = `test_index_${Math.random().toString(32).substring(2)}`;
+            await client.createIndex({ index });
+            await expect(client.count({ index })).resolves.toEqual(0);
+            await client.deleteIndex({ index });
+        });
+
         it('can call health check api', async () => {
             await expect(client.healthCheck()).resolves.toEqual({
                 status: 'green'
@@ -726,6 +733,13 @@ describe('Elasticsearch client test', () => {
                 expect(value.length).toEqual(0);
             });
 
+            await client.deleteIndex({ index });
+        });
+
+        it('can call count api', async () => {
+            const index = `test_index_${Math.random().toString(32).substring(2)}`;
+            await client.createIndex({ index });
+            await expect(client.count({ index })).resolves.toEqual(0);
             await client.deleteIndex({ index });
         });
 
