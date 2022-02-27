@@ -3,7 +3,6 @@ import { ApiResponse as ApiResponse6 } from 'es6';
 import { ApiResponse as ApiResponse7 } from 'es7';
 import { ApiResponse as ApiResponseOS } from '@opensearch-project/opensearch';
 import { MigrationPlan } from '../executor/plan/MigrationPlan';
-import Elasticsearch6Client from '../utils/es/6/Elasticsearch6Client';
 
 export type ApiResponse<T = any, C = any> =
     | ApiResponse6<T, C>

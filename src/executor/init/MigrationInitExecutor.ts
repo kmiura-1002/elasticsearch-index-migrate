@@ -15,8 +15,12 @@ export async function createHistoryIndex(
     numReplica?: number
 ): Promise<void> {
     const mappingData: MappingHistoryIndex = mapping(esVersion);
-    if (typeof numShards !== 'undefined') mappingData.settings.index.number_of_shards;
-    if (typeof numReplica !== 'undefined') mappingData.settings.index.number_of_replicas;
+    if (typeof numShards !== 'undefined') {
+        mappingData.settings.index.number_of_shards = numShards;
+    }
+    if (typeof numReplica !== 'undefined') {
+        mappingData.settings.index.number_of_replicas = numReplica;
+    }
     const ret = await esClient
         .createIndex({ index: MAPPING_HISTORY_INDEX_NAME, body: mappingData })
         .catch((reason) => {
