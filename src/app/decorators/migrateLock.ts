@@ -8,7 +8,7 @@ import useElasticsearchClient from '../client/es/ElasticsearchClient';
 import { DeepRequired } from 'ts-essentials';
 import { format } from 'date-fns';
 
-export function historyLock() {
+export function migrateLock() {
     return function (
         _target: Command,
         _propertyKey: string,
@@ -29,12 +29,13 @@ async function lock(
 ) {
     const { flags } = await this.parse();
     const migrationConfig = await readOptions(flags, this.config);
-    const { exists, createIndex, postDocument, deleteDocument } = useElasticsearchClient(
-        migrationConfig.elasticsearch
-    );
     let id;
 
+    // lock
     try {
+        const { exists, createIndex, postDocument, close } = useElasticsearchClient(
+            migrationConfig.elasticsearch
+        );
         const isExistsIndex = await exists({ index: MIGRATE_LOCK_INDEX_NAME });
 
         if (!isExistsIndex) {
@@ -57,20 +58,36 @@ async function lock(
             index: MIGRATE_LOCK_INDEX_NAME,
             refresh: 'wait_for',
             body: {
-                created: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSZZ")
+                created: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")
             }
-        }).then((value) => value.body._id);
+        }).then((value) => {
+            console.log(value.body);
+            return value.body._id;
+        });
+
+        await close();
     } catch (e) {
-        CliUx.ux.error(`Initialization process failed.\nreason:[${JSON.stringify(e)}]`);
+        CliUx.ux.error(`Initialization process failed.\nreason:[${e}]`);
     }
 
+    // call command
     await originalRunCommand.apply(this, cmdArgs);
 
-    await deleteDocument({
-        index: MIGRATE_LOCK_INDEX_NAME,
-        refresh: 'wait_for',
-        id
-    });
+    // unlock
+    try {
+        const { deleteDocument, close, version } = useElasticsearchClient(
+            migrationConfig.elasticsearch
+        );
+        await deleteDocument({
+            index: MIGRATE_LOCK_INDEX_NAME,
+            refresh: 'wait_for',
+            type: version().major === 6 ? '_doc' : undefined,
+            id
+        });
+        await close();
+    } catch (e) {
+        CliUx.ux.error(`IUnlock failed. Please unlock migrate_lock manually.\nreason:[${e}]`);
+    }
 }
 
 function getLockIndexRequestBody(config: DeepRequired<MigrationConfig>) {

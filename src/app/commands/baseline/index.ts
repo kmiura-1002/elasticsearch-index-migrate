@@ -4,7 +4,7 @@ import { DefaultFlags, esConnectionFlags } from '../../config/flags/defaultComma
 import migrationBaselineVersionService from '../../service/migrationBaselineVersionService';
 import { validMigrateTarget } from '../../decorators/validMigrateTarget';
 import { DefaultArgs } from '../../config/args/defaultCommandArgs';
-import { historyLock } from '../../decorators/historyLock';
+import { migrateLock } from '../../decorators/migrateLock';
 
 export default class Index extends Command {
     static description =
@@ -28,7 +28,7 @@ export default class Index extends Command {
 
     @validMigrateTarget()
     @createMigrationHistoryIfNotExists()
-    @historyLock()
+    @migrateLock()
     async run(): Promise<void> {
         try {
             const { flags, args } = await this.parse(Index);
