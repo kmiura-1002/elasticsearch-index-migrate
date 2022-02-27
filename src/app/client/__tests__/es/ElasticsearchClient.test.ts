@@ -242,7 +242,7 @@ describe('Elasticsearch client test', () => {
             });
 
             await client
-                .deleteDocument({
+                .deleteDocuments({
                     index,
                     refresh: true,
                     body: {
@@ -409,7 +409,7 @@ describe('Elasticsearch client test', () => {
             });
 
             await expect(
-                client.deleteDocument({
+                client.deleteDocuments({
                     index,
                     max_docs: 1,
                     body: {
@@ -424,7 +424,7 @@ describe('Elasticsearch client test', () => {
                 })
             ).rejects.toThrowError();
             await expect(
-                client.deleteDocument({
+                client.deleteDocuments({
                     index,
                     expand_wildcards: 'hidden',
                     body: {
@@ -707,7 +707,7 @@ describe('Elasticsearch client test', () => {
             });
 
             await client
-                .deleteDocument({
+                .deleteDocuments({
                     index,
                     refresh: true,
                     body: {

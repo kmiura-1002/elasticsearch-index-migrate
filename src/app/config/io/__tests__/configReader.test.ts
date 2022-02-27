@@ -9,7 +9,7 @@ describe('configReader', () => {
         expect(actual).toEqual({
             elasticsearch: {
                 connect: {
-                    host: 'http://0.0.0.0:9202'
+                    host: 'http://0.0.0.0:9201'
                 },
                 searchEngine: 'elasticsearch',
                 version: '6'
@@ -91,7 +91,7 @@ describe('configReader', () => {
         expect(actual).toEqual({
             elasticsearch: {
                 connect: {
-                    host: 'http://0.0.0.0:9202'
+                    host: 'http://0.0.0.0:9201'
                 },
                 searchEngine: 'elasticsearch',
                 version: '6'
