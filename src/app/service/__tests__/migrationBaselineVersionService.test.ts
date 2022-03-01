@@ -1,35 +1,32 @@
 import migrationBaselineVersionService from '../migrationBaselineVersionService';
-import * as Config from '@oclif/core';
 import { mocked } from 'jest-mock';
-import { readOptions } from '../../config/flags/flagsLoader';
 import useElasticsearchClient from '../../client/es/ElasticsearchClient';
-import { mockReadOptions } from '../../../__mocks__/flags/mockReadOptions';
 import { getMockElasticsearchClient } from '../../../__mocks__/client/es/mockElasticsearchClient';
 import { IndicesExists as IndicesExists6 } from 'es6/api/requestParams';
 import { IndicesExists as IndicesExists7 } from 'es7/api/requestParams';
 import { CliUx } from '@oclif/core';
+import { DeepRequired } from 'ts-essentials';
+import { MigrationConfig } from '../../types';
 
-jest.mock('../../config/flags/flagsLoader');
 jest.mock('../../client/es/ElasticsearchClient');
 const spyInfo = jest.spyOn(CliUx.ux, 'info');
 
 describe('migrationBaselineVersionService', () => {
     beforeEach(() => {
-        mocked(readOptions).mockClear();
         mocked(useElasticsearchClient).mockClear();
         mocked(spyInfo).mockClear();
     });
 
     it('can create a baseline.', async () => {
-        mocked(readOptions).mockImplementation(mockReadOptions);
         mocked(useElasticsearchClient).mockImplementation(getMockElasticsearchClient);
 
         const { makeBaseline } = migrationBaselineVersionService(
+            'test_index',
+            '',
             {
-                index: 'test_index',
-                description: ''
+                test_index: '1.0.0'
             },
-            {} as Config.Config
+            {} as DeepRequired<MigrationConfig>
         );
         await makeBaseline();
 
@@ -40,15 +37,15 @@ describe('migrationBaselineVersionService', () => {
     });
 
     it('can create a baseline when the target is specified in args.', async () => {
-        mocked(readOptions).mockImplementation(mockReadOptions);
         mocked(useElasticsearchClient).mockImplementation(getMockElasticsearchClient);
 
         const { makeBaseline } = migrationBaselineVersionService(
+            'test_index',
+            '',
             {
-                name: 'test_index',
-                description: ''
+                test_index: '1.0.0'
             },
-            {} as Config.Config
+            {} as DeepRequired<MigrationConfig>
         );
         await makeBaseline();
 
@@ -59,7 +56,6 @@ describe('migrationBaselineVersionService', () => {
     });
 
     it('can not create a baseline when a baseline already exists.', async () => {
-        mocked(readOptions).mockImplementation(mockReadOptions);
         mocked(useElasticsearchClient).mockImplementation(() => {
             return {
                 ...getMockElasticsearchClient(),
@@ -71,11 +67,12 @@ describe('migrationBaselineVersionService', () => {
         });
 
         const { makeBaseline } = migrationBaselineVersionService(
+            'test_index',
+            '',
             {
-                index: 'test_index',
-                description: ''
+                test_index: '1.0.0'
             },
-            {} as Config.Config
+            {} as DeepRequired<MigrationConfig>
         );
         await makeBaseline();
 
@@ -83,26 +80,26 @@ describe('migrationBaselineVersionService', () => {
         expect(spyInfo.mock.calls[0][0]).toEqual('There is already a baseline history');
     });
 
-    it('can not create a baseline when the target is unspecified.', async () => {
-        mocked(readOptions).mockImplementation(mockReadOptions);
-
-        const { makeBaseline } = migrationBaselineVersionService({}, {} as Config.Config);
-
-        await expect(makeBaseline()).rejects.toThrowError(
-            new Error('Migration target is unknown.')
-        );
-    });
+    // it('can not create a baseline when the target is unspecified.', async () => {
+    //     mocked(readOptions).mockImplementation(mockReadOptions);
+    //
+    //     const { makeBaseline } = migrationBaselineVersionService({}, {} as Config.Config);
+    //
+    //     await expect(makeBaseline()).rejects.toThrowError(
+    //         new Error('Migration target is unknown.')
+    //     );
+    // });
 
     it('can not create a baseline when baseline config does not exist.', async () => {
-        mocked(readOptions).mockImplementation(mockReadOptions);
         mocked(useElasticsearchClient).mockImplementation(getMockElasticsearchClient);
 
         const { makeBaseline } = migrationBaselineVersionService(
+            'test',
+            '',
             {
-                index: 'test',
-                description: ''
+                test_index: '1.0.0'
             },
-            {} as Config.Config
+            {} as DeepRequired<MigrationConfig>
         );
         await expect(makeBaseline()).rejects.toThrowError(
             new Error(`The baseline setting for index(test) does not exist.`)

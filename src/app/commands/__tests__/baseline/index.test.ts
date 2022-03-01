@@ -32,7 +32,6 @@ describe('baseline:esindex', () => {
             .stderr()
             .command([
                 'baseline',
-                '-i',
                 'test1',
                 '-O',
                 `${process.cwd()}/src/__mocks__/testsData/test_config/json/config.json`
@@ -64,7 +63,6 @@ describe('baseline:esindex', () => {
             .stderr()
             .command([
                 'baseline',
-                '-i',
                 'test1',
                 '-O',
                 `${process.cwd()}/src/__mocks__/testsData/test_config/json/config.json`

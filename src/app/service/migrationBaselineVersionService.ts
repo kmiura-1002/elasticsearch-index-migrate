@@ -1,35 +1,19 @@
-import * as Config from '@oclif/core';
-import { readOptions } from '../config/flags/flagsLoader';
 import migrateHistoryRepository from '../context/migrate-history/migrateHistoryRepository';
 import { migrateHistorySpecByIndexName } from '../context/migrate-history/spec';
 import { CliUx } from '@oclif/core';
+import { DeepRequired } from 'ts-essentials';
+import { MigrationConfig } from '../types';
 
-const migrationBaselineVersionService = (flags: { [name: string]: any }, config: Config.Config) => {
-    const readConfig = async () => {
-        const migrationConfig = await readOptions(flags, config);
-        const baselineVersion = migrationConfig.migration.baselineVersion;
-
-        return {
-            migrationConfig,
-            baselineVersion
-        };
-    };
-
-    // ToDo Delete this function after removing the flags.
-    const getTargetName = (flags: { [name: string]: any }) => {
-        if (flags.index) {
-            return flags.index;
-        }
-        if (flags.name) {
-            return flags.name;
-        }
-        throw new Error('Migration target is unknown.');
-    };
-
+const migrationBaselineVersionService = (
+    targetName: string,
+    description: string | undefined,
+    baselineVersion: {
+        [key: string]: string;
+    },
+    config: DeepRequired<MigrationConfig>
+) => {
     const makeBaseline = async () => {
-        const { migrationConfig, baselineVersion } = await readConfig();
-        const { findBy, insert } = migrateHistoryRepository(migrationConfig.elasticsearch);
-        const targetName = getTargetName(flags);
+        const { findBy, insert } = migrateHistoryRepository(config.elasticsearch);
         const baseline = baselineVersion[targetName];
 
         if (baseline === undefined) {
@@ -43,7 +27,7 @@ const migrationBaselineVersionService = (flags: { [name: string]: any }, config:
             await insert({
                 index_name: targetName,
                 migrate_version: baseline,
-                description: flags.description
+                description
             });
             CliUx.ux.info(`Successfully created a baseline in ${baseline}.`);
         } else {
