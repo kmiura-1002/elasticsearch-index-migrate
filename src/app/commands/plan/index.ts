@@ -1,32 +1,22 @@
-import { Command, Flags } from '@oclif/core';
-import { createMigrationHistoryIfNotExists } from '../../decorators/createMigrationHistory';
+import { Command } from '@oclif/core';
 import { DefaultFlags, esConnectionFlags } from '../../config/flags/defaultCommandFlags';
-import { validMigrateTarget } from '../../decorators/validMigrateTarget';
+import { createMigrationIndex } from '../../decorators/createMigrationIndex';
+import { migrateLock } from '../../decorators/migrateLock';
+import { DefaultArgs } from '../../config/args/defaultCommandArgs';
 
 export default class Plan extends Command {
-    static description = 'describe the command here';
-
-    static examples = [`$ mynewcli hello hello world from ./src/hello.ts!`];
+    static description = 'Outputs the migration execution plan.';
 
     static flags = {
         ...DefaultFlags,
-        ...esConnectionFlags,
-        // flag with a value (-n, --name=VALUE)
-        name: Flags.string({ char: 'n', description: 'name to print' }),
-        // flag with no value (-f, --force)
-        force: Flags.boolean({ char: 'f' })
+        ...esConnectionFlags
     };
 
-    static args = [{ name: 'file' }];
+    static args = [...DefaultArgs];
 
-    @validMigrateTarget()
-    @createMigrationHistoryIfNotExists()
-    async run() {
-        const { args, flags } = await this.parse(Plan);
-
-        this.log(`plan`);
-        if (args.file && flags.force) {
-            this.log(`you input --force and --file: ${args.file}`);
-        }
+    @createMigrationIndex()
+    @migrateLock()
+    async run(): Promise<void> {
+        // const { args, flags } = await this.parse(Plan);
     }
 }
