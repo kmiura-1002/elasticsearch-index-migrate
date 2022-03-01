@@ -1,13 +1,15 @@
 import { CliUx, Command, Config, Interfaces } from '@oclif/core';
 import { readOptions } from '../config/flags/flagsLoader';
-import v7Mapping from '../../resources/mapping/migrate_history_esV7.json';
-import v6Mapping from '../../resources/mapping/migrate_history_esV6.json';
-import { MIGRATE_HISTORY_INDEX_NAME, MigrationConfig } from '../types';
+import v7HistoryMapping from '../../resources/mapping/migrate_history_esV7.json';
+import v6HistoryMapping from '../../resources/mapping/migrate_history_esV6.json';
+import v7LockMapping from '../../resources/mapping/migrate_lock_esV7.json';
+import v6LockMapping from '../../resources/mapping/migrate_lock_esV6.json';
+import { MIGRATE_HISTORY_INDEX_NAME, MIGRATE_LOCK_INDEX_NAME, MigrationConfig } from '../types';
 import { usedEsVersion } from '../client/es/EsUtils';
 import useElasticsearchClient from '../client/es/ElasticsearchClient';
 import { DeepRequired } from 'ts-essentials';
 
-export function createMigrationHistoryIfNotExists() {
+export function createMigrationIndex() {
     return function (
         _target: Command,
         _propertyKey: string,
@@ -34,10 +36,11 @@ async function setUpCommand(
 const setupMigrationEnv = async function (config: Config, flags: Interfaces.FlagInput<any>) {
     try {
         const migrationConfig = await readOptions(flags, config);
-        const { exists, createIndex } = useElasticsearchClient(migrationConfig.elasticsearch);
-        const isExistsIndex = await exists({ index: MIGRATE_HISTORY_INDEX_NAME });
+        const { exists, createIndex, close } = useElasticsearchClient(
+            migrationConfig.elasticsearch
+        );
 
-        if (!isExistsIndex) {
+        if (!(await exists({ index: MIGRATE_HISTORY_INDEX_NAME }))) {
             CliUx.ux.info('migrate_history index does not exist.');
             CliUx.ux.info('Create a migrate_history index for the first time.');
             const mappingData = getHistoryIndexRequestBody(migrationConfig);
@@ -47,13 +50,32 @@ const setupMigrationEnv = async function (config: Config, flags: Interfaces.Flag
             });
 
             if (!ret || ret.statusCode !== 200) {
-                CliUx.ux.error('Failed to create index for migrate.');
+                CliUx.ux.error('Failed to create history index.');
             }
 
             CliUx.ux.info('The creation of the index has been completed.');
         }
+
+        if (!(await exists({ index: MIGRATE_LOCK_INDEX_NAME }))) {
+            CliUx.ux.info('migrate_lock index does not exist.');
+            CliUx.ux.info('Create a migrate_lock index for the first time.');
+            const mappingData = getLockIndexRequestBody(migrationConfig);
+            const ret = await createIndex({
+                index: MIGRATE_LOCK_INDEX_NAME,
+                body: mappingData
+            });
+
+            if (!ret || ret.statusCode !== 200) {
+                CliUx.ux.error('Failed to create lock index.');
+            }
+
+            CliUx.ux.info('The creation of the index has been completed.');
+        }
+        await close();
     } catch (e) {
-        CliUx.ux.error(`Initialization process failed.\nreason:[${JSON.stringify(e)}]`);
+        CliUx.ux.error(
+            `Initialization process failed.\nreason:[${e instanceof Error ? e : JSON.stringify(e)}]`
+        );
     }
 };
 
@@ -67,8 +89,24 @@ function getHistoryIndexRequestBody(config: DeepRequired<MigrationConfig>) {
     });
 
     if (esVersion.engine === 'OpenSearch') {
-        return v7Mapping;
+        return v7HistoryMapping;
     } else {
-        return esVersion.major === 7 ? v7Mapping : v6Mapping;
+        return esVersion.major === 7 ? v7HistoryMapping : v6HistoryMapping;
+    }
+}
+
+function getLockIndexRequestBody(config: DeepRequired<MigrationConfig>) {
+    if (config.migration.lockIndexRequestBody) {
+        return config.migration.lockIndexRequestBody;
+    }
+    const esVersion = usedEsVersion({
+        version: config.elasticsearch.version,
+        searchEngine: config.elasticsearch.searchEngine
+    });
+
+    if (esVersion.engine === 'OpenSearch') {
+        return v7LockMapping;
+    } else {
+        return esVersion.major === 7 ? v7LockMapping : v6LockMapping;
     }
 }

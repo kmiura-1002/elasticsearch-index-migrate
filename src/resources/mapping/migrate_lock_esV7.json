@@ -44,6 +44,9 @@
             "created": {
                 "type": "date",
                 "format": "date_time"
+            },
+            "command": {
+                "type": "keyword"
             }
         }
     }

@@ -6,7 +6,8 @@ import migrationBaselineVersionService from '../../../service/migrationBaselineV
 import { getMockMigrationBaselineVersionService } from '../../../../__mocks__/searvice/mockMigrationBaselineVersionService';
 
 jest.mock('../../../client/es/ElasticsearchClient');
-jest.mock('../../../decorators/createMigrationHistory');
+jest.mock('../../../decorators/createMigrationIndex');
+jest.mock('../../../decorators/migrateLock');
 jest.mock('../../../service/migrationBaselineVersionService');
 
 describe('baseline:esindex', () => {
@@ -21,6 +22,7 @@ describe('baseline:esindex', () => {
             mocked(migrationBaselineVersionService).mockClear();
             mocked(useElasticsearchClient).mockClear();
         });
+
         test.env({
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
             ELASTICSEARCH_VERSION: '7.0.0',
