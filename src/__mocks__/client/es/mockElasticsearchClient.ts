@@ -27,7 +27,6 @@ import {
 } from 'es7/api/requestParams';
 import { ApiResponse as ApiResponse6 } from 'es6/lib/Transport';
 import { ApiResponse as ApiResponse7 } from 'es7/lib/Transport';
-import { CliUx } from '@oclif/core';
 
 export const getMockElasticsearchClient = jest.fn().mockImplementation(() =>
     useElasticsearchClient({
@@ -49,11 +48,8 @@ export function useElasticsearchClient(_connectConf: ESConfig) {
         .fn()
         .mockImplementation(
             (
-                request: IndicesPutMapping6 | IndicesPutMapping7
+                _request: IndicesPutMapping6 | IndicesPutMapping7
             ): Promise<ApiResponse6<any, any> | ApiResponse7<any, any>> => {
-                CliUx.ux.debug(
-                    `Called MockElasticsearchClient.putMapping: param=${JSON.stringify(request)}`
-                );
                 return Promise.resolve({ statusCode: 200 } as ApiResponse6 | ApiResponse7);
             }
         );
@@ -62,17 +58,13 @@ export function useElasticsearchClient(_connectConf: ESConfig) {
         .fn()
         .mockImplementation(
             (
-                request: IndicesCreate6 | IndicesCreate7
+                _request: IndicesCreate6 | IndicesCreate7
             ): Promise<ApiResponse6<any, any> | ApiResponse7<any, any>> => {
-                CliUx.ux.debug(
-                    `Called MockElasticsearchClient.createIndex: param=${JSON.stringify(request)}`
-                );
                 return Promise.resolve({ statusCode: 200 } as ApiResponse6 | ApiResponse7);
             }
         );
 
-    const search = jest.fn().mockImplementation(<R>(param: Search6 | Search7): Promise<R[]> => {
-        CliUx.ux.debug(`Called MockElasticsearchClient.search: param=${JSON.stringify(param)}`);
+    const search = jest.fn().mockImplementation(<R>(_param: Search6 | Search7): Promise<R[]> => {
         return Promise.resolve([]);
     });
 
@@ -95,11 +87,8 @@ export function useElasticsearchClient(_connectConf: ESConfig) {
         .fn()
         .mockImplementation(
             (
-                param: IndicesPutSettings6 | IndicesPutSettings7
+                _param: IndicesPutSettings6 | IndicesPutSettings7
             ): Promise<ApiResponse6<any, any> | ApiResponse7<any, any>> => {
-                CliUx.ux.debug(
-                    `Called MockElasticsearchClient.putSetting: param=${JSON.stringify(param)}`
-                );
                 return Promise.resolve({ statusCode: 200 } as ApiResponse6 | ApiResponse7);
             }
         );
@@ -108,11 +97,8 @@ export function useElasticsearchClient(_connectConf: ESConfig) {
         .fn()
         .mockImplementation(
             (
-                param: IndicesDelete6 | IndicesDelete7
+                _param: IndicesDelete6 | IndicesDelete7
             ): Promise<ApiResponse6<any, any> | ApiResponse7<any, any>> => {
-                CliUx.ux.debug(
-                    `Called MockElasticsearchClient.delete: param=${JSON.stringify(param)}`
-                );
                 return Promise.resolve({ statusCode: 200 } as ApiResponse6 | ApiResponse7);
             }
         );
@@ -120,10 +106,7 @@ export function useElasticsearchClient(_connectConf: ESConfig) {
     const postDocument = jest
         .fn()
         .mockImplementation(
-            (param: Index6 | Index7): Promise<ApiResponse6<any, any> | ApiResponse7<any, any>> => {
-                CliUx.ux.debug(
-                    `Called MockElasticsearchClient.postDocument: param=${JSON.stringify(param)}`
-                );
+            (_param: Index6 | Index7): Promise<ApiResponse6<any, any> | ApiResponse7<any, any>> => {
                 return Promise.resolve({
                     body: {
                         _index: 'test',
