@@ -93,6 +93,12 @@ export type MigrateIndex = {
     success: boolean;
     checksum: number | undefined;
 };
+
+export type LockIndex = {
+    create: Date;
+    command: string;
+};
+
 export const MigrationTypes = {
     ADD_FIELD: 'ADD_FIELD',
     CREATE_INDEX: 'CREATE_INDEX',

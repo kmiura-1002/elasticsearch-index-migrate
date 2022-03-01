@@ -1,11 +1,7 @@
 import { CliUx, Command } from '@oclif/core';
 import { readOptions } from '../config/flags/flagsLoader';
-import v7Mapping from '../../resources/mapping/migrate_lock_esV7.json';
-import v6Mapping from '../../resources/mapping/migrate_lock_esV6.json';
-import { MIGRATE_LOCK_INDEX_NAME, MigrationConfig } from '../types';
-import { usedEsVersion } from '../client/es/EsUtils';
+import { ESConfig, LockIndex, MIGRATE_LOCK_INDEX_NAME } from '../types';
 import useElasticsearchClient from '../client/es/ElasticsearchClient';
-import { DeepRequired } from 'ts-essentials';
 import { format } from 'date-fns';
 
 export function migrateLock() {
@@ -29,79 +25,73 @@ async function lock(
 ) {
     const { flags } = await this.parse();
     const migrationConfig = await readOptions(flags, this.config);
-    let id;
 
     // lock
+    const id = await makeLock(this.id ?? 'unknown', migrationConfig.elasticsearch);
+
+    // call command
     try {
-        const { exists, createIndex, postDocument, close } = useElasticsearchClient(
-            migrationConfig.elasticsearch
-        );
+        await originalRunCommand.apply(this, cmdArgs);
+    } catch (e) {
+        // No error processing is performed here. Perform error handling with catch in oclif/Command.
+        CliUx.ux.debug(`An error occurred in the command. reason:[${e}]`);
+    }
+
+    // unlock
+    await unlock(id, migrationConfig.elasticsearch);
+}
+
+const makeLock = async (commandId: string, esConfig: ESConfig) => {
+    try {
+        const { exists, search, postDocument, close } = useElasticsearchClient(esConfig);
         const isExistsIndex = await exists({ index: MIGRATE_LOCK_INDEX_NAME });
 
         if (!isExistsIndex) {
-            CliUx.ux.info('migrate_lock index does not exist.');
-            CliUx.ux.info('Create a migrate_lock index for the first time.');
-            const mappingData = getLockIndexRequestBody(migrationConfig);
-            const ret = await createIndex({
-                index: MIGRATE_LOCK_INDEX_NAME,
-                body: mappingData
-            });
-
-            if (!ret || ret.statusCode !== 200) {
-                CliUx.ux.error('Failed to create index.');
-            }
-
-            CliUx.ux.info('The creation of the index has been completed.');
+            CliUx.ux.error('Cannot create a lock because the index does not exist.');
         }
 
-        id = await postDocument({
+        const lockData = await search<LockIndex>({ index: MIGRATE_LOCK_INDEX_NAME });
+        if (lockData.length > 0) {
+            await close();
+            CliUx.ux.error(
+                `Migration is being done by other processes(${lockData.map(
+                    (value) =>
+                        `lock command:${value.command}, lock time:${format(
+                            value.create,
+                            "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
+                        )}`
+                )}).\nIf the previous process failed and you are left with a lock, remove all documents from the migrate_lock index.`
+            );
+        }
+
+        const id: string = await postDocument({
             index: MIGRATE_LOCK_INDEX_NAME,
             refresh: 'wait_for',
             body: {
-                created: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")
+                created: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"),
+                command: commandId
             }
-        }).then((value) => {
-            console.log(value.body);
-            return value.body._id;
-        });
+        }).then((value) => value.body._id);
 
         await close();
+
+        return id;
     } catch (e) {
-        CliUx.ux.error(`Initialization process failed.\nreason:[${e}]`);
+        CliUx.ux.error(`Lock creation failed.\nreason:[${e}]`);
     }
+};
 
-    // call command
-    await originalRunCommand.apply(this, cmdArgs);
-
-    // unlock
+const unlock = async (documentId: string, esConfig: ESConfig) => {
     try {
-        const { deleteDocument, close, version } = useElasticsearchClient(
-            migrationConfig.elasticsearch
-        );
+        const { deleteDocument, close, version } = useElasticsearchClient(esConfig);
         await deleteDocument({
             index: MIGRATE_LOCK_INDEX_NAME,
             refresh: 'wait_for',
             type: version().major === 6 ? '_doc' : undefined,
-            id
+            id: documentId
         });
         await close();
     } catch (e) {
-        CliUx.ux.error(`IUnlock failed. Please unlock migrate_lock manually.\nreason:[${e}]`);
+        CliUx.ux.error(`Unlock failed. Please unlock migrate_lock manually.\nreason:[${e}]`);
     }
-}
-
-function getLockIndexRequestBody(config: DeepRequired<MigrationConfig>) {
-    if (config.migration.lockIndexRequestBody) {
-        return config.migration.lockIndexRequestBody;
-    }
-    const esVersion = usedEsVersion({
-        version: config.elasticsearch.version,
-        searchEngine: config.elasticsearch.searchEngine
-    });
-
-    if (esVersion.engine === 'OpenSearch') {
-        return v7Mapping;
-    } else {
-        return esVersion.major === 7 ? v7Mapping : v6Mapping;
-    }
-}
+};
