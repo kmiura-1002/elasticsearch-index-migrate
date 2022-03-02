@@ -8,11 +8,12 @@ import getElasticsearchClient from '../utils/es/EsUtils';
 import MigrationPlanExecutor from '../executor/plan/MigrationPlanExecutor';
 import makeDetail from '../utils/makeDetail';
 import { cli } from 'cli-ux';
-import AbstractCommand, { CommandOptions } from '../AbstractCommand';
+import AbstractCommand, { CommandOptions, HistoryIndexOptions } from '../AbstractCommand';
 
 export default class Plan extends AbstractCommand {
     static description = 'Outputs the migration execution plan.';
     static flags = {
+        ...HistoryIndexOptions,
         ...CommandOptions
     };
 

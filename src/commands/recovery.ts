@@ -1,4 +1,4 @@
-import AbstractCommand, { CommandOptions } from '../AbstractCommand';
+import AbstractCommand, { CommandOptions, HistoryIndexOptions } from '../AbstractCommand';
 import getElasticsearchClient from '../utils/es/EsUtils';
 import { MAPPING_HISTORY_INDEX_NAME, MigrateIndex } from '../model/types';
 import { cli } from 'cli-ux';
@@ -7,6 +7,7 @@ import StopWatch from '../utils/StopWatch';
 export default class Recovery extends AbstractCommand {
     static description = 'Delete failed migration history.';
     static flags = {
+        ...HistoryIndexOptions,
         ...CommandOptions
     };
 

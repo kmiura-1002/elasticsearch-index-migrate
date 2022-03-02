@@ -1,5 +1,5 @@
 import { flags } from '@oclif/command';
-import AbstractCommand, { CommandOptions } from '../AbstractCommand';
+import AbstractCommand, { CommandOptions, HistoryIndexOptions } from '../AbstractCommand';
 import getElasticsearchClient from '../utils/es/EsUtils';
 import { MAPPING_HISTORY_INDEX_NAME, MigrateIndex } from '../model/types';
 import { cli } from 'cli-ux';
@@ -9,6 +9,7 @@ export default class Baseline extends AbstractCommand {
     static description =
         'Create a baseline in migration_history if you were running Elasticsearch before the tool was implemented.';
     static flags = {
+        ...HistoryIndexOptions,
         ...CommandOptions,
         description: flags.string({
             char: 'd',

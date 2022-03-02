@@ -13,7 +13,7 @@ import {
 } from '../model/types';
 import { cli } from 'cli-ux';
 import { migrate } from '../executor/migration/MigrationExecutor';
-import AbstractCommand, { CommandOptions } from '../AbstractCommand';
+import AbstractCommand, { CommandOptions, HistoryIndexOptions } from '../AbstractCommand';
 import * as JSONDiffPatch from 'jsondiffpatch';
 import { Delta } from 'jsondiffpatch';
 
@@ -21,6 +21,7 @@ export default class Migrate extends AbstractCommand {
     static description =
         'Migrate the index of Elasticsearch to the latest version based on the execution plan.';
     static flags = {
+        ...HistoryIndexOptions,
         ...CommandOptions,
         showDiff: flags.boolean({
             description:

@@ -9,6 +9,18 @@ export type ApiResponse<T = any, C = any> =
     | ApiResponse7<T, C>
     | ApiResponseOS<T, C>;
 export const MAPPING_HISTORY_INDEX_NAME = 'migrate_history';
+export type MappingHistoryIndex = {
+    settings: {
+        index: {
+            refresh_interval: string;
+            number_of_shards: number;
+            number_of_replicas: number;
+            search: { slowlog: JsonObjectType };
+            indexing: { slowlog: JsonObjectType };
+        };
+    };
+    mappings: JsonObjectType;
+};
 export const OPENSEARCH = 'opensearch';
 
 export type ESConnectConfig = {
