@@ -21,6 +21,7 @@ describe('plan command test', () => {
 
     test.stdout()
         .stub(cli, 'error', sinon.stub())
+        .stub(cli, 'warn', sinon.stub())
         .env({
             ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
             ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
@@ -31,7 +32,31 @@ describe('plan command test', () => {
         .exit(1)
         .it('An error occurs when there is no migration target.', async () => {
             const error = (cli.error as unknown) as sinon.SinonStub;
+            const warn = (cli.warn as unknown) as sinon.SinonStub;
             expect(error.calledWith('Migration file not found.')).is.true;
+            expect(
+                warn.calledWith(
+                    'The index flags will be removed in the version 1.0.0. Please use the arguments (name) instead of this flags.'
+                )
+            ).is.true;
+        });
+
+    test.stdout()
+        .stub(cli, 'error', sinon.stub())
+        .stub(cli, 'warn', sinon.stub())
+        .env({
+            ELASTICSEARCH_MIGRATION_LOCATIONS: `${process.cwd()}/test/data/migration`,
+            ELASTICSEARCH_MIGRATION_BASELINE_VERSION: 'v1.0.0',
+            ELASTICSEARCH_VERSION: '7.0.0',
+            ELASTICSEARCH_HOST: 'http://localhost:9202'
+        })
+        .command(['plan', 'test'])
+        .exit(1)
+        .it('can not call warn when command arguments are present ', async () => {
+            const error = (cli.error as unknown) as sinon.SinonStub;
+            const warn = (cli.warn as unknown) as sinon.SinonStub;
+            expect(error.calledWith('Migration file not found.')).is.true;
+            expect(warn.callCount).is.eq(0);
         });
 
     test.stub(EsUtils, 'default', () => new MockElasticsearchClient())

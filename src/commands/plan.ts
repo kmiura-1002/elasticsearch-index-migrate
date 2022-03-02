@@ -9,6 +9,7 @@ import MigrationPlanExecutor from '../executor/plan/MigrationPlanExecutor';
 import makeDetail from '../utils/makeDetail';
 import { cli } from 'cli-ux';
 import AbstractCommand, { CommandOptions, HistoryIndexOptions } from '../AbstractCommand';
+import { validMigrateTarget } from '../decorators/validMigrateTarget';
 
 export default class Plan extends AbstractCommand {
     static description = 'Outputs the migration execution plan.';
@@ -17,16 +18,22 @@ export default class Plan extends AbstractCommand {
         ...CommandOptions
     };
 
+    static args = [
+        // ToDo Set required:true if flags index are removed
+        { name: 'name', description: 'migration index name.', required: false }
+    ];
+
+    @validMigrateTarget()
     async run(): Promise<void> {
-        const { flags } = this.parse(Plan);
+        const { flags, args } = this.parse(Plan);
         await this.createHistoryIndex();
         const locations = this.migrationConfig.migration.locations;
         const baselineVersion = this.migrationConfig.migration.baselineVersion;
         const migrationFilePaths = findAllFiles(locations);
         const indexVersion = flags['index-version'];
-        const indexName = this.indexName(flags);
+        const indexName = this.indexName(args, flags);
         const migrationFileParsedPath = loadMigrationScriptFilePaths(
-            flags.indexName,
+            flags.indexName ?? args.name,
             migrationFilePaths,
             flags['natural-name'],
             indexVersion

@@ -3,6 +3,7 @@ import getElasticsearchClient from '../utils/es/EsUtils';
 import { MAPPING_HISTORY_INDEX_NAME, MigrateIndex } from '../model/types';
 import { cli } from 'cli-ux';
 import StopWatch from '../utils/StopWatch';
+import { validMigrateTarget } from '../decorators/validMigrateTarget';
 
 export default class Recovery extends AbstractCommand {
     static description = 'Delete failed migration history.';
@@ -11,12 +12,18 @@ export default class Recovery extends AbstractCommand {
         ...CommandOptions
     };
 
+    static args = [
+        // ToDo Set required:true if flags index are removed
+        { name: 'name', description: 'migration index name.', required: false }
+    ];
+
+    @validMigrateTarget()
     async run(): Promise<void> {
-        const { flags } = this.parse(Recovery);
+        const { flags, args } = this.parse(Recovery);
         await this.createHistoryIndex();
         const elasticsearchClient = getElasticsearchClient(this.migrationConfig.elasticsearch);
 
-        const indexName = this.indexName(flags);
+        const indexName = this.indexName(args, flags);
         const results = await elasticsearchClient
             .search<MigrateIndex>({
                 index: MAPPING_HISTORY_INDEX_NAME,
