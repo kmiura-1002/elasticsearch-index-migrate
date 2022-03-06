@@ -12,12 +12,6 @@ export default class Index extends Command {
     static flags = {
         ...esConnectionFlags,
         ...DefaultFlags,
-        // index: Flags.string({
-        //     char: 'i',
-        //     description:
-        //         'migration index name.\nThe index flags will be removed in the next version. Please use the arguments (name) instead of this flags.',
-        //     required: false
-        // }),
         description: Flags.string({
             char: 'd',
             description: 'Description to be saved to history.'
@@ -29,19 +23,20 @@ export default class Index extends Command {
     @createMigrationIndex()
     @migrateLock()
     async run(): Promise<void> {
-        try {
-            const { flags, args } = await this.parse(Index);
-            const migrationConfig = await readOptions(flags, this.config);
-            const baselineVersion = migrationConfig.migration.baselineVersion;
+        const { flags, args } = await this.parse(Index);
+        const migrationConfig = await readOptions(flags, this.config);
+        const baselineVersion = migrationConfig.migration.baselineVersion;
 
-            await migrationBaselineVersionService(
-                args.name,
-                flags.description,
-                baselineVersion,
-                migrationConfig
-            ).makeBaseline();
-        } catch (e) {
-            CliUx.ux.error(`throw error. caused by: ${e}`);
-        }
+        await migrationBaselineVersionService(
+            args.name,
+            flags.description,
+            baselineVersion,
+            migrationConfig
+        ).makeBaseline();
+    }
+
+    protected catch(err: Error & { exitCode?: number }): Promise<any> {
+        CliUx.ux.error(`throw error. caused by: ${err}`);
+        return super.catch(err);
     }
 }
