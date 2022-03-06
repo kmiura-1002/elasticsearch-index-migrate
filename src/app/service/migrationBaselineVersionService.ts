@@ -1,5 +1,5 @@
-import migrateHistoryRepository from '../context/migrate-history/migrateHistoryRepository';
-import { migrateHistorySpecByIndexName } from '../context/migrate-history/spec';
+import migrateHistoryRepository from '../context/migrate_history/migrateHistoryRepository';
+import { migrateHistorySpecByIndexName } from '../context/migrate_history/spec';
 import { CliUx } from '@oclif/core';
 import { DeepRequired } from 'ts-essentials';
 import { MigrationConfig } from '../types';
