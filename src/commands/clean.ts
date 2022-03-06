@@ -4,6 +4,7 @@ import { CLEAN_TARGET, cleanTargets } from '../model/types';
 import { cli } from 'cli-ux';
 import AbstractCommand, { CommandOptions } from '../AbstractCommand';
 import { cleanExecutor } from '../executor/clean/CleanExecutor';
+import { validMigrateTarget } from '../decorators/validMigrateTarget';
 
 export default class Clean extends AbstractCommand {
     static description = 'Delete all history stored in the migration_history index';
@@ -22,11 +23,16 @@ export default class Clean extends AbstractCommand {
             default: false
         })
     };
+    static args = [
+        // ToDo Set required:true if flags index are removed
+        { name: 'name', description: 'migration index name.', required: false }
+    ];
 
+    @validMigrateTarget()
     async run(): Promise<void> {
-        const { flags } = this.parse(Clean);
+        const { flags, args } = this.parse(Clean);
         const client = getElasticsearchClient(this.migrationConfig.elasticsearch);
-        const indexName = this.indexName(flags);
+        const indexName = this.indexName(args, flags);
         switch (flags.target) {
             case 'history':
                 cli.info(`Delete ${indexName} index history from migration history.`);

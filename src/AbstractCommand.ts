@@ -101,7 +101,7 @@ export const CommandOptions = {
     indexName: flags.string({
         char: 'i',
         description: 'migration index name.',
-        required: true
+        required: false
     }),
     init: flags.boolean({
         allowNo: true,
@@ -141,8 +141,10 @@ export default abstract class AbstractCommand extends Command {
         }
     };
 
-    indexName(options: OutputFlags<any>): string {
-        return `${options.indexName}${options.delimiter ?? ''}${options['index-version'] ?? ''}`;
+    indexName(args: { [name: string]: any }, options: OutputFlags<any>): string {
+        return `${options.indexName ?? args.name}${options.delimiter ?? ''}${
+            options['index-version'] ?? ''
+        }`;
     }
 
     async createHistoryIndex(): Promise<void> {

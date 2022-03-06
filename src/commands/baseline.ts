@@ -4,6 +4,7 @@ import getElasticsearchClient from '../utils/es/EsUtils';
 import { MAPPING_HISTORY_INDEX_NAME, MigrateIndex } from '../model/types';
 import { cli } from 'cli-ux';
 import { format } from 'date-fns';
+import { validMigrateTarget } from '../decorators/validMigrateTarget';
 
 export default class Baseline extends AbstractCommand {
     static description =
@@ -16,14 +17,19 @@ export default class Baseline extends AbstractCommand {
             description: 'Description to be saved to history.'
         })
     };
+    static args = [
+        // ToDo Set required:true if flags index are removed
+        { name: 'name', description: 'migration index name.', required: false }
+    ];
 
+    @validMigrateTarget()
     async run(): Promise<void> {
-        const { flags } = this.parse(Baseline);
+        const { flags, args } = this.parse(Baseline);
         await this.createHistoryIndex();
         const elasticsearchClient = getElasticsearchClient(this.migrationConfig.elasticsearch);
         const baselineVersion = this.migrationConfig.migration.baselineVersion;
 
-        const indexName = this.indexName(flags);
+        const indexName = this.indexName(args, flags);
         const results = await elasticsearchClient
             .search<MigrateIndex>({
                 index: MAPPING_HISTORY_INDEX_NAME,
