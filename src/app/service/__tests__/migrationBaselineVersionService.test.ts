@@ -5,7 +5,6 @@ import { getMockElasticsearchClient } from '../../../__mocks__/client/es/mockEla
 import { IndicesExists as IndicesExists6 } from 'es6/api/requestParams';
 import { IndicesExists as IndicesExists7 } from 'es7/api/requestParams';
 import { CliUx } from '@oclif/core';
-import { DeepRequired } from 'ts-essentials';
 import { MigrationConfig } from '../../types';
 
 jest.mock('../../client/es/ElasticsearchClient');
@@ -19,15 +18,23 @@ describe('migrationBaselineVersionService', () => {
 
     it('can create a baseline.', async () => {
         mocked(useElasticsearchClient).mockImplementation(getMockElasticsearchClient);
-
-        const { makeBaseline } = migrationBaselineVersionService(
-            'test_index',
-            '',
-            {
-                test_index: '1.0.0'
+        const config = {
+            elasticsearch: {
+                searchEngine: 'elasticsearch',
+                version: '7',
+                connect: {
+                    host: ''
+                }
             },
-            {} as DeepRequired<MigrationConfig>
-        );
+            migration: {
+                location: '',
+                baselineVersion: {
+                    test_index: '1.0.0'
+                }
+            }
+        } as Required<MigrationConfig>;
+
+        const { makeBaseline } = migrationBaselineVersionService('test_index', '', config);
         await makeBaseline();
 
         expect(spyInfo).toHaveBeenCalledTimes(3);
@@ -38,15 +45,23 @@ describe('migrationBaselineVersionService', () => {
 
     it('can create a baseline when the target is specified in args.', async () => {
         mocked(useElasticsearchClient).mockImplementation(getMockElasticsearchClient);
-
-        const { makeBaseline } = migrationBaselineVersionService(
-            'test_index',
-            '',
-            {
-                test_index: '1.0.0'
+        const config = {
+            elasticsearch: {
+                searchEngine: 'elasticsearch',
+                version: '7',
+                connect: {
+                    host: ''
+                }
             },
-            {} as DeepRequired<MigrationConfig>
-        );
+            migration: {
+                location: '',
+                baselineVersion: {
+                    test_index: '1.0.0'
+                }
+            }
+        } as Required<MigrationConfig>;
+
+        const { makeBaseline } = migrationBaselineVersionService('test_index', '', config);
         await makeBaseline();
 
         expect(spyInfo).toHaveBeenCalledTimes(3);
@@ -65,15 +80,23 @@ describe('migrationBaselineVersionService', () => {
                 }
             };
         });
-
-        const { makeBaseline } = migrationBaselineVersionService(
-            'test_index',
-            '',
-            {
-                test_index: '1.0.0'
+        const config = {
+            elasticsearch: {
+                searchEngine: 'elasticsearch',
+                version: '7',
+                connect: {
+                    host: ''
+                }
             },
-            {} as DeepRequired<MigrationConfig>
-        );
+            migration: {
+                location: '',
+                baselineVersion: {
+                    test_index: '1.0.0'
+                }
+            }
+        } as Required<MigrationConfig>;
+
+        const { makeBaseline } = migrationBaselineVersionService('test_index', '', config);
         await makeBaseline();
 
         expect(spyInfo).toHaveBeenCalledTimes(1);
@@ -92,15 +115,22 @@ describe('migrationBaselineVersionService', () => {
 
     it('can not create a baseline when baseline config does not exist.', async () => {
         mocked(useElasticsearchClient).mockImplementation(getMockElasticsearchClient);
-
-        const { makeBaseline } = migrationBaselineVersionService(
-            'test',
-            '',
-            {
-                test_index: '1.0.0'
+        const config = {
+            elasticsearch: {
+                searchEngine: 'elasticsearch',
+                version: '7',
+                connect: {
+                    host: ''
+                }
             },
-            {} as DeepRequired<MigrationConfig>
-        );
+            migration: {
+                location: '',
+                baselineVersion: {
+                    test_index: '1.0.0'
+                }
+            }
+        } as Required<MigrationConfig>;
+        const { makeBaseline } = migrationBaselineVersionService('test', '', config);
         await expect(makeBaseline()).rejects.toThrowError(
             new Error(`The baseline setting for index(test) does not exist.`)
         );

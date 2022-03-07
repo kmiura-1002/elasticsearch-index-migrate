@@ -1,20 +1,16 @@
 import migrateHistoryRepository from '../context/migrate_history/migrateHistoryRepository';
 import { migrateHistorySpecByIndexName } from '../context/migrate_history/spec';
 import { CliUx } from '@oclif/core';
-import { DeepRequired } from 'ts-essentials';
 import { MigrationConfig } from '../types';
 
 const migrationBaselineVersionService = (
     targetName: string,
     description: string | undefined,
-    baselineVersion: {
-        [key: string]: string;
-    },
-    config: DeepRequired<MigrationConfig>
+    config: Required<MigrationConfig>
 ) => {
     const makeBaseline = async () => {
         const { findBy, insert } = migrateHistoryRepository(config.elasticsearch);
-        const baseline = baselineVersion[targetName];
+        const baseline = config.migration.baselineVersion[targetName];
 
         if (baseline === undefined) {
             throw new Error(`The baseline setting for index(${targetName}) does not exist.`);

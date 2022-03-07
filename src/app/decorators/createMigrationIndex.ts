@@ -7,7 +7,6 @@ import v6LockMapping from '../../resources/mapping/migrate_lock_esV6.json';
 import { MIGRATE_HISTORY_INDEX_NAME, MIGRATE_LOCK_INDEX_NAME, MigrationConfig } from '../types';
 import { usedEsVersion } from '../client/es/EsUtils';
 import useElasticsearchClient from '../client/es/ElasticsearchClient';
-import { DeepRequired } from 'ts-essentials';
 
 export function createMigrationIndex() {
     return function (
@@ -79,7 +78,7 @@ const setupMigrationEnv = async function (config: Config, flags: Interfaces.Flag
     }
 };
 
-function getHistoryIndexRequestBody(config: DeepRequired<MigrationConfig>) {
+function getHistoryIndexRequestBody(config: Required<MigrationConfig>) {
     if (config.migration.historyIndexRequestBody) {
         return config.migration.historyIndexRequestBody;
     }
@@ -95,7 +94,7 @@ function getHistoryIndexRequestBody(config: DeepRequired<MigrationConfig>) {
     }
 }
 
-function getLockIndexRequestBody(config: DeepRequired<MigrationConfig>) {
+function getLockIndexRequestBody(config: Required<MigrationConfig>) {
     if (config.migration.lockIndexRequestBody) {
         return config.migration.lockIndexRequestBody;
     }

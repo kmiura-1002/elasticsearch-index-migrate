@@ -25,12 +25,10 @@ export default class Index extends Command {
     async run(): Promise<void> {
         const { flags, args } = await this.parse(Index);
         const migrationConfig = await readOptions(flags, this.config);
-        const baselineVersion = migrationConfig.migration.baselineVersion;
 
         await migrationBaselineVersionService(
             args.name,
             flags.description,
-            baselineVersion,
             migrationConfig
         ).makeBaseline();
     }
