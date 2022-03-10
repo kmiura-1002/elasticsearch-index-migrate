@@ -1,8 +1,10 @@
 import fs from 'fs';
 import path from 'path';
+import { ResolvedMigration } from '../../types';
+import yaml from 'js-yaml';
 
-// export const indexNameRegexp = /[-_]/;
-// export const fileNameRegexp = /^([v][0-9]+.[0-9]+.[0-9]+)__([0-9a-zA-Z]+)/;
+export const FILE_NAME_REGEXP = /^([v][0-9]+.[0-9]+.[0-9]+)__([0-9a-zA-Z]+)/;
+const ALLOW_LOAD_EXTENSIONS = ['.json', '.yaml', '.yml'];
 
 export function findFiles(dir: string, callback?: (data: string) => void): void {
     const filenames = fs.readdirSync(path.relative(process.cwd(), dir));
@@ -25,36 +27,33 @@ export function findAllFiles(dir: string[]): string[] {
     return paths;
 }
 
-// function makeParentPath(
-//     indexName: string,
-//     isNaturalIndexName: boolean,
-//     indexVersion?: string
-// ): string {
-//     if (isNaturalIndexName) {
-//         return indexVersion ? indexName + '/' + indexVersion : indexName;
-//     }
-//     return indexName.split(indexNameRegexp).join('/');
-// }
+export function loadMigrationScriptFilePaths(migrantName: string, migrationFilePaths: string[]) {
+    return migrationFilePaths
+        .filter((value) => {
+            const migrationFilePath = path.parse(value);
+            // NOTE: migrantNameと同名のディレクトリーがあることを確認
+            return (
+                migrationFilePath.dir.includes(migrantName) &&
+                migrationFilePath.dir.lastIndexOf(migrantName) + migrantName.length ===
+                    migrationFilePath.dir.length
+            );
+        })
+        .map(path.parse)
+        .filter((value) => ALLOW_LOAD_EXTENSIONS.includes(value.ext))
+        .map((value) => {
+            const readFile = fs.readFileSync(path.join(value.dir, value.base), 'utf8');
+            const resolvedMigration = (
+                value.ext === '.json' ? JSON.parse(readFile) : yaml.load(readFile)
+            ) as ResolvedMigration;
 
-// export function loadMigrationScriptFilePaths(
-//     indexName: string,
-//     migrationFilePaths: string[],
-//     isNaturalIndexName: boolean,
-//     indexVersion?: string
-// ): path.ParsedPath[] {
-//     return migrationFilePaths
-//         .filter((value) => {
-//             const parentPath = makeParentPath(indexName, isNaturalIndexName, indexVersion);
-//             const migrationFilePath = path.parse(value);
-//             return (
-//                 migrationFilePath.dir.includes(parentPath) &&
-//                 migrationFilePath.dir.lastIndexOf(parentPath) + parentPath.length ===
-//                     migrationFilePath.dir.length
-//             );
-//         })
-//         .map(path.parse)
-//         .filter((value) => value.ext === '.json');
-// }
+            resolvedMigration.physicalLocation = value;
+            const match = value.name.match(FILE_NAME_REGEXP);
+            if (match !== null && match.length > 1) {
+                resolvedMigration.version = match[1];
+            }
+            return resolvedMigration;
+        });
+}
 
 // export function loadMigrationScripts(migrationFileParsedPath: ParsedPath[]): ResolvedMigration[] {
 //     return migrationFileParsedPath.map((value) => {
@@ -62,7 +61,7 @@ export function findAllFiles(dir: string[]): string[] {
 //             fs.readFileSync(path.join(value.dir, value.base), 'utf8')
 //         ) as ResolvedMigration;
 //         resolvedMigration.physicalLocation = value;
-//         const match = value.name.match(fileNameRegexp) as RegExpMatchArray;
+//         const match = value.name.match(FILE_NAME_REGEXP) as RegExpMatchArray;
 //         if (match !== null && match.length > 1) {
 //             resolvedMigration.version = match[1];
 //         }
