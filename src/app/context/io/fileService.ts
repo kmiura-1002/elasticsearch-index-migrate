@@ -1,12 +1,13 @@
 import fs from 'fs';
 import path from 'path';
-import { ResolvedMigration } from '../../types';
+import { MigrationData, MigrationFile } from '../../types';
 import yaml from 'js-yaml';
+import checksum from 'checksum';
 
 export const FILE_NAME_REGEXP = /^([v][0-9]+.[0-9]+.[0-9]+)__([0-9a-zA-Z]+)/;
 const ALLOW_LOAD_EXTENSIONS = ['.json', '.yaml', '.yml'];
 
-export function findFiles(dir: string, callback?: (data: string) => void): void {
+function findFiles(dir: string, callback?: (data: string) => void): void {
     const filenames = fs.readdirSync(path.relative(process.cwd(), dir));
     filenames.forEach((filename) => {
         const fullPath = path.join(dir, filename);
@@ -19,7 +20,7 @@ export function findFiles(dir: string, callback?: (data: string) => void): void 
     });
 }
 
-export function findAllFiles(dir: string[]): string[] {
+function findAllFiles(dir: string[]): string[] {
     const paths: string[] = [];
     dir.forEach((value) => {
         findFiles(value, (data) => paths.push(data));
@@ -27,8 +28,9 @@ export function findAllFiles(dir: string[]): string[] {
     return paths;
 }
 
-export function loadMigrationScriptFilePaths(migrantName: string, migrationFilePaths: string[]) {
-    return migrationFilePaths
+export function loadMigrationScriptFile(migrantName: string, locations: string[]): MigrationData[] {
+    const paths = findAllFiles(locations);
+    return paths
         .filter((value) => {
             const migrationFilePath = path.parse(value);
             // NOTE: migrantNameと同名のディレクトリーがあることを確認
@@ -42,29 +44,17 @@ export function loadMigrationScriptFilePaths(migrantName: string, migrationFileP
         .filter((value) => ALLOW_LOAD_EXTENSIONS.includes(value.ext))
         .map((value) => {
             const readFile = fs.readFileSync(path.join(value.dir, value.base), 'utf8');
-            const resolvedMigration = (
+            const migrationFile = (
                 value.ext === '.json' ? JSON.parse(readFile) : yaml.load(readFile)
-            ) as ResolvedMigration;
-
-            resolvedMigration.physicalLocation = value;
+            ) as MigrationFile;
             const match = value.name.match(FILE_NAME_REGEXP);
-            if (match !== null && match.length > 1) {
-                resolvedMigration.version = match[1];
-            }
-            return resolvedMigration;
+            const version = match !== null && match.length > 1 ? match[1] : undefined;
+
+            return {
+                file: migrationFile,
+                version,
+                physicalLocation: value,
+                checksum: checksum(JSON.stringify(migrationFile))
+            };
         });
 }
-
-// export function loadMigrationScripts(migrationFileParsedPath: ParsedPath[]): ResolvedMigration[] {
-//     return migrationFileParsedPath.map((value) => {
-//         const resolvedMigration = JSON.parse(
-//             fs.readFileSync(path.join(value.dir, value.base), 'utf8')
-//         ) as ResolvedMigration;
-//         resolvedMigration.physicalLocation = value;
-//         const match = value.name.match(FILE_NAME_REGEXP) as RegExpMatchArray;
-//         if (match !== null && match.length > 1) {
-//             resolvedMigration.version = match[1];
-//         }
-//         return resolvedMigration;
-//     });
-// }

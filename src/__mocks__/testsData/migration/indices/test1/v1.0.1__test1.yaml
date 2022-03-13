@@ -1,0 +1,6 @@
+type: 'ADD_FIELD'
+description: 'description v1.0.1 add field'
+migrate_script:
+    properties:
+        keyword:
+            type: 'keyword'

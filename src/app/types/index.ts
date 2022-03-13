@@ -2,12 +2,15 @@ import { ParsedPath } from 'path';
 
 export const MIGRATE_HISTORY_INDEX_NAME = 'migrate_history';
 export const MIGRATE_LOCK_INDEX_NAME = 'migrate_lock';
+
+/** @deprecated To be deleted */
 const ELASTICSEARCH_VERSIONS = ['6.x', '7.x', 'opensearch'] as const;
+/** @deprecated To be deleted */
 export type ELASTICSEARCH_VERSION = typeof ELASTICSEARCH_VERSIONS[number];
 export const OPENSEARCH = 'opensearch';
 export const ELASTICSEARCH = 'elasticsearch';
-const SearchEngines = ['opensearch', 'elasticsearch'] as const;
-export type SearchEngine = typeof SearchEngines[number];
+const searchEngines = ['opensearch', 'elasticsearch'] as const;
+export type SearchEngine = typeof searchEngines[number];
 
 export interface ESConnectConfig {
     host?: string;
@@ -108,6 +111,21 @@ export const MigrationTypes = {
 
 export type MigrationType = typeof MigrationTypes[keyof typeof MigrationTypes];
 
+export type MigrationFile = {
+    type: MigrationType;
+    description?: string;
+    migrate_script?: any;
+    query_parameters?: any;
+};
+
+export type MigrationData = {
+    file: MigrationFile;
+    version: string | undefined;
+    physicalLocation: ParsedPath;
+    checksum: string;
+};
+
+/** @deprecated To be deleted */
 export type ResolvedMigration = {
     type: MigrationType;
     version: string;
@@ -117,6 +135,7 @@ export type ResolvedMigration = {
     query_parameters?: any;
 };
 
+/** @deprecated To be deleted */
 export type AppliedMigration = {
     version: string;
     description: string;

@@ -1379,6 +1379,11 @@
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.2.11.tgz#d3614d6c5f500142358e6ed24e1bf16657536c50"
   integrity sha512-t7uW6eFafjO+qJ3BIV2gGUyZs27egcNRkUdalkud+Qa3+kg//f129iuOFivHDXQ+vnU3fDXuwgv0cqMCbcE8sw==
 
+"@types/checksum@^0.1.33":
+  version "0.1.33"
+  resolved "https://registry.yarnpkg.com/@types/checksum/-/checksum-0.1.33.tgz#ad161fb7f878ccf946540f7d963c636d249251ed"
+  integrity sha512-fe6ZaTTh2Qk6J68EOKGz992sw6Y+sGK86skRTT4tz9Wxby6owinOXzHE73wBOw/ln7ty4rTbxjHx0RwjIM1LKw==
+
 "@types/color-name@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
