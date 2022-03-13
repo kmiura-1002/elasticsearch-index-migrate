@@ -1,8 +1,9 @@
 import { CliUx, Command } from '@oclif/core';
 import { readOptions } from '../config/flags/flagsLoader';
-import { ESConfig, LockIndex, MIGRATE_LOCK_INDEX_NAME } from '../types';
+import { MIGRATE_LOCK_INDEX_NAME } from '../types';
 import { useElasticsearchClient } from '../client/es/ElasticsearchClient';
 import { format } from 'date-fns';
+import type { ESConfig, LockIndex } from '../types';
 
 export function migrateLock() {
     return function (

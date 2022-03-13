@@ -5,7 +5,7 @@ import { getMockElasticsearchClient } from '../../../__mocks__/client/es/mockEla
 import { IndicesExists as IndicesExists6 } from 'es6/api/requestParams';
 import { IndicesExists as IndicesExists7 } from 'es7/api/requestParams';
 import { CliUx } from '@oclif/core';
-import { MigrationConfig } from '../../types';
+import type { MigrationConfig } from '../../types';
 
 jest.mock('../../client/es/ElasticsearchClient');
 const spyInfo = jest.spyOn(CliUx.ux, 'info');

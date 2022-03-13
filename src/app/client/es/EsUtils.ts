@@ -1,12 +1,12 @@
-import { ClientOptions as ClientOptions6 } from 'es6';
-import { ClientOptions as ClientOptions7 } from 'es7';
 import fs from 'fs';
-import { Engine, ESConnectConfig, SearchEngineVersion } from '../../types';
 import major from 'semver/functions/major';
 import minor from 'semver/functions/minor';
 import patch from 'semver/functions/patch';
 import valid from 'semver/functions/valid';
 import coerce from 'semver/functions/coerce';
+import type { Engine, ESConnectConfig, SearchEngineVersion } from '../../types';
+import type { ClientOptions as ClientOptions6 } from 'es6';
+import type { ClientOptions as ClientOptions7 } from 'es7';
 
 export function usedEsVersion(engine: Engine): SearchEngineVersion {
     const version = coerce(engine.version);

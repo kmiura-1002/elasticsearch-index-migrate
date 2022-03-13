@@ -4,8 +4,8 @@ jest.mock('fs', () => ({
     readFileSync: jest.fn(() => `first¥n second¥n third`)
 }));
 import fs from 'fs';
-import { ESConnectConfig } from '../../../types';
 import { esConnectConf, usedEsVersion } from '../../es/EsUtils';
+import type { ESConnectConfig } from '../../../types';
 
 describe('EsUtils', () => {
     it('can be connect when cloud id access', () => {

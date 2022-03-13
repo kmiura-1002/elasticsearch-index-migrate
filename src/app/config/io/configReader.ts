@@ -1,10 +1,10 @@
-import { MigrationConfig } from '../../types';
 import path from 'path';
 import yaml from 'js-yaml';
 import fs from 'fs';
 import * as Config from '@oclif/core';
 import { createSchema as S, TsjsonParser } from 'ts-json-validator';
 import { loadJSON } from '@oclif/core/lib/config/util';
+import type { MigrationConfig } from '../../types';
 
 const configParser = new TsjsonParser(
     S({

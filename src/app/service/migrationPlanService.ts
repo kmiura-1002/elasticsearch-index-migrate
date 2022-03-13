@@ -1,4 +1,4 @@
-import { MigrationConfig } from '../types';
+import type { MigrationConfig } from '../types';
 
 export const migrationPlanService = (
     targetName: string,

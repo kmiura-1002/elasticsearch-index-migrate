@@ -1,7 +1,7 @@
 import { migrateHistoryRepository } from '../context/migrate_history/migrateHistoryRepository';
 import { migrateHistorySpecByIndexName } from '../context/migrate_history/spec';
 import { CliUx } from '@oclif/core';
-import { MigrationConfig } from '../types';
+import type { MigrationConfig } from '../types';
 
 export const migrationBaselineVersionService = (
     targetName: string,

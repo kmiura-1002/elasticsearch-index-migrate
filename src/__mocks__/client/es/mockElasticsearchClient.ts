@@ -1,5 +1,6 @@
-import { ClusterStatuses, ESConfig, SearchEngineVersion, SimpleJson } from '../../../app/types';
-import {
+import { ClusterStatuses } from '../../../app/types';
+import type { ESConfig, SearchEngineVersion, SimpleJson } from '../../../app/types';
+import type {
     ClusterHealth as ClusterHealth6,
     DeleteByQuery as DeleteByQuery6,
     Index as Index6,
@@ -12,7 +13,7 @@ import {
     IndicesPutSettings as IndicesPutSettings6,
     Search as Search6
 } from 'es6/api/requestParams';
-import {
+import type {
     ClusterHealth as ClusterHealth7,
     DeleteByQuery as DeleteByQuery7,
     Index as Index7,
@@ -25,8 +26,8 @@ import {
     IndicesPutSettings as IndicesPutSettings7,
     Search as Search7
 } from 'es7/api/requestParams';
-import { ApiResponse as ApiResponse6 } from 'es6/lib/Transport';
-import { ApiResponse as ApiResponse7 } from 'es7/lib/Transport';
+import type { ApiResponse as ApiResponse6 } from 'es6/lib/Transport';
+import type { ApiResponse as ApiResponse7 } from 'es7/lib/Transport';
 
 export const getMockElasticsearchClient = jest.fn().mockImplementation(() =>
     useElasticsearchClient({

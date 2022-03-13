@@ -7,17 +7,17 @@ import { CliUx } from '@oclif/core';
 import { migrateLock } from '../migrateLock';
 import { mockReadOptions } from '../../../__mocks__/flags/mockReadOptions';
 import { getMockElasticsearchClient } from '../../../__mocks__/client/es/mockElasticsearchClient';
-import {
+import type {
     DeleteByQuery as DeleteByQuery6,
     IndicesExists as IndicesExists6,
     Search as Search6
 } from 'es6/api/requestParams';
-import {
+import type {
     DeleteByQuery as DeleteByQuery7,
     IndicesExists as IndicesExists7,
     Search as Search7
 } from 'es7/api/requestParams';
-import { LockIndex } from '../../types';
+import type { LockIndex } from '../../types';
 
 jest.mock('../../config/flags/flagsLoader');
 jest.mock('../../client/es/ElasticsearchClient');

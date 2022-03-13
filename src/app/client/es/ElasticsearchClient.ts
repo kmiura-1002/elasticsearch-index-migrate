@@ -1,5 +1,8 @@
+import { Client as Es7Client } from 'es7';
+import { Client as Es6Client } from 'es6';
+import { esConnectConf, usedEsVersion } from './EsUtils';
 import type { SimpleJson, ESConfig, SearchEngineVersion } from '../../types';
-import {
+import type {
     ClusterHealth as ClusterHealth6,
     IndicesCreate as IndicesCreate6,
     IndicesExists as IndicesExists6,
@@ -15,7 +18,7 @@ import {
     Delete as Delete6,
     Generic as Generic6
 } from 'es6/api/requestParams';
-import {
+import type {
     ClusterHealth as ClusterHealth7,
     IndicesCreate as IndicesCreate7,
     IndicesExists as IndicesExists7,
@@ -31,11 +34,10 @@ import {
     Delete as Delete7,
     Generic as Generic7
 } from 'es7/api/requestParams';
-import { ApiResponse as ApiResponse6 } from 'es6/lib/Transport';
-import { ApiResponse as ApiResponse7 } from 'es7/lib/Transport';
-import { Client as Es7Client, ClientOptions as Es7ClientOptions } from 'es7';
-import { Client as Es6Client, ClientOptions as Es6ClientOptions } from 'es6';
-import { esConnectConf, usedEsVersion } from './EsUtils';
+import type { ApiResponse as ApiResponse6 } from 'es6/lib/Transport';
+import type { ApiResponse as ApiResponse7 } from 'es7/lib/Transport';
+import type { ClientOptions as Es7ClientOptions } from 'es7';
+import type { ClientOptions as Es6ClientOptions } from 'es6';
 
 type EsConnection = {
     client: Es6Client | Es7Client;

@@ -1,8 +1,8 @@
 import merge from 'lodash.merge';
 import fs from 'fs';
 import * as Config from '@oclif/core';
-import { MigrationConfig } from '../../types';
 import { readConfig, readOclifConfig } from '../io/configReader';
+import type { MigrationConfig } from '../../types';
 
 export const readOptions = async (
     flags: { [name: string]: any },

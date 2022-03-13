@@ -29,6 +29,7 @@ import { ApiResponse as ApiResponse6 } from 'es6/lib/Transport';
 import { ApiResponse as ApiResponse7 } from 'es7/lib/Transport';
 import { ELASTICSEARCH_VERSION } from '../../types';
 
+/** @deprecated To be deleted */
 export default interface OldElasticsearchClient {
     healthCheck(param?: ClusterHealth6 | ClusterHealth7): Promise<{ status: string }>;
 

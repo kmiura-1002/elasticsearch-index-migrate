@@ -1,4 +1,4 @@
-import { Command, Flags } from '@oclif/core';
+import { CliUx, Command, Flags } from '@oclif/core';
 import { DefaultFlags, esConnectionFlags } from '../../config/flags/defaultCommandFlags';
 import { createMigrationIndex } from '../../decorators/createMigrationIndex';
 import { migrateLock } from '../../decorators/migrateLock';
@@ -24,5 +24,10 @@ export default class Plan extends Command {
     @migrateLock()
     async run(): Promise<void> {
         // const { args, flags } = await this.parse(Plan);
+    }
+
+    protected catch(err: Error & { exitCode?: number }): Promise<any> {
+        CliUx.ux.error(`throw error. caused by: ${err}`);
+        return super.catch(err);
     }
 }
