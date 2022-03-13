@@ -1,7 +1,7 @@
 import { CliUx, Command, Flags } from '@oclif/core';
 import { createMigrationIndex } from '../../decorators/createMigrationIndex';
 import { DefaultFlags, esConnectionFlags } from '../../config/flags/defaultCommandFlags';
-import migrationBaselineVersionService from '../../service/migrationBaselineVersionService';
+import { migrationBaselineVersionService } from '../../service/migrationBaselineVersionService';
 import { DefaultArgs } from '../../config/args/defaultCommandArgs';
 import { migrateLock } from '../../decorators/migrateLock';
 import { readOptions } from '../../config/flags/flagsLoader';

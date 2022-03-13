@@ -1,9 +1,9 @@
-import migrateHistoryRepository from '../context/migrate_history/migrateHistoryRepository';
+import { migrateHistoryRepository } from '../context/migrate_history/migrateHistoryRepository';
 import { migrateHistorySpecByIndexName } from '../context/migrate_history/spec';
 import { CliUx } from '@oclif/core';
 import { MigrationConfig } from '../types';
 
-const migrationBaselineVersionService = (
+export const migrationBaselineVersionService = (
     targetName: string,
     description: string | undefined,
     config: Required<MigrationConfig>
@@ -35,5 +35,3 @@ const migrationBaselineVersionService = (
         makeBaseline
     };
 };
-
-export default migrationBaselineVersionService;

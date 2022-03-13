@@ -1,6 +1,6 @@
 import { MigrationConfig } from '../types';
 
-const migrationPlanService = (
+export const migrationPlanService = (
     targetName: string,
     ignoredMigrations: boolean,
     config: Required<MigrationConfig>
@@ -17,5 +17,3 @@ const migrationPlanService = (
         makeExecutionPlan
     };
 };
-
-export default migrationPlanService;

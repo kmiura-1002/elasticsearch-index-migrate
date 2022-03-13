@@ -1,9 +1,9 @@
 import { ESConfig, MIGRATE_HISTORY_INDEX_NAME, MigrateIndex } from '../../types';
-import useElasticsearchClient from '../../client/es/ElasticsearchClient';
+import { useElasticsearchClient } from '../../client/es/ElasticsearchClient';
 import { MigrateHistorySpec } from './spec';
 import { format } from 'date-fns';
 
-export default function migrateHistoryRepository(connectConf: ESConfig) {
+export function migrateHistoryRepository(connectConf: ESConfig) {
     const { search, postDocument } = useElasticsearchClient(connectConf);
 
     const findBy = (spec: MigrateHistorySpec) => search<MigrateIndex>(spec.condition);

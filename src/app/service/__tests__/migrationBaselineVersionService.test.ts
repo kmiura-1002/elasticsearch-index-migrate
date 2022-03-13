@@ -1,6 +1,6 @@
-import migrationBaselineVersionService from '../migrationBaselineVersionService';
+import { migrationBaselineVersionService } from '../migrationBaselineVersionService';
 import { mocked } from 'jest-mock';
-import useElasticsearchClient from '../../client/es/ElasticsearchClient';
+import { useElasticsearchClient } from '../../client/es/ElasticsearchClient';
 import { getMockElasticsearchClient } from '../../../__mocks__/client/es/mockElasticsearchClient';
 import { IndicesExists as IndicesExists6 } from 'es6/api/requestParams';
 import { IndicesExists as IndicesExists7 } from 'es7/api/requestParams';

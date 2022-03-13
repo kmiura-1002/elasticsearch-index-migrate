@@ -268,7 +268,7 @@ const countApi = (connection: EsConnection, request: Count6 | Count7) => {
     return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
 };
 
-export default function useElasticsearchClient(connectConf: ESConfig) {
+export function useElasticsearchClient(connectConf: ESConfig) {
     const connection = esClientBind(connectConf);
 
     const healthCheck = (request?: ClusterHealth6 | ClusterHealth7): Promise<{ status: string }> =>

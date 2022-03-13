@@ -1,8 +1,8 @@
 import { test } from '@oclif/test';
 import { mocked } from 'jest-mock';
-import useElasticsearchClient from '../../../client/es/ElasticsearchClient';
+import { useElasticsearchClient } from '../../../client/es/ElasticsearchClient';
 import { getMockElasticsearchClient } from '../../../../__mocks__/client/es/mockElasticsearchClient';
-import migrationBaselineVersionService from '../../../service/migrationBaselineVersionService';
+import { migrationBaselineVersionService } from '../../../service/migrationBaselineVersionService';
 import { getMockMigrationBaselineVersionService } from '../../../../__mocks__/searvice/mockMigrationBaselineVersionService';
 
 jest.mock('../../../client/es/ElasticsearchClient');

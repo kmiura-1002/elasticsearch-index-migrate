@@ -1,7 +1,7 @@
 import { fancyIt } from '../../../__mocks__/fancyIt';
 import { mocked } from 'jest-mock';
 import { readOptions } from '../../config/flags/flagsLoader';
-import useElasticsearchClient from '../../client/es/ElasticsearchClient';
+import { useElasticsearchClient } from '../../client/es/ElasticsearchClient';
 import { getFakeCommand } from '../../../__mocks__/command/fakeCommand';
 import { CliUx } from '@oclif/core';
 import { migrateLock } from '../migrateLock';

@@ -1,4 +1,4 @@
-import useElasticsearchClient from '../../es/ElasticsearchClient';
+import { useElasticsearchClient } from '../../es/ElasticsearchClient';
 import { ResponseError } from 'es7/lib/errors';
 
 describe('Elasticsearch client test', () => {

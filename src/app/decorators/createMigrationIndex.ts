@@ -6,7 +6,7 @@ import v7LockMapping from '../../resources/mapping/migrate_lock_esV7.json';
 import v6LockMapping from '../../resources/mapping/migrate_lock_esV6.json';
 import { MIGRATE_HISTORY_INDEX_NAME, MIGRATE_LOCK_INDEX_NAME, MigrationConfig } from '../types';
 import { usedEsVersion } from '../client/es/EsUtils';
-import useElasticsearchClient from '../client/es/ElasticsearchClient';
+import { useElasticsearchClient } from '../client/es/ElasticsearchClient';
 
 export function createMigrationIndex() {
     return function (
