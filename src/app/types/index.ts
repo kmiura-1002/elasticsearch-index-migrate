@@ -44,6 +44,20 @@ export type MigrationConfig = {
     };
 };
 
+export type MigrationPlanData = {
+    resolvedMigration?: RequiredMigrationData;
+    appliedMigration?: AppliedMigration;
+    context: MigrationPlanContext;
+    type?: MigrationType;
+    version?: string;
+    description?: string;
+    installedOn?: Date;
+    state?: MigrationStateInfo;
+    baseline: boolean;
+    checksum: string | undefined;
+};
+
+/** @deprecated To be deleted */
 export type MigrationPlan = {
     resolvedMigration?: ResolvedMigration;
     appliedMigration?: AppliedMigration;
@@ -94,7 +108,7 @@ export type MigrateIndex = {
     installed_on: string;
     execution_time: number;
     success: boolean;
-    checksum: number | undefined;
+    checksum: string | undefined;
 };
 
 export type LockIndex = {
@@ -118,6 +132,13 @@ export type MigrationFile = {
     query_parameters?: any;
 };
 
+export type RequiredMigrationData = {
+    file: MigrationFile;
+    version: string;
+    physicalLocation: ParsedPath;
+    checksum: string;
+};
+
 export type MigrationData = {
     file: MigrationFile;
     version: string | undefined;
@@ -135,7 +156,6 @@ export type ResolvedMigration = {
     query_parameters?: any;
 };
 
-/** @deprecated To be deleted */
 export type AppliedMigration = {
     version: string;
     description: string;
@@ -144,14 +164,15 @@ export type AppliedMigration = {
     installedOn: Date;
     executionTime: number;
     success: boolean;
+    checksum: string | undefined;
 };
 
 export type MigrationPlanContext = {
-    // outOfOrder: boolean;
-    // pending: boolean;
-    // missing: boolean;
-    // ignored: boolean;
-    // future: boolean;
+    outOfOrder: boolean;
+    pending: boolean;
+    missing: boolean;
+    ignored: boolean;
+    future: boolean;
     baseline: string;
     lastResolved: string;
     lastApplied: string;
@@ -188,7 +209,7 @@ export const MigrationStates = {
 
 export type MigrationState = typeof MigrationStates[keyof typeof MigrationStates];
 
-export const MigrationStateInfo: Map<MigrationState, MigrationStateInfo> = new Map([
+export const MigrationStateInfoMap: Map<MigrationState, MigrationStateInfo> = new Map([
     [
         MigrationStates.BASELINE,
         {
