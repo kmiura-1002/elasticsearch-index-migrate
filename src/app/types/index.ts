@@ -62,7 +62,7 @@ export type MigrationExplainPlan = {
     pending: MigrationPlanData[];
 };
 
-/** @deprecated To be deleted */
+/** @deprecated To be deleted. use MigrationPlanData */
 export type MigrationPlan = {
     resolvedMigration?: ResolvedMigration;
     appliedMigration?: AppliedMigration;
@@ -173,14 +173,28 @@ export type AppliedMigration = {
 };
 
 export type MigrationPlanContext = {
+    /** @deprecated To be deleted. use MigrationExecuteConfig */
+    outOfOrder: boolean;
+    /** @deprecated To be deleted. use MigrationExecuteConfig */
+    pending: boolean;
+    /** @deprecated To be deleted. use MigrationExecuteConfig */
+    missing: boolean;
+    /** @deprecated To be deleted. use MigrationExecuteConfig */
+    ignored: boolean;
+    /** @deprecated To be deleted. use MigrationExecuteConfig */
+    future: boolean;
+    baseline: string;
+    lastResolved: string;
+    lastApplied: string;
+};
+
+export type MigrationExecuteConfig = {
     outOfOrder: boolean;
     pending: boolean;
     missing: boolean;
     ignored: boolean;
     future: boolean;
     baseline: string;
-    lastResolved: string;
-    lastApplied: string;
 };
 
 export type MigrationPlanDetail = {
@@ -317,6 +331,7 @@ export const MigrationStateInfoMap: Map<MigrationState, MigrationStateInfo> = ne
     ]
 ]);
 
+/** @deprecated To be deleted. use MigrationExplainPlan */
 export type MigrationPlanExecutorRet = {
     all: MigrationPlan[];
     pending: MigrationPlan[];
