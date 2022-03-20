@@ -6,22 +6,19 @@ import type {
     MigrationStateInfo,
     RequiredMigrationData,
     MigrationPlanContext,
-    MigrationType
+    MigrationType,
+    MigrationExplainPlan,
+    MigrationExecuteConfig
 } from '../types';
 import { loadMigrationScriptFile } from '../context/io/fileService';
 import { migrateHistoryRepository } from '../context/migrate_history/migrateHistoryRepository';
 import { migrateHistorySpecByIndexName } from '../context/migrate_history/spec';
 import { compare, lt, valid } from 'semver';
-import {
-    MigrationStates,
-    MigrationTypes,
-    MigrationStateInfoMap,
-    MigrationExplainPlan
-} from '../types';
+import { MigrationStates, MigrationTypes, MigrationStateInfoMap } from '../types';
 
 export const migrationPlanService = (
     targetName: string,
-    ignoredMigrations: boolean,
+    executeConfig: MigrationExecuteConfig,
     config: Required<MigrationConfig>
 ) => {
     const validateInputData = (migrationData: MigrationData[], baseline: string | undefined) => {
@@ -58,14 +55,9 @@ export const migrationPlanService = (
         const lastResolved = resolvedMigrationVersions[resolvedMigrationVersions.length - 1];
         const lastApplied = appliedMigrationVersions[appliedMigrationVersions.length - 1];
         const context: MigrationPlanContext = {
-            future: true,
             baseline,
-            ignored: true,
             lastApplied,
-            lastResolved,
-            missing: true,
-            outOfOrder: false,
-            pending: true
+            lastResolved
         };
         const migrationPlanMap = new Map<string, MigrationPlanData>();
 
@@ -113,8 +105,51 @@ export const migrationPlanService = (
         return makeMigrationExplainPlan(migrationPlanMap);
     };
 
+    const validate = async () => {
+        const explainPlan = await refresh();
+
+        return explainPlan.all
+            .map((plan) => {
+                if (plan.state?.failed && !plan.context.future) {
+                    if (plan.version) {
+                        return `Detected failure to migrate to version ${plan.version}(${plan.description}).`;
+                    } else {
+                        return `Detected failure to migrate to unknown version(${plan.description}).`;
+                    }
+                }
+
+                if (
+                    (!executeConfig.pending && 'PENDING' === plan.state?.status) ||
+                    (!executeConfig.ignored && 'IGNORED' === plan.state?.status)
+                ) {
+                    if (plan.version) {
+                        return `Detected version ${plan.version}(${plan.description}) migration not applied to Elasticsearch.`;
+                    } else {
+                        return `Detected unknown version(${plan.description}) migration not applied to Elasticsearch.`;
+                    }
+                }
+
+                if (
+                    plan.resolvedMigration !== undefined &&
+                    plan.appliedMigration !== undefined &&
+                    lt(
+                        plan.context.baseline,
+                        generateVersion(plan.resolvedMigration, plan.appliedMigration) ?? ''
+                    ) &&
+                    plan.resolvedMigration.checksum !== plan.appliedMigration.checksum
+                ) {
+                    return `Migration checksum mismatch for migration ${plan.resolvedMigration.version}.`;
+                }
+
+                return null;
+            })
+            .filter(Boolean)
+            .join('\n');
+    };
+
     return {
-        refresh
+        refresh,
+        validate
     };
 };
 
@@ -130,6 +165,7 @@ const makeMigrationExplainPlan = (map: Map<string, MigrationPlanData>) => {
     if (sortedKeys.length < 1) {
         throw new Error('Unknown version migration detected');
     }
+
     const migrationPlans: MigrationPlanData[] = [];
     sortedKeys.forEach((version) => {
         const migrationPlan = map.get(version);

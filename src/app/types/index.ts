@@ -174,15 +174,15 @@ export type AppliedMigration = {
 
 export type MigrationPlanContext = {
     /** @deprecated To be deleted. use MigrationExecuteConfig */
-    outOfOrder: boolean;
+    outOfOrder?: boolean;
     /** @deprecated To be deleted. use MigrationExecuteConfig */
-    pending: boolean;
+    pending?: boolean;
     /** @deprecated To be deleted. use MigrationExecuteConfig */
-    missing: boolean;
+    missing?: boolean;
     /** @deprecated To be deleted. use MigrationExecuteConfig */
-    ignored: boolean;
+    ignored?: boolean;
     /** @deprecated To be deleted. use MigrationExecuteConfig */
-    future: boolean;
+    future?: boolean;
     baseline: string;
     lastResolved: string;
     lastApplied: string;
@@ -194,7 +194,6 @@ export type MigrationExecuteConfig = {
     missing: boolean;
     ignored: boolean;
     future: boolean;
-    baseline: string;
 };
 
 export type MigrationPlanDetail = {
