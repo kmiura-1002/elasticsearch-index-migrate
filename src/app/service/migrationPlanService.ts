@@ -12,7 +12,12 @@ import { loadMigrationScriptFile } from '../context/io/fileService';
 import { migrateHistoryRepository } from '../context/migrate_history/migrateHistoryRepository';
 import { migrateHistorySpecByIndexName } from '../context/migrate_history/spec';
 import { compare, lt, valid } from 'semver';
-import { MigrationStates, MigrationTypes, MigrationStateInfoMap } from '../types';
+import {
+    MigrationStates,
+    MigrationTypes,
+    MigrationStateInfoMap,
+    MigrationExplainPlan
+} from '../types';
 
 export const migrationPlanService = (
     targetName: string,
@@ -33,7 +38,7 @@ export const migrationPlanService = (
         }
     };
 
-    const refresh = async () => {
+    const refresh = async (): Promise<MigrationExplainPlan> => {
         const migrationData = loadMigrationScriptFile(targetName, [config.migration.location]);
         const baseline = config.migration.baselineVersion[targetName];
         validateInputData(migrationData, baseline);
@@ -104,6 +109,8 @@ export const migrationPlanService = (
                 );
             }
         });
+
+        return makeMigrationExplainPlan(migrationPlanMap);
     };
 
     return {
@@ -115,6 +122,35 @@ const isString = (v: string | undefined): v is string => v !== undefined;
 
 const isRequiredMigrationData = (v: MigrationData): v is RequiredMigrationData =>
     v.version !== undefined;
+
+const makeMigrationExplainPlan = (map: Map<string, MigrationPlanData>) => {
+    const sortedKeys = Array.from(map.keys())
+        .filter((value) => valid(value))
+        .sort((a, b) => compare(a, b));
+    if (sortedKeys.length < 1) {
+        throw new Error('Unknown version migration detected');
+    }
+    const migrationPlans: MigrationPlanData[] = [];
+    sortedKeys.forEach((version) => {
+        const migrationPlan = map.get(version);
+        if (migrationPlan?.resolvedMigration && migrationPlan?.appliedMigration === undefined) {
+            migrationPlans.push(
+                generateMigrationPlan(
+                    migrationPlan.context,
+                    migrationPlan.resolvedMigration,
+                    migrationPlan.appliedMigration
+                )
+            );
+        } else if (migrationPlan) {
+            migrationPlans.push(migrationPlan);
+        }
+    });
+
+    return {
+        all: migrationPlans,
+        pending: migrationPlans.filter((value) => value.state?.status === MigrationStates.PENDING)
+    };
+};
 
 const generateMigrationPlan = (
     context: MigrationPlanContext,

@@ -57,6 +57,11 @@ export type MigrationPlanData = {
     checksum: string | undefined;
 };
 
+export type MigrationExplainPlan = {
+    all: MigrationPlanData[];
+    pending: MigrationPlanData[];
+};
+
 /** @deprecated To be deleted */
 export type MigrationPlan = {
     resolvedMigration?: ResolvedMigration;
