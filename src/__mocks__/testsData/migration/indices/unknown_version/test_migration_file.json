@@ -1,0 +1,11 @@
+{
+    "type": "ADD_FIELD",
+    "description": "description v1.0.0 add field",
+    "migrate_script": {
+        "properties": {
+            "num": {
+                "type": "long"
+            }
+        }
+    }
+}

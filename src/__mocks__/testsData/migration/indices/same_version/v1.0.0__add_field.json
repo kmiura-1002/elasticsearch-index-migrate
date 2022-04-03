@@ -1,0 +1,12 @@
+{
+  "type": "ADD_FIELD",
+  "index_name": "book",
+  "description": "book index",
+  "migrate_script": {
+    "properties": {
+      "price": {
+        "type": "long"
+      }
+    }
+  }
+}
