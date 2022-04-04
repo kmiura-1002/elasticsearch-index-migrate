@@ -8,6 +8,7 @@ import { getMockElasticsearchClient } from '../../../__mocks__/client/es/mockEla
 import { Search as Search6 } from 'es6/api/requestParams';
 import { Search as Search7 } from 'es7/api/requestParams';
 import { migrateIndices } from '../../../__mocks__/testsData/MigrateIndexTestData';
+import * as spec from '../../context/migrate_history/spec';
 
 jest.mock('../../client/es/ElasticsearchClient');
 
@@ -426,6 +427,100 @@ describe('migrationPlanService', () => {
 
             await expect(actual).rejects.toThrowError(
                 new Error(`The baseline setting for index(${index}) does not exist.`)
+            );
+        });
+
+        it('throw error when the client throws an error ', async () => {
+            mocked(useElasticsearchClient).mockImplementation(() => {
+                const { useElasticsearchClient } = jest.requireActual(
+                    '../../client/es/ElasticsearchClient'
+                );
+                return {
+                    ...useElasticsearchClient({
+                        searchEngine: 'elasticsearch',
+                        version: '7',
+                        connect: {
+                            host: 'http://example.com'
+                        }
+                    })
+                };
+            });
+            const config = {
+                elasticsearch: {
+                    searchEngine: 'elasticsearch',
+                    version: '7',
+                    connect: {
+                        host: 'http://localhost:9202'
+                    }
+                },
+                migration: {
+                    location: `${process.cwd()}/src/__mocks__/testsData/migration`,
+                    baselineVersion: {
+                        test2: '1.0.0'
+                    }
+                }
+            } as Required<MigrationConfig>;
+            const service = migrationPlanService('test2', defaultPlanExecutionConfig(), config);
+
+            await expect(service.refresh()).rejects.toThrowError(new Error('Response Error'));
+        });
+
+        it('throw error when the client throws an index_not_found_exception ', async () => {
+            jest.spyOn(spec, 'migrateHistorySpecByIndexName').mockImplementationOnce(() => ({
+                condition: {
+                    index: 'hoge',
+                    body: {
+                        sort: [
+                            {
+                                migrate_version: {
+                                    order: 'asc'
+                                }
+                            }
+                        ],
+                        query: {
+                            bool: {
+                                must: []
+                            }
+                        }
+                    }
+                }
+            }));
+            mocked(useElasticsearchClient).mockImplementation(() => {
+                const { useElasticsearchClient } = jest.requireActual(
+                    '../../client/es/ElasticsearchClient'
+                );
+                return {
+                    ...useElasticsearchClient({
+                        searchEngine: 'elasticsearch',
+                        version: '7',
+                        connect: {
+                            host: 'http://localhost:9202'
+                        }
+                    })
+                };
+            });
+            const config = {
+                elasticsearch: {
+                    searchEngine: 'elasticsearch',
+                    version: '7',
+                    connect: {
+                        host: 'http://localhost:9202'
+                    }
+                },
+                migration: {
+                    location: `${process.cwd()}/src/__mocks__/testsData/migration`,
+                    baselineVersion: {
+                        test2: '1.0.0'
+                    }
+                }
+            } as Required<MigrationConfig>;
+            const service = migrationPlanService('test2', defaultPlanExecutionConfig(), config);
+
+            await expect(service.refresh()).rejects.toThrowError(
+                new Error(
+                    'History index not found.\n' +
+                        'Please check if migrate_history exists in Elasticsearch.'
+                )
             );
         });
     });
