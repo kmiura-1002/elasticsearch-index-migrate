@@ -468,21 +468,7 @@ describe('migrationPlanService', () => {
         it('throw error when the client throws an index_not_found_exception ', async () => {
             jest.spyOn(spec, 'migrateHistorySpecByIndexName').mockImplementationOnce(() => ({
                 condition: {
-                    index: 'hoge',
-                    body: {
-                        sort: [
-                            {
-                                migrate_version: {
-                                    order: 'asc'
-                                }
-                            }
-                        ],
-                        query: {
-                            bool: {
-                                must: []
-                            }
-                        }
-                    }
+                    index: 'hoge'
                 }
             }));
             mocked(useElasticsearchClient).mockImplementation(() => {
