@@ -182,6 +182,57 @@ describe('migrationPlanService', () => {
             ]);
         });
 
+        it('can be finished when migrated files are missing', async () => {
+            mocked(useElasticsearchClient).mockImplementation(() => {
+                return {
+                    ...getMockElasticsearchClient(),
+                    search(_param: Search6 | Search7) {
+                        return Promise.resolve(migrateIndices());
+                    }
+                };
+            });
+            const config = {
+                elasticsearch: {
+                    searchEngine: 'elasticsearch',
+                    version: '7',
+                    connect: {
+                        host: 'http://localhost:9202'
+                    }
+                },
+                migration: {
+                    location: `${process.cwd()}/src/__mocks__/testsData/migration`,
+                    baselineVersion: {
+                        missing_file: '1.0.0'
+                    }
+                }
+            } as Required<MigrationConfig>;
+            const explainPlan = await migrationPlanService(
+                'missing_file',
+                defaultPlanExecutionConfig(),
+                config
+            ).refresh();
+            const actual = explainPlan.all;
+            expect(
+                actual.map((value) => ({
+                    version: value.version,
+                    status: value.state?.status
+                }))
+            ).toEqual([
+                {
+                    status: 'MISSING_SUCCESS',
+                    version: 'v1.0.0'
+                },
+                {
+                    status: 'MISSING_SUCCESS',
+                    version: 'v1.0.1'
+                },
+                {
+                    status: 'SUCCESS',
+                    version: 'v1.0.2'
+                }
+            ]);
+        });
+
         it('can be finished same version data when there is an unadapted version', async () => {
             mocked(useElasticsearchClient).mockImplementation(() => {
                 return {
