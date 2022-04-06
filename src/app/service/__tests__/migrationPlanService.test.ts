@@ -344,6 +344,68 @@ describe('migrationPlanService', () => {
             ]);
         });
 
+        it('can be finished when there is a version lower than the baseline', async () => {
+            mocked(useElasticsearchClient).mockImplementation(() => {
+                const { useElasticsearchClient } = jest.requireActual(
+                    '../../client/es/ElasticsearchClient'
+                );
+                return {
+                    ...useElasticsearchClient({
+                        searchEngine: 'elasticsearch',
+                        version: '7',
+                        connect: {
+                            host: 'http://localhost:9202'
+                        }
+                    })
+                };
+            });
+            const config = {
+                elasticsearch: {
+                    searchEngine: 'elasticsearch',
+                    version: '7',
+                    connect: {
+                        host: 'http://localhost:9202'
+                    }
+                },
+                migration: {
+                    location: `${process.cwd()}/src/__mocks__/testsData/migration`,
+                    baselineVersion: {
+                        test: '1.0.2'
+                    }
+                }
+            } as Required<MigrationConfig>;
+            const explainPlan = await migrationPlanService(
+                'test',
+                defaultPlanExecutionConfig(),
+                config
+            ).refresh();
+            const actual = explainPlan.all;
+
+            expect(
+                actual.map((value) => ({
+                    version: value.version,
+                    status: value.state?.status
+                }))
+            ).toEqual([
+                {
+                    status: 'BELOW_BASELINE',
+                    version: 'v1.0.0'
+                },
+                {
+                    status: 'BELOW_BASELINE',
+                    version: 'v1.0.1'
+                },
+                {
+                    status: 'PENDING',
+                    version: 'v1.0.2'
+                },
+                {
+                    status: 'PENDING',
+                    version: 'v1.0.3'
+                }
+            ]);
+        });
+
         it('throw error when there is no migration target', async () => {
             const location = `${process.cwd()}/src/__mocks__/testsData/migration`;
             const config = {
@@ -430,7 +492,7 @@ describe('migrationPlanService', () => {
             );
         });
 
-        it('throw error when the client throws an error ', async () => {
+        it('throw error when the client throws an error', async () => {
             mocked(useElasticsearchClient).mockImplementation(() => {
                 const { useElasticsearchClient } = jest.requireActual(
                     '../../client/es/ElasticsearchClient'

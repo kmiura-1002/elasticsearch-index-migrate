@@ -150,9 +150,6 @@ const makeMigrationExplainPlan = (map: Map<string, MigrationPlanData>) => {
     const sortedKeys = Array.from(map.keys())
         .filter((value) => valid(value))
         .sort((a, b) => compare(a, b));
-    if (sortedKeys.length < 1) {
-        throw new Error('Unknown version migration detected');
-    }
 
     const migrationPlans: MigrationPlanData[] = [];
     sortedKeys.forEach((version) => {
