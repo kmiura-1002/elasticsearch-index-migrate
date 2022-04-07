@@ -235,7 +235,7 @@ const generateState = (
             !appliedMigration.version ||
             (valid(context.lastResolved) && valid(version) && lt(version, context.lastResolved))
         ) {
-            if (appliedMigration?.success) {
+            if (appliedMigration.success) {
                 return MigrationStateInfoMap.get(MigrationStates.MISSING_SUCCESS);
             }
             return MigrationStateInfoMap.get(MigrationStates.MISSING_FAILED);

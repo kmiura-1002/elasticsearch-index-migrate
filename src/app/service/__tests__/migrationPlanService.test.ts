@@ -183,12 +183,68 @@ describe('migrationPlanService', () => {
             ]);
         });
 
-        it('can be finished when migrated files are missing', async () => {
+        it('can be finished when a migration file is feature or missing', async () => {
             mocked(useElasticsearchClient).mockImplementation(() => {
                 return {
                     ...getMockElasticsearchClient(),
                     search(_param: Search6 | Search7) {
-                        return Promise.resolve(migrateIndices());
+                        return Promise.resolve([
+                            {
+                                script_name: 'v1.0.0__add_fieldcopy.json',
+                                migrate_version: 'v1.0.0',
+                                description: 'book index',
+                                execution_time: 1,
+                                index_name: 'test',
+                                installed_on: "2020-01-01'T'00:00:00",
+                                script_type: MigrationTypes.ADD_FIELD,
+                                success: false,
+                                checksum: undefined
+                            },
+                            {
+                                script_name: 'v1.0.1__add_field.json',
+                                migrate_version: 'v1.0.1',
+                                description: 'book index',
+                                execution_time: 1,
+                                index_name: 'test',
+                                installed_on: "2020-01-01'T'00:00:00",
+                                script_type: MigrationTypes.ADD_FIELD,
+                                success: true,
+                                checksum: undefined
+                            },
+                            {
+                                script_name: 'v1.0.2__add_fieldcopy.json',
+                                migrate_version: 'v1.0.2',
+                                description: 'book index',
+                                execution_time: 1,
+                                index_name: 'test',
+                                installed_on: "2020-01-01'T'00:00:00",
+                                script_type: MigrationTypes.ADD_FIELD,
+                                success: true,
+                                checksum: undefined
+                            },
+                            {
+                                script_name: 'v10.0.0__add_fieldcopy.json',
+                                migrate_version: 'v10.0.0',
+                                description: 'book index',
+                                execution_time: 1,
+                                index_name: 'test',
+                                installed_on: "2020-01-01'T'00:00:00",
+                                script_type: MigrationTypes.ADD_FIELD,
+                                success: true,
+                                checksum: undefined
+                            },
+                            {
+                                script_name: 'v10.0.1__add_fieldcopy.json',
+                                migrate_version: 'v10.0.1',
+                                description: 'book index',
+                                execution_time: 1,
+                                index_name: 'test',
+                                installed_on: "2020-01-01'T'00:00:00",
+                                script_type: MigrationTypes.ADD_FIELD,
+                                success: false,
+                                checksum: undefined
+                            }
+                        ]);
                     }
                 };
             });
@@ -203,7 +259,7 @@ describe('migrationPlanService', () => {
                 migration: {
                     location: `${process.cwd()}/src/__mocks__/testsData/migration`,
                     baselineVersion: {
-                        missing_file: 'v0.0.0'
+                        missing_file: 'v2.0.0'
                     }
                 }
             } as Required<MigrationConfig>;
@@ -220,7 +276,7 @@ describe('migrationPlanService', () => {
                 }))
             ).toEqual([
                 {
-                    status: 'MISSING_SUCCESS',
+                    status: 'MISSING_FAILED',
                     version: 'v1.0.0'
                 },
                 {
@@ -230,6 +286,14 @@ describe('migrationPlanService', () => {
                 {
                     status: 'SUCCESS',
                     version: 'v1.0.2'
+                },
+                {
+                    status: 'FUTURE_SUCCESS',
+                    version: 'v10.0.0'
+                },
+                {
+                    status: 'FUTURE_FAILED',
+                    version: 'v10.0.1'
                 }
             ]);
         });
@@ -397,6 +461,74 @@ describe('migrationPlanService', () => {
                 },
                 {
                     status: 'PENDING',
+                    version: 'v1.0.2'
+                },
+                {
+                    status: 'PENDING',
+                    version: 'v1.0.3'
+                }
+            ]);
+        });
+
+        it('can be finished when status is failed', async () => {
+            mocked(useElasticsearchClient).mockImplementation(() => {
+                return {
+                    ...getMockElasticsearchClient(),
+                    search(_param: Search6 | Search7) {
+                        return Promise.resolve([
+                            {
+                                script_name: 'v1.0.2__add_fieldcopy.json',
+                                migrate_version: 'v1.0.2',
+                                description: 'book index',
+                                execution_time: 1,
+                                index_name: 'test',
+                                installed_on: "2020-01-01'T'00:00:00",
+                                script_type: MigrationTypes.ADD_FIELD,
+                                success: false,
+                                checksum: undefined
+                            }
+                        ]);
+                    }
+                };
+            });
+            const config = {
+                elasticsearch: {
+                    searchEngine: 'elasticsearch',
+                    version: '7',
+                    connect: {
+                        host: 'http://localhost:9202'
+                    }
+                },
+                migration: {
+                    location: `${process.cwd()}/src/__mocks__/testsData/migration`,
+                    baselineVersion: {
+                        test: 'v1.0.0'
+                    }
+                }
+            } as Required<MigrationConfig>;
+            const explainPlan = await migrationPlanService(
+                'test',
+                defaultPlanExecutionConfig(),
+                config
+            ).refresh();
+            const actual = explainPlan.all;
+
+            expect(
+                actual.map((value) => ({
+                    version: value.version,
+                    status: value.state?.status
+                }))
+            ).toEqual([
+                {
+                    status: 'IGNORED',
+                    version: 'v1.0.0'
+                },
+                {
+                    status: 'IGNORED',
+                    version: 'v1.0.1'
+                },
+                {
+                    status: 'FAILED',
                     version: 'v1.0.2'
                 },
                 {
