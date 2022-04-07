@@ -64,7 +64,7 @@ describe('migrationPlanService', () => {
                 migration: {
                     location: `${process.cwd()}/src/__mocks__/testsData/migration`,
                     baselineVersion: {
-                        test2: '1.0.0'
+                        test2: 'v1.0.0'
                     }
                 }
             } as Required<MigrationConfig>;
@@ -148,7 +148,7 @@ describe('migrationPlanService', () => {
                 migration: {
                     location: `${process.cwd()}/src/__mocks__/testsData/migration`,
                     baselineVersion: {
-                        test: '1.0.0'
+                        test: 'v1.0.0'
                     }
                 }
             } as Required<MigrationConfig>;
@@ -165,7 +165,7 @@ describe('migrationPlanService', () => {
                 }))
             ).toEqual([
                 {
-                    status: 'SUCCESS',
+                    status: 'BASELINE',
                     version: 'v1.0.0'
                 },
                 {
@@ -203,7 +203,7 @@ describe('migrationPlanService', () => {
                 migration: {
                     location: `${process.cwd()}/src/__mocks__/testsData/migration`,
                     baselineVersion: {
-                        missing_file: '1.0.0'
+                        missing_file: 'v0.0.0'
                     }
                 }
             } as Required<MigrationConfig>;
@@ -254,7 +254,7 @@ describe('migrationPlanService', () => {
                 migration: {
                     location: `${process.cwd()}/src/__mocks__/testsData/migration`,
                     baselineVersion: {
-                        same_version: '1.0.0'
+                        same_version: 'v1.0.0'
                     }
                 }
             } as Required<MigrationConfig>;
@@ -309,7 +309,7 @@ describe('migrationPlanService', () => {
                 migration: {
                     location: `${process.cwd()}/src/__mocks__/testsData/migration`,
                     baselineVersion: {
-                        test: '1.0.0'
+                        test: 'v1.0.0'
                     }
                 }
             } as Required<MigrationConfig>;
@@ -370,7 +370,7 @@ describe('migrationPlanService', () => {
                 migration: {
                     location: `${process.cwd()}/src/__mocks__/testsData/migration`,
                     baselineVersion: {
-                        test: '1.0.2'
+                        test: 'v1.0.2'
                     }
                 }
             } as Required<MigrationConfig>;
@@ -419,7 +419,7 @@ describe('migrationPlanService', () => {
                 migration: {
                     location,
                     baselineVersion: {
-                        xxxxx: '1.0.0'
+                        xxxxx: 'v1.0.0'
                     }
                 }
             } as Required<MigrationConfig>;
@@ -446,7 +446,7 @@ describe('migrationPlanService', () => {
                 migration: {
                     location: `${process.cwd()}/src/__mocks__/testsData/migration`,
                     baselineVersion: {
-                        unknown_version: '1.0.0'
+                        unknown_version: 'v1.0.0'
                     }
                 }
             } as Required<MigrationConfig>;
@@ -476,7 +476,7 @@ describe('migrationPlanService', () => {
                 migration: {
                     location: `${process.cwd()}/src/__mocks__/testsData/migration`,
                     baselineVersion: {
-                        test: '1.0.0'
+                        test: 'v1.0.0'
                     }
                 }
             } as Required<MigrationConfig>;
@@ -518,7 +518,7 @@ describe('migrationPlanService', () => {
                 migration: {
                     location: `${process.cwd()}/src/__mocks__/testsData/migration`,
                     baselineVersion: {
-                        test2: '1.0.0'
+                        test2: 'v1.0.0'
                     }
                 }
             } as Required<MigrationConfig>;
@@ -558,7 +558,7 @@ describe('migrationPlanService', () => {
                 migration: {
                     location: `${process.cwd()}/src/__mocks__/testsData/migration`,
                     baselineVersion: {
-                        test2: '1.0.0'
+                        test2: 'v1.0.0'
                     }
                 }
             } as Required<MigrationConfig>;
