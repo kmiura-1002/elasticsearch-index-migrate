@@ -7,7 +7,7 @@ describe('fileService', () => {
         ]);
         expect(migrationData).toEqual([
             {
-                checksum: '9c87ddef4af2e9cb652eb0381f11177fd1dbaf53',
+                checksum: 'mock_checksum',
                 file: {
                     description: 'description v1.0.0 add field',
                     migrate_script: {
@@ -29,7 +29,7 @@ describe('fileService', () => {
                 version: undefined
             },
             {
-                checksum: '9c87ddef4af2e9cb652eb0381f11177fd1dbaf53',
+                checksum: 'mock_checksum',
                 file: {
                     description: 'description v1.0.0 add field',
                     migrate_script: {
@@ -51,7 +51,7 @@ describe('fileService', () => {
                 version: 'v1.0.0'
             },
             {
-                checksum: 'faf8e1174cd4ca66757a0a3c8bc26a6f839b56a3',
+                checksum: 'mock_checksum',
                 file: {
                     description: 'description v1.0.1 add field',
                     migrate_script: {
@@ -82,7 +82,7 @@ describe('fileService', () => {
         ]);
         expect(migrationData).toEqual([
             {
-                checksum: '9c87ddef4af2e9cb652eb0381f11177fd1dbaf53',
+                checksum: 'mock_checksum',
                 file: {
                     description: 'description v1.0.0 add field',
                     migrate_script: {
@@ -104,7 +104,7 @@ describe('fileService', () => {
                 version: undefined
             },
             {
-                checksum: '9c87ddef4af2e9cb652eb0381f11177fd1dbaf53',
+                checksum: 'mock_checksum',
                 file: {
                     description: 'description v1.0.0 add field',
                     migrate_script: {
@@ -126,7 +126,7 @@ describe('fileService', () => {
                 version: 'v1.0.0'
             },
             {
-                checksum: 'faf8e1174cd4ca66757a0a3c8bc26a6f839b56a3',
+                checksum: 'mock_checksum',
                 file: {
                     description: 'description v1.0.1 add field',
                     migrate_script: {
@@ -148,7 +148,7 @@ describe('fileService', () => {
                 version: 'v1.0.1'
             },
             {
-                checksum: '06b9f018d5c5c29b6c20619319aa84b2465bb763',
+                checksum: 'mock_checksum',
                 file: {
                     description: 'test index',
                     migrate_script: {
@@ -179,7 +179,7 @@ describe('fileService', () => {
                 version: 'v1.0.0'
             },
             {
-                checksum: '17dec9398479acc7f12247f6a51750b073996b7e',
+                checksum: 'mock_checksum',
                 file: {
                     description: 'test index2',
                     migrate_script: {

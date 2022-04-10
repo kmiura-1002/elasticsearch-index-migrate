@@ -28,7 +28,7 @@ export const migrateIndices = (size?: number): MigrateIndex[] => {
             installed_on: "2020-01-01'T'00:00:00",
             script_type: MigrationTypes.CREATE_INDEX,
             success: true,
-            checksum: undefined
+            checksum: 'mock_checksum'
         },
         {
             script_name: 'v1.0.1__add_field.json',
@@ -39,7 +39,7 @@ export const migrateIndices = (size?: number): MigrateIndex[] => {
             installed_on: "2020-01-01'T'00:00:00",
             script_type: MigrationTypes.ADD_FIELD,
             success: true,
-            checksum: undefined
+            checksum: 'mock_checksum'
         },
         {
             script_name: 'v1.0.2__add_fieldcopy.json',
@@ -50,7 +50,7 @@ export const migrateIndices = (size?: number): MigrateIndex[] => {
             installed_on: "2020-01-01'T'00:00:00",
             script_type: MigrationTypes.ADD_FIELD,
             success: true,
-            checksum: undefined
+            checksum: 'mock_checksum'
         }
     ];
 };
