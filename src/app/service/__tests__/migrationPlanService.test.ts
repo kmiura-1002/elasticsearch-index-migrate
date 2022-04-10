@@ -11,6 +11,7 @@ import { migrateIndices } from '../../../__mocks__/testsData/MigrateIndexTestDat
 import * as spec from '../../context/migrate_history/spec';
 
 jest.mock('../../client/es/ElasticsearchClient');
+jest.mock('checksum');
 
 describe('migrationPlanService', () => {
     beforeAll(async () => {
@@ -30,6 +31,21 @@ describe('migrationPlanService', () => {
                 body: v7HistoryMapping
             });
         }
+        await close();
+    });
+
+    afterAll(async () => {
+        const { useElasticsearchClient } = jest.requireActual(
+            '../../client/es/ElasticsearchClient'
+        );
+        const { deleteIndex, close } = useElasticsearchClient({
+            searchEngine: 'elasticsearch',
+            version: '7',
+            connect: {
+                host: 'http://localhost:9202'
+            }
+        });
+        await deleteIndex({ index: MIGRATE_HISTORY_INDEX_NAME });
         await close();
     });
 
@@ -702,6 +718,41 @@ describe('migrationPlanService', () => {
                         'Please check if migrate_history exists in Elasticsearch.'
                 )
             );
+        });
+    });
+
+    describe('validate', () => {
+        it('can be finished without message', async () => {
+            mocked(useElasticsearchClient).mockImplementation(() => {
+                return {
+                    ...getMockElasticsearchClient(),
+                    search(_param: Search6 | Search7) {
+                        return Promise.resolve(migrateIndices());
+                    }
+                };
+            });
+            const config = {
+                elasticsearch: {
+                    searchEngine: 'elasticsearch',
+                    version: '7',
+                    connect: {
+                        host: 'http://localhost:9202'
+                    }
+                },
+                migration: {
+                    location: `${process.cwd()}/src/__mocks__/testsData/migration`,
+                    baselineVersion: {
+                        test: 'v1.0.0'
+                    }
+                }
+            } as Required<MigrationConfig>;
+            const actual = await migrationPlanService(
+                'test',
+                defaultPlanExecutionConfig(),
+                config
+            ).validate();
+
+            expect(actual).toEqual('');
         });
     });
 });
