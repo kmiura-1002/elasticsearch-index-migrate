@@ -99,7 +99,7 @@ export type ResolvedMigration = {
     physicalLocation: ParsedPath;
     migrate_script?: any;
     query_parameters?: any;
-    data?: { id?: string } | { id?: string }[];
+    data?: { id?: string; [k: string]: any } | { id?: string; [k: string]: any }[];
 };
 
 export type AppliedMigration = {

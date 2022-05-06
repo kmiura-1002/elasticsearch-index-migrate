@@ -56,11 +56,9 @@ export const esExecutor: Map<MigrationType, ExecutorFnc> = new Map([
                     };
                 }
 
-                const { id, ...body } = doc;
-
                 const data = {
-                    id,
-                    body,
+                    id: doc.id,
+                    body: doc,
                     index: name,
                     ...resolvedMigration.query_parameters
                 };
@@ -68,7 +66,7 @@ export const esExecutor: Map<MigrationType, ExecutorFnc> = new Map([
                 await esClient.postDocument(data);
             }
 
-            return Promise.resolve({} as ApiResponse);
+            return Promise.resolve({ statusCode: 200 } as ApiResponse);
         }
     ]
 ]);
