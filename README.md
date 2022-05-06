@@ -100,6 +100,7 @@ Currently the following migration types are supported:
 * CREATE_INDEX
 * DELETE_INDEX
 * ALTER_SETTING
+* CREATE_DOCUMENT
 
 ## Migration script format
 
@@ -163,6 +164,19 @@ In the case of ALTER_SETTING scripts, write a Request body that can be executed 
     "index" : {
         "number_of_replicas" : 1
     }
+  }
+}
+```
+
+Sometimes when [database seeding](https://en.wikipedia.org/wiki/Database_seeding) is needed CREATE_DOCUMENT may be useful. __data__ property accepts a single document or list of documents.
+
+```
+{
+  "type": "CREATE_DOCUMENT",
+  "description": "description",
+  "data": {
+    "id": "00000000-0000-0000-0000-000000000000",
+    ...
   }
 }
 ```

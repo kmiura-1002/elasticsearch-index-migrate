@@ -164,4 +164,92 @@ describe('esExecutor test', () => {
             })
         ).is.true;
     });
+
+    it('The ability to createDocument', async () => {
+        const client = new MockElasticsearchClient();
+        const stub = sandbox
+            .stub(client)
+            .postDocument.returns(Promise.resolve({ statusCode: 200 } as ApiResponse6<any, any>));
+        const executor = esExecutor.get(MigrationTypes.CREATE_DOCUMENT) as ExecutorFnc;
+        const param: ResolvedMigration = {
+            type: MigrationTypes.ALTER_SETTING,
+            version: 'v1.0.0',
+            physicalLocation: {
+                base: 'base',
+                dir: 'dir',
+                ext: 'ext',
+                name: 'name',
+                root: 'root'
+            },
+            data: {
+                id: '123',
+                name: 'testing',
+            }
+        };
+        const ret = await executor(indexName, client, param);
+        expect(ret).to.deep.eq({ statusCode: 200 });
+        expect(stub.calledOnce).is.true;
+        expect(
+            stub.calledWith({
+                id: '123',
+                body: param.data,
+                index: indexName,
+                ...param.query_parameters
+            })
+        ).is.true;
+    });
+
+
+    [
+        {
+            type: MigrationTypes.ALTER_SETTING,
+            version: 'v1.0.0',
+            physicalLocation: {
+                base: 'base',
+                dir: 'dir',
+                ext: 'ext',
+                name: 'name',
+                root: 'root'
+            },
+            data: {}
+        },
+        {
+            type: MigrationTypes.ALTER_SETTING,
+            version: 'v1.0.0',
+            physicalLocation: {
+                base: 'base',
+                dir: 'dir',
+                ext: 'ext',
+                name: 'name',
+                root: 'root'
+            },
+            data: [{}]
+        },
+        {
+            type: MigrationTypes.ALTER_SETTING,
+            version: 'v1.0.0',
+            physicalLocation: {
+                base: 'base',
+                dir: 'dir',
+                ext: 'ext',
+                name: 'name',
+                root: 'root'
+            },
+        },
+    ].forEach((param: ResolvedMigration) => {
+        it('Data validation in createDocument', async () => {
+            const client = new MockElasticsearchClient();
+            const stub = sandbox
+                .stub(client)
+                .postDocument.returns(Promise.resolve({ statusCode: 200 } as ApiResponse6<any, any>));
+            const executor = esExecutor.get(MigrationTypes.CREATE_DOCUMENT) as ExecutorFnc;
+    
+            try {
+                const ret = await executor(indexName, client, param);
+                expect(ret).not.to.deep.eq({ statusCode: 200 });
+            } catch (error) {
+                expect(error).to.have.property('error');
+            }
+        });
+    });
 });

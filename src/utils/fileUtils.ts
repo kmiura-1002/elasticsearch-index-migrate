@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { ResolvedMigration } from '../model/types';
 import { ParsedPath } from 'path';
+import yaml from 'js-yaml';
 
 export const indexNameRegexp = /[-_]/;
 export const fileNameRegexp = /^([v][0-9]+.[0-9]+.[0-9]+)__([0-9a-zA-Z]+)/;
@@ -55,14 +56,16 @@ export function loadMigrationScriptFilePaths(
             );
         })
         .map(path.parse)
-        .filter((value) => value.ext === '.json');
+        .filter((value) => value.ext === '.json' || value.ext === '.yaml');
 }
 
 export function loadMigrationScripts(migrationFileParsedPath: ParsedPath[]): ResolvedMigration[] {
     return migrationFileParsedPath.map((value) => {
-        const resolvedMigration = JSON.parse(
-            fs.readFileSync(path.join(value.dir, value.base), 'utf8')
-        ) as ResolvedMigration;
+        const data = fs.readFileSync(path.join(value.dir, value.base), 'utf8');
+        const resolvedMigration = (value.ext === '.yaml'
+            ? yaml.load(data)
+            : JSON.parse(data)) as ResolvedMigration;
+
         resolvedMigration.physicalLocation = value;
         const match = value.name.match(fileNameRegexp) as RegExpMatchArray;
         if (match !== null && match.length > 1) {

@@ -86,7 +86,8 @@ export const MigrationTypes = {
     ADD_FIELD: 'ADD_FIELD',
     CREATE_INDEX: 'CREATE_INDEX',
     DELETE_INDEX: 'DELETE_INDEX',
-    ALTER_SETTING: 'ALTER_SETTING'
+    ALTER_SETTING: 'ALTER_SETTING',
+    CREATE_DOCUMENT: 'CREATE_DOCUMENT'
 } as const;
 
 export type MigrationType = typeof MigrationTypes[keyof typeof MigrationTypes];
@@ -98,6 +99,7 @@ export type ResolvedMigration = {
     physicalLocation: ParsedPath;
     migrate_script?: any;
     query_parameters?: any;
+    data?: { id?: string; [k: string]: any } | { id?: string; [k: string]: any }[];
 };
 
 export type AppliedMigration = {
