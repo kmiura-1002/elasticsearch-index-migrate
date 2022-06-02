@@ -26,16 +26,16 @@ services:
 #      ELASTICSEARCH6X_HOSTS: http://elasticsearch6x:9200,
 #      ELASTICSEARCH7X_HOSTS: http://elasticsearch7x:9200
   elasticsearch6x:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.8.12
-    container_name: elasticsearch6.8.12
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.8.23
+    container_name: elasticsearch6.8.23
     ports:
       - 9201:9200
     environment:
       - discovery.type=single-node
       - ES_JAVA_OPTS=-Xms256m -Xmx256m
   kibana6x:
-    image: docker.elastic.co/kibana/kibana:6.8.12
-    container_name: kibana6.8.12
+    image: docker.elastic.co/kibana/kibana:6.8.23
+    container_name: kibana6.8.23
     environment:
       ELASTICSEARCH_HOSTS: http://elasticsearch6x:9200
     ports:
@@ -43,16 +43,16 @@ services:
     links:
       - elasticsearch6x
   elasticsearch7x:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.7.1
-    container_name: elasticsearch7.7.1
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.4
+    container_name: elasticsearch7.17.4
     ports:
       - 9202:9200
     environment:
       - discovery.type=single-node
       - ES_JAVA_OPTS=-Xms256m -Xmx256m
   kibana7x:
-    image: docker.elastic.co/kibana/kibana:7.7.1
-    container_name: kibana7.7.1
+    image: docker.elastic.co/kibana/kibana:7.17.4
+    container_name: kibana7.17.4
     environment:
       ELASTICSEARCH_HOSTS: http://elasticsearch7x:9200
     ports:
