@@ -55,8 +55,8 @@
         "nyc": "^15.1.0",
         "power-assert": "^1.6.1",
         "ts-jest": "^28.0.3",
-        "ts-node": "^10.5.0",
-        "typescript": "^4.5.5",
+        "ts-node": "^10.8.0",
+        "typescript": "^4.7.2",
         "yarn-audit-fix": "^7.0.4"
     },
     "engines": {
