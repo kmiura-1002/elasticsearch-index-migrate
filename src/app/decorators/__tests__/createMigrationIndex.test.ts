@@ -1,4 +1,4 @@
-import { createMigrationIndex } from '../createMigrationIndex';
+import { createMigrationHistory } from '../createMigrationHistory';
 import { fancyIt } from '../../../__mocks__/fancyIt';
 import { getFakeCommand } from '../../../__mocks__/command/fakeCommand';
 import { readOptions } from '../../config/flags/flagsLoader';
@@ -49,7 +49,7 @@ describe('createMigrationHistory', () => {
         const fakeDescriptor = {
             value: fakeOriginalFunction
         };
-        await createMigrationIndex()(fakeCommand, '', fakeDescriptor);
+        await createMigrationHistory()(fakeCommand, '', fakeDescriptor);
 
         // when
         await fakeDescriptor.value.call(fakeCommand);
@@ -86,7 +86,7 @@ describe('createMigrationHistory', () => {
             const fakeDescriptor = {
                 value: fakeOriginalFunction
             };
-            await createMigrationIndex()(fakeCommand, '', fakeDescriptor);
+            await createMigrationHistory()(fakeCommand, '', fakeDescriptor);
 
             // when
             const actual = fakeDescriptor.value.call(fakeCommand);
@@ -130,7 +130,7 @@ describe('createMigrationHistory', () => {
             const fakeDescriptor = {
                 value: fakeOriginalFunction
             };
-            await createMigrationIndex()(fakeCommand, '', fakeDescriptor);
+            await createMigrationHistory()(fakeCommand, '', fakeDescriptor);
 
             // when
             const actual = fakeDescriptor.value.call(fakeCommand);
@@ -173,7 +173,7 @@ describe('createMigrationHistory', () => {
         const fakeDescriptor = {
             value: fakeOriginalFunction
         };
-        await createMigrationIndex()(fakeCommand, '', fakeDescriptor);
+        await createMigrationHistory()(fakeCommand, '', fakeDescriptor);
 
         // when
         const actual = fakeDescriptor.value.call(fakeCommand);
@@ -208,7 +208,7 @@ describe('createMigrationHistory', () => {
             const fakeDescriptor = {
                 value: fakeOriginalFunction
             };
-            await createMigrationIndex()(fakeCommand, '', fakeDescriptor);
+            await createMigrationHistory()(fakeCommand, '', fakeDescriptor);
 
             // when
             await fakeDescriptor.value.call(fakeCommand);

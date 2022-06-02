@@ -9,7 +9,7 @@ import { usedEsVersion } from '../client/es/EsUtils';
 import { useElasticsearchClient } from '../client/es/ElasticsearchClient';
 import type { MigrationConfig } from '../types';
 
-export function createMigrationIndex() {
+export function createMigrationHistory() {
     return function (
         _target: Command,
         _propertyKey: string,

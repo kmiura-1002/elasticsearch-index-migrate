@@ -6,7 +6,7 @@ import { migrationBaselineVersionService } from '../../../service/migrationBasel
 import { getMockMigrationBaselineVersionService } from '../../../../__mocks__/searvice/mockMigrationBaselineVersionService';
 
 jest.mock('../../../client/es/ElasticsearchClient');
-jest.mock('../../../decorators/createMigrationIndex');
+jest.mock('../../../decorators/createMigrationHistory');
 jest.mock('../../../decorators/migrateLock');
 jest.mock('../../../service/migrationBaselineVersionService');
 

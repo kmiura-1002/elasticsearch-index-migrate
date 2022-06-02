@@ -1,5 +1,5 @@
 import { CliUx, Command, Flags } from '@oclif/core';
-import { createMigrationIndex } from '../../decorators/createMigrationIndex';
+import { createMigrationHistory } from '../../decorators/createMigrationHistory';
 import { DefaultFlags, esConnectionFlags } from '../../config/flags/defaultCommandFlags';
 import { migrationBaselineVersionService } from '../../service/migrationBaselineVersionService';
 import { DefaultArgs } from '../../config/args/defaultCommandArgs';
@@ -20,7 +20,7 @@ export default class Index extends Command {
 
     static args = [...DefaultArgs];
 
-    @createMigrationIndex()
+    @createMigrationHistory()
     @migrateLock()
     async run(): Promise<void> {
         const { flags, args } = await this.parse(Index);
