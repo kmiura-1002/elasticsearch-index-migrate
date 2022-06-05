@@ -62,19 +62,6 @@ export type MigrationExplainPlan = {
     pending: MigrationPlanData[];
 };
 
-/** @deprecated To be deleted. use MigrationPlanData */
-export type MigrationPlan = {
-    resolvedMigration?: ResolvedMigration;
-    appliedMigration?: AppliedMigration;
-    context: MigrationPlanContext;
-    type?: MigrationType;
-    version?: string;
-    description?: string;
-    installedOn?: Date;
-    state?: MigrationStateInfo;
-    baseline: boolean;
-};
-
 export const ClusterStatuses = { GREEN: 'green', YELLOW: 'yellow', RED: 'red' } as const;
 // export type ClusterStatus = typeof ClusterStatuses[keyof typeof ClusterStatuses];
 
@@ -173,16 +160,6 @@ export type AppliedMigration = {
 };
 
 export type MigrationPlanContext = {
-    /** @deprecated To be deleted. use MigrationExecuteConfig */
-    outOfOrder?: boolean;
-    /** @deprecated To be deleted. use MigrationExecuteConfig */
-    pending?: boolean;
-    /** @deprecated To be deleted. use MigrationExecuteConfig */
-    missing?: boolean;
-    /** @deprecated To be deleted. use MigrationExecuteConfig */
-    ignored?: boolean;
-    /** @deprecated To be deleted. use MigrationExecuteConfig */
-    future?: boolean;
     baseline: string;
     lastResolved: string;
     lastApplied: string;
@@ -194,14 +171,6 @@ export type MigrationExecuteConfig = {
     missing: boolean;
     ignored: boolean;
     future: boolean;
-};
-
-export type MigrationPlanDetail = {
-    version: string;
-    description: string;
-    type: string;
-    installedOn: string;
-    state: string;
 };
 
 export type MigrationStateInfo = {
@@ -329,12 +298,6 @@ export const MigrationStateInfoMap: Map<MigrationState, MigrationStateInfo> = ne
         }
     ]
 ]);
-
-/** @deprecated To be deleted. use MigrationExplainPlan */
-export type MigrationPlanExecutorRet = {
-    all: MigrationPlan[];
-    pending: MigrationPlan[];
-};
 
 type EmptyObject = {
     [K in any]: never;
