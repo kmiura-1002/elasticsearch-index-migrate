@@ -17,7 +17,7 @@ import type {
     IndicesExists as IndicesExists7,
     Search as Search7
 } from 'es7/api/requestParams';
-import type { LockIndex } from '../../types';
+import type { Document, LockIndex } from '../../types';
 
 jest.mock('../../config/flags/flagsLoader');
 jest.mock('../../client/es/ElasticsearchClient');
@@ -153,14 +153,21 @@ describe('migrateLock', () => {
                     ),
                 search: jest
                     .fn()
-                    .mockImplementationOnce((param: Search6 | Search7): Promise<LockIndex[]> => {
-                        return Promise.resolve([
-                            {
-                                command: 'test',
-                                create: new Date()
-                            }
-                        ]);
-                    })
+                    .mockImplementationOnce(
+                        (param: Search6 | Search7): Promise<Document<LockIndex>[]> => {
+                            return Promise.resolve([
+                                {
+                                    _index: '',
+                                    _type: '',
+                                    _id: '',
+                                    _source: {
+                                        command: 'test',
+                                        create: new Date()
+                                    }
+                                }
+                            ]);
+                        }
+                    )
                     .mockImplementation(
                         <R>(param: Search6 | Search7): Promise<R[]> => Promise.resolve([])
                     )

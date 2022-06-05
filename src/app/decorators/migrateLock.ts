@@ -57,8 +57,8 @@ const makeLock = async (commandId: string, esConfig: ESConfig) => {
             CliUx.ux.error(
                 `Migration is being done by other processes(${lockData.map(
                     (value) =>
-                        `lock command:${value.command}, lock time:${format(
-                            value.create,
+                        `lock command:${value._source.command}, lock time:${format(
+                            value._source.create,
                             "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
                         )}`
                 )}).\nIf the previous process failed and you are left with a lock, remove all documents from the migrate_lock index.`

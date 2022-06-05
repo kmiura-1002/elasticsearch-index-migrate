@@ -3,11 +3,21 @@ import { useElasticsearchClient } from '../../client/es/ElasticsearchClient';
 import { MigrateHistorySpec } from './spec';
 import { format } from 'date-fns';
 import type { ESConfig, MigrateIndex } from '../../types';
+import { MigrateHistoryEntity } from './migrateHistoryEntity';
+import { MigrateHistoryId } from '../base/id';
 
 export function migrateHistoryRepository(connectConf: ESConfig) {
     const { search, postDocument } = useElasticsearchClient(connectConf);
 
-    const findBy = (spec: MigrateHistorySpec) => search<MigrateIndex>(spec.condition);
+    const findBy = (spec: MigrateHistorySpec) =>
+        search<MigrateIndex>(spec.condition).then((value) =>
+            value.map((doc) =>
+                MigrateHistoryEntity.makeHistory({
+                    id: new MigrateHistoryId(doc._id),
+                    param: doc._source
+                })
+            )
+        );
 
     const insert = (param: Partial<MigrateIndex>) =>
         postDocument({

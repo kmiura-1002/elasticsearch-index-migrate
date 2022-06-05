@@ -9,7 +9,7 @@ import type {
     MigrationExplainPlan,
     MigrationExecuteConfig
 } from '../types';
-import { loadMigrationScriptFile } from '../context/io/fileService';
+import { loadMigrationScriptFile } from '../context/util/io/fileService';
 import { migrateHistoryRepository } from '../context/migrate_history/migrateHistoryRepository';
 import { migrateHistorySpecByIndexName } from '../context/migrate_history/spec';
 import { compare, lt, valid } from 'semver';
@@ -52,7 +52,7 @@ export const migrationPlanService = (
                 migrateHistorySpecByIndexName(targetName, baseline, { size: 10000 })
             );
             const appliedMigrationVersions = histories
-                .map((value) => value.migrate_version)
+                .map((value) => value.migrateVersion)
                 .filter((value) => valid(value))
                 .sort((a, b) => compare(a, b));
             const resolvedMigrationVersions = migrationData
@@ -87,20 +87,20 @@ export const migrationPlanService = (
                 }
             });
             histories.forEach((value) => {
-                const migrationPlan = migrationPlanMap.get(value.migrate_version);
+                const migrationPlan = migrationPlanMap.get(value.migrateVersion);
                 const appliedMigration = {
-                    version: value.migrate_version,
+                    version: value.migrateVersion,
                     description: value.description,
-                    type: MigrationTypes[value.script_type as MigrationType],
-                    script: value.script_name,
-                    installedOn: new Date(value.installed_on),
-                    executionTime: value.execution_time,
-                    success: value.success,
+                    type: MigrationTypes[value.scriptType as MigrationType],
+                    script: value.scriptName,
+                    installedOn: new Date(value.installedOn),
+                    executionTime: value.executionTime,
+                    success: value.isSuccess,
                     checksum: value.checksum ?? ''
                 };
                 if (migrationPlan) {
                     migrationPlanMap.set(
-                        value.migrate_version,
+                        value.migrateVersion,
                         generateMigrationPlan(
                             baseline,
                             lastResolved,
@@ -111,7 +111,7 @@ export const migrationPlanService = (
                     );
                 } else {
                     migrationPlanMap.set(
-                        value.migrate_version,
+                        value.migrateVersion,
                         generateMigrationPlan(
                             baseline,
                             lastResolved,

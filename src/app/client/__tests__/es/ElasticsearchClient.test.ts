@@ -236,7 +236,7 @@ describe('Elasticsearch client test', () => {
                 .then((value) => expect(value.statusCode).toEqual(201));
 
             await client.search({ index }).then((value) => {
-                expect(value[0]).toEqual({
+                expect(value[0]._source).toEqual({
                     test: 'foobaz'
                 });
             });
@@ -402,8 +402,7 @@ describe('Elasticsearch client test', () => {
                 .then((value) => expect(value.statusCode).toEqual(201));
 
             await client.search({ index }).then((value) => {
-                // expect(value).to.be.an('array');
-                expect(value[0]).toEqual({
+                expect(value[0]._source).toEqual({
                     test: 'foobaz'
                 });
             });
@@ -708,7 +707,7 @@ describe('Elasticsearch client test', () => {
                 .then((value) => expect(value.statusCode).toEqual(201));
 
             await client.search({ index }).then((value) => {
-                expect(value[0]).toEqual({
+                expect(value[0]._source).toEqual({
                     test: 'foobaz'
                 });
             });

@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
 import checksum from 'checksum';
-import type { MigrationData, MigrationFile } from '../../types';
+import type { MigrationData, MigrationFile } from '../../../types';
 
 export const FILE_NAME_REGEXP = /^([v][0-9]+.[0-9]+.[0-9]+)__([0-9a-zA-Z]+)/;
 const ALLOW_LOAD_EXTENSIONS = ['.json', '.yaml', '.yml'];

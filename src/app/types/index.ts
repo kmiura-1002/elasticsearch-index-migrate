@@ -1,5 +1,6 @@
 import { ParsedPath } from 'path';
 
+// TODO: rename?
 export const MIGRATE_HISTORY_INDEX_NAME = 'migrate_history';
 export const MIGRATE_LOCK_INDEX_NAME = 'migrate_lock';
 
@@ -67,30 +68,26 @@ export type MigrationExplainPlan = {
 export const ClusterStatuses = { GREEN: 'green', YELLOW: 'yellow', RED: 'red' } as const;
 // export type ClusterStatus = typeof ClusterStatuses[keyof typeof ClusterStatuses];
 
+export type Document<T> = {
+    _index: string;
+    _type: string;
+    _id: string;
+    _score?: number;
+    _source: T;
+};
+
 export type IndexSearchResults6<T> = {
     hits: {
         total: number;
         max_score?: number;
-        hits: {
-            _index: string;
-            _type: string;
-            _id: string;
-            _score?: number;
-            _source: T;
-        }[];
+        hits: Document<T>[];
     };
 };
 
 export type IndexSearchResults7<T> = {
     total: number;
     max_score?: number;
-    hits: {
-        _index: string;
-        _type: string;
-        _id: string;
-        _score?: number;
-        _source: T;
-    }[];
+    hits: Document<T>[];
 };
 
 export type MigrateIndex = {

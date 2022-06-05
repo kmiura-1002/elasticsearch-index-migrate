@@ -38,6 +38,7 @@ import type { ApiResponse as ApiResponse6 } from 'es6/lib/Transport';
 import type { ApiResponse as ApiResponse7 } from 'es7/lib/Transport';
 import type { ClientOptions as Es7ClientOptions } from 'es7';
 import type { ClientOptions as Es6ClientOptions } from 'es6';
+import { Document } from '../../types';
 
 type EsConnection = {
     client: Es6Client | Es7Client;
@@ -286,18 +287,8 @@ export function useElasticsearchClient(connectConf: ESConfig) {
     ): Promise<ApiResponse6<any, any> | ApiResponse7<any, any>> =>
         createIndexApi(connection, request);
 
-    const search = <R>(param: Search6 | Search7): Promise<R[]> =>
-        searchApi(connection, param).then((value) =>
-            value.body.hits.hits.map(
-                (hit: {
-                    _index: string;
-                    _type: string;
-                    _id: string;
-                    _score?: number;
-                    _source: R;
-                }) => hit._source
-            )
-        );
+    const search = <R>(param: Search6 | Search7): Promise<Document<R>[]> =>
+        searchApi(connection, param).then((value) => value.body.hits.hits);
 
     const exists = (param: IndicesExists6 | IndicesExists7): Promise<boolean> =>
         existsApi(connection, param).then((value) => value.body);
