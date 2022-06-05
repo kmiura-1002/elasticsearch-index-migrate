@@ -820,7 +820,7 @@ describe('migrationPlanService', () => {
                     pending: false,
                     missing: true,
                     ignored: true,
-                    future: true
+                    future: false
                 },
                 config
             ).validate();

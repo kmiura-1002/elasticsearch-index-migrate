@@ -255,7 +255,7 @@ const generateState = (
 };
 
 const planValidate = (plan: MigrationPlanData, executeConfig: MigrationExecuteConfig) => {
-    if (plan.state?.failed && !plan.context.future) {
+    if (plan.state?.failed && !executeConfig.future) {
         if (plan.version) {
             return `Detected failed migrate to version ${plan.version}(${plan.description}).`;
         } else {
