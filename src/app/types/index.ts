@@ -47,13 +47,15 @@ export type MigrationConfig = {
 export type MigrationPlanData = {
     resolvedMigration?: RequiredMigrationData;
     appliedMigration?: AppliedMigration;
-    context: MigrationPlanContext;
+    baseline: string;
+    lastResolved: string;
+    lastApplied: string;
     type?: MigrationType;
     version?: string;
     description?: string;
     installedOn?: Date;
     state?: MigrationStateInfo;
-    baseline: boolean;
+    isBaseline: boolean;
     checksum: string | undefined;
 };
 
@@ -157,12 +159,6 @@ export type AppliedMigration = {
     executionTime: number;
     success: boolean;
     checksum: string | undefined;
-};
-
-export type MigrationPlanContext = {
-    baseline: string;
-    lastResolved: string;
-    lastApplied: string;
 };
 
 export type MigrationExecuteConfig = {
