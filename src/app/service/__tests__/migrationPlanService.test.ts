@@ -754,5 +754,83 @@ describe('migrationPlanService', () => {
 
             expect(actual).toEqual('');
         });
+
+        it('can not be finished when detected failure to migrate', async () => {
+            mocked(useElasticsearchClient).mockImplementation(() => {
+                return {
+                    ...getMockElasticsearchClient(),
+                    search(_param: Search6 | Search7) {
+                        return Promise.resolve([
+                            {
+                                script_name: 'v1.0.0__add_fieldcopy.json',
+                                migrate_version: 'v1.0.0',
+                                description: 'book index',
+                                execution_time: 1,
+                                index_name: 'test',
+                                installed_on: "2020-01-01'T'00:00:00",
+                                script_type: MigrationTypes.ADD_FIELD,
+                                success: false,
+                                checksum: undefined
+                            },
+                            {
+                                script_name: 'v1.0.1__add_field.json',
+                                migrate_version: 'v1.0.1',
+                                description: 'book index',
+                                execution_time: 1,
+                                index_name: 'test',
+                                installed_on: "2020-01-01'T'00:00:00",
+                                script_type: MigrationTypes.ADD_FIELD,
+                                success: true,
+                                checksum: undefined
+                            },
+                            {
+                                script_name: 'v1.0.2__add_fieldcopy.json',
+                                migrate_version: 'v1.0.2',
+                                description: 'book index',
+                                execution_time: 1,
+                                index_name: 'test',
+                                installed_on: "2020-01-01'T'00:00:00",
+                                script_type: MigrationTypes.ADD_FIELD,
+                                success: true,
+                                checksum: undefined
+                            }
+                        ]);
+                    }
+                };
+            });
+            const config = {
+                elasticsearch: {
+                    searchEngine: 'elasticsearch',
+                    version: '7',
+                    connect: {
+                        host: 'http://localhost:9202'
+                    }
+                },
+                migration: {
+                    location: `${process.cwd()}/src/__mocks__/testsData/migration`,
+                    baselineVersion: {
+                        test: 'v1.0.0'
+                    }
+                }
+            } as Required<MigrationConfig>;
+            const actual = await migrationPlanService(
+                'test',
+                {
+                    outOfOrder: false,
+                    pending: false,
+                    missing: true,
+                    ignored: true,
+                    future: true
+                },
+                config
+            ).validate();
+
+            expect(actual).toEqual(
+                'Detected failed migrate to version v1.0.0(book index).\n' +
+                    'Migration checksum mismatch for migration v1.0.1.\n' +
+                    'Migration checksum mismatch for migration v1.0.2.\n' +
+                    'Detected version v1.0.3(book index) migration not applied to Elasticsearch.'
+            );
+        });
     });
 });
