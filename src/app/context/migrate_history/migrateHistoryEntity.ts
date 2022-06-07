@@ -2,6 +2,7 @@ import { Entity } from '../base/entity/entity';
 import { MigrateHistoryId } from '../base/id';
 import { MigrateIndex } from '../../types';
 import { format } from 'date-fns';
+import { ValidationError } from '../error/ValidationError';
 
 export class MigrateHistoryEntity extends Entity<MigrateIndex, MigrateHistoryId> {
     private readonly id: MigrateHistoryId | undefined;
@@ -10,14 +11,15 @@ export class MigrateHistoryEntity extends Entity<MigrateIndex, MigrateHistoryId>
         super(param);
         this.id = id;
     }
-    static makeHistory({
+    static generate({
         id,
         param
     }: {
         id?: MigrateHistoryId;
         param: Partial<MigrateIndex>;
     }): MigrateHistoryEntity {
-        // todo add validates
+        this.validate(param);
+
         return new MigrateHistoryEntity(id, {
             index_name: param?.index_name ?? '',
             migrate_version: param?.migrate_version ?? '',
@@ -30,6 +32,15 @@ export class MigrateHistoryEntity extends Entity<MigrateIndex, MigrateHistoryId>
             checksum: param?.checksum
         });
     }
+
+    private static validate = (param: Partial<MigrateIndex>) => {
+        const messages: string[] = [];
+        if (!param.index_name) {
+            messages.push('index_name is an empty string');
+        }
+        // todo add validate
+        if (messages.length > 0) throw new ValidationError(messages.join('\n'));
+    };
 
     getId(): MigrateHistoryId | undefined {
         return this.id;
