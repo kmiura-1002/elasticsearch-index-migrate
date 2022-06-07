@@ -51,14 +51,16 @@ const makeLock = async (commandId: string, esConfig: ESConfig) => {
             CliUx.ux.error('Cannot create a lock because the index does not exist.');
         }
 
-        const lockData = await search<LockIndex>({ index: MIGRATE_LOCK_INDEX_NAME });
+        const lockData = (await search<LockIndex>({ index: MIGRATE_LOCK_INDEX_NAME })).map(
+            (value) => value._source
+        );
         if (lockData.length > 0) {
             await close();
             CliUx.ux.error(
                 `Migration is being done by other processes(${lockData.map(
                     (value) =>
-                        `lock command:${value._source.command}, lock time:${format(
-                            value._source.create,
+                        `lock command:${value.command}, lock time:${format(
+                            value.create,
                             "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
                         )}`
                 )}).\nIf the previous process failed and you are left with a lock, remove all documents from the migrate_lock index.`
