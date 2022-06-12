@@ -13,7 +13,7 @@ import { loadMigrationScriptFile } from '../context/util/io/fileService';
 import { migrationHistoryRepository } from '../context/migration/history/migrationHistoryRepository';
 import { migrateHistorySpecByIndexName } from '../context/migration/history/spec';
 import { compare, lt, valid } from 'semver';
-import { MigrationStates, MigrationTypes, MigrationStateInfoMap } from '../types';
+import { MigrationStates, MigrationTypes, MigrationStateInfoMap, Version } from '../types';
 import { ResponseError as ResponseError6 } from 'es6/lib/errors';
 import { ResponseError as ResponseError7 } from 'es7/lib/errors';
 
@@ -22,16 +22,26 @@ export const migrationPlanService = (
     executeConfig: MigrationExecuteConfig,
     config: Required<MigrationConfig>
 ) => {
-    const validateInputData = (migrationData: MigrationData[], baseline: string | undefined) => {
+    const validateInputData = (migrationData: MigrationData[]) => {
+        const baseline = config.migration.baselineVersion[targetName];
         if (baseline === undefined) {
+            // TODO fix error class
             throw new Error(`The baseline setting for index(${targetName}) does not exist.`);
         }
+        if (!isSupportVersionFormat(baseline)) {
+            // TODO fix error class
+            throw new Error(
+                `Baseline(${baseline}) version format is an unsupported format. Supported version format: v\\d+.\\d+.\\d+`
+            );
+        }
         if (migrationData.length === 0) {
+            // TODO fix error class
             throw new Error(
                 `There is no migration target for ${targetName} in ${config.migration.location}.`
             );
         }
         if (migrationData.map((value) => value.version).includes(undefined)) {
+            // TODO fix error class
             throw new Error(
                 'There is a migration file of unknown version.\n' +
                     `Unknown version files: ${migrationData
@@ -41,11 +51,25 @@ export const migrationPlanService = (
             );
         }
     };
+    const isSupportVersionFormat = (version: string): version is Version =>
+        version.match(/^(v\d+.\d+.\d+)/) !== null;
+    const getBaselineVersion = (): Version => {
+        const baseline = config.migration.baselineVersion[targetName];
+
+        return baseline && isSupportVersionFormat(baseline)
+            ? baseline
+            : (() => {
+                  // TODO fix error class
+                  throw new Error(
+                      `Baseline(${baseline}) version format is an unsupported format. Supported version format: v\\d+.\\d+.\\d+`
+                  );
+              })();
+    };
 
     const refresh = async (): Promise<MigrationExplainPlan> => {
         const migrationData = loadMigrationScriptFile(targetName, [config.migration.location]);
-        const baseline = config.migration.baselineVersion[targetName];
-        validateInputData(migrationData, baseline);
+        validateInputData(migrationData);
+        const baseline = getBaselineVersion();
         try {
             const { findBy } = migrationHistoryRepository(config.elasticsearch);
             const histories = await findBy(
@@ -53,12 +77,14 @@ export const migrationPlanService = (
             );
             const appliedMigrationVersions = histories
                 .map((value) => value.migrateVersion)
-                .filter((value) => valid(value))
+                .filter((value) => valid(value) && isSupportVersionFormat(value))
+                .map((value) => value as Version)
                 .sort((a, b) => compare(a, b));
             const resolvedMigrationVersions = migrationData
                 .map((value) => value.version)
                 .filter(isString)
-                .filter((value) => valid(value))
+                .filter((value) => valid(value) && isSupportVersionFormat(value))
+                .map((value) => value as Version)
                 .sort((a, b) => compare(a, b));
             const lastResolved = resolvedMigrationVersions[resolvedMigrationVersions.length - 1];
             const lastApplied = appliedMigrationVersions[appliedMigrationVersions.length - 1];
@@ -127,6 +153,7 @@ export const migrationPlanService = (
         } catch (e) {
             if (e instanceof ResponseError6 || e instanceof ResponseError7) {
                 if (e.message === 'index_not_found_exception') {
+                    // TODO fix error class
                     throw new Error(
                         'History index not found.\n' +
                             'Please check if migrate_history exists in Elasticsearch.'
@@ -187,9 +214,9 @@ const makeMigrationExplainPlan = (map: Map<string, MigrationPlanData>) => {
 };
 
 const generateMigrationPlan = (
-    baseline: string,
-    lastResolved: string,
-    lastApplied: string,
+    baseline: Version,
+    lastResolved: Version,
+    lastApplied: Version,
     resolvedMigration?: RequiredMigrationData,
     appliedMigration?: AppliedMigration
 ): MigrationPlanData => ({

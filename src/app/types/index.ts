@@ -48,9 +48,9 @@ export type MigrationConfig = {
 export type MigrationPlanData = {
     resolvedMigration?: RequiredMigrationData;
     appliedMigration?: AppliedMigration;
-    baseline: string;
-    lastResolved: string;
-    lastApplied: string;
+    baseline: Version;
+    lastResolved: Version;
+    lastApplied: Version;
     type?: MigrationType;
     version?: string;
     description?: string;
@@ -326,3 +326,6 @@ export type OpenSearchVersions = {
     minor: number;
     patch: number;
 };
+
+// version format type (Ex: v1.0.0)
+export type Version = `v${number}.${number}.${number}`;

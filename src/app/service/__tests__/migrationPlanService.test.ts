@@ -675,6 +675,36 @@ describe('migrationPlanService', () => {
             );
         });
 
+        it('throw error when baseline is in an unsupported format', async () => {
+            const baselineVersion = '1.0.0';
+            const config = {
+                elasticsearch: {
+                    searchEngine: 'elasticsearch',
+                    version: '7',
+                    connect: {
+                        host: 'http://localhost:9202'
+                    }
+                },
+                migration: {
+                    location: `${process.cwd()}/src/__mocks__/testsData/migration`,
+                    baselineVersion: {
+                        test2: baselineVersion
+                    }
+                }
+            } as Required<MigrationConfig>;
+            const actual = migrationPlanService(
+                'test2',
+                defaultPlanExecutionConfig(),
+                config
+            ).refresh();
+
+            await expect(actual).rejects.toThrowError(
+                new Error(
+                    `Baseline(${baselineVersion}) version format is an unsupported format. Supported version format: v\\d+.\\d+.\\d+`
+                )
+            );
+        });
+
         it('throw error when the client throws an error', async () => {
             mocked(useElasticsearchClient).mockImplementation(() => {
                 const { useElasticsearchClient } = jest.requireActual(
