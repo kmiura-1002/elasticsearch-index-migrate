@@ -10,8 +10,8 @@ import type {
     MigrationExecuteConfig
 } from '../types';
 import { loadMigrationScriptFile } from '../context/util/io/fileService';
-import { migrateHistoryRepository } from '../context/migrate_history/migrateHistoryRepository';
-import { migrateHistorySpecByIndexName } from '../context/migrate_history/spec';
+import { migrateHistoryRepository } from '../context/migration/history/migrateHistoryRepository';
+import { migrateHistorySpecByIndexName } from '../context/migration/history/spec';
 import { compare, lt, valid } from 'semver';
 import { MigrationStates, MigrationTypes, MigrationStateInfoMap } from '../types';
 import { ResponseError as ResponseError6 } from 'es6/lib/errors';

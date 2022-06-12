@@ -1,9 +1,9 @@
-import { Entity } from '../base/entity/entity';
-import { MigrateIndex, MigrationTypes } from '../../types';
-import { ValidationError } from '../error/ValidationError';
+import { Entity } from '../../base/entity/entity';
+import { MigrateIndex, MigrationTypes } from '../../../types';
+import { ValidationError } from '../../error/ValidationError';
 import { format } from 'date-fns';
-import { DATE_FORMAT } from '../../definision';
-import { MigrateHistoryId } from '../base/id/migrateHistoryId';
+import { DATE_FORMAT } from '../../../definision';
+import { MigrateHistoryId } from '../../base/id/migrateHistoryId';
 
 export class MigrateHistoryEntity extends Entity<MigrateIndex, MigrateHistoryId> {
     private readonly id: MigrateHistoryId | undefined;

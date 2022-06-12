@@ -8,7 +8,7 @@ import { getMockElasticsearchClient } from '../../../__mocks__/client/es/mockEla
 import { Search as Search6 } from 'es6/api/requestParams';
 import { Search as Search7 } from 'es7/api/requestParams';
 import { migrateIndices } from '../../../__mocks__/testsData/MigrateIndexTestData';
-import * as spec from '../../context/migrate_history/spec';
+import * as spec from '../../context/migration/history/spec';
 
 jest.mock('../../client/es/ElasticsearchClient');
 jest.mock('checksum');
