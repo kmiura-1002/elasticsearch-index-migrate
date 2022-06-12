@@ -6,6 +6,7 @@ import { IndicesExists as IndicesExists6 } from 'es6/api/requestParams';
 import { IndicesExists as IndicesExists7 } from 'es7/api/requestParams';
 import { CliUx } from '@oclif/core';
 import type { MigrationConfig } from '../../types';
+import { MigrationTypes } from '../../types';
 
 jest.mock('../../client/es/ElasticsearchClient');
 const spyInfo = jest.spyOn(CliUx.ux, 'info');
@@ -76,7 +77,24 @@ describe('migrationBaselineVersionService', () => {
                 ...getMockElasticsearchClient(),
                 search(_param: IndicesExists6 | IndicesExists7) {
                     // Just make length>1 with appropriate value.
-                    return Promise.resolve([{}]);
+                    return Promise.resolve([
+                        {
+                            _index: '',
+                            _type: '',
+                            _id: '',
+                            _source: {
+                                script_name: 'v1.0.0__add_fieldcopy.json',
+                                migrate_version: 'v1.0.0',
+                                description: 'book index',
+                                execution_time: 1,
+                                index_name: 'test',
+                                installed_on: "2020-01-01'T'00:00:00",
+                                script_type: MigrationTypes.ADD_FIELD,
+                                success: false,
+                                checksum: undefined
+                            }
+                        }
+                    ]);
                 }
             };
         });

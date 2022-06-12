@@ -108,6 +108,7 @@ export type LockIndex = {
 };
 
 export const MigrationTypes = {
+    BASELINE: 'BASELINE',
     ADD_FIELD: 'ADD_FIELD',
     CREATE_INDEX: 'CREATE_INDEX',
     DELETE_INDEX: 'DELETE_INDEX',

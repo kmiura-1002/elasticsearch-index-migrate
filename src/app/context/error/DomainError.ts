@@ -10,6 +10,6 @@ export class DomainError extends Error {
         if (Error.captureStackTrace) {
             Error.captureStackTrace(this, DomainError);
         }
-        this.stack = `${this.stack}\nCaused by: ${error?.stack}`;
+        this.stack = `${this.stack}${error?.stack && `\nCaused by: ${error?.stack}`}`;
     }
 }

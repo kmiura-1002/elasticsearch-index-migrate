@@ -1,8 +1,9 @@
 import { Entity } from '../base/entity/entity';
-import { MigrateHistoryId } from '../base/id';
-import { MigrateIndex } from '../../types';
-import { format } from 'date-fns';
+import { MigrateIndex, MigrationTypes } from '../../types';
 import { ValidationError } from '../error/ValidationError';
+import { format } from 'date-fns';
+import { DATE_FORMAT } from '../../definision';
+import { MigrateHistoryId } from '../base/id/migrateHistoryId';
 
 export class MigrateHistoryEntity extends Entity<MigrateIndex, MigrateHistoryId> {
     private readonly id: MigrateHistoryId | undefined;
@@ -11,34 +12,59 @@ export class MigrateHistoryEntity extends Entity<MigrateIndex, MigrateHistoryId>
         super(param);
         this.id = id;
     }
+
+    static generateBaseline(param: {
+        baselineIndexName: string;
+        baseline: string;
+        description: string;
+    }): MigrateHistoryEntity {
+        return this.generate({
+            param: {
+                index_name: param.baselineIndexName,
+                migrate_version: param.baseline,
+                description: param.description,
+                success: true,
+                installed_on: format(new Date(), DATE_FORMAT),
+                execution_time: 0,
+                script_name: '',
+                script_type: MigrationTypes.BASELINE,
+                checksum: ''
+            }
+        });
+    }
+
     static generate({
         id,
         param
     }: {
         id?: MigrateHistoryId;
-        param: Partial<MigrateIndex>;
+        param: MigrateIndex;
     }): MigrateHistoryEntity {
         this.validate(param);
 
         return new MigrateHistoryEntity(id, {
-            index_name: param?.index_name ?? '',
-            migrate_version: param?.migrate_version ?? '',
-            description: param?.description ?? 'Migration baseline', // magic number?
-            script_name: param?.script_name ?? '',
-            script_type: param?.script_type ?? '',
-            installed_on: param?.installed_on ?? format(new Date(), "yyyy-MM-dd'T'HH:mm:ss"), // todo format pattern
-            execution_time: param?.execution_time ?? 0,
-            success: param?.success ?? true,
-            checksum: param?.checksum
+            index_name: param.index_name,
+            migrate_version: param.migrate_version,
+            description: param.description,
+            script_name: param.script_name,
+            script_type: param.script_type,
+            installed_on: param.installed_on,
+            execution_time: param.execution_time,
+            success: param.success,
+            checksum: param.checksum
         });
     }
 
-    private static validate = (param: Partial<MigrateIndex>) => {
+    private static validate = (param: MigrateIndex) => {
         const messages: string[] = [];
-        if (!param.index_name) {
-            messages.push('index_name is an empty string');
+        if (!Object.keys(MigrationTypes).includes(param.script_type)) {
+            messages.push(`You cannot set "${param.script_type}" in script_type.
+            script_type can be set to ${Object.keys(MigrationTypes).join(', ')}`);
         }
-        // todo add validate
+        // if (!isMatch(param.installed_on, "yyyy-MM-dd'T'HH:mm:ss")) {
+        //     messages.push('The format of installed_on must be "yyyy-MM-dd\'T\'HH:mm:ss"');
+        // }
+
         if (messages.length > 0) throw new ValidationError(messages.join('\n'));
     };
 

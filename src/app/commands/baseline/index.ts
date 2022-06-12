@@ -14,7 +14,8 @@ export default class Index extends Command {
         ...DefaultFlags,
         description: Flags.string({
             char: 'd',
-            description: 'Description to be saved to history.'
+            description: 'Description to be saved to history.',
+            default: ''
         })
     };
 

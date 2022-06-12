@@ -2,10 +2,11 @@ import { migrateHistoryRepository } from '../context/migrate_history/migrateHist
 import { migrateHistorySpecByIndexName } from '../context/migrate_history/spec';
 import { CliUx } from '@oclif/core';
 import type { MigrationConfig } from '../types';
+import { MigrateHistoryEntity } from '../context/migrate_history/migrateHistoryEntity';
 
 export const migrationBaselineVersionService = (
     targetName: string,
-    description: string | undefined,
+    description: string,
     config: Required<MigrationConfig>
 ) => {
     const makeBaseline = async () => {
@@ -19,12 +20,13 @@ export const migrationBaselineVersionService = (
         if (histories.length === 0) {
             CliUx.ux.info('Baseline history does not exist.');
             CliUx.ux.info(`Create baseline in ${baseline}.`);
-
-            await insert({
-                index_name: targetName,
-                migrate_version: baseline,
-                description
-            });
+            await insert(
+                MigrateHistoryEntity.generateBaseline({
+                    baselineIndexName: targetName,
+                    baseline,
+                    description
+                })
+            );
             CliUx.ux.info(`Successfully created a baseline in ${baseline}.`);
         } else {
             CliUx.ux.info('There is already a baseline history');
