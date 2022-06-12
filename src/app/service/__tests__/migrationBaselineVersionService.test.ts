@@ -19,6 +19,7 @@ describe('migrationBaselineVersionService', () => {
 
     it('can create a baseline.', async () => {
         mocked(useElasticsearchClient).mockImplementation(getMockElasticsearchClient);
+        const baseline = 'v1.0.0';
         const config = {
             elasticsearch: {
                 searchEngine: 'elasticsearch',
@@ -30,7 +31,7 @@ describe('migrationBaselineVersionService', () => {
             migration: {
                 location: '',
                 baselineVersion: {
-                    test_index: '1.0.0'
+                    test_index: baseline
                 }
             }
         } as Required<MigrationConfig>;
@@ -40,12 +41,13 @@ describe('migrationBaselineVersionService', () => {
 
         expect(spyInfo).toHaveBeenCalledTimes(3);
         expect(spyInfo.mock.calls[0][0]).toEqual('Baseline history does not exist.');
-        expect(spyInfo.mock.calls[1][0]).toEqual('Create baseline in 1.0.0.');
-        expect(spyInfo.mock.calls[2][0]).toEqual('Successfully created a baseline in 1.0.0.');
+        expect(spyInfo.mock.calls[1][0]).toEqual(`Create baseline in ${baseline}.`);
+        expect(spyInfo.mock.calls[2][0]).toEqual(`Successfully created a baseline in ${baseline}.`);
     });
 
     it('can create a baseline when the target is specified in args.', async () => {
         mocked(useElasticsearchClient).mockImplementation(getMockElasticsearchClient);
+        const baseline = 'v1.0.0';
         const config = {
             elasticsearch: {
                 searchEngine: 'elasticsearch',
@@ -57,7 +59,7 @@ describe('migrationBaselineVersionService', () => {
             migration: {
                 location: '',
                 baselineVersion: {
-                    test_index: '1.0.0'
+                    test_index: baseline
                 }
             }
         } as Required<MigrationConfig>;
@@ -67,8 +69,8 @@ describe('migrationBaselineVersionService', () => {
 
         expect(spyInfo).toHaveBeenCalledTimes(3);
         expect(spyInfo.mock.calls[0][0]).toEqual('Baseline history does not exist.');
-        expect(spyInfo.mock.calls[1][0]).toEqual('Create baseline in 1.0.0.');
-        expect(spyInfo.mock.calls[2][0]).toEqual('Successfully created a baseline in 1.0.0.');
+        expect(spyInfo.mock.calls[1][0]).toEqual(`Create baseline in ${baseline}.`);
+        expect(spyInfo.mock.calls[2][0]).toEqual(`Successfully created a baseline in ${baseline}.`);
     });
 
     it('can not create a baseline when a baseline already exists.', async () => {
@@ -109,7 +111,7 @@ describe('migrationBaselineVersionService', () => {
             migration: {
                 location: '',
                 baselineVersion: {
-                    test_index: '1.0.0'
+                    test_index: 'v1.0.0'
                 }
             }
         } as Required<MigrationConfig>;

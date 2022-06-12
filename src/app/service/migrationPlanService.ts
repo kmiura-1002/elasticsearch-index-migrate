@@ -16,6 +16,7 @@ import { compare, lt, valid } from 'semver';
 import { MigrationStates, MigrationTypes, MigrationStateInfoMap, Version } from '../types';
 import { ResponseError as ResponseError6 } from 'es6/lib/errors';
 import { ResponseError as ResponseError7 } from 'es7/lib/errors';
+import { getBaselineVersion } from './migrationConfigService';
 
 export const migrationPlanService = (
     targetName: string,
@@ -23,17 +24,6 @@ export const migrationPlanService = (
     config: Required<MigrationConfig>
 ) => {
     const validateInputData = (migrationData: MigrationData[]) => {
-        const baseline = config.migration.baselineVersion[targetName];
-        if (baseline === undefined) {
-            // TODO fix error class
-            throw new Error(`The baseline setting for index(${targetName}) does not exist.`);
-        }
-        if (!isSupportVersionFormat(baseline)) {
-            // TODO fix error class
-            throw new Error(
-                `Baseline(${baseline}) version format is an unsupported format. Supported version format: v\\d+.\\d+.\\d+`
-            );
-        }
         if (migrationData.length === 0) {
             // TODO fix error class
             throw new Error(
@@ -53,23 +43,11 @@ export const migrationPlanService = (
     };
     const isSupportVersionFormat = (version: string): version is Version =>
         version.match(/^(v\d+.\d+.\d+)/) !== null;
-    const getBaselineVersion = (): Version => {
-        const baseline = config.migration.baselineVersion[targetName];
-
-        return baseline && isSupportVersionFormat(baseline)
-            ? baseline
-            : (() => {
-                  // TODO fix error class
-                  throw new Error(
-                      `Baseline(${baseline}) version format is an unsupported format. Supported version format: v\\d+.\\d+.\\d+`
-                  );
-              })();
-    };
 
     const refresh = async (): Promise<MigrationExplainPlan> => {
         const migrationData = loadMigrationScriptFile(targetName, [config.migration.location]);
+        const baseline = getBaselineVersion(targetName, config);
         validateInputData(migrationData);
-        const baseline = getBaselineVersion();
         try {
             const { findBy } = migrationHistoryRepository(config.elasticsearch);
             const histories = await findBy(
@@ -83,12 +61,12 @@ export const migrationPlanService = (
             const resolvedMigrationVersions = migrationData
                 .map((value) => value.version)
                 .filter(isString)
-                .filter((value) => valid(value) && isSupportVersionFormat(value))
+                .filter((value) => value && valid(value) && isSupportVersionFormat(value))
                 .map((value) => value as Version)
                 .sort((a, b) => compare(a, b));
             const lastResolved = resolvedMigrationVersions[resolvedMigrationVersions.length - 1];
             const lastApplied = appliedMigrationVersions[appliedMigrationVersions.length - 1];
-            const migrationPlanMap = new Map<string, MigrationPlanData>();
+            const migrationPlanMap = new Map<Version, MigrationPlanData>();
 
             migrationData.filter(isRequiredMigrationData).forEach((value) => {
                 const migrationPlan = migrationPlanMap.get(value.version);
@@ -184,7 +162,7 @@ const isString = (v: string | undefined): v is string => v !== undefined;
 const isRequiredMigrationData = (v: MigrationData): v is RequiredMigrationData =>
     v.version !== undefined;
 
-const makeMigrationExplainPlan = (map: Map<string, MigrationPlanData>) => {
+const makeMigrationExplainPlan = (map: Map<Version, MigrationPlanData>) => {
     const sortedKeys = Array.from(map.keys())
         .filter((value) => valid(value))
         .sort((a, b) => compare(a, b));
@@ -237,12 +215,12 @@ const generateMigrationPlan = (
 const generateVersion = (
     resolvedMigration?: RequiredMigrationData,
     appliedMigration?: AppliedMigration
-): string | undefined => appliedMigration?.version ?? resolvedMigration?.version;
+): Version | undefined => appliedMigration?.version ?? resolvedMigration?.version;
 
 const generateState = (
-    baseline: string,
-    lastResolved: string,
-    lastApplied: string,
+    baseline: Version,
+    lastResolved: Version,
+    lastApplied: Version,
     resolvedMigration?: RequiredMigrationData,
     appliedMigration?: AppliedMigration
 ): MigrationStateInfo | undefined => {

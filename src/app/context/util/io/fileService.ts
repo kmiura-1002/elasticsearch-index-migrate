@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
 import checksum from 'checksum';
-import type { MigrationData, MigrationFile } from '../../../types';
+import type { MigrationData, MigrationFile, Version } from '../../../types';
 
 export const FILE_NAME_REGEXP = /^([v][0-9]+.[0-9]+.[0-9]+)__([0-9a-zA-Z]+)/;
 const ALLOW_LOAD_EXTENSIONS = ['.json', '.yaml', '.yml'];
@@ -48,7 +48,7 @@ export function loadMigrationScriptFile(migrantName: string, locations: string[]
                 value.ext === '.json' ? JSON.parse(readFile) : yaml.load(readFile)
             ) as MigrationFile;
             const match = value.name.match(FILE_NAME_REGEXP);
-            const version = match !== null && match.length > 1 ? match[1] : undefined;
+            const version = match !== null && match.length > 1 ? (match[1] as Version) : undefined;
 
             return {
                 file: migrationFile,

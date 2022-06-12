@@ -3,6 +3,7 @@ import { migrateHistorySpecByIndexName } from '../context/migration/history/spec
 import { CliUx } from '@oclif/core';
 import type { MigrationConfig } from '../types';
 import { MigrationHistoryEntity } from '../context/migration/history/migrationHistoryEntity';
+import { getBaselineVersion } from './migrationConfigService';
 
 export const migrationBaselineVersionService = (
     targetName: string,
@@ -11,11 +12,7 @@ export const migrationBaselineVersionService = (
 ) => {
     const makeBaseline = async () => {
         const { findBy, insert } = migrationHistoryRepository(config.elasticsearch);
-        const baseline = config.migration.baselineVersion[targetName];
-
-        if (baseline === undefined) {
-            throw new Error(`The baseline setting for index(${targetName}) does not exist.`);
-        }
+        const baseline = getBaselineVersion(targetName, config);
         const histories = await findBy(migrateHistorySpecByIndexName(targetName, baseline));
         if (histories.length === 0) {
             CliUx.ux.info('Baseline history does not exist.');

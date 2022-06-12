@@ -92,7 +92,7 @@ export type IndexSearchResults7<T> = {
 
 export type MigrationIndex = {
     index_name: string;
-    migrate_version: string;
+    migrate_version: Version;
     description: string;
     script_name: string;
     script_type: string;
@@ -126,14 +126,14 @@ export type MigrationFile = {
 
 export type RequiredMigrationData = {
     file: MigrationFile;
-    version: string;
+    version: Version;
     physicalLocation: ParsedPath;
     checksum: string;
 };
 
 export type MigrationData = {
     file: MigrationFile;
-    version: string | undefined;
+    version: Version | undefined;
     physicalLocation: ParsedPath;
     checksum: string;
 };
@@ -149,7 +149,7 @@ export type ResolvedMigration = {
 };
 
 export type AppliedMigration = {
-    version: string;
+    version: Version;
     description: string;
     type: MigrationType;
     script: string;

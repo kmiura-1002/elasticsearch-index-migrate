@@ -1,5 +1,5 @@
 import { Entity, IdInterface } from '../../base/entity';
-import { MigrationIndex, MigrationTypes } from '../../../types';
+import { MigrationIndex, MigrationTypes, Version } from '../../../types';
 import { ValidationError } from '../../error/ValidationError';
 import { format } from 'date-fns';
 import { DATE_FORMAT } from '../../../definision';
@@ -18,7 +18,7 @@ export class MigrationHistoryEntity
 
     static generateBaseline(param: {
         baselineIndexName: string;
-        baseline: string;
+        baseline: Version;
         description: string;
     }): MigrationHistoryEntity {
         return this.generate({
@@ -77,7 +77,7 @@ export class MigrationHistoryEntity
     get indexName(): string {
         return this.props.index_name;
     }
-    get migrateVersion(): string {
+    get migrateVersion(): Version {
         return this.props.migrate_version;
     }
     get description(): string {
