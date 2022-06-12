@@ -1,11 +1,14 @@
-import { Entity } from '../../base/entity/entity';
+import { Entity, IdInterface } from '../../base/entity';
 import { MigrationIndex, MigrationTypes } from '../../../types';
 import { ValidationError } from '../../error/ValidationError';
 import { format } from 'date-fns';
 import { DATE_FORMAT } from '../../../definision';
 import { MigrationHistoryId } from '../../base/id/migrationHistoryId';
 
-export class MigrationHistoryEntity extends Entity<MigrationIndex, MigrationHistoryId> {
+export class MigrationHistoryEntity
+    extends Entity<MigrationIndex>
+    implements IdInterface<MigrationHistoryId>
+{
     private readonly id: MigrationHistoryId | undefined;
 
     private constructor(id: MigrationHistoryId | undefined, param: MigrationIndex) {
