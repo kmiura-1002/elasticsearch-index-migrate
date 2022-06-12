@@ -138,16 +138,6 @@ export type MigrationData = {
     checksum: string;
 };
 
-/** @deprecated To be deleted */
-export type ResolvedMigration = {
-    type: MigrationType;
-    version: string;
-    description?: string;
-    physicalLocation: ParsedPath;
-    migrate_script?: any;
-    query_parameters?: any;
-};
-
 export type AppliedMigration = {
     version: Version;
     description: string;
