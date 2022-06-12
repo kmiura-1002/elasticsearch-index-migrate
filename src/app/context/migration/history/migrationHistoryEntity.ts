@@ -1,14 +1,14 @@
 import { Entity } from '../../base/entity/entity';
-import { MigrateIndex, MigrationTypes } from '../../../types';
+import { MigrationIndex, MigrationTypes } from '../../../types';
 import { ValidationError } from '../../error/ValidationError';
 import { format } from 'date-fns';
 import { DATE_FORMAT } from '../../../definision';
-import { MigrateHistoryId } from '../../base/id/migrateHistoryId';
+import { MigrationHistoryId } from '../../base/id/migrationHistoryId';
 
-export class MigrateHistoryEntity extends Entity<MigrateIndex, MigrateHistoryId> {
-    private readonly id: MigrateHistoryId | undefined;
+export class MigrationHistoryEntity extends Entity<MigrationIndex, MigrationHistoryId> {
+    private readonly id: MigrationHistoryId | undefined;
 
-    private constructor(id: MigrateHistoryId | undefined, param: MigrateIndex) {
+    private constructor(id: MigrationHistoryId | undefined, param: MigrationIndex) {
         super(param);
         this.id = id;
     }
@@ -17,7 +17,7 @@ export class MigrateHistoryEntity extends Entity<MigrateIndex, MigrateHistoryId>
         baselineIndexName: string;
         baseline: string;
         description: string;
-    }): MigrateHistoryEntity {
+    }): MigrationHistoryEntity {
         return this.generate({
             param: {
                 index_name: param.baselineIndexName,
@@ -37,12 +37,12 @@ export class MigrateHistoryEntity extends Entity<MigrateIndex, MigrateHistoryId>
         id,
         param
     }: {
-        id?: MigrateHistoryId;
-        param: MigrateIndex;
-    }): MigrateHistoryEntity {
+        id?: MigrationHistoryId;
+        param: MigrationIndex;
+    }): MigrationHistoryEntity {
         this.validate(param);
 
-        return new MigrateHistoryEntity(id, {
+        return new MigrationHistoryEntity(id, {
             index_name: param.index_name,
             migrate_version: param.migrate_version,
             description: param.description,
@@ -55,7 +55,7 @@ export class MigrateHistoryEntity extends Entity<MigrateIndex, MigrateHistoryId>
         });
     }
 
-    private static validate = (param: MigrateIndex) => {
+    private static validate = (param: MigrationIndex) => {
         const messages: string[] = [];
         if (!Object.keys(MigrationTypes).includes(param.script_type)) {
             messages.push(`You cannot set "${param.script_type}" in script_type.
@@ -68,7 +68,7 @@ export class MigrateHistoryEntity extends Entity<MigrateIndex, MigrateHistoryId>
         if (messages.length > 0) throw new ValidationError(messages.join('\n'));
     };
 
-    getId(): MigrateHistoryId | undefined {
+    getId(): MigrationHistoryId | undefined {
         return this.id;
     }
     get indexName(): string {

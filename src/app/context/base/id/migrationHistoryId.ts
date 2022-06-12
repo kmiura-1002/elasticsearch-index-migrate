@@ -1,6 +1,6 @@
 import { id } from './id';
 
-export class MigrateHistoryId implements id {
+export class MigrationHistoryId implements id {
     private readonly id?: string;
 
     constructor(id?: string) {

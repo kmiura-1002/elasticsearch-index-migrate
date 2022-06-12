@@ -1,8 +1,8 @@
-import { migrateHistoryRepository } from '../context/migration/history/migrateHistoryRepository';
+import { migrationHistoryRepository } from '../context/migration/history/migrationHistoryRepository';
 import { migrateHistorySpecByIndexName } from '../context/migration/history/spec';
 import { CliUx } from '@oclif/core';
 import type { MigrationConfig } from '../types';
-import { MigrateHistoryEntity } from '../context/migration/history/migrateHistoryEntity';
+import { MigrationHistoryEntity } from '../context/migration/history/migrationHistoryEntity';
 
 export const migrationBaselineVersionService = (
     targetName: string,
@@ -10,7 +10,7 @@ export const migrationBaselineVersionService = (
     config: Required<MigrationConfig>
 ) => {
     const makeBaseline = async () => {
-        const { findBy, insert } = migrateHistoryRepository(config.elasticsearch);
+        const { findBy, insert } = migrationHistoryRepository(config.elasticsearch);
         const baseline = config.migration.baselineVersion[targetName];
 
         if (baseline === undefined) {
@@ -21,7 +21,7 @@ export const migrationBaselineVersionService = (
             CliUx.ux.info('Baseline history does not exist.');
             CliUx.ux.info(`Create baseline in ${baseline}.`);
             await insert(
-                MigrateHistoryEntity.generateBaseline({
+                MigrationHistoryEntity.generateBaseline({
                     baselineIndexName: targetName,
                     baseline,
                     description

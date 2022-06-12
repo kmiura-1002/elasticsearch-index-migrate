@@ -1,24 +1,24 @@
 import { MIGRATE_HISTORY_INDEX_NAME } from '../../../types';
 import { useElasticsearchClient } from '../../../client/es/ElasticsearchClient';
 import { MigrateHistorySpec } from './spec';
-import type { ESConfig, MigrateIndex } from '../../../types';
-import { MigrateHistoryEntity } from './migrateHistoryEntity';
-import { MigrateHistoryId } from '../../base/id/migrateHistoryId';
+import type { ESConfig, MigrationIndex } from '../../../types';
+import { MigrationHistoryEntity } from './migrationHistoryEntity';
+import { MigrationHistoryId } from '../../base/id/migrationHistoryId';
 
-export function migrateHistoryRepository(connectConf: ESConfig) {
+export function migrationHistoryRepository(connectConf: ESConfig) {
     const { search, postDocument } = useElasticsearchClient(connectConf);
 
     const findBy = (spec: MigrateHistorySpec) =>
-        search<MigrateIndex>(spec.condition).then((value) =>
+        search<MigrationIndex>(spec.condition).then((value) =>
             value.map((doc) =>
-                MigrateHistoryEntity.generate({
-                    id: new MigrateHistoryId(doc._id),
+                MigrationHistoryEntity.generate({
+                    id: new MigrationHistoryId(doc._id),
                     param: doc._source
                 })
             )
         );
 
-    const insert = (entity: MigrateHistoryEntity) =>
+    const insert = (entity: MigrationHistoryEntity) =>
         postDocument({
             index: MIGRATE_HISTORY_INDEX_NAME,
             body: {

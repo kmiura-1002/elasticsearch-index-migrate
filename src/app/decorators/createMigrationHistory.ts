@@ -4,7 +4,7 @@ import v7HistoryMapping from '../../resources/mapping/migrate_history_esV7.json'
 import v6HistoryMapping from '../../resources/mapping/migrate_history_esV6.json';
 import v7LockMapping from '../../resources/mapping/migrate_lock_esV7.json';
 import v6LockMapping from '../../resources/mapping/migrate_lock_esV6.json';
-import { MIGRATE_HISTORY_INDEX_NAME, MIGRATE_LOCK_INDEX_NAME } from '../types';
+import { MIGRATE_HISTORY_INDEX_NAME, MIGRATION_LOCK_INDEX_NAME } from '../types';
 import { usedEsVersion } from '../client/es/EsUtils';
 import { useElasticsearchClient } from '../client/es/ElasticsearchClient';
 import type { MigrationConfig } from '../types';
@@ -41,8 +41,8 @@ const setupMigrationEnv = async function (config: Config, flags: Interfaces.Flag
         );
 
         if (!(await exists({ index: MIGRATE_HISTORY_INDEX_NAME }))) {
-            CliUx.ux.info('migrate_history index does not exist.');
-            CliUx.ux.info('Create a migrate_history index for the first time.');
+            CliUx.ux.info(`${MIGRATE_HISTORY_INDEX_NAME} index does not exist.`);
+            CliUx.ux.info(`Create a ${MIGRATE_HISTORY_INDEX_NAME} index for the first time.`);
             const mappingData = getHistoryIndexRequestBody(migrationConfig);
             const ret = await createIndex({
                 index: MIGRATE_HISTORY_INDEX_NAME,
@@ -56,12 +56,12 @@ const setupMigrationEnv = async function (config: Config, flags: Interfaces.Flag
             CliUx.ux.info('The creation of the index has been completed.');
         }
 
-        if (!(await exists({ index: MIGRATE_LOCK_INDEX_NAME }))) {
-            CliUx.ux.info('migrate_lock index does not exist.');
-            CliUx.ux.info('Create a migrate_lock index for the first time.');
+        if (!(await exists({ index: MIGRATION_LOCK_INDEX_NAME }))) {
+            CliUx.ux.info(`${MIGRATION_LOCK_INDEX_NAME} index does not exist.`);
+            CliUx.ux.info(`Create a ${MIGRATION_LOCK_INDEX_NAME} index for the first time.`);
             const mappingData = getLockIndexRequestBody(migrationConfig);
             const ret = await createIndex({
-                index: MIGRATE_LOCK_INDEX_NAME,
+                index: MIGRATION_LOCK_INDEX_NAME,
                 body: mappingData
             });
 

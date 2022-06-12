@@ -2,7 +2,7 @@ import { ParsedPath } from 'path';
 
 // TODO: rename?
 export const MIGRATE_HISTORY_INDEX_NAME = 'migrate_history';
-export const MIGRATE_LOCK_INDEX_NAME = 'migrate_lock';
+export const MIGRATION_LOCK_INDEX_NAME = 'migration_lock';
 
 /** @deprecated To be deleted */
 const ELASTICSEARCH_VERSIONS = ['6.x', '7.x', 'opensearch'] as const;
@@ -90,7 +90,7 @@ export type IndexSearchResults7<T> = {
     hits: Document<T>[];
 };
 
-export type MigrateIndex = {
+export type MigrationIndex = {
     index_name: string;
     migrate_version: string;
     description: string;

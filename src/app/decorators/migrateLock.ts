@@ -1,6 +1,6 @@
 import { CliUx, Command } from '@oclif/core';
 import { readOptions } from '../config/flags/flagsLoader';
-import { MIGRATE_LOCK_INDEX_NAME } from '../types';
+import { MIGRATION_LOCK_INDEX_NAME } from '../types';
 import { useElasticsearchClient } from '../client/es/ElasticsearchClient';
 import { format } from 'date-fns';
 import type { ESConfig, LockIndex } from '../types';
@@ -45,13 +45,13 @@ async function lock(
 const makeLock = async (commandId: string, esConfig: ESConfig) => {
     try {
         const { exists, search, postDocument, close } = useElasticsearchClient(esConfig);
-        const isExistsIndex = await exists({ index: MIGRATE_LOCK_INDEX_NAME });
+        const isExistsIndex = await exists({ index: MIGRATION_LOCK_INDEX_NAME });
 
         if (!isExistsIndex) {
             CliUx.ux.error('Cannot create a lock because the index does not exist.');
         }
 
-        const lockData = (await search<LockIndex>({ index: MIGRATE_LOCK_INDEX_NAME })).map(
+        const lockData = (await search<LockIndex>({ index: MIGRATION_LOCK_INDEX_NAME })).map(
             (value) => value._source
         );
         if (lockData.length > 0) {
@@ -68,7 +68,7 @@ const makeLock = async (commandId: string, esConfig: ESConfig) => {
         }
 
         const id: string = await postDocument({
-            index: MIGRATE_LOCK_INDEX_NAME,
+            index: MIGRATION_LOCK_INDEX_NAME,
             refresh: 'wait_for',
             body: {
                 created: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"),
@@ -88,7 +88,7 @@ const unlock = async (documentId: string, esConfig: ESConfig) => {
     try {
         const { deleteDocument, close, version } = useElasticsearchClient(esConfig);
         await deleteDocument({
-            index: MIGRATE_LOCK_INDEX_NAME,
+            index: MIGRATION_LOCK_INDEX_NAME,
             refresh: 'wait_for',
             type: version().major === 6 ? '_doc' : undefined,
             id: documentId

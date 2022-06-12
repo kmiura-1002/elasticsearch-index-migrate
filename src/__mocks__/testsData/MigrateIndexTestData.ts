@@ -1,7 +1,7 @@
 import { MigrationTypes } from '../../app/types';
-import type { Document, MigrateIndex } from '../../app/types';
+import type { Document, MigrationIndex } from '../../app/types';
 
-export const migrateIndices = (size?: number): Document<MigrateIndex>[] => {
+export const migrateIndices = (size?: number): Document<MigrationIndex>[] => {
     if (size) {
         if (size < 0) {
             throw new Error('Size must be greater than zero.');

@@ -10,7 +10,7 @@ import type {
     MigrationExecuteConfig
 } from '../types';
 import { loadMigrationScriptFile } from '../context/util/io/fileService';
-import { migrateHistoryRepository } from '../context/migration/history/migrateHistoryRepository';
+import { migrationHistoryRepository } from '../context/migration/history/migrationHistoryRepository';
 import { migrateHistorySpecByIndexName } from '../context/migration/history/spec';
 import { compare, lt, valid } from 'semver';
 import { MigrationStates, MigrationTypes, MigrationStateInfoMap } from '../types';
@@ -47,7 +47,7 @@ export const migrationPlanService = (
         const baseline = config.migration.baselineVersion[targetName];
         validateInputData(migrationData, baseline);
         try {
-            const { findBy } = migrateHistoryRepository(config.elasticsearch);
+            const { findBy } = migrationHistoryRepository(config.elasticsearch);
             const histories = await findBy(
                 migrateHistorySpecByIndexName(targetName, baseline, { size: 10000 })
             );
