@@ -2,21 +2,19 @@ import type {
     AppliedMigration,
     MigrationConfig,
     MigrationData,
-    MigrationPlanData,
-    MigrationStateInfo,
     RequiredMigrationData,
     MigrationType,
-    MigrationExplainPlan,
     MigrationExecuteConfig
 } from '../types';
 import { loadMigrationScriptFile } from '../context/util/io/fileService';
 import { migrationHistoryRepository } from '../context/migration/history/migrationHistoryRepository';
 import { migrateHistorySpecByIndexName } from '../context/migration/history/spec';
 import { compare, lt, valid } from 'semver';
-import { MigrationStates, MigrationTypes, MigrationStateInfoMap, Version } from '../types';
+import { MigrationStates, MigrationTypes, Version } from '../types';
 import { ResponseError as ResponseError6 } from 'es6/lib/errors';
 import { ResponseError as ResponseError7 } from 'es7/lib/errors';
 import { getBaselineVersion } from './migrationConfigService';
+import { MigrationExecuteStatementDataEntity } from '../context/migration/execute_statements/migrationExecuteStatementDataEntity';
 
 export const migrationPlanService = (
     targetName: string,
@@ -44,7 +42,10 @@ export const migrationPlanService = (
     const isSupportVersionFormat = (version: string): version is Version =>
         version.match(/^(v\d+.\d+.\d+)/) !== null;
 
-    const refresh = async (): Promise<MigrationExplainPlan> => {
+    const refresh = async (): Promise<{
+        all: MigrationExecuteStatementDataEntity[];
+        pending: MigrationExecuteStatementDataEntity[];
+    }> => {
         const migrationData = loadMigrationScriptFile(targetName, [config.migration.location]);
         const baseline = getBaselineVersion(targetName, config);
         validateInputData(migrationData);
@@ -66,7 +67,7 @@ export const migrationPlanService = (
                 .sort((a, b) => compare(a, b));
             const lastResolved = resolvedMigrationVersions[resolvedMigrationVersions.length - 1];
             const lastApplied = appliedMigrationVersions[appliedMigrationVersions.length - 1];
-            const migrationPlanMap = new Map<Version, MigrationPlanData>();
+            const migrationPlanMap = new Map<Version, MigrationExecuteStatementDataEntity>();
 
             migrationData.filter(isRequiredMigrationData).forEach((value) => {
                 const migrationPlan = migrationPlanMap.get(value.version);
@@ -74,7 +75,7 @@ export const migrationPlanService = (
                     // Overwrites the same version of the migration file, if any
                     migrationPlanMap.set(
                         value.version,
-                        generateMigrationPlan(
+                        MigrationExecuteStatementDataEntity.generateExecuteStatement(
                             baseline,
                             lastResolved,
                             lastApplied,
@@ -82,11 +83,16 @@ export const migrationPlanService = (
                             migrationPlan.appliedMigration
                         )
                     );
-                    migrationPlan.resolvedMigration = value;
+                    migrationPlan.updateResolvedMigration(value);
                 } else {
                     migrationPlanMap.set(
                         value.version,
-                        generateMigrationPlan(baseline, lastResolved, lastApplied, value)
+                        MigrationExecuteStatementDataEntity.generateExecuteStatement(
+                            baseline,
+                            lastResolved,
+                            lastApplied,
+                            value
+                        )
                     );
                 }
             });
@@ -105,7 +111,7 @@ export const migrationPlanService = (
                 if (migrationPlan) {
                     migrationPlanMap.set(
                         value.migrateVersion,
-                        generateMigrationPlan(
+                        MigrationExecuteStatementDataEntity.generateExecuteStatement(
                             baseline,
                             lastResolved,
                             lastApplied,
@@ -116,7 +122,7 @@ export const migrationPlanService = (
                 } else {
                     migrationPlanMap.set(
                         value.migrateVersion,
-                        generateMigrationPlan(
+                        MigrationExecuteStatementDataEntity.generateExecuteStatement(
                             baseline,
                             lastResolved,
                             lastApplied,
@@ -142,7 +148,10 @@ export const migrationPlanService = (
         }
     };
 
-    const validate = async (plan?: MigrationExplainPlan) => {
+    const validate = async (plan?: {
+        all: MigrationExecuteStatementDataEntity[];
+        pending: MigrationExecuteStatementDataEntity[];
+    }) => {
         const explainPlans = plan?.all ?? (await refresh()).all;
 
         return explainPlans
@@ -162,17 +171,17 @@ const isString = (v: string | undefined): v is string => v !== undefined;
 const isRequiredMigrationData = (v: MigrationData): v is RequiredMigrationData =>
     v.version !== undefined;
 
-const makeMigrationExplainPlan = (map: Map<Version, MigrationPlanData>) => {
+const makeMigrationExplainPlan = (map: Map<Version, MigrationExecuteStatementDataEntity>) => {
     const sortedKeys = Array.from(map.keys())
         .filter((value) => valid(value))
         .sort((a, b) => compare(a, b));
 
-    const migrationPlans: MigrationPlanData[] = [];
+    const migrationPlans: MigrationExecuteStatementDataEntity[] = [];
     sortedKeys.forEach((version) => {
         const migrationPlan = map.get(version);
         if (migrationPlan?.resolvedMigration && migrationPlan?.appliedMigration === undefined) {
             migrationPlans.push(
-                generateMigrationPlan(
+                MigrationExecuteStatementDataEntity.generateExecuteStatement(
                     migrationPlan.baseline,
                     migrationPlan.lastResolved,
                     migrationPlan.lastApplied,
@@ -191,94 +200,15 @@ const makeMigrationExplainPlan = (map: Map<Version, MigrationPlanData>) => {
     };
 };
 
-const generateMigrationPlan = (
-    baseline: Version,
-    lastResolved: Version,
-    lastApplied: Version,
-    resolvedMigration?: RequiredMigrationData,
-    appliedMigration?: AppliedMigration
-): MigrationPlanData => ({
-    resolvedMigration: resolvedMigration,
-    appliedMigration: appliedMigration,
-    baseline,
-    lastResolved,
-    lastApplied,
-    type: appliedMigration?.type ?? resolvedMigration?.file.type,
-    description: appliedMigration?.description ?? resolvedMigration?.file.description,
-    version: generateVersion(resolvedMigration, appliedMigration),
-    installedOn: appliedMigration?.installedOn,
-    state: generateState(baseline, lastResolved, lastApplied, resolvedMigration, appliedMigration),
-    isBaseline: baseline === generateVersion(resolvedMigration, appliedMigration),
-    checksum: appliedMigration?.checksum ?? resolvedMigration?.checksum
-});
-
 const generateVersion = (
     resolvedMigration?: RequiredMigrationData,
     appliedMigration?: AppliedMigration
 ): Version | undefined => appliedMigration?.version ?? resolvedMigration?.version;
 
-const generateState = (
-    baseline: Version,
-    lastResolved: Version,
-    lastApplied: Version,
-    resolvedMigration?: RequiredMigrationData,
-    appliedMigration?: AppliedMigration
-): MigrationStateInfo | undefined => {
-    if (!appliedMigration) {
-        if (resolvedMigration?.version) {
-            if (
-                valid(resolvedMigration?.version) &&
-                valid(baseline) &&
-                lt(resolvedMigration?.version, baseline)
-            ) {
-                return MigrationStateInfoMap.get(MigrationStates.BELOW_BASELINE);
-            }
-            if (
-                valid(resolvedMigration?.version) &&
-                valid(lastApplied) &&
-                lt(resolvedMigration?.version, lastApplied)
-            ) {
-                return MigrationStateInfoMap.get(MigrationStates.IGNORED);
-            }
-        }
-        return MigrationStateInfoMap.get(MigrationStates.PENDING);
-    }
-
-    if (
-        valid(appliedMigration?.version) &&
-        valid(baseline) &&
-        appliedMigration?.version === baseline &&
-        appliedMigration?.success
-    ) {
-        return MigrationStateInfoMap.get(MigrationStates.BASELINE);
-    }
-
-    if (!resolvedMigration) {
-        const version = generateVersion(resolvedMigration, appliedMigration) ?? '';
-        if (
-            !appliedMigration.version ||
-            (valid(lastResolved) && valid(version) && lt(version, lastResolved))
-        ) {
-            if (appliedMigration.success) {
-                return MigrationStateInfoMap.get(MigrationStates.MISSING_SUCCESS);
-            }
-            return MigrationStateInfoMap.get(MigrationStates.MISSING_FAILED);
-        } else {
-            if (appliedMigration.success) {
-                return MigrationStateInfoMap.get(MigrationStates.FUTURE_SUCCESS);
-            }
-            return MigrationStateInfoMap.get(MigrationStates.FUTURE_FAILED);
-        }
-    }
-
-    if (!appliedMigration?.success) {
-        return MigrationStateInfoMap.get(MigrationStates.FAILED);
-    }
-
-    return MigrationStateInfoMap.get(MigrationStates.SUCCESS);
-};
-
-const planValidate = (plan: MigrationPlanData, executeConfig: MigrationExecuteConfig) => {
+const planValidate = (
+    plan: MigrationExecuteStatementDataEntity,
+    executeConfig: MigrationExecuteConfig
+) => {
     if (plan.state?.failed && !executeConfig.future) {
         if (plan.version) {
             return `Detected failed migrate to version ${plan.version}(${plan.description}).`;

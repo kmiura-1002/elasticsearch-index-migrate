@@ -2,6 +2,7 @@ import { MigrationConfig, Version } from '../types';
 
 const isSupportVersionFormat = (version: string): version is Version =>
     version.match(/^(v\d+.\d+.\d+)/) !== null;
+
 export const getBaselineVersion = (
     targetName: string,
     config: Required<MigrationConfig>
