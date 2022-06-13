@@ -35,7 +35,7 @@ $ npm install -g elasticsearch-index-migrate
 $ elasticsearch-index-migrate COMMAND
 running command...
 $ elasticsearch-index-migrate (-v|--version|version)
-elasticsearch-index-migrate/0.8.1 darwin-x64 node-v14.17.6
+elasticsearch-index-migrate/0.8.2 darwin-x64 node-v14.17.6
 $ elasticsearch-index-migrate --help [COMMAND]
 USAGE
   $ elasticsearch-index-migrate COMMAND
@@ -225,21 +225,24 @@ elasticsearch/
 
 # Commands
 <!-- commands -->
-* [`elasticsearch-index-migrate baseline`](#elasticsearch-index-migrate-baseline)
-* [`elasticsearch-index-migrate clean`](#elasticsearch-index-migrate-clean)
+* [`elasticsearch-index-migrate baseline [NAME]`](#elasticsearch-index-migrate-baseline-name)
+* [`elasticsearch-index-migrate clean [NAME]`](#elasticsearch-index-migrate-clean-name)
 * [`elasticsearch-index-migrate help [COMMAND]`](#elasticsearch-index-migrate-help-command)
 * [`elasticsearch-index-migrate init`](#elasticsearch-index-migrate-init)
-* [`elasticsearch-index-migrate migrate`](#elasticsearch-index-migrate-migrate)
-* [`elasticsearch-index-migrate plan`](#elasticsearch-index-migrate-plan)
-* [`elasticsearch-index-migrate recovery`](#elasticsearch-index-migrate-recovery)
+* [`elasticsearch-index-migrate migrate [NAME]`](#elasticsearch-index-migrate-migrate-name)
+* [`elasticsearch-index-migrate plan [NAME]`](#elasticsearch-index-migrate-plan-name)
+* [`elasticsearch-index-migrate recovery [NAME]`](#elasticsearch-index-migrate-recovery-name)
 
-## `elasticsearch-index-migrate baseline`
+## `elasticsearch-index-migrate baseline [NAME]`
 
 Create a baseline in migration_history if you were running Elasticsearch before the tool was implemented.
 
 ```
 USAGE
-  $ elasticsearch-index-migrate baseline
+  $ elasticsearch-index-migrate baseline [NAME]
+
+ARGUMENTS
+  NAME  migration index name.
 
 OPTIONS
   -B, --baseline_version=baseline_version              Migrate from the baseline set in the
@@ -277,13 +280,13 @@ OPTIONS
 
   -h, --help                                           show CLI help
 
-  -i, --indexName=indexName                            (required) migration index name.
+  -i, --indexName=indexName                            migration index name.
 
   -n, --[no-]natural-name                              Set to true if the index name contains _ or -(Ex: my-index).
 
-  -s, --number-of-shards                               number of shards in migration history index (default 1)
+  -r, --number-of-replicas=number-of-replicas          [default: 2] number of replicas in migration history index.
 
-  -r, --number-of-replicas                             number of replicas in migration history index (default 2)
+  -s, --number-of-shards=number-of-shards              [default: 1] number of shards in migration history index.
 
   -v, --index-version=index-version                    index version. (Ex: For my-index_1970.01.01, the version is
                                                        1970.01.01. For my-index_v1, the version is v1.)
@@ -293,15 +296,18 @@ OPTIONS
                                                        processed.
 ```
 
-_See code: [src/commands/baseline.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.8.1/src/commands/baseline.ts)_
+_See code: [src/commands/baseline.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.8.2/src/commands/baseline.ts)_
 
-## `elasticsearch-index-migrate clean`
+## `elasticsearch-index-migrate clean [NAME]`
 
 Delete all history stored in the migration_history index
 
 ```
 USAGE
-  $ elasticsearch-index-migrate clean
+  $ elasticsearch-index-migrate clean [NAME]
+
+ARGUMENTS
+  NAME  migration index name.
 
 OPTIONS
   -B, --baseline_version=baseline_version              Migrate from the baseline set in the
@@ -337,9 +343,13 @@ OPTIONS
 
   -h, --help                                           show CLI help
 
-  -i, --indexName=indexName                            (required) migration index name.
+  -i, --indexName=indexName                            migration index name.
 
   -n, --[no-]natural-name                              Set to true if the index name contains _ or -(Ex: my-index).
+
+  -r, --number-of-replicas=number-of-replicas          [default: 2] number of replicas in migration history index.
+
+  -s, --number-of-shards=number-of-shards              [default: 1] number of shards in migration history index.
 
   -t, --target=(history|index|all)                     [default: history] Selecting what to delete
                                                        history : Delete the target index migration history from
@@ -357,7 +367,7 @@ OPTIONS
                                                        processed.
 ```
 
-_See code: [src/commands/clean.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.8.1/src/commands/clean.ts)_
+_See code: [src/commands/clean.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.8.2/src/commands/clean.ts)_
 
 ## `elasticsearch-index-migrate help [COMMAND]`
 
@@ -374,7 +384,7 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.17/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.14/src/commands/help.ts)_
 
 ## `elasticsearch-index-migrate init`
 
@@ -416,22 +426,23 @@ OPTIONS
 
   -h, --help                                           show CLI help
 
-  -s, --number-of-shards                               number of shards in migration history index (default 1)
+  -r, --number-of-replicas=number-of-replicas          [default: 2] number of replicas in migration history index.
 
-  -r, --number-of-replicas                             number of replicas in migration history index (default 2)
-
-
+  -s, --number-of-shards=number-of-shards              [default: 1] number of shards in migration history index.
 ```
 
-_See code: [src/commands/init.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.8.1/src/commands/init.ts)_
+_See code: [src/commands/init.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.8.2/src/commands/init.ts)_
 
-## `elasticsearch-index-migrate migrate`
+## `elasticsearch-index-migrate migrate [NAME]`
 
 Migrate the index of Elasticsearch to the latest version based on the execution plan.
 
 ```
 USAGE
-  $ elasticsearch-index-migrate migrate
+  $ elasticsearch-index-migrate migrate [NAME]
+
+ARGUMENTS
+  NAME  migration index name.
 
 OPTIONS
   -B, --baseline_version=baseline_version              Migrate from the baseline set in the
@@ -467,13 +478,13 @@ OPTIONS
 
   -h, --help                                           show CLI help
 
-  -i, --indexName=indexName                            (required) migration index name.
+  -i, --indexName=indexName                            migration index name.
 
   -n, --[no-]natural-name                              Set to true if the index name contains _ or -(Ex: my-index).
 
-  -s, --number-of-shards                               number of shards in migration history index (default 1)
+  -r, --number-of-replicas=number-of-replicas          [default: 2] number of replicas in migration history index.
 
-  -r, --number-of-replicas                             number of replicas in migration history index (default 2)
+  -s, --number-of-shards=number-of-shards              [default: 1] number of shards in migration history index.
 
   -v, --index-version=index-version                    index version. (Ex: For my-index_1970.01.01, the version is
                                                        1970.01.01. For my-index_v1, the version is v1.)
@@ -486,15 +497,18 @@ OPTIONS
                                                        the end.
 ```
 
-_See code: [src/commands/migrate.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.8.1/src/commands/migrate.ts)_
+_See code: [src/commands/migrate.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.8.2/src/commands/migrate.ts)_
 
-## `elasticsearch-index-migrate plan`
+## `elasticsearch-index-migrate plan [NAME]`
 
 Outputs the migration execution plan.
 
 ```
 USAGE
-  $ elasticsearch-index-migrate plan
+  $ elasticsearch-index-migrate plan [NAME]
+
+ARGUMENTS
+  NAME  migration index name.
 
 OPTIONS
   -B, --baseline_version=baseline_version              Migrate from the baseline set in the
@@ -530,13 +544,13 @@ OPTIONS
 
   -h, --help                                           show CLI help
 
-  -i, --indexName=indexName                            (required) migration index name.
+  -i, --indexName=indexName                            migration index name.
 
   -n, --[no-]natural-name                              Set to true if the index name contains _ or -(Ex: my-index).
 
-  -s, --number-of-shards                               number of shards in migration history index (default 1)
+  -r, --number-of-replicas=number-of-replicas          [default: 2] number of replicas in migration history index.
 
-  -r, --number-of-replicas                             number of replicas in migration history index (default 2)
+  -s, --number-of-shards=number-of-shards              [default: 1] number of shards in migration history index.
 
   -v, --index-version=index-version                    index version. (Ex: For my-index_1970.01.01, the version is
                                                        1970.01.01. For my-index_v1, the version is v1.)
@@ -546,15 +560,18 @@ OPTIONS
                                                        processed.
 ```
 
-_See code: [src/commands/plan.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.8.1/src/commands/plan.ts)_
+_See code: [src/commands/plan.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.8.2/src/commands/plan.ts)_
 
-## `elasticsearch-index-migrate recovery`
+## `elasticsearch-index-migrate recovery [NAME]`
 
 Delete failed migration history.
 
 ```
 USAGE
-  $ elasticsearch-index-migrate recovery
+  $ elasticsearch-index-migrate recovery [NAME]
+
+ARGUMENTS
+  NAME  migration index name.
 
 OPTIONS
   -B, --baseline_version=baseline_version              Migrate from the baseline set in the
@@ -590,13 +607,13 @@ OPTIONS
 
   -h, --help                                           show CLI help
 
-  -i, --indexName=indexName                            (required) migration index name.
+  -i, --indexName=indexName                            migration index name.
 
   -n, --[no-]natural-name                              Set to true if the index name contains _ or -(Ex: my-index).
 
-  -s, --number-of-shards                               number of shards in migration history index (default 1)
+  -r, --number-of-replicas=number-of-replicas          [default: 2] number of replicas in migration history index.
 
-  -r, --number-of-replicas                             number of replicas in migration history index (default 2)
+  -s, --number-of-shards=number-of-shards              [default: 1] number of shards in migration history index.
 
   -v, --index-version=index-version                    index version. (Ex: For my-index_1970.01.01, the version is
                                                        1970.01.01. For my-index_v1, the version is v1.)
@@ -606,7 +623,7 @@ OPTIONS
                                                        processed.
 ```
 
-_See code: [src/commands/recovery.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.8.1/src/commands/recovery.ts)_
+_See code: [src/commands/recovery.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.8.2/src/commands/recovery.ts)_
 <!-- commandsstop -->
 
 # Quick start with Docker
