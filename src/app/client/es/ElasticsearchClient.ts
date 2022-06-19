@@ -1,48 +1,65 @@
+import type { ClientOptions as Es8ClientOptions } from 'es8';
+import { Client as Es8Client } from 'es8';
+import type { ClientOptions as Es7ClientOptions } from 'es7';
 import { Client as Es7Client } from 'es7';
+import type { ClientOptions as Es6ClientOptions } from 'es6';
 import { Client as Es6Client } from 'es6';
 import { esConnectConf, usedEsVersion } from './EsUtils';
-import type { SimpleJson, ESConfig, SearchEngineVersion } from '../../types';
+import type { ESConfig, SearchEngineVersion, SimpleJson } from '../../types';
+import { Document } from '../../types';
 import type {
     ClusterHealth as ClusterHealth6,
+    Count as Count6,
+    Delete as Delete6,
+    DeleteByQuery as DeleteByQuery6,
+    Generic as Generic6,
+    Index as Index6,
     IndicesCreate as IndicesCreate6,
+    IndicesDelete as IndicesDelete6,
     IndicesExists as IndicesExists6,
+    IndicesGet as IndicesGet6,
+    IndicesGetMapping as IndicesGetMapping6,
     IndicesPutMapping as IndicesPutMapping6,
     IndicesPutSettings as IndicesPutSettings6,
-    IndicesDelete as IndicesDelete6,
-    IndicesGetMapping as IndicesGetMapping6,
-    IndicesGet as IndicesGet6,
-    Search as Search6,
-    Count as Count6,
-    Index as Index6,
-    DeleteByQuery as DeleteByQuery6,
-    Delete as Delete6,
-    Generic as Generic6
+    Search as Search6
 } from 'es6/api/requestParams';
 import type {
     ClusterHealth as ClusterHealth7,
+    Count as Count7,
+    Delete as Delete7,
+    DeleteByQuery as DeleteByQuery7,
+    Generic as Generic7,
+    Index as Index7,
     IndicesCreate as IndicesCreate7,
+    IndicesDelete as IndicesDelete7,
     IndicesExists as IndicesExists7,
+    IndicesGet as IndicesGet7,
+    IndicesGetMapping as IndicesGetMapping7,
     IndicesPutMapping as IndicesPutMapping7,
     IndicesPutSettings as IndicesPutSettings7,
-    IndicesDelete as IndicesDelete7,
-    IndicesGetMapping as IndicesGetMapping7,
-    IndicesGet as IndicesGet7,
-    Search as Search7,
-    Count as Count7,
-    Index as Index7,
-    DeleteByQuery as DeleteByQuery7,
-    Delete as Delete7,
-    Generic as Generic7
+    Search as Search7
 } from 'es7/api/requestParams';
+import type {
+    ClusterHealthRequest,
+    CountRequest,
+    DeleteByQueryRequest,
+    DeleteRequest,
+    IndexRequest,
+    IndicesCreateRequest,
+    IndicesDeleteRequest,
+    IndicesExistsRequest,
+    IndicesGetMappingRequest,
+    IndicesPutMappingRequest,
+    IndicesPutSettingsRequest,
+    RequestBase,
+    SearchRequest
+} from 'es8/lib/api/types';
 import type { ApiResponse as ApiResponse6 } from 'es6/lib/Transport';
 import type { ApiResponse as ApiResponse7 } from 'es7/lib/Transport';
-import type { ClientOptions as Es7ClientOptions } from 'es7';
-import type { ClientOptions as Es6ClientOptions } from 'es6';
-import { Document } from '../../types';
 import { UnsupportedVersionError } from '../../context/error/UnsupportedVersionError';
 
 type EsConnection = {
-    client: Es6Client | Es7Client;
+    client: Es6Client | Es7Client | Es8Client;
     version: SearchEngineVersion;
 };
 
@@ -64,6 +81,11 @@ function esClientBind(esConfig: ESConfig): EsConnection {
             case 7:
                 return {
                     client: new Es7Client(connectConf as Es7ClientOptions),
+                    version
+                };
+            case 8:
+                return {
+                    client: new Es8Client(connectConf as Es8ClientOptions),
                     version
                 };
             default:
@@ -91,26 +113,47 @@ function convertGetMappingResponse(
     return [res.body[param.index]] as SimpleJson[];
 }
 
-function isE6Client<ES6Request extends Generic6, ES7Request extends Generic7>(
-    param: { client: Es6Client | Es7Client; request?: ES6Request | ES7Request },
+function isE6Client<
+    ES6Request extends Generic6,
+    ES7Request extends Generic7,
+    ES8Request extends RequestBase
+>(
+    param: {
+        client: Es6Client | Es7Client | Es8Client;
+        request?: ES6Request | ES7Request | ES8Request;
+    },
     version: SearchEngineVersion
 ): param is { client: Es6Client; request: ES6Request } {
     return version.major === 6;
 }
 
-function isE7Client<ES6Request extends Generic6, ES7Request extends Generic7>(
-    param: { client: Es6Client | Es7Client; request?: ES6Request | ES7Request },
+function isE7Client<
+    ES6Request extends Generic6,
+    ES7Request extends Generic7,
+    ES8Request extends RequestBase
+>(
+    param: {
+        client: Es6Client | Es7Client | Es8Client;
+        request?: ES6Request | ES7Request | ES8Request;
+    },
     version: SearchEngineVersion
 ): param is { client: Es7Client; request: ES7Request } {
     return version.major === 7;
 }
 
-const healthCheckApi = (connection: EsConnection, request?: ClusterHealth6 | ClusterHealth7) => {
+const healthCheckApi = (
+    connection: EsConnection,
+    request?: ClusterHealth6 | ClusterHealth7 | ClusterHealthRequest
+) => {
     const param = { client: connection.client, request: request ?? {} };
 
-    if (isE6Client<ClusterHealth6, ClusterHealth7>(param, connection.version)) {
+    if (
+        isE6Client<ClusterHealth6, ClusterHealth7, ClusterHealthRequest>(param, connection.version)
+    ) {
         return param.client.cluster.health({ ...param.request });
-    } else if (isE7Client<ClusterHealth6, ClusterHealth7>(param, connection.version)) {
+    } else if (
+        isE7Client<ClusterHealth6, ClusterHealth7, ClusterHealthRequest>(param, connection.version)
+    ) {
         return param.client.cluster.health({ ...param.request });
     }
     return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
@@ -122,12 +165,22 @@ const putMappingApi = (
 ) => {
     const param = { client: connection.client, request };
 
-    if (isE6Client<IndicesPutMapping6, IndicesPutMapping7>(param, connection.version)) {
+    if (
+        isE6Client<IndicesPutMapping6, IndicesPutMapping7, IndicesPutMappingRequest>(
+            param,
+            connection.version
+        )
+    ) {
         return param.client.indices.putMapping({
             ...param.request,
             type: param.request.type ? param.request.type : '_doc'
         });
-    } else if (isE7Client<IndicesPutMapping6, IndicesPutMapping7>(param, connection.version)) {
+    } else if (
+        isE7Client<IndicesPutMapping6, IndicesPutMapping7, IndicesPutMappingRequest>(
+            param,
+            connection.version
+        )
+    ) {
         return param.client.indices.putMapping(param.request);
     }
     return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
@@ -136,9 +189,13 @@ const putMappingApi = (
 const createIndexApi = (connection: EsConnection, request: IndicesCreate6 | IndicesCreate7) => {
     const param = { client: connection.client, request };
 
-    if (isE6Client<IndicesCreate6, IndicesCreate7>(param, connection.version)) {
+    if (
+        isE6Client<IndicesCreate6, IndicesCreate7, IndicesCreateRequest>(param, connection.version)
+    ) {
         return param.client.indices.create(param.request);
-    } else if (isE7Client<IndicesCreate6, IndicesCreate7>(param, connection.version)) {
+    } else if (
+        isE7Client<IndicesCreate6, IndicesCreate7, IndicesCreateRequest>(param, connection.version)
+    ) {
         return param.client.indices.create(param.request);
     }
     return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
@@ -147,9 +204,9 @@ const createIndexApi = (connection: EsConnection, request: IndicesCreate6 | Indi
 const searchApi = (connection: EsConnection, request: Search6 | Search7) => {
     const param = { client: connection.client, request };
 
-    if (isE6Client<Search6, Search7>(param, connection.version)) {
+    if (isE6Client<Search6, Search7, SearchRequest>(param, connection.version)) {
         return param.client.search(param.request);
-    } else if (isE7Client<Search6, Search7>(param, connection.version)) {
+    } else if (isE7Client<Search6, Search7, SearchRequest>(param, connection.version)) {
         return param.client.search(param.request);
     }
     return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
@@ -161,9 +218,19 @@ const putSettingApi = (
 ) => {
     const param = { client: connection.client, request };
 
-    if (isE6Client<IndicesPutSettings6, IndicesPutSettings7>(param, connection.version)) {
+    if (
+        isE6Client<IndicesPutSettings6, IndicesPutSettings7, IndicesPutSettingsRequest>(
+            param,
+            connection.version
+        )
+    ) {
         return param.client.indices.putSettings(param.request);
-    } else if (isE7Client<IndicesPutSettings6, IndicesPutSettings7>(param, connection.version)) {
+    } else if (
+        isE7Client<IndicesPutSettings6, IndicesPutSettings7, IndicesPutSettingsRequest>(
+            param,
+            connection.version
+        )
+    ) {
         return param.client.indices.putSettings(param.request);
     }
     return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
@@ -172,9 +239,13 @@ const putSettingApi = (
 const existsApi = (connection: EsConnection, request: IndicesExists6 | IndicesExists7) => {
     const param = { client: connection.client, request };
 
-    if (isE6Client<IndicesExists6, IndicesExists7>(param, connection.version)) {
+    if (
+        isE6Client<IndicesExists6, IndicesExists7, IndicesExistsRequest>(param, connection.version)
+    ) {
         return param.client.indices.exists(param.request);
-    } else if (isE7Client<IndicesExists6, IndicesExists7>(param, connection.version)) {
+    } else if (
+        isE7Client<IndicesExists6, IndicesExists7, IndicesExistsRequest>(param, connection.version)
+    ) {
         return param.client.indices.exists(param.request);
     }
     return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
@@ -183,9 +254,13 @@ const existsApi = (connection: EsConnection, request: IndicesExists6 | IndicesEx
 const deleteApi = (connection: EsConnection, request: IndicesDelete6 | IndicesDelete7) => {
     const param = { client: connection.client, request };
 
-    if (isE6Client<IndicesDelete6, IndicesDelete7>(param, connection.version)) {
+    if (
+        isE6Client<IndicesDelete6, IndicesDelete7, IndicesDeleteRequest>(param, connection.version)
+    ) {
         return param.client.indices.delete(param.request);
-    } else if (isE7Client<IndicesDelete6, IndicesDelete7>(param, connection.version)) {
+    } else if (
+        isE7Client<IndicesDelete6, IndicesDelete7, IndicesDeleteRequest>(param, connection.version)
+    ) {
         return param.client.indices.delete(param.request);
     }
     return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
@@ -194,12 +269,12 @@ const deleteApi = (connection: EsConnection, request: IndicesDelete6 | IndicesDe
 const postDocumentApi = (connection: EsConnection, request: Index6 | Index7) => {
     const param = { client: connection.client, request };
 
-    if (isE6Client<Index6, Index7>(param, connection.version)) {
+    if (isE6Client<Index6, Index7, IndexRequest>(param, connection.version)) {
         return param.client.index({
             ...param.request,
             type: param.request.type ? param.request.type : '_doc'
         });
-    } else if (isE7Client<Index6, Index7>(param, connection.version)) {
+    } else if (isE7Client<Index6, Index7, IndexRequest>(param, connection.version)) {
         return param.client.index(param.request);
     }
     return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
@@ -210,7 +285,7 @@ const closeConnection = async (connection: EsConnection) => {
 
     if (isE6Client(param, connection.version)) {
         return param.client.close();
-    } else if (isE7Client<Index6, Index7>(param, connection.version)) {
+    } else if (isE7Client<Index6, Index7, IndexRequest>(param, connection.version)) {
         return param.client.close();
     }
     return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
@@ -222,9 +297,19 @@ const getMappingApi = (
 ) => {
     const param = { client: connection.client, request };
 
-    if (isE6Client<IndicesGetMapping6, IndicesGetMapping7>(param, connection.version)) {
+    if (
+        isE6Client<IndicesGetMapping6, IndicesGetMapping7, IndicesGetMappingRequest>(
+            param,
+            connection.version
+        )
+    ) {
         return param.client.indices.getMapping(param.request);
-    } else if (isE7Client<IndicesGetMapping6, IndicesGetMapping7>(param, connection.version)) {
+    } else if (
+        isE7Client<IndicesGetMapping6, IndicesGetMapping7, IndicesGetMappingRequest>(
+            param,
+            connection.version
+        )
+    ) {
         return param.client.indices.getMapping(param.request);
     }
     return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
@@ -233,9 +318,19 @@ const getMappingApi = (
 const getIndexApi = (connection: EsConnection, request: IndicesGet6 | IndicesGet7) => {
     const param = { client: connection.client, request };
 
-    if (isE6Client<IndicesGetMapping6, IndicesGetMapping7>(param, connection.version)) {
+    if (
+        isE6Client<IndicesGetMapping6, IndicesGetMapping7, IndicesGetMappingRequest>(
+            param,
+            connection.version
+        )
+    ) {
         return param.client.indices.get(param.request);
-    } else if (isE7Client<IndicesGetMapping6, IndicesGetMapping7>(param, connection.version)) {
+    } else if (
+        isE7Client<IndicesGetMapping6, IndicesGetMapping7, IndicesGetMappingRequest>(
+            param,
+            connection.version
+        )
+    ) {
         return param.client.indices.get(param.request);
     }
     return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
@@ -244,9 +339,13 @@ const getIndexApi = (connection: EsConnection, request: IndicesGet6 | IndicesGet
 const deleteDocumentsApi = (connection: EsConnection, request: DeleteByQuery6 | DeleteByQuery7) => {
     const param = { client: connection.client, request };
 
-    if (isE6Client<DeleteByQuery6, DeleteByQuery7>(param, connection.version)) {
+    if (
+        isE6Client<DeleteByQuery6, DeleteByQuery7, DeleteByQueryRequest>(param, connection.version)
+    ) {
         return param.client.deleteByQuery(param.request);
-    } else if (isE7Client<DeleteByQuery6, DeleteByQuery7>(param, connection.version)) {
+    } else if (
+        isE7Client<DeleteByQuery6, DeleteByQuery7, DeleteByQueryRequest>(param, connection.version)
+    ) {
         return param.client.deleteByQuery(param.request);
     }
     return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
@@ -255,9 +354,9 @@ const deleteDocumentsApi = (connection: EsConnection, request: DeleteByQuery6 | 
 const deleteDocumentApi = (connection: EsConnection, request: Delete6 | Delete7) => {
     const param = { client: connection.client, request };
 
-    if (isE6Client<Delete6, Delete7>(param, connection.version)) {
+    if (isE6Client<Delete6, Delete7, DeleteRequest>(param, connection.version)) {
         return param.client.delete(param.request);
-    } else if (isE7Client<Delete6, Delete7>(param, connection.version)) {
+    } else if (isE7Client<Delete6, Delete7, DeleteRequest>(param, connection.version)) {
         return param.client.delete(param.request);
     }
     return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
@@ -266,9 +365,9 @@ const deleteDocumentApi = (connection: EsConnection, request: Delete6 | Delete7)
 const countApi = (connection: EsConnection, request: Count6 | Count7) => {
     const param = { client: connection.client, request };
 
-    if (isE6Client<Count6, Count7>(param, connection.version)) {
+    if (isE6Client<Count6, Count7, CountRequest>(param, connection.version)) {
         return param.client.count(param.request);
-    } else if (isE7Client<Count6, Count7>(param, connection.version)) {
+    } else if (isE7Client<Count6, Count7, CountRequest>(param, connection.version)) {
         return param.client.count(param.request);
     }
     return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
