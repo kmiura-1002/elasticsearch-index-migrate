@@ -47,6 +47,10 @@ export class MigrationExecuteStatementDataEntity extends Entity<MigrationPlanDat
         this.props.resolvedMigration = migrationData;
     }
 
+    toMigrationPlanData() {
+        return this.props;
+    }
+
     get version() {
         return this.props.version;
     }

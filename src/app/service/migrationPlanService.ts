@@ -1,16 +1,21 @@
 import type {
-    AppliedMigration,
     MigrationConfig,
     MigrationData,
-    RequiredMigrationData,
+    MigrationExecuteConfig,
     MigrationType,
-    MigrationExecuteConfig
+    RequiredMigrationData
+} from '../types';
+import {
+    MigrationExplainPlan,
+    MigrationPlanData,
+    MigrationStates,
+    MigrationTypes,
+    Version
 } from '../types';
 import { loadMigrationScriptFile } from '../context/util/io/fileService';
 import { migrationHistoryRepository } from '../context/migration/history/migrationHistoryRepository';
 import { migrateHistorySpecByIndexName } from '../context/migration/history/spec';
-import { compare, lt, valid } from 'semver';
-import { MigrationStates, MigrationTypes, Version } from '../types';
+import { compare, valid } from 'semver';
 import { ResponseError as ResponseError6 } from 'es6/lib/errors';
 import { ResponseError as ResponseError7 } from 'es7/lib/errors';
 import { getBaselineVersion } from './migrationConfigService';
@@ -18,6 +23,7 @@ import { MigrationExecuteStatementDataEntity } from '../context/migration/execut
 import { UnsupportedVersionError } from '../context/error/UnsupportedVersionError';
 import { UnknownMigrationTargetError } from '../context/error/UnknownMigrationTargetError';
 import { IndexNotFoundError } from '../context/error/IndexNotFoundError';
+import { MigrationExplainValidationDomainService } from '../context/migration/execute_statements/MigrationExplainValidationDomainService';
 
 export const migrationPlanService = (
     targetName: string,
@@ -26,13 +32,11 @@ export const migrationPlanService = (
 ) => {
     const validateInputData = (migrationData: MigrationData[]) => {
         if (migrationData.length === 0) {
-            // TODO fix error class
             throw new UnknownMigrationTargetError(
                 `There is no migration target for ${targetName} in ${config.migration.location}.`
             );
         }
         if (migrationData.map((value) => value.version).includes(undefined)) {
-            // TODO fix error class
             throw new UnsupportedVersionError(
                 'There is a migration file of unknown version.\n' +
                     `Unknown version files: ${migrationData
@@ -45,10 +49,7 @@ export const migrationPlanService = (
     const isSupportVersionFormat = (version: string): version is Version =>
         version.match(/^(v\d+.\d+.\d+)/) !== null;
 
-    const refresh = async (): Promise<{
-        all: MigrationExecuteStatementDataEntity[];
-        pending: MigrationExecuteStatementDataEntity[];
-    }> => {
+    const refresh = async (): Promise<MigrationExplainPlan> => {
         const migrationData = loadMigrationScriptFile(targetName, [config.migration.location]);
         const baseline = getBaselineVersion(targetName, config);
         validateInputData(migrationData);
@@ -151,14 +152,11 @@ export const migrationPlanService = (
         }
     };
 
-    const validate = async (plan?: {
-        all: MigrationExecuteStatementDataEntity[];
-        pending: MigrationExecuteStatementDataEntity[];
-    }) => {
+    const validate = async (plan?: MigrationExplainPlan) => {
         const explainPlans = plan?.all ?? (await refresh()).all;
 
         return explainPlans
-            .map((plan) => planValidate(plan, executeConfig))
+            .map((plan) => MigrationExplainValidationDomainService.valid(plan, executeConfig))
             .filter(Boolean)
             .join('\n');
     };
@@ -179,7 +177,7 @@ const makeMigrationExplainPlan = (map: Map<Version, MigrationExecuteStatementDat
         .filter((value) => valid(value))
         .sort((a, b) => compare(a, b));
 
-    const migrationPlans: MigrationExecuteStatementDataEntity[] = [];
+    const migrationPlans: MigrationPlanData[] = [];
     sortedKeys.forEach((version) => {
         const migrationPlan = map.get(version);
         if (migrationPlan?.resolvedMigration && migrationPlan?.appliedMigration === undefined) {
@@ -190,10 +188,10 @@ const makeMigrationExplainPlan = (map: Map<Version, MigrationExecuteStatementDat
                     migrationPlan.lastApplied,
                     migrationPlan.resolvedMigration,
                     migrationPlan.appliedMigration
-                )
+                ).toMigrationPlanData()
             );
         } else if (migrationPlan) {
-            migrationPlans.push(migrationPlan);
+            migrationPlans.push(migrationPlan.toMigrationPlanData());
         }
     });
 
@@ -201,44 +199,4 @@ const makeMigrationExplainPlan = (map: Map<Version, MigrationExecuteStatementDat
         all: migrationPlans,
         pending: migrationPlans.filter((value) => value.state?.status === MigrationStates.PENDING)
     };
-};
-
-const generateVersion = (
-    resolvedMigration?: RequiredMigrationData,
-    appliedMigration?: AppliedMigration
-): Version | undefined => appliedMigration?.version ?? resolvedMigration?.version;
-
-const planValidate = (
-    plan: MigrationExecuteStatementDataEntity,
-    executeConfig: MigrationExecuteConfig
-) => {
-    if (plan.state?.failed && !executeConfig.future) {
-        if (plan.version) {
-            return `Detected failed migrate to version ${plan.version}(${plan.description}).`;
-        } else {
-            return `Detected failed migrate to unknown version(${plan.description}).`;
-        }
-    }
-
-    if (
-        (!executeConfig.pending && 'PENDING' === plan.state?.status) ||
-        (!executeConfig.ignored && 'IGNORED' === plan.state?.status)
-    ) {
-        if (plan.version) {
-            return `Detected version ${plan.version}(${plan.description}) migration not applied to Elasticsearch.`;
-        } else {
-            return `Detected unknown version(${plan.description}) migration not applied to Elasticsearch.`;
-        }
-    }
-
-    if (
-        plan.resolvedMigration !== undefined &&
-        plan.appliedMigration !== undefined &&
-        lt(plan.baseline, generateVersion(plan.resolvedMigration, plan.appliedMigration) ?? '') &&
-        plan.resolvedMigration.checksum !== plan.appliedMigration.checksum
-    ) {
-        return `Migration checksum mismatch for migration ${plan.resolvedMigration.version}.`;
-    }
-
-    return null;
 };
