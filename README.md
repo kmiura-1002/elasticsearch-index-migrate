@@ -18,8 +18,11 @@ You can see [a sample of this tool here](https://github.com/kmiura-1002/sample-e
 * [Query parameters](#query-parameters)
 * [Where to store migration scripts](#where-to-store-migration-scripts)
 * [Commands](#commands)
-* [Quick start with Docker](#quick-start-with-docker)
 <!-- tocstop -->
+
+# Notice
+-i, --indexName Remove the Flags option in version 0.9 or later. Instead of -i, --indexName Flags option, you can pass the value as a command argument.
+
 
 # Requirements
 * node.js (>=12.14.0)  
@@ -625,32 +628,3 @@ OPTIONS
 
 _See code: [src/commands/recovery.ts](https://github.com/kmiura-1002/elasticsearch-index-migrate/blob/v0.8.2/src/commands/recovery.ts)_
 <!-- commandsstop -->
-
-# Quick start with Docker
-
-The commands of this CLI tool are published as docker images. I think it would be more useful to use this image.
-
-## Usage
-
-Please pull the docker image.
-After that, you can run `docker run --rm` and enter any command and options to use it
-
-```sh-session
-$ docker pull kmiura1002/elasticsearch-index-migrate
-$ docker run --rm  kmiura1002/elasticsearch-index-migrate -h
-  elasticsearch-index-migrate
-  
-  VERSION
-    elasticsearch-index-migrate/0.1.2 linux-x64 node-v12.16.3
-  
-  USAGE
-    $ elasticsearch-index-migrate [COMMAND]
-  
-  COMMANDS
-    help     display help for elasticsearch-index-migrate
-    init     Set up a migration environment.
-    migrate  Migrate the index of Elasticsearch to the latest version based on the
-             execution plan.
-    plan     Outputs the migration execution plan.
-
-```
