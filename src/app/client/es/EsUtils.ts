@@ -7,11 +7,12 @@ import coerce from 'semver/functions/coerce';
 import type { Engine, ESConnectConfig, SearchEngineVersion } from '../../types';
 import type { ClientOptions as ClientOptions6 } from 'es6';
 import type { ClientOptions as ClientOptions7 } from 'es7';
+import { UnsupportedVersionError } from '../../context/error/UnsupportedVersionError';
 
 export function usedEsVersion(engine: Engine): SearchEngineVersion {
     const version = coerce(engine.version);
     if (!valid(version) || !version) {
-        throw new Error(`Invalid version of elasticsearch. version:${version}`);
+        throw new UnsupportedVersionError(`Invalid version of elasticsearch. version:${version}`);
     } else {
         if (engine.searchEngine === 'opensearch') {
             return {
@@ -28,7 +29,7 @@ export function usedEsVersion(engine: Engine): SearchEngineVersion {
                 patch: patch(version)
             };
         }
-        throw new Error(`Unknown search engine: ${engine}`);
+        throw new UnsupportedVersionError(`Unknown search engine: ${engine}`);
     }
 }
 

@@ -39,6 +39,7 @@ import type { ApiResponse as ApiResponse7 } from 'es7/lib/Transport';
 import type { ClientOptions as Es7ClientOptions } from 'es7';
 import type { ClientOptions as Es6ClientOptions } from 'es6';
 import { Document } from '../../types';
+import { UnsupportedVersionError } from '../../context/error/UnsupportedVersionError';
 
 type EsConnection = {
     client: Es6Client | Es7Client;
@@ -66,12 +67,14 @@ function esClientBind(esConfig: ESConfig): EsConnection {
                     version
                 };
             default:
-                throw new Error(
+                throw new UnsupportedVersionError(
                     `${esConfig.version} is unsupported. support version is 6.x or 7.x.`
                 );
         }
     } else {
-        throw new Error(`Unknown version:${esConfig.version}. support version is 6.x or 7.x.`);
+        throw new UnsupportedVersionError(
+            `Unknown version:${esConfig.version}. support version is 6.x or 7.x.`
+        );
     }
 }
 
@@ -295,7 +298,7 @@ export function useElasticsearchClient(connectConf: ESConfig) {
 
     const version = (): SearchEngineVersion => {
         if (connection.version) return connection.version;
-        else throw new Error('illegal version error');
+        else throw new UnsupportedVersionError('illegal version error');
     };
 
     const putSetting = (

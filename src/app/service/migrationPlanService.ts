@@ -15,6 +15,9 @@ import { ResponseError as ResponseError6 } from 'es6/lib/errors';
 import { ResponseError as ResponseError7 } from 'es7/lib/errors';
 import { getBaselineVersion } from './migrationConfigService';
 import { MigrationExecuteStatementDataEntity } from '../context/migration/execute_statements/migrationExecuteStatementDataEntity';
+import { UnsupportedVersionError } from '../context/error/UnsupportedVersionError';
+import { UnknownMigrationTargetError } from '../context/error/UnknownMigrationTargetError';
+import { IndexNotFoundError } from '../context/error/IndexNotFoundError';
 
 export const migrationPlanService = (
     targetName: string,
@@ -24,13 +27,13 @@ export const migrationPlanService = (
     const validateInputData = (migrationData: MigrationData[]) => {
         if (migrationData.length === 0) {
             // TODO fix error class
-            throw new Error(
+            throw new UnknownMigrationTargetError(
                 `There is no migration target for ${targetName} in ${config.migration.location}.`
             );
         }
         if (migrationData.map((value) => value.version).includes(undefined)) {
             // TODO fix error class
-            throw new Error(
+            throw new UnsupportedVersionError(
                 'There is a migration file of unknown version.\n' +
                     `Unknown version files: ${migrationData
                         .filter((value) => value.version === undefined)
@@ -137,10 +140,10 @@ export const migrationPlanService = (
         } catch (e) {
             if (e instanceof ResponseError6 || e instanceof ResponseError7) {
                 if (e.message === 'index_not_found_exception') {
-                    // TODO fix error class
-                    throw new Error(
+                    throw new IndexNotFoundError(
                         'History index not found.\n' +
-                            'Please check if migrate_history exists in Elasticsearch.'
+                            'Please check if migrate_history exists in Elasticsearch.',
+                        e
                     );
                 }
             }
