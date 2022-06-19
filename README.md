@@ -20,16 +20,16 @@ You can see [a sample of this tool here](https://github.com/kmiura-1002/sample-e
 * [Commands](#commands)
 <!-- tocstop -->
 
-# Notice
+# Breaking change()
 -i, --indexName Remove the Flags option in version 0.9 or later. Instead of -i, --indexName Flags option, you can pass the value as a command argument.
 
 
 # Requirements
-* node.js (>=12.14.0)  
+* node.js (>=16.15.1)  
 * npm (>=6.14.7)  
 * elasticsearch 6.x and 7.x  
 
-This project has been tested with node.js(v12.14.0, v14.15.5), npm(6.14.7) and elasticsearch(6.8.12 and 7.7.1).
+This project has been tested with node.js(v16.15.1, v18.4.0), npm(6.14.7) and elasticsearch(6.8.12 and 7.7.1).
 
 # Usage
 <!-- usage -->
