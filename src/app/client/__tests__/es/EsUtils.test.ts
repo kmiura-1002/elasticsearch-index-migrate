@@ -6,6 +6,7 @@ jest.mock('fs', () => ({
 import fs from 'fs';
 import { esConnectConf, usedEsVersion } from '../../es/EsUtils';
 import type { ESConnectConfig } from '../../../types';
+import { UnsupportedVersionError } from '../../../context/error/UnsupportedVersionError';
 
 describe('EsUtils', () => {
     it('can be connect when cloud id access', () => {
@@ -90,11 +91,12 @@ describe('EsUtils', () => {
             minor: 0,
             patch: 0
         });
-        expect(() =>
+        const actual = () =>
             usedEsVersion({
                 version: '',
                 searchEngine: 'opensearch'
-            })
-        ).toThrowError(new Error('Invalid version of elasticsearch. version:null'));
+            });
+        expect(actual).toThrow(UnsupportedVersionError);
+        expect(actual).toThrowError(new Error('Invalid version of elasticsearch. version:null'));
     });
 });

@@ -7,6 +7,7 @@ import { IndicesExists as IndicesExists7 } from 'es7/api/requestParams';
 import { CliUx } from '@oclif/core';
 import type { MigrationConfig } from '../../types';
 import { MigrationTypes } from '../../types';
+import { SettingNotFoundError } from '../../context/error/SettingNotFoundError';
 
 jest.mock('../../client/es/ElasticsearchClient');
 const spyInfo = jest.spyOn(CliUx.ux, 'info');
@@ -151,7 +152,9 @@ describe('migrationBaselineVersionService', () => {
             }
         } as Required<MigrationConfig>;
         const { makeBaseline } = migrationBaselineVersionService('test', '', config);
-        await expect(makeBaseline()).rejects.toThrowError(
+        const actual = makeBaseline();
+        await expect(actual).rejects.toThrow(SettingNotFoundError);
+        await expect(actual).rejects.toThrowError(
             new Error(`The baseline setting for index(test) does not exist.`)
         );
     });
