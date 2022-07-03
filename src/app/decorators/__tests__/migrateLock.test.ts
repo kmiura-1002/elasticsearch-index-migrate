@@ -17,7 +17,8 @@ import type {
     IndicesExists as IndicesExists7,
     Search as Search7
 } from 'es7/api/requestParams';
-import type { Document, LockIndex } from '../../types';
+import type { LockIndex } from '../../types';
+import { Document } from '../../client/es/types';
 
 jest.mock('../../config/flags/flagsLoader');
 jest.mock('../../client/es/ElasticsearchClient');

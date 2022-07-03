@@ -1,9 +1,9 @@
 import { CliUx, Command } from '@oclif/core';
 import { readOptions } from '../config/flags/flagsLoader';
+import type { ESConfig, LockIndex } from '../types';
 import { MIGRATION_LOCK_INDEX_NAME } from '../types';
 import { useElasticsearchClient } from '../client/es/ElasticsearchClient';
 import { format } from 'date-fns';
-import type { ESConfig, LockIndex } from '../types';
 
 export function migrateLock() {
     return function (
@@ -74,7 +74,7 @@ const makeLock = async (commandId: string, esConfig: ESConfig) => {
                 created: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"),
                 command: commandId
             }
-        }).then((value) => value.body._id);
+        }).then((value) => value._id);
 
         await close();
 

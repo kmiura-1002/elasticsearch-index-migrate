@@ -6,13 +6,19 @@ import type { ClientOptions as Es6ClientOptions } from 'es6';
 import { Client as Es6Client } from 'es6';
 import { esConnectConf, usedEsVersion } from './EsUtils';
 import type { ESConfig, SearchEngineVersion, SimpleJson } from '../../types';
-import { Document } from '../../types';
+import {
+    AcknowledgedResponse,
+    Document,
+    EsConnection,
+    HealthStatus,
+    MappingResponse,
+    WriteResponse
+} from './types';
 import type {
     ClusterHealth as ClusterHealth6,
     Count as Count6,
     Delete as Delete6,
     DeleteByQuery as DeleteByQuery6,
-    Generic as Generic6,
     Index as Index6,
     IndicesCreate as IndicesCreate6,
     IndicesDelete as IndicesDelete6,
@@ -28,7 +34,6 @@ import type {
     Count as Count7,
     Delete as Delete7,
     DeleteByQuery as DeleteByQuery7,
-    Generic as Generic7,
     Index as Index7,
     IndicesCreate as IndicesCreate7,
     IndicesDelete as IndicesDelete7,
@@ -43,6 +48,7 @@ import type {
     ClusterHealthRequest,
     CountRequest,
     DeleteByQueryRequest,
+    DeleteByQueryResponse,
     DeleteRequest,
     IndexRequest,
     IndicesCreateRequest,
@@ -51,17 +57,25 @@ import type {
     IndicesGetMappingRequest,
     IndicesPutMappingRequest,
     IndicesPutSettingsRequest,
-    RequestBase,
     SearchRequest
 } from 'es8/lib/api/types';
-import type { ApiResponse as ApiResponse6 } from 'es6/lib/Transport';
-import type { ApiResponse as ApiResponse7 } from 'es7/lib/Transport';
 import { UnsupportedVersionError } from '../../context/error/UnsupportedVersionError';
-
-type EsConnection = {
-    client: Es6Client | Es7Client | Es8Client;
-    version: SearchEngineVersion;
-};
+import {
+    closeConnection,
+    countApi,
+    createIndexApi,
+    deleteApi,
+    deleteDocumentApi,
+    deleteDocumentsApi,
+    existsApi,
+    getIndexApi,
+    getMappingApi,
+    healthCheckApi,
+    postDocumentApi,
+    putMappingApi,
+    putSettingApi,
+    searchApi
+} from './api';
 
 function esClientBind(esConfig: ESConfig): EsConnection {
     const connectConf = esConnectConf(esConfig.connect);
@@ -100,300 +114,27 @@ function esClientBind(esConfig: ESConfig): EsConnection {
     }
 }
 
-function convertGetMappingResponse(
-    param: IndicesGetMapping6 | IndicesGetMapping7,
-    res: ApiResponse6 | ApiResponse7
-): Array<SimpleJson> {
-    if (param.index === undefined) {
-        return [res.body] as SimpleJson[];
-    }
-    if (Array.isArray(param.index)) {
-        return param.index.flatMap((value) => res.body[value] as SimpleJson);
-    }
-    return [res.body[param.index]] as SimpleJson[];
-}
-
-function isE6Client<
-    ES6Request extends Generic6,
-    ES7Request extends Generic7,
-    ES8Request extends RequestBase
->(
-    param: {
-        client: Es6Client | Es7Client | Es8Client;
-        request?: ES6Request | ES7Request | ES8Request;
-    },
-    version: SearchEngineVersion
-): param is { client: Es6Client; request: ES6Request } {
-    return version.major === 6;
-}
-
-function isE7Client<
-    ES6Request extends Generic6,
-    ES7Request extends Generic7,
-    ES8Request extends RequestBase
->(
-    param: {
-        client: Es6Client | Es7Client | Es8Client;
-        request?: ES6Request | ES7Request | ES8Request;
-    },
-    version: SearchEngineVersion
-): param is { client: Es7Client; request: ES7Request } {
-    return version.major === 7;
-}
-
-const healthCheckApi = (
-    connection: EsConnection,
-    request?: ClusterHealth6 | ClusterHealth7 | ClusterHealthRequest
-) => {
-    const param = { client: connection.client, request: request ?? {} };
-
-    if (
-        isE6Client<ClusterHealth6, ClusterHealth7, ClusterHealthRequest>(param, connection.version)
-    ) {
-        return param.client.cluster.health({ ...param.request });
-    } else if (
-        isE7Client<ClusterHealth6, ClusterHealth7, ClusterHealthRequest>(param, connection.version)
-    ) {
-        return param.client.cluster.health({ ...param.request });
-    }
-    return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
-};
-
-const putMappingApi = (
-    connection: EsConnection,
-    request: IndicesPutMapping6 | IndicesPutMapping7
-) => {
-    const param = { client: connection.client, request };
-
-    if (
-        isE6Client<IndicesPutMapping6, IndicesPutMapping7, IndicesPutMappingRequest>(
-            param,
-            connection.version
-        )
-    ) {
-        return param.client.indices.putMapping({
-            ...param.request,
-            type: param.request.type ? param.request.type : '_doc'
-        });
-    } else if (
-        isE7Client<IndicesPutMapping6, IndicesPutMapping7, IndicesPutMappingRequest>(
-            param,
-            connection.version
-        )
-    ) {
-        return param.client.indices.putMapping(param.request);
-    }
-    return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
-};
-
-const createIndexApi = (connection: EsConnection, request: IndicesCreate6 | IndicesCreate7) => {
-    const param = { client: connection.client, request };
-
-    if (
-        isE6Client<IndicesCreate6, IndicesCreate7, IndicesCreateRequest>(param, connection.version)
-    ) {
-        return param.client.indices.create(param.request);
-    } else if (
-        isE7Client<IndicesCreate6, IndicesCreate7, IndicesCreateRequest>(param, connection.version)
-    ) {
-        return param.client.indices.create(param.request);
-    }
-    return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
-};
-
-const searchApi = (connection: EsConnection, request: Search6 | Search7) => {
-    const param = { client: connection.client, request };
-
-    if (isE6Client<Search6, Search7, SearchRequest>(param, connection.version)) {
-        return param.client.search(param.request);
-    } else if (isE7Client<Search6, Search7, SearchRequest>(param, connection.version)) {
-        return param.client.search(param.request);
-    }
-    return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
-};
-
-const putSettingApi = (
-    connection: EsConnection,
-    request: IndicesPutSettings6 | IndicesPutSettings7
-) => {
-    const param = { client: connection.client, request };
-
-    if (
-        isE6Client<IndicesPutSettings6, IndicesPutSettings7, IndicesPutSettingsRequest>(
-            param,
-            connection.version
-        )
-    ) {
-        return param.client.indices.putSettings(param.request);
-    } else if (
-        isE7Client<IndicesPutSettings6, IndicesPutSettings7, IndicesPutSettingsRequest>(
-            param,
-            connection.version
-        )
-    ) {
-        return param.client.indices.putSettings(param.request);
-    }
-    return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
-};
-
-const existsApi = (connection: EsConnection, request: IndicesExists6 | IndicesExists7) => {
-    const param = { client: connection.client, request };
-
-    if (
-        isE6Client<IndicesExists6, IndicesExists7, IndicesExistsRequest>(param, connection.version)
-    ) {
-        return param.client.indices.exists(param.request);
-    } else if (
-        isE7Client<IndicesExists6, IndicesExists7, IndicesExistsRequest>(param, connection.version)
-    ) {
-        return param.client.indices.exists(param.request);
-    }
-    return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
-};
-
-const deleteApi = (connection: EsConnection, request: IndicesDelete6 | IndicesDelete7) => {
-    const param = { client: connection.client, request };
-
-    if (
-        isE6Client<IndicesDelete6, IndicesDelete7, IndicesDeleteRequest>(param, connection.version)
-    ) {
-        return param.client.indices.delete(param.request);
-    } else if (
-        isE7Client<IndicesDelete6, IndicesDelete7, IndicesDeleteRequest>(param, connection.version)
-    ) {
-        return param.client.indices.delete(param.request);
-    }
-    return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
-};
-
-const postDocumentApi = (connection: EsConnection, request: Index6 | Index7) => {
-    const param = { client: connection.client, request };
-
-    if (isE6Client<Index6, Index7, IndexRequest>(param, connection.version)) {
-        return param.client.index({
-            ...param.request,
-            type: param.request.type ? param.request.type : '_doc'
-        });
-    } else if (isE7Client<Index6, Index7, IndexRequest>(param, connection.version)) {
-        return param.client.index(param.request);
-    }
-    return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
-};
-
-const closeConnection = async (connection: EsConnection) => {
-    const param = { client: connection.client };
-
-    if (isE6Client(param, connection.version)) {
-        return param.client.close();
-    } else if (isE7Client<Index6, Index7, IndexRequest>(param, connection.version)) {
-        return param.client.close();
-    }
-    return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
-};
-
-const getMappingApi = (
-    connection: EsConnection,
-    request: IndicesGetMapping6 | IndicesGetMapping7
-) => {
-    const param = { client: connection.client, request };
-
-    if (
-        isE6Client<IndicesGetMapping6, IndicesGetMapping7, IndicesGetMappingRequest>(
-            param,
-            connection.version
-        )
-    ) {
-        return param.client.indices.getMapping(param.request);
-    } else if (
-        isE7Client<IndicesGetMapping6, IndicesGetMapping7, IndicesGetMappingRequest>(
-            param,
-            connection.version
-        )
-    ) {
-        return param.client.indices.getMapping(param.request);
-    }
-    return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
-};
-
-const getIndexApi = (connection: EsConnection, request: IndicesGet6 | IndicesGet7) => {
-    const param = { client: connection.client, request };
-
-    if (
-        isE6Client<IndicesGetMapping6, IndicesGetMapping7, IndicesGetMappingRequest>(
-            param,
-            connection.version
-        )
-    ) {
-        return param.client.indices.get(param.request);
-    } else if (
-        isE7Client<IndicesGetMapping6, IndicesGetMapping7, IndicesGetMappingRequest>(
-            param,
-            connection.version
-        )
-    ) {
-        return param.client.indices.get(param.request);
-    }
-    return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
-};
-
-const deleteDocumentsApi = (connection: EsConnection, request: DeleteByQuery6 | DeleteByQuery7) => {
-    const param = { client: connection.client, request };
-
-    if (
-        isE6Client<DeleteByQuery6, DeleteByQuery7, DeleteByQueryRequest>(param, connection.version)
-    ) {
-        return param.client.deleteByQuery(param.request);
-    } else if (
-        isE7Client<DeleteByQuery6, DeleteByQuery7, DeleteByQueryRequest>(param, connection.version)
-    ) {
-        return param.client.deleteByQuery(param.request);
-    }
-    return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
-};
-
-const deleteDocumentApi = (connection: EsConnection, request: Delete6 | Delete7) => {
-    const param = { client: connection.client, request };
-
-    if (isE6Client<Delete6, Delete7, DeleteRequest>(param, connection.version)) {
-        return param.client.delete(param.request);
-    } else if (isE7Client<Delete6, Delete7, DeleteRequest>(param, connection.version)) {
-        return param.client.delete(param.request);
-    }
-    return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
-};
-
-const countApi = (connection: EsConnection, request: Count6 | Count7) => {
-    const param = { client: connection.client, request };
-
-    if (isE6Client<Count6, Count7, CountRequest>(param, connection.version)) {
-        return param.client.count(param.request);
-    } else if (isE7Client<Count6, Count7, CountRequest>(param, connection.version)) {
-        return param.client.count(param.request);
-    }
-    return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
-};
-
 export function useElasticsearchClient(connectConf: ESConfig) {
     const connection = esClientBind(connectConf);
 
-    const healthCheck = (request?: ClusterHealth6 | ClusterHealth7): Promise<{ status: string }> =>
-        healthCheckApi(connection, request).then((value) => ({ status: value.body.status }));
+    const healthCheck = (
+        request?: ClusterHealth6 | ClusterHealth7 | ClusterHealthRequest
+    ): Promise<HealthStatus> => healthCheckApi(connection, request);
 
     const putMapping = (
-        request: IndicesPutMapping6 | IndicesPutMapping7
-    ): Promise<ApiResponse6<any, any> | ApiResponse7<any, any>> =>
-        putMappingApi(connection, request);
+        request: IndicesPutMapping6 | IndicesPutMapping7 | IndicesPutMappingRequest
+    ): Promise<AcknowledgedResponse> => putMappingApi(connection, request);
 
     const createIndex = (
-        request: IndicesCreate6 | IndicesCreate7
-    ): Promise<ApiResponse6<any, any> | ApiResponse7<any, any>> =>
-        createIndexApi(connection, request);
+        request: IndicesCreate6 | IndicesCreate7 | IndicesCreateRequest
+    ): Promise<AcknowledgedResponse> => createIndexApi(connection, request);
 
-    const search = <R>(param: Search6 | Search7): Promise<Document<R>[]> =>
-        searchApi(connection, param).then((value) => value.body.hits.hits);
+    const search = <R>(param: Search6 | Search7 | SearchRequest): Promise<Document<R>[]> =>
+        searchApi(connection, param);
 
-    const exists = (param: IndicesExists6 | IndicesExists7): Promise<boolean> =>
-        existsApi(connection, param).then((value) => value.body);
+    const exists = (
+        param: IndicesExists6 | IndicesExists7 | IndicesExistsRequest
+    ): Promise<boolean> => existsApi(connection, param);
 
     const version = (): SearchEngineVersion => {
         if (connection.version) return connection.version;
@@ -401,40 +142,34 @@ export function useElasticsearchClient(connectConf: ESConfig) {
     };
 
     const putSetting = (
-        param: IndicesPutSettings6 | IndicesPutSettings7
-    ): Promise<ApiResponse6<any, any> | ApiResponse7<any, any>> => putSettingApi(connection, param);
+        param: IndicesPutSettings6 | IndicesPutSettings7 | IndicesPutSettingsRequest
+    ): Promise<AcknowledgedResponse> => putSettingApi(connection, param);
 
     const deleteIndex = (
-        param: IndicesDelete6 | IndicesDelete7
-    ): Promise<ApiResponse6<any, any> | ApiResponse7<any, any>> => deleteApi(connection, param);
+        param: IndicesDelete6 | IndicesDelete7 | IndicesDeleteRequest
+    ): Promise<AcknowledgedResponse> => deleteApi(connection, param);
 
-    const postDocument = (
-        param: Index6 | Index7
-    ): Promise<ApiResponse6<any, any> | ApiResponse7<any, any>> =>
+    const postDocument = (param: Index6 | Index7 | IndexRequest): Promise<WriteResponse> =>
         postDocumentApi(connection, param);
 
     const close = (): Promise<void> => closeConnection(connection);
 
     const getMapping = (
-        param: IndicesGetMapping6 | IndicesGetMapping7
-    ): Promise<Array<SimpleJson>> =>
-        getMappingApi(connection, param).then((value) => convertGetMappingResponse(param, value));
+        param: IndicesGetMapping6 | IndicesGetMapping7 | IndicesGetMappingRequest
+    ): Promise<MappingResponse> => getMappingApi(connection, param);
 
     const getIndex = (param: IndicesGet6 | IndicesGet7): Promise<SimpleJson> =>
-        getIndexApi(connection, param).then((param) => param.body);
+        getIndexApi(connection, param);
 
     const deleteDocuments = (
-        param: DeleteByQuery6 | DeleteByQuery7
-    ): Promise<ApiResponse6<any, any> | ApiResponse7<any, any>> =>
-        deleteDocumentsApi(connection, param);
+        param: DeleteByQuery6 | DeleteByQuery7 | DeleteByQueryRequest
+    ): Promise<DeleteByQueryResponse> => deleteDocumentsApi(connection, param);
 
-    const deleteDocument = (
-        param: Delete6 | Delete7
-    ): Promise<ApiResponse6<any, any> | ApiResponse7<any, any>> =>
+    const deleteDocument = (param: Delete6 | Delete7 | DeleteRequest): Promise<WriteResponse> =>
         deleteDocumentApi(connection, param);
 
-    const count = (param: Count6 | Count7): Promise<number> =>
-        countApi(connection, param).then((value) => value.body.count);
+    const count = (param: Count6 | Count7 | CountRequest): Promise<number> =>
+        countApi(connection, param);
 
     return {
         healthCheck,

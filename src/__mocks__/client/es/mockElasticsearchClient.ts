@@ -1,5 +1,4 @@
-import { ClusterStatuses } from '../../../app/types';
-import type { ESConfig, SearchEngineVersion, SimpleJson } from '../../../app/types';
+import type { ESConfig, SearchEngineVersion } from '../../../app/types';
 import type {
     ClusterHealth as ClusterHealth6,
     DeleteByQuery as DeleteByQuery6,
@@ -26,8 +25,14 @@ import type {
     IndicesPutSettings as IndicesPutSettings7,
     Search as Search7
 } from 'es7/api/requestParams';
-import type { ApiResponse as ApiResponse6 } from 'es6/lib/Transport';
-import type { ApiResponse as ApiResponse7 } from 'es7/lib/Transport';
+import {
+    AcknowledgedResponse,
+    Document,
+    HealthStatus,
+    MappingResponse,
+    Record,
+    WriteResponse
+} from '../../../app/client/es/types';
 
 export const getMockElasticsearchClient = jest.fn().mockImplementation(() =>
     useElasticsearchClient({
@@ -41,33 +46,31 @@ export function useElasticsearchClient(_connectConf: ESConfig) {
     const healthCheck = jest
         .fn()
         .mockImplementation(
-            (_request?: ClusterHealth6 | ClusterHealth7): Promise<{ status: string }> =>
-                Promise.resolve({ status: ClusterStatuses.GREEN })
+            (_request?: ClusterHealth6 | ClusterHealth7): Promise<HealthStatus> =>
+                Promise.resolve('green')
         );
 
     const putMapping = jest
         .fn()
         .mockImplementation(
-            (
-                _request: IndicesPutMapping6 | IndicesPutMapping7
-            ): Promise<ApiResponse6<any, any> | ApiResponse7<any, any>> => {
-                return Promise.resolve({ statusCode: 200 } as ApiResponse6 | ApiResponse7);
+            (_request: IndicesPutMapping6 | IndicesPutMapping7): Promise<AcknowledgedResponse> => {
+                return Promise.resolve({ acknowledged: true });
             }
         );
 
     const createIndex = jest
         .fn()
         .mockImplementation(
-            (
-                _request: IndicesCreate6 | IndicesCreate7
-            ): Promise<ApiResponse6<any, any> | ApiResponse7<any, any>> => {
-                return Promise.resolve({ statusCode: 200 } as ApiResponse6 | ApiResponse7);
+            (_request: IndicesCreate6 | IndicesCreate7): Promise<AcknowledgedResponse> => {
+                return Promise.resolve({ acknowledged: true });
             }
         );
 
-    const search = jest.fn().mockImplementation(<R>(_param: Search6 | Search7): Promise<R[]> => {
-        return Promise.resolve([]);
-    });
+    const search = jest
+        .fn()
+        .mockImplementation(<R>(_param: Search6 | Search7): Promise<Document<R>[]> => {
+            return Promise.resolve([]);
+        });
 
     const exists = jest
         .fn()
@@ -87,89 +90,78 @@ export function useElasticsearchClient(_connectConf: ESConfig) {
     const putSetting = jest
         .fn()
         .mockImplementation(
-            (
-                _param: IndicesPutSettings6 | IndicesPutSettings7
-            ): Promise<ApiResponse6<any, any> | ApiResponse7<any, any>> => {
-                return Promise.resolve({ statusCode: 200 } as ApiResponse6 | ApiResponse7);
+            (_param: IndicesPutSettings6 | IndicesPutSettings7): Promise<AcknowledgedResponse> => {
+                return Promise.resolve({ acknowledged: true });
             }
         );
 
     const deleteIndex = jest
         .fn()
         .mockImplementation(
-            (
-                _param: IndicesDelete6 | IndicesDelete7
-            ): Promise<ApiResponse6<any, any> | ApiResponse7<any, any>> => {
-                return Promise.resolve({ statusCode: 200 } as ApiResponse6 | ApiResponse7);
+            (_param: IndicesDelete6 | IndicesDelete7): Promise<AcknowledgedResponse> => {
+                return Promise.resolve({ acknowledged: true });
             }
         );
 
     const postDocument = jest
         .fn()
-        .mockImplementation(
-            (_param: Index6 | Index7): Promise<ApiResponse6<any, any> | ApiResponse7<any, any>> => {
-                return Promise.resolve({
-                    body: {
-                        _index: 'test',
-                        _type: '_doc',
-                        _id: '7SMGOn8B-6SrJCEhwncT',
-                        _version: 1,
-                        result: 'created',
-                        _shards: {
-                            total: 1,
-                            successful: 1,
-                            failed: 0
-                        },
-                        _seq_no: 0,
-                        _primary_term: 1
-                    },
-                    statusCode: 201
-                } as ApiResponse6 | ApiResponse7);
-            }
-        );
+        .mockImplementation((_param: Index6 | Index7): Promise<WriteResponse> => {
+            return Promise.resolve({
+                _index: 'test',
+                _type: '_doc',
+                _id: '7SMGOn8B-6SrJCEhwncT',
+                _version: 1,
+                result: 'created',
+                _shards: {
+                    total: 1,
+                    successful: 1,
+                    failed: 0
+                },
+                _seq_no: 0,
+                _primary_term: 1
+            });
+        });
 
     const close = jest.fn().mockImplementation((): Promise<void> => Promise.resolve());
 
     const getMapping = jest.fn().mockImplementation(
-        (_param: IndicesGetMapping6 | IndicesGetMapping7): Promise<Array<SimpleJson>> =>
-            Promise.resolve([
-                {
-                    migrate_history: {
-                        mappings: {
-                            properties: {
-                                description: {
-                                    type: 'text'
-                                },
-                                execution_time: {
-                                    type: 'long'
-                                },
-                                index_name: {
-                                    type: 'keyword'
-                                },
-                                installed_on: {
-                                    type: 'date'
-                                },
-                                migrate_version: {
-                                    type: 'keyword'
-                                },
-                                script_name: {
-                                    type: 'keyword'
-                                },
-                                script_type: {
-                                    type: 'keyword'
-                                },
-                                success: {
-                                    type: 'boolean'
-                                }
+        (_param: IndicesGetMapping6 | IndicesGetMapping7): Promise<MappingResponse> =>
+            Promise.resolve({
+                migrate_history: {
+                    mappings: {
+                        properties: {
+                            description: {
+                                type: 'text'
+                            },
+                            execution_time: {
+                                type: 'long'
+                            },
+                            index_name: {
+                                type: 'keyword'
+                            },
+                            installed_on: {
+                                type: 'date'
+                            },
+                            migrate_version: {
+                                type: 'keyword'
+                            },
+                            script_name: {
+                                type: 'keyword'
+                            },
+                            script_type: {
+                                type: 'keyword'
+                            },
+                            success: {
+                                type: 'boolean'
                             }
                         }
                     }
                 }
-            ])
+            })
     );
 
     const getIndex = jest.fn().mockImplementation(
-        (_param: IndicesGet6 | IndicesGet7): Promise<SimpleJson> =>
+        (_param: IndicesGet6 | IndicesGet7): Promise<Record<string, any>> =>
             Promise.resolve({
                 settings: {
                     index: {

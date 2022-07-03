@@ -1,0 +1,14 @@
+export { healthCheckApi } from './healthCheckApi';
+export { putMappingApi } from './putMappingApi';
+export { createIndexApi } from './createIndexApi';
+export { searchApi } from './searchApi';
+export { existsApi } from './existsApi';
+export { putSettingApi } from './putSettingApi';
+export { deleteApi } from './deleteApi';
+export { postDocumentApi } from './postDocumentApi';
+export { closeConnection } from './closeConnection';
+export { getMappingApi } from './getMappingApi';
+export { getIndexApi } from './getIndexApi';
+export { deleteDocumentsApi } from './deleteDocumentsApi';
+export { countApi } from './countApi';
+export { deleteDocumentApi } from './deleteDocumentApi';

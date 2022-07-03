@@ -1,5 +1,5 @@
 import { migrationPlanService } from '../migrationPlanService';
-import { defaultPlanExecutionConfig } from '../../definision';
+import { defaultPlanExecutionConfig } from '../../definitions';
 import { MIGRATE_HISTORY_INDEX_NAME, MigrationConfig, MigrationTypes } from '../../types';
 import { useElasticsearchClient } from '../../client/es/ElasticsearchClient';
 import v7HistoryMapping from '../../../resources/mapping/migrate_history_esV7.json';

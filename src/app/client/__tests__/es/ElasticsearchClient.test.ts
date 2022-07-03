@@ -29,7 +29,7 @@ describe('Elasticsearch client test', () => {
         it('can call Create index api', async () => {
             const index = `test_index_${Math.random().toString(32).substring(2)}`;
             const create = await client.createIndex({ index });
-            expect(create.statusCode).toEqual(200);
+            expect(create.acknowledged).toEqual(true);
             await client.deleteIndex({ index });
         });
 
@@ -55,7 +55,7 @@ describe('Elasticsearch client test', () => {
                     }
                 }
             });
-            expect(ret.statusCode).toEqual(200);
+            expect(ret.acknowledged).toEqual(true);
             await client.deleteIndex({ index });
         });
 
@@ -72,7 +72,7 @@ describe('Elasticsearch client test', () => {
                     }
                 }
             });
-            expect(ret.statusCode).toEqual(200);
+            expect(ret.acknowledged).toEqual(true);
             await client.deleteIndex({ index });
         });
 
@@ -87,7 +87,7 @@ describe('Elasticsearch client test', () => {
                     }
                 }
             });
-            expect(ret.statusCode).toEqual(200);
+            expect(ret.acknowledged).toEqual(true);
             await client.deleteIndex({ index });
         });
 
@@ -101,7 +101,7 @@ describe('Elasticsearch client test', () => {
                 }
             });
 
-            expect(ret.statusCode).toEqual(201);
+            expect(ret._index).toEqual(index);
             await client.deleteIndex({ index });
         });
 
@@ -122,13 +122,14 @@ describe('Elasticsearch client test', () => {
                 }
             });
             const ret = await client.getMapping({ index });
-            expect(ret).toHaveLength(1);
-            expect(ret[0]).toEqual({
-                mappings: {
-                    test: {
-                        properties: {
-                            test_name: {
-                                type: 'keyword'
+            expect(ret).toEqual({
+                [index]: {
+                    mappings: {
+                        test: {
+                            properties: {
+                                test_name: {
+                                    type: 'keyword'
+                                }
                             }
                         }
                     }
@@ -154,12 +155,13 @@ describe('Elasticsearch client test', () => {
                 }
             });
             const ret = await client.getMapping({ index, include_type_name: false });
-            expect(ret).toHaveLength(1);
-            expect(ret[0]).toEqual({
-                mappings: {
-                    properties: {
-                        test_name: {
-                            type: 'keyword'
+            expect(ret).toEqual({
+                [index]: {
+                    mappings: {
+                        properties: {
+                            test_name: {
+                                type: 'keyword'
+                            }
                         }
                     }
                 }
@@ -233,7 +235,7 @@ describe('Elasticsearch client test', () => {
                     },
                     refresh: 'true'
                 })
-                .then((value) => expect(value.statusCode).toEqual(201));
+                .then((value) => expect(value._index).toEqual(index));
 
             await client.search({ index }).then((value) => {
                 expect(value[0]._source).toEqual({
@@ -255,7 +257,7 @@ describe('Elasticsearch client test', () => {
                         }
                     }
                 })
-                .then((value) => expect(value.statusCode).toEqual(200));
+                .then((value) => expect(value.deleted).toEqual(1));
 
             await client.search({ index }).then((value) => {
                 expect(value).toHaveLength(0);
@@ -399,7 +401,7 @@ describe('Elasticsearch client test', () => {
                     },
                     refresh: 'true'
                 })
-                .then((value) => expect(value.statusCode).toEqual(201));
+                .then((value) => expect(value._index).toEqual(index));
 
             await client.search({ index }).then((value) => {
                 expect(value[0]._source).toEqual({
@@ -458,9 +460,7 @@ describe('Elasticsearch client test', () => {
         });
 
         it('can call health check api', async () => {
-            await expect(client.healthCheck()).resolves.toEqual({
-                status: 'green'
-            });
+            await expect(client.healthCheck()).resolves.toEqual('green');
         });
 
         it('can call close client', async () => {
@@ -496,7 +496,7 @@ describe('Elasticsearch client test', () => {
         it('can call Create index api', async () => {
             const index = `test_index_${Math.random().toString(32).substring(2)}`;
             const create = await client.createIndex({ index });
-            expect(create.statusCode).toEqual(200);
+            expect(create.acknowledged).toEqual(true);
             await client.deleteIndex({ index });
         });
 
@@ -521,7 +521,7 @@ describe('Elasticsearch client test', () => {
                     }
                 }
             });
-            expect(ret.statusCode).toEqual(200);
+            expect(ret.acknowledged).toEqual(true);
             await client.deleteIndex({ index });
         });
 
@@ -536,7 +536,7 @@ describe('Elasticsearch client test', () => {
                     }
                 }
             });
-            expect(ret.statusCode).toEqual(200);
+            expect(ret.acknowledged).toEqual(true);
             await client.deleteIndex({ index });
         });
 
@@ -550,7 +550,7 @@ describe('Elasticsearch client test', () => {
                 }
             });
 
-            expect(ret.statusCode).toEqual(201);
+            expect(ret._index).toEqual(index);
             await client.deleteIndex({ index });
         });
 
@@ -565,7 +565,7 @@ describe('Elasticsearch client test', () => {
                 }
             });
 
-            expect(ret.statusCode).toEqual(201);
+            expect(ret._index).toEqual(index);
             await client.deleteIndex({ index });
         });
 
@@ -601,13 +601,10 @@ describe('Elasticsearch client test', () => {
                 }
             });
             const ret = await client.getMapping({ index });
-            expect(ret).toHaveLength(1);
-            expect(ret[0]).toEqual({
-                mappings: {
-                    properties: {
-                        test_name: {
-                            type: 'keyword'
-                        }
+            expect(ret).toEqual({
+                [index]: {
+                    test_name: {
+                        type: 'keyword'
                     }
                 }
             });
@@ -632,14 +629,9 @@ describe('Elasticsearch client test', () => {
                 }
             });
             const ret = await client.getMapping({ index, include_type_name: false });
-            expect(ret).toHaveLength(1);
-            expect(ret[0]).toEqual({
-                mappings: {
-                    properties: {
-                        test_name: {
-                            type: 'keyword'
-                        }
-                    }
+            expect(ret[index]).toEqual({
+                test_name: {
+                    type: 'keyword'
                 }
             });
             await client.deleteIndex({ index });
@@ -704,7 +696,7 @@ describe('Elasticsearch client test', () => {
                     },
                     refresh: true
                 })
-                .then((value) => expect(value.statusCode).toEqual(201));
+                .then((value) => expect(value._index).toEqual(index));
 
             await client.search({ index }).then((value) => {
                 expect(value[0]._source).toEqual({
@@ -726,7 +718,7 @@ describe('Elasticsearch client test', () => {
                         }
                     }
                 })
-                .then((value) => expect(value.statusCode).toEqual(200));
+                .then((value) => expect(value.deleted).toEqual(1));
 
             await client.search({ index }).then((value) => {
                 expect(value.length).toEqual(0);
@@ -743,9 +735,7 @@ describe('Elasticsearch client test', () => {
         });
 
         it('can call health check api', async () => {
-            await expect(client.healthCheck()).resolves.toEqual({
-                status: 'green'
-            });
+            await expect(client.healthCheck()).resolves.toEqual('green');
         });
 
         it('can call close client', async () => {

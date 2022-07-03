@@ -1,4 +1,5 @@
 import { ParsedPath } from 'path';
+import { Document } from '../client/es/types';
 
 // TODO: rename?
 export const MIGRATE_HISTORY_INDEX_NAME = 'migrate_history';
@@ -67,14 +68,6 @@ export type MigrationExplainPlan = {
 
 export const ClusterStatuses = { GREEN: 'green', YELLOW: 'yellow', RED: 'red' } as const;
 // export type ClusterStatus = typeof ClusterStatuses[keyof typeof ClusterStatuses];
-
-export type Document<T> = {
-    _index: string;
-    _type: string;
-    _id: string;
-    _score?: number;
-    _source: T;
-};
 
 export type IndexSearchResults6<T> = {
     hits: {
@@ -303,19 +296,23 @@ export type CLEAN_TARGET = typeof cleanTargets[number];
 
 export type SearchEngineVersion = ElasticsearchVersions | OpenSearchVersions;
 
+type Major = number;
+type Minor = number;
+type Patch = number;
+
 export type ElasticsearchVersions = {
     engine: 'Elasticsearch';
-    major: number;
-    minor: number;
-    patch: number;
+    major: Major;
+    minor: Minor;
+    patch: Patch;
 };
 
 export type OpenSearchVersions = {
     engine: 'OpenSearch';
-    major: number;
-    minor: number;
-    patch: number;
+    major: Major;
+    minor: Minor;
+    patch: Patch;
 };
 
 // version format type (Ex: v1.0.0)
-export type Version = `v${number}.${number}.${number}`;
+export type Version = `v${Major}.${Minor}.${Patch}`;

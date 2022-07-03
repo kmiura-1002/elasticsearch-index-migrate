@@ -1,5 +1,6 @@
+import type { MigrationIndex } from '../../app/types';
 import { MigrationTypes } from '../../app/types';
-import type { Document, MigrationIndex } from '../../app/types';
+import { Document } from '../../app/client/es/types';
 
 export const migrateIndices = (size?: number): Document<MigrationIndex>[] => {
     if (size) {

@@ -1,7 +1,7 @@
+import type { ESConfig, MigrationIndex } from '../../../types';
 import { MIGRATE_HISTORY_INDEX_NAME } from '../../../types';
 import { useElasticsearchClient } from '../../../client/es/ElasticsearchClient';
 import { MigrateHistorySpec } from './spec';
-import type { ESConfig, MigrationIndex } from '../../../types';
 import { MigrationHistoryEntity } from './migrationHistoryEntity';
 import { MigrationHistoryId } from '../../base/id/migrationHistoryId';
 
