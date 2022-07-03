@@ -13,7 +13,7 @@
         "moduleResolution": "node",
         "resolveJsonModule": true,
         "esModuleInterop": true,
-//        "baseUrl": "src",
+        //        "baseUrl": "src",
         "pretty": true,
         "skipLibCheck": true,
         "allowSyntheticDefaultImports": true,
@@ -22,10 +22,15 @@
         "noImplicitAny": true,
         "noImplicitReturns": true,
         "noUnusedLocals": true,
-//        "paths": {
-//            "app/*": ["./app/*"]
-//        },
+        //        "paths": {
+        //            "app/*": ["./app/*"]
+        //        },
         "incremental": true,
+        "plugins": [
+            {
+                "name": "eslint-plugin-import-access"
+            }
+        ]
     },
     "exclude": ["src_old", "test_old", "node_modules", "lib"]
 }
