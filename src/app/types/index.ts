@@ -38,9 +38,10 @@ export type MigrationConfig = {
     elasticsearch?: ESConfig;
     migration?: {
         location: string;
-        baselineVersion: {
+        baselineVersions?: {
             [key: string]: string; // index name or template name : version
         };
+        baselineVersion?: string;
         historyIndexRequestBody?: SimpleJson;
         lockIndexRequestBody?: SimpleJson;
     };

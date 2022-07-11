@@ -37,20 +37,21 @@ const configParser = new TsjsonParser(
             }),
             migration: S({
                 type: 'object',
-                maxProperties: 3,
+                maxProperties: 5,
                 properties: {
                     location: S({ type: 'string' }),
-                    baselineVersion: S({
+                    baselineVersions: S({
                         type: 'object',
                         propertyNames: S({
                             type: 'string'
                         }),
                         additionalProperties: S({ type: 'string' })
                     }),
+                    baselineVersion: S({ type: 'string' }),
                     historyIndexRequestBody: S({ type: 'object' }),
                     lockIndexRequestBody: S({ type: 'object' })
                 },
-                required: ['location', 'baselineVersion']
+                required: ['location']
             })
         }
     }),
