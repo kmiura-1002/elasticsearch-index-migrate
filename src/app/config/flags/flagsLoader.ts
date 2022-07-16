@@ -4,6 +4,7 @@ import * as Config from '@oclif/core';
 import { readConfig, readOclifConfig } from '../io/configReader';
 import type { MigrationConfig } from '../../types';
 
+// FIXME remove
 export const readOptions = async (
     flags: { [name: string]: any },
     config: Config.Config

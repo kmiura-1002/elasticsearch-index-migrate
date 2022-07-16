@@ -1,10 +1,10 @@
-import { Entity } from '../../base/entity';
-import { MigrationConfig } from '../../../types';
+import { Entity } from '../base/entity';
+import { ESConfig, MigrationConfig, MigrationTargetConfig } from '../../types';
 import { TsjsonParser } from 'ts-json-validator';
 import { createSchema as S } from 'ts-json-validator/dist/json-schema';
 
-export class ToolConfigEntity extends Entity<MigrationConfig> {
-    private constructor(param: MigrationConfig) {
+export class ToolConfigEntity extends Entity<Required<MigrationConfig>> {
+    private constructor(param: Required<MigrationConfig>) {
         super(param);
     }
 
@@ -13,6 +13,18 @@ export class ToolConfigEntity extends Entity<MigrationConfig> {
             return Promise.reject('There is an invalid config item.');
         }
         return new ToolConfigEntity(configValue);
+    }
+
+    get elasticsearchConfig(): ESConfig {
+        return this.props.elasticsearch;
+    }
+
+    get migrationTargetConfig(): MigrationTargetConfig {
+        return this.props.migration;
+    }
+
+    get allMigrationConfig(): MigrationConfig {
+        return this.props;
     }
 }
 

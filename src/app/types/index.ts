@@ -34,17 +34,19 @@ export type ESConfig = {
     connect: ESConnectConfig;
 };
 
+export type MigrationTargetConfig = {
+    location: string;
+    baselineVersions?: {
+        [key: string]: string; // index name or template name : version
+    };
+    baselineVersion?: string;
+    historyIndexRequestBody?: SimpleJson;
+    lockIndexRequestBody?: SimpleJson;
+};
+
 export type MigrationConfig = {
     elasticsearch?: ESConfig;
-    migration?: {
-        location: string;
-        baselineVersions?: {
-            [key: string]: string; // index name or template name : version
-        };
-        baselineVersion?: string;
-        historyIndexRequestBody?: SimpleJson;
-        lockIndexRequestBody?: SimpleJson;
-    };
+    migration?: MigrationTargetConfig;
 };
 
 export type MigrationPlanData = {
@@ -317,3 +319,14 @@ export type OpenSearchVersions = {
 
 // version format type (Ex: v1.0.0)
 export type Version = `v${Major}.${Minor}.${Patch}`;
+
+export type CommandCommonFlagsProps = {
+    search_engine: SearchEngine;
+    elasticsearch_version: string;
+    elasticsearch_host: string | undefined;
+    elasticsearch_ssl: string | undefined;
+    elasticsearch_cloudid: string | undefined;
+    elasticsearch_username: string | undefined;
+    elasticsearch_password: string | undefined;
+    option_file: string | undefined;
+};
