@@ -26,6 +26,9 @@ export class ToolConfigEntity extends Entity<Required<MigrationConfig>> {
     get allMigrationConfig(): MigrationConfig {
         return this.props;
     }
+    public toString(): MigrationConfig {
+        return this.props;
+    }
 }
 
 const isAssumedSetting = (configValue: any): boolean => configParser.validates(configValue);

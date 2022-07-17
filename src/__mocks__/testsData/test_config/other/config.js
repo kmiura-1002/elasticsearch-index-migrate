@@ -6,7 +6,7 @@ const test = {
     },
     migration: {
         location: 'migration',
-        baselineVersion: {
+        baselineVersions: {
             test_index1: 'v1.0.0',
             test_index2: 'v1.0.0'
         }

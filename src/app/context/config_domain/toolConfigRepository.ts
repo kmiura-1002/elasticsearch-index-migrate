@@ -58,10 +58,13 @@ export function toolConfigRepository() {
             } else if (spec.hasOclifConfig) {
                 const migrateCnf = await readOclifConfig(spec.config);
 
-                return returnConfig(merge(esConfig, migrateCnf));
+                return returnConfig(merge(esConfig, migrateCnf.allMigrationConfig));
             }
         }
-        throw new Error();
+        // FIXME
+        throw new Error(
+            'No config. You can specify environment variables or files with the -O option and place config.json in ~/.config/elasticsearch-index-migrate. You should set one of these.'
+        );
     };
 
     const readConfig = async (filePath: string): Promise<ToolConfigEntity> => {
