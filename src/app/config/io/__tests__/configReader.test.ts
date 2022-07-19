@@ -15,7 +15,7 @@ describe('configReader', () => {
                 version: '6'
             },
             migration: {
-                baselineVersion: {
+                baselineVersions: {
                     test_index1: 'v1.0.0',
                     test_index2: 'v1.0.0'
                 },
@@ -37,7 +37,7 @@ describe('configReader', () => {
                 version: '6.8.12'
             },
             migration: {
-                baselineVersion: {
+                baselineVersions: {
                     test_index1: 'v1.0.0',
                     test_index2: 'v1.0.0'
                 },
@@ -59,10 +59,11 @@ describe('configReader', () => {
                 version: '6.8.12'
             },
             migration: {
-                baselineVersion: {
+                baselineVersions: {
                     test_index1: 'v1.0.0',
                     test_index2: 'v1.0.0'
                 },
+                baselineVersion: 'v1.0.0',
                 location: '/migration'
             }
         });
@@ -97,7 +98,7 @@ describe('configReader', () => {
                 version: '6'
             },
             migration: {
-                baselineVersion: {
+                baselineVersions: {
                     test_index1: 'v1.0.0',
                     test_index2: 'v1.0.0'
                 },
@@ -119,7 +120,7 @@ describe('configReader', () => {
                 version: '6.8.12'
             },
             migration: {
-                baselineVersion: {
+                baselineVersions: {
                     test_index1: 'v1.0.0',
                     test_index2: 'v1.0.0'
                 },
@@ -141,7 +142,8 @@ describe('configReader', () => {
                 version: '6.8.12'
             },
             migration: {
-                baselineVersion: {
+                baselineVersion: 'v1.0.0',
+                baselineVersions: {
                     test_index1: 'v1.0.0',
                     test_index2: 'v1.0.0'
                 },

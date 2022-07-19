@@ -11,7 +11,7 @@ export const mockReadOptions = jest.fn().mockImplementation((): Promise<Migratio
         },
         migration: {
             location: '',
-            baselineVersion: {
+            baselineVersions: {
                 test_index: '1.0.0'
             }
         }
@@ -31,7 +31,7 @@ export const mockReadOptionsWithHistoryIndexRequestBody = jest
             },
             migration: {
                 location: '',
-                baselineVersion: {
+                baselineVersions: {
                     test_index: '1.0.0'
                 },
                 historyIndexRequestBody: {

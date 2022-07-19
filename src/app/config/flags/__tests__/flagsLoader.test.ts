@@ -27,7 +27,7 @@ describe('readOptions', () => {
                 version: '6'
             },
             migration: {
-                baselineVersion: {
+                baselineVersions: {
                     test_index: 'v1.0.0'
                 },
                 location: 'migration'
@@ -57,7 +57,7 @@ describe('readOptions', () => {
                 version: '6'
             },
             migration: {
-                baselineVersion: {
+                baselineVersions: {
                     test_index: 'v1.0.0'
                 },
                 location: 'migration'
@@ -88,7 +88,7 @@ describe('readOptions', () => {
                 version: '6'
             },
             migration: {
-                baselineVersion: {
+                baselineVersions: {
                     test_index: 'v1.0.0'
                 },
                 location: 'migration'
@@ -118,7 +118,7 @@ describe('readOptions', () => {
                 version: '6'
             },
             migration: {
-                baselineVersion: {
+                baselineVersions: {
                     test_index: 'v1.0.0'
                 },
                 location: 'migration'
@@ -147,7 +147,7 @@ describe('readOptions', () => {
                 version: '6'
             },
             migration: {
-                baselineVersion: {
+                baselineVersions: {
                     test_index: 'v1.0.0'
                 },
                 location: 'migration'
@@ -178,7 +178,7 @@ describe('readOptions', () => {
                 version: '6'
             },
             migration: {
-                baselineVersion: {
+                baselineVersions: {
                     test_index: 'v1.0.0'
                 },
                 location: 'migration'
@@ -198,7 +198,7 @@ describe('readOptions', () => {
                 version: '6'
             },
             migration: {
-                baselineVersion: {
+                baselineVersions: {
                     test_index: 'v1.0.0'
                 },
                 location: 'migration'
@@ -220,7 +220,7 @@ describe('readOptions', () => {
                 version: '6'
             },
             migration: {
-                baselineVersion: {
+                baselineVersions: {
                     test_index: 'v1.0.0'
                 },
                 location: 'migration'

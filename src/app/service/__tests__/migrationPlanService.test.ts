@@ -79,9 +79,98 @@ describe('migrationPlanService', () => {
                 },
                 migration: {
                     location: `${process.cwd()}/src/__mocks__/testsData/migration`,
-                    baselineVersion: {
-                        test2: 'v1.0.0'
+                    baselineVersion: 'v1.0.0'
+                }
+            } as Required<MigrationConfig>;
+            const explainPlan = await migrationPlanService(
+                'test2',
+                defaultPlanExecutionConfig(),
+                config
+            ).refresh();
+            const actual = explainPlan.all;
+
+            expect(
+                actual.map((value) => ({
+                    version: value.version,
+                    status: value.state?.status
+                }))
+            ).toEqual([
+                {
+                    status: 'PENDING',
+                    version: 'v1.0.0'
+                },
+                {
+                    status: 'PENDING',
+                    version: 'v1.0.1'
+                },
+                {
+                    status: 'PENDING',
+                    version: 'v1.0.2'
+                },
+                {
+                    status: 'PENDING',
+                    version: 'v1.0.3'
+                },
+                {
+                    status: 'PENDING',
+                    version: 'v1.0.4'
+                },
+                {
+                    status: 'PENDING',
+                    version: 'v1.0.5'
+                },
+                {
+                    status: 'PENDING',
+                    version: 'v1.0.6'
+                },
+                {
+                    status: 'PENDING',
+                    version: 'v1.0.7'
+                },
+                {
+                    status: 'PENDING',
+                    version: 'v1.0.8'
+                },
+                {
+                    status: 'PENDING',
+                    version: 'v1.0.9'
+                },
+                {
+                    status: 'PENDING',
+                    version: 'v1.0.10'
+                }
+            ]);
+        });
+
+        it('can be finished when baseline is set for each index', async () => {
+            mocked(useElasticsearchClient).mockImplementation(() => {
+                const { useElasticsearchClient } = jest.requireActual(
+                    '../../client/es/ElasticsearchClient'
+                );
+                return {
+                    ...useElasticsearchClient({
+                        searchEngine: 'elasticsearch',
+                        version: '7',
+                        connect: {
+                            host: 'http://localhost:9202'
+                        }
+                    })
+                };
+            });
+            const config = {
+                elasticsearch: {
+                    searchEngine: 'elasticsearch',
+                    version: '7',
+                    connect: {
+                        host: 'http://localhost:9202'
                     }
+                },
+                migration: {
+                    location: `${process.cwd()}/src/__mocks__/testsData/migration`,
+                    baselineVersions: {
+                        test2: 'v1.0.0'
+                    },
+                    baselineVersion: 'v0.0.0'
                 }
             } as Required<MigrationConfig>;
             const explainPlan = await migrationPlanService(
@@ -163,7 +252,7 @@ describe('migrationPlanService', () => {
                 },
                 migration: {
                     location: `${process.cwd()}/src/__mocks__/testsData/migration`,
-                    baselineVersion: {
+                    baselineVersions: {
                         test: 'v1.0.0'
                     }
                 }
@@ -299,7 +388,7 @@ describe('migrationPlanService', () => {
                 },
                 migration: {
                     location: `${process.cwd()}/src/__mocks__/testsData/migration`,
-                    baselineVersion: {
+                    baselineVersions: {
                         missing_file: 'v2.0.0'
                     }
                 }
@@ -358,7 +447,7 @@ describe('migrationPlanService', () => {
                 },
                 migration: {
                     location: `${process.cwd()}/src/__mocks__/testsData/migration`,
-                    baselineVersion: {
+                    baselineVersions: {
                         same_version: 'v1.0.0'
                     }
                 }
@@ -418,7 +507,7 @@ describe('migrationPlanService', () => {
                 },
                 migration: {
                     location: `${process.cwd()}/src/__mocks__/testsData/migration`,
-                    baselineVersion: {
+                    baselineVersions: {
                         test: 'v1.0.0'
                     }
                 }
@@ -479,7 +568,7 @@ describe('migrationPlanService', () => {
                 },
                 migration: {
                     location: `${process.cwd()}/src/__mocks__/testsData/migration`,
-                    baselineVersion: {
+                    baselineVersions: {
                         test: 'v1.0.2'
                     }
                 }
@@ -552,7 +641,7 @@ describe('migrationPlanService', () => {
                 },
                 migration: {
                     location: `${process.cwd()}/src/__mocks__/testsData/migration`,
-                    baselineVersion: {
+                    baselineVersions: {
                         test: 'v1.0.0'
                     }
                 }
@@ -601,7 +690,7 @@ describe('migrationPlanService', () => {
                 },
                 migration: {
                     location,
-                    baselineVersion: {
+                    baselineVersions: {
                         xxxxx: 'v1.0.0'
                     }
                 }
@@ -628,7 +717,7 @@ describe('migrationPlanService', () => {
                 },
                 migration: {
                     location: `${process.cwd()}/src/__mocks__/testsData/migration`,
-                    baselineVersion: {
+                    baselineVersions: {
                         unknown_version: 'v1.0.0'
                     }
                 }
@@ -658,7 +747,7 @@ describe('migrationPlanService', () => {
                 },
                 migration: {
                     location: `${process.cwd()}/src/__mocks__/testsData/migration`,
-                    baselineVersion: {
+                    baselineVersions: {
                         test: 'v1.0.0'
                     }
                 }
@@ -687,7 +776,7 @@ describe('migrationPlanService', () => {
                 },
                 migration: {
                     location: `${process.cwd()}/src/__mocks__/testsData/migration`,
-                    baselineVersion: {
+                    baselineVersions: {
                         test2: baselineVersion
                     }
                 }
@@ -730,7 +819,7 @@ describe('migrationPlanService', () => {
                 },
                 migration: {
                     location: `${process.cwd()}/src/__mocks__/testsData/migration`,
-                    baselineVersion: {
+                    baselineVersions: {
                         test2: 'v1.0.0'
                     }
                 }
@@ -770,7 +859,7 @@ describe('migrationPlanService', () => {
                 },
                 migration: {
                     location: `${process.cwd()}/src/__mocks__/testsData/migration`,
-                    baselineVersion: {
+                    baselineVersions: {
                         test2: 'v1.0.0'
                     }
                 }
@@ -806,7 +895,7 @@ describe('migrationPlanService', () => {
                 },
                 migration: {
                     location: `${process.cwd()}/src/__mocks__/testsData/migration`,
-                    baselineVersion: {
+                    baselineVersions: {
                         test: 'v1.0.0'
                     }
                 }
@@ -888,7 +977,7 @@ describe('migrationPlanService', () => {
                 },
                 migration: {
                     location: `${process.cwd()}/src/__mocks__/testsData/migration`,
-                    baselineVersion: {
+                    baselineVersions: {
                         test: 'v1.0.0'
                     }
                 }

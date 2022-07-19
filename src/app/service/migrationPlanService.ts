@@ -46,6 +46,7 @@ export const migrationPlanService = (
             );
         }
     };
+    // TODO duplicate code
     const isSupportVersionFormat = (version: string): version is Version =>
         version.match(/^(v\d+.\d+.\d+)/) !== null;
 

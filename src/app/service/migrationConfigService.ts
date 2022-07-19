@@ -2,6 +2,7 @@ import { MigrationConfig, Version } from '../types';
 import { UnsupportedVersionError } from '../context/error/UnsupportedVersionError';
 import { SettingNotFoundError } from '../context/error/SettingNotFoundError';
 
+// TODO duplicate code
 const isSupportVersionFormat = (version: string): version is Version =>
     version.match(/^(v\d+.\d+.\d+)/) !== null;
 
@@ -9,7 +10,8 @@ export const getBaselineVersion = (
     targetName: string,
     config: Required<MigrationConfig>
 ): Version => {
-    const baseline = config.migration.baselineVersion[targetName];
+    const baseline =
+        config.migration.baselineVersions?.[targetName] ?? config.migration.baselineVersion;
 
     if (baseline === undefined) {
         throw new SettingNotFoundError(

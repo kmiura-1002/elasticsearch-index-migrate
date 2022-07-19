@@ -31,7 +31,7 @@ describe('migrationBaselineVersionService', () => {
             },
             migration: {
                 location: '',
-                baselineVersion: {
+                baselineVersions: {
                     test_index: baseline
                 }
             }
@@ -59,7 +59,7 @@ describe('migrationBaselineVersionService', () => {
             },
             migration: {
                 location: '',
-                baselineVersion: {
+                baselineVersions: {
                     test_index: baseline
                 }
             }
@@ -111,7 +111,7 @@ describe('migrationBaselineVersionService', () => {
             },
             migration: {
                 location: '',
-                baselineVersion: {
+                baselineVersions: {
                     test_index: 'v1.0.0'
                 }
             }
@@ -146,7 +146,7 @@ describe('migrationBaselineVersionService', () => {
             },
             migration: {
                 location: '',
-                baselineVersion: {
+                baselineVersions: {
                     test_index: '1.0.0'
                 }
             }
