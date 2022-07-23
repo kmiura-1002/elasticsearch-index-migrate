@@ -1,6 +1,7 @@
 import { Config } from '@oclif/core';
 import fs from 'fs';
 import { CommandCommonFlagsProps } from '../../../types';
+import { NotFindToolConfigurationError } from '../../error/notFindToolConfigurationError';
 
 export type ToolConfigSpecProps = {
     flags: { [name: string]: any };
@@ -22,8 +23,7 @@ export class ToolConfigSpec implements ToolConfigSpecProps {
     }
     get optionFile(): string {
         if (!this._flags.option_file) {
-            // FIXME
-            throw new Error();
+            throw new NotFindToolConfigurationError('Configuration not found');
         }
         return this._flags.option_file;
     }
