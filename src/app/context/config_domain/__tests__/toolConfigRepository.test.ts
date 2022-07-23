@@ -1,6 +1,7 @@
 import * as Config from '@oclif/core';
 import { toolConfigRepository } from '../toolConfigRepository';
 import { ToolConfigSpec } from '../spec';
+import { UnsupportedFileError } from '../../error/unsupportedFileError';
 
 describe('toolConfigRepository', () => {
     const { findBy } = toolConfigRepository();
@@ -135,7 +136,8 @@ describe('toolConfigRepository', () => {
         );
         const actual = findBy(spec);
 
-        await expect(actual).rejects.toEqual(
+        await expect(actual).rejects.toThrow(UnsupportedFileError);
+        await expect(actual).rejects.toThrow(
             'Incorrect file. The configuration file must be yaml or json. This file is .js'
         );
     });
@@ -233,7 +235,8 @@ describe('toolConfigRepository', () => {
         } as Config.Config);
         const actual = findBy(spec);
 
-        await expect(actual).rejects.toEqual(
+        await expect(actual).rejects.toThrow(UnsupportedFileError);
+        await expect(actual).rejects.toThrow(
             `There is no configuration file that can be loaded into ${configDir}. The configuration file must be yaml or json.`
         );
     });

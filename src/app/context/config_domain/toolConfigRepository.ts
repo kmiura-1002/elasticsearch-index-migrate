@@ -7,6 +7,9 @@ import { Config } from '@oclif/core';
 import { ToolConfigEntity } from './toolConfigEntity';
 import { CommandCommonFlagsProps, MigrationConfig } from '../../types';
 import merge from 'lodash.merge';
+import { NotFindToolConfigurationError } from '../error/notFindToolConfigurationError';
+import { UnsupportedFileError } from '../error/unsupportedFileError';
+import { InvalidConfigDefinitionError } from '../error/invalidConfigDefinitionError';
 
 const isToolConfigSpec = (spec: ToolConfigSpecProps): spec is ToolConfigSpec => {
     const configSpec = spec as ToolConfigSpec;
@@ -61,8 +64,8 @@ export function toolConfigRepository() {
                 return returnConfig(merge(esConfig, migrateCnf.allMigrationConfig));
             }
         }
-        // FIXME
-        throw new Error(
+
+        throw new NotFindToolConfigurationError(
             'No config. You can specify environment variables or files with the -O option and place config.json in ~/.config/elasticsearch-index-migrate. You should set one of these.'
         );
     };
@@ -75,8 +78,7 @@ export function toolConfigRepository() {
         } else if (extension === '.json') {
             config = await loadJSON(filePath);
         } else {
-            // FIXME
-            return Promise.reject(
+            throw new UnsupportedFileError(
                 `Incorrect file. The configuration file must be yaml or json. This file is ${extension}`
             );
         }
@@ -97,8 +99,7 @@ export function toolConfigRepository() {
         } else if (fs.existsSync(path.join(config.configDir, 'config.json'))) {
             migrateCnf = await loadJSON(path.join(config.configDir, 'config.json'));
         } else {
-            // FIXME
-            return Promise.reject(
+            throw new UnsupportedFileError(
                 `There is no configuration file that can be loaded into ${config.configDir}. The configuration file must be yaml or json.`
             );
         }
@@ -119,6 +120,5 @@ const returnConfig = (config: MigrationConfig) => {
     if (isRequiredConfig(config)) {
         return ToolConfigEntity.readConfig(config);
     }
-    // FIXME
-    return Promise.reject('The elasticsearch or migrate settings are missing.');
+    throw new InvalidConfigDefinitionError('The elasticsearch or migrate settings are missing.');
 };
