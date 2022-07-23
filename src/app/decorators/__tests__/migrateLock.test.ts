@@ -278,12 +278,13 @@ reason:[Error: Cannot create a lock because the index does not exist.]`)
         };
         await migrateLock()(fakeCommand, '', fakeDescriptor);
 
-        // when, then
+        // when
         await expect(fakeDescriptor.value.call(fakeCommand)).rejects.toThrowError(
             new Error(`Unlock failed. Please unlock migrate_lock manually.
 reason:[Failed to delete document]`)
         );
 
+        // then
         expect(toolConfigRepository).toHaveBeenCalledTimes(1);
         expect(fakeOriginalFunction).toHaveBeenCalledTimes(1);
         // @ts-ignore

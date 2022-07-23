@@ -32,7 +32,7 @@ export const mockReadOptions = {
     }
 };
 
-export const mockReadOptionsWithHistoryIndexRequestBody = {
+export const mockReadOptionsWithHistoryIndexAndLockIndexRequestBody = {
     elasticsearch: {
         connect: {
             host: 'http://localhost:9202'
@@ -110,6 +110,58 @@ export const mockReadOptionsWithHistoryIndexRequestBody = {
                     },
                     success: {
                         type: 'boolean'
+                    }
+                }
+            }
+        },
+        lockIndexRequestBody: {
+            settings: {
+                index: {
+                    refresh_interval: '1s',
+                    number_of_shards: 1,
+                    number_of_replicas: 2,
+                    search: {
+                        slowlog: {
+                            threshold: {
+                                query: {
+                                    trace: '100ms',
+                                    debug: '100ms',
+                                    info: '100ms',
+                                    warn: '1000ms'
+                                },
+                                fetch: {
+                                    trace: '100ms',
+                                    debug: '100ms',
+                                    info: '100ms',
+                                    warn: '1000ms'
+                                }
+                            },
+                            level: 'info'
+                        }
+                    },
+                    indexing: {
+                        slowlog: {
+                            threshold: {
+                                index: {
+                                    trace: '100ms',
+                                    debug: '100ms',
+                                    info: '100ms',
+                                    warn: '1000ms'
+                                }
+                            },
+                            level: 'info'
+                        }
+                    }
+                }
+            },
+            mappings: {
+                properties: {
+                    created: {
+                        type: 'date',
+                        format: 'date_time'
+                    },
+                    command: {
+                        type: 'keyword'
                     }
                 }
             }

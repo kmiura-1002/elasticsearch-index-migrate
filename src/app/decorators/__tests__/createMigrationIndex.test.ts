@@ -2,7 +2,7 @@ import { createMigrationHistory } from '../createMigrationHistory';
 import { fancyIt } from '../../../__mocks__/fancyIt';
 import { getFakeCommand } from '../../../__mocks__/command/fakeCommand';
 import {
-    mockReadOptionsWithHistoryIndexRequestBody,
+    mockReadOptionsWithHistoryIndexAndLockIndexRequestBody,
     mockToolConfigRepository
 } from '../../../__mocks__/context/config_domain/mockReadOptions';
 import {
@@ -200,7 +200,7 @@ describe('createMigrationHistory', () => {
                     ...mockToolConfigRepository(),
                     findBy(_spec: ToolConfigSpecProps) {
                         return ToolConfigEntity.readConfig(
-                            mockReadOptionsWithHistoryIndexRequestBody
+                            mockReadOptionsWithHistoryIndexAndLockIndexRequestBody
                         );
                     }
                 };
