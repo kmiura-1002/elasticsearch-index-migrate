@@ -3,6 +3,9 @@ import { DefaultFlags, esConnectionFlags } from '../../config/flags/defaultComma
 import { createMigrationHistory } from '../../decorators/createMigrationHistory';
 import { migrateLock } from '../../decorators/migrateLock';
 import { DefaultArgs } from '../../config/args/defaultCommandArgs';
+import { migrationPlanService } from '../../service/migrationPlanService';
+import { toolConfigRepository } from '../../context/config_domain/toolConfigRepository';
+import { ToolConfigSpec } from '../../context/config_domain/spec';
 
 export default class Plan extends Command {
     static description = 'Outputs the migration execution plan.';
@@ -23,7 +26,22 @@ export default class Plan extends Command {
     @createMigrationHistory()
     @migrateLock()
     async run(): Promise<void> {
-        // const { args, flags } = await this.parse(Plan);
+        const { args, flags } = await this.parse(Plan);
+        const { findBy } = toolConfigRepository();
+        const configEntity = await findBy(new ToolConfigSpec(flags, this.config));
+
+        const service = migrationPlanService(
+            args.name,
+            {
+                ignored: flags.ignoredMigrations,
+                future: false,
+                missing: false,
+                outOfOrder: false,
+                pending: false
+            },
+            configEntity.allMigrationConfig
+        );
+        await service.refresh();
     }
 
     protected catch(err: Error & { exitCode?: number }): Promise<any> {
