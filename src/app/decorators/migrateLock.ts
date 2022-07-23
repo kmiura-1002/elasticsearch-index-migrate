@@ -1,9 +1,10 @@
 import { CliUx, Command } from '@oclif/core';
-import { readOptions } from '../config/flags/flagsLoader';
 import type { ESConfig, LockIndex } from '../types';
 import { MIGRATION_LOCK_INDEX_NAME } from '../types';
 import { useElasticsearchClient } from '../client/es/ElasticsearchClient';
 import { format } from 'date-fns';
+import { toolConfigRepository } from '../context/config_domain/toolConfigRepository';
+import { ToolConfigSpec } from '../context/config_domain/spec';
 
 export function migrateLock() {
     return function (
@@ -25,10 +26,11 @@ async function lock(
     cmdArgs: unknown[]
 ) {
     const { flags } = await this.parse();
-    const migrationConfig = await readOptions(flags, this.config);
+    const { findBy } = toolConfigRepository();
+    const configEntity = await findBy(new ToolConfigSpec(flags, this.config));
 
     // lock
-    const id = await makeLock(this.id ?? 'unknown', migrationConfig.elasticsearch);
+    const id = await makeLock(this.id ?? 'unknown', configEntity.elasticsearchConfig);
 
     // call command
     try {
@@ -39,7 +41,7 @@ async function lock(
     }
 
     // unlock
-    await unlock(id, migrationConfig.elasticsearch);
+    await unlock(id, configEntity.elasticsearchConfig);
 }
 
 const makeLock = async (commandId: string, esConfig: ESConfig) => {

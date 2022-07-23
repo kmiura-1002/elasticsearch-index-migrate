@@ -4,7 +4,8 @@ import { DefaultFlags, esConnectionFlags } from '../../config/flags/defaultComma
 import { migrationBaselineVersionService } from '../../service/migrationBaselineVersionService';
 import { DefaultArgs } from '../../config/args/defaultCommandArgs';
 import { migrateLock } from '../../decorators/migrateLock';
-import { readOptions } from '../../config/flags/flagsLoader';
+import { ToolConfigSpec } from '../../context/config_domain/spec';
+import { toolConfigRepository } from '../../context/config_domain/toolConfigRepository';
 
 export default class Index extends Command {
     static description =
@@ -25,12 +26,13 @@ export default class Index extends Command {
     @migrateLock()
     async run(): Promise<void> {
         const { flags, args } = await this.parse(Index);
-        const migrationConfig = await readOptions(flags, this.config);
+        const { findBy } = toolConfigRepository();
+        const configEntity = await findBy(new ToolConfigSpec(flags, this.config));
 
         await migrationBaselineVersionService(
             args.name,
             flags.description,
-            migrationConfig
+            configEntity.allMigrationConfig
         ).makeBaseline();
     }
 

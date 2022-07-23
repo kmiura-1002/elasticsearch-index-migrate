@@ -1,5 +1,4 @@
 import { CliUx, Command, Config, Interfaces } from '@oclif/core';
-import { readOptions } from '../config/flags/flagsLoader';
 import v7HistoryMapping from '../../resources/mapping/migrate_history_esV7.json';
 import v6HistoryMapping from '../../resources/mapping/migrate_history_esV6.json';
 import v7LockMapping from '../../resources/mapping/migrate_lock_esV7.json';
@@ -8,6 +7,8 @@ import type { MigrationConfig } from '../types';
 import { MIGRATE_HISTORY_INDEX_NAME, MIGRATION_LOCK_INDEX_NAME } from '../types';
 import { usedEsVersion } from '../client/es/EsUtils';
 import { useElasticsearchClient } from '../client/es/ElasticsearchClient';
+import { toolConfigRepository } from '../context/config_domain/toolConfigRepository';
+import { ToolConfigSpec } from '../context/config_domain/spec';
 
 export function createMigrationHistory() {
     return function (
@@ -35,15 +36,16 @@ async function setUpCommand(
 
 const setupMigrationEnv = async function (config: Config, flags: Interfaces.FlagInput<any>) {
     try {
-        const migrationConfig = await readOptions(flags, config);
+        const { findBy } = toolConfigRepository();
+        const configEntity = await findBy(new ToolConfigSpec(flags, config));
         const { exists, createIndex, close } = useElasticsearchClient(
-            migrationConfig.elasticsearch
+            configEntity.elasticsearchConfig
         );
 
         if (!(await exists({ index: MIGRATE_HISTORY_INDEX_NAME }))) {
             CliUx.ux.info(`${MIGRATE_HISTORY_INDEX_NAME} index does not exist.`);
             CliUx.ux.info(`Create a ${MIGRATE_HISTORY_INDEX_NAME} index for the first time.`);
-            const mappingData = getHistoryIndexRequestBody(migrationConfig);
+            const mappingData = getHistoryIndexRequestBody(configEntity.allMigrationConfig);
             const ret = await createIndex({
                 index: MIGRATE_HISTORY_INDEX_NAME,
                 body: mappingData
@@ -52,14 +54,13 @@ const setupMigrationEnv = async function (config: Config, flags: Interfaces.Flag
             if (!ret || !ret.acknowledged) {
                 CliUx.ux.error('Failed to create history index.');
             }
-
             CliUx.ux.info('The creation of the index has been completed.');
         }
 
         if (!(await exists({ index: MIGRATION_LOCK_INDEX_NAME }))) {
             CliUx.ux.info(`${MIGRATION_LOCK_INDEX_NAME} index does not exist.`);
             CliUx.ux.info(`Create a ${MIGRATION_LOCK_INDEX_NAME} index for the first time.`);
-            const mappingData = getLockIndexRequestBody(migrationConfig);
+            const mappingData = getLockIndexRequestBody(configEntity.allMigrationConfig);
             const ret = await createIndex({
                 index: MIGRATION_LOCK_INDEX_NAME,
                 body: mappingData

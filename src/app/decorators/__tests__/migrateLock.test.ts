@@ -1,11 +1,10 @@
 import { fancyIt } from '../../../__mocks__/fancyIt';
 import { mocked } from 'jest-mock';
-import { readOptions } from '../../config/flags/flagsLoader';
 import { useElasticsearchClient } from '../../client/es/ElasticsearchClient';
 import { getFakeCommand } from '../../../__mocks__/command/fakeCommand';
 import { CliUx } from '@oclif/core';
 import { migrateLock } from '../migrateLock';
-import { mockReadOptions } from '../../../__mocks__/flags/mockReadOptions';
+import { mockToolConfigRepository } from '../../../__mocks__/context/config_domain/mockReadOptions';
 import { getMockElasticsearchClient } from '../../../__mocks__/client/es/mockElasticsearchClient';
 import type {
     DeleteByQuery as DeleteByQuery6,
@@ -19,8 +18,9 @@ import type {
 } from 'es7/api/requestParams';
 import type { LockIndex } from '../../types';
 import { Document } from '../../client/es/types';
+import { toolConfigRepository } from '../../context/config_domain/toolConfigRepository';
 
-jest.mock('../../config/flags/flagsLoader');
+jest.mock('../../context/config_domain/toolConfigRepository');
 jest.mock('../../client/es/ElasticsearchClient');
 const spyError = jest.spyOn(CliUx.ux, 'error');
 const spyDebug = jest.spyOn(CliUx.ux, 'debug');
@@ -30,7 +30,7 @@ describe('migrateLock', () => {
     const fakeOriginalFunction = jest.fn();
 
     beforeEach(() => {
-        mocked(readOptions).mockClear();
+        mocked(toolConfigRepository).mockClear();
         mocked(useElasticsearchClient).mockClear();
         mocked(spyError).mockClear();
         mocked(spyDebug).mockClear();
@@ -39,7 +39,7 @@ describe('migrateLock', () => {
 
     fancyIt()('can run the original function', async () => {
         // begin
-        mocked(readOptions).mockImplementation(mockReadOptions);
+        mocked(toolConfigRepository).mockImplementation(mockToolConfigRepository);
         const clientMock = mocked(useElasticsearchClient).mockImplementation(() => {
             return {
                 ...getMockElasticsearchClient(),
@@ -71,7 +71,7 @@ describe('migrateLock', () => {
         await fakeDescriptor.value.call(fakeCommand);
 
         // then
-        expect(readOptions).toHaveBeenCalledTimes(1);
+        expect(toolConfigRepository).toHaveBeenCalledTimes(1);
         expect(fakeOriginalFunction).toHaveBeenCalledTimes(1);
         // @ts-ignore
         expect(clientMock.mock.results[0].value.exists).toHaveBeenCalledTimes(1);
@@ -87,7 +87,7 @@ describe('migrateLock', () => {
 
     fancyIt()('can run the original function when the command fails', async () => {
         // begin
-        mocked(readOptions).mockImplementation(mockReadOptions);
+        mocked(toolConfigRepository).mockImplementation(mockToolConfigRepository);
         const clientMock = mocked(useElasticsearchClient).mockImplementation(() => {
             return {
                 ...getMockElasticsearchClient(),
@@ -122,7 +122,7 @@ describe('migrateLock', () => {
         expect(spyDebug.mock.calls[0][0]).toEqual(
             'An error occurred in the command. reason:[fake commands will fail]'
         );
-        expect(readOptions).toHaveBeenCalledTimes(1);
+        expect(toolConfigRepository).toHaveBeenCalledTimes(1);
         expect(fakeOriginalFunction).toHaveBeenCalledTimes(1);
         // @ts-ignore
         expect(clientMock.mock.results[0].value.exists).toHaveBeenCalledTimes(1);
@@ -140,7 +140,7 @@ describe('migrateLock', () => {
         // begin
         jest.useFakeTimers();
         jest.setSystemTime(mockDate);
-        mocked(readOptions).mockImplementation(mockReadOptions);
+        mocked(toolConfigRepository).mockImplementation(mockToolConfigRepository);
 
         const clientMock = mocked(useElasticsearchClient).mockImplementation(() => {
             return {
@@ -196,7 +196,7 @@ reason:[Error: Migration is being done by other processes(lock command:test, loc
 If the previous process failed and you are left with a lock, remove all documents from the migrate_lock index.]`)
         );
 
-        expect(readOptions).toHaveBeenCalledTimes(1);
+        expect(toolConfigRepository).toHaveBeenCalledTimes(1);
         expect(fakeOriginalFunction).toHaveBeenCalledTimes(0);
         // @ts-ignore
         expect(clientMock.mock.results[0].value.exists).toHaveBeenCalledTimes(1);
@@ -210,7 +210,7 @@ If the previous process failed and you are left with a lock, remove all document
 
     fancyIt()('can not run the original function when lock index does not exist', async () => {
         // begin
-        mocked(readOptions).mockImplementation(mockReadOptions);
+        mocked(toolConfigRepository).mockImplementation(mockToolConfigRepository);
 
         const clientMock = mocked(useElasticsearchClient).mockImplementation(
             getMockElasticsearchClient
@@ -236,7 +236,7 @@ If the previous process failed and you are left with a lock, remove all document
 reason:[Error: Cannot create a lock because the index does not exist.]`)
         );
 
-        expect(readOptions).toHaveBeenCalledTimes(1);
+        expect(toolConfigRepository).toHaveBeenCalledTimes(1);
         expect(fakeOriginalFunction).toHaveBeenCalledTimes(0);
         // @ts-ignore
         expect(clientMock.mock.results[0].value.exists).toHaveBeenCalledTimes(1);
@@ -244,7 +244,7 @@ reason:[Error: Cannot create a lock because the index does not exist.]`)
 
     fancyIt()('can not unlock when the unlock fails', async () => {
         // begin
-        mocked(readOptions).mockImplementation(mockReadOptions);
+        mocked(toolConfigRepository).mockImplementation(mockToolConfigRepository);
         const clientMock = mocked(useElasticsearchClient).mockImplementation(() => {
             return {
                 ...getMockElasticsearchClient(),
@@ -284,7 +284,7 @@ reason:[Error: Cannot create a lock because the index does not exist.]`)
 reason:[Failed to delete document]`)
         );
 
-        expect(readOptions).toHaveBeenCalledTimes(1);
+        expect(toolConfigRepository).toHaveBeenCalledTimes(1);
         expect(fakeOriginalFunction).toHaveBeenCalledTimes(1);
         // @ts-ignore
         expect(clientMock.mock.results[0].value.exists).toHaveBeenCalledTimes(1);

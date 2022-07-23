@@ -23,10 +23,10 @@ export class ToolConfigEntity extends Entity<Required<MigrationConfig>> {
         return this.props.migration;
     }
 
-    get allMigrationConfig(): MigrationConfig {
+    get allMigrationConfig(): Required<MigrationConfig> {
         return this.props;
     }
-    public toString(): MigrationConfig {
+    public toString(): Required<MigrationConfig> {
         return this.props;
     }
 }

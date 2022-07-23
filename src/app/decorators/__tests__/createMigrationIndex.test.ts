@@ -1,11 +1,10 @@
 import { createMigrationHistory } from '../createMigrationHistory';
 import { fancyIt } from '../../../__mocks__/fancyIt';
 import { getFakeCommand } from '../../../__mocks__/command/fakeCommand';
-import { readOptions } from '../../config/flags/flagsLoader';
 import {
-    mockReadOptions,
-    mockReadOptionsWithHistoryIndexRequestBody
-} from '../../../__mocks__/flags/mockReadOptions';
+    mockReadOptionsWithHistoryIndexRequestBody,
+    mockToolConfigRepository
+} from '../../../__mocks__/context/config_domain/mockReadOptions';
 import {
     IndicesCreate as IndicesCreate6,
     IndicesExists as IndicesExists6
@@ -20,21 +19,24 @@ import { mocked } from 'jest-mock';
 import { useElasticsearchClient } from '../../client/es/ElasticsearchClient';
 import { getMockElasticsearchClient } from '../../../__mocks__/client/es/mockElasticsearchClient';
 import { CliUx } from '@oclif/core';
+import { toolConfigRepository } from '../../context/config_domain/toolConfigRepository';
+import { ToolConfigSpecProps } from '../../context/config_domain/spec';
+import { ToolConfigEntity } from '../../context/config_domain/toolConfigEntity';
 
-jest.mock('../../config/flags/flagsLoader');
+jest.mock('../../context/config_domain/toolConfigRepository');
 jest.mock('../../client/es/ElasticsearchClient');
 const spyError = jest.spyOn(CliUx.ux, 'error');
 
 describe('createMigrationHistory', () => {
     beforeEach(() => {
-        mocked(readOptions).mockClear();
+        mocked(toolConfigRepository).mockClear();
         mocked(useElasticsearchClient).mockClear();
         mocked(spyError).mockClear();
     });
 
     fancyIt()('can run the original function', async () => {
         // begin
-        mocked(readOptions).mockImplementation(mockReadOptions);
+        mocked(toolConfigRepository).mockImplementation(mockToolConfigRepository);
         mocked(useElasticsearchClient).mockImplementation(getMockElasticsearchClient);
         const fakeOriginalFunction = jest.fn();
         const args = ['argument'];
@@ -55,7 +57,7 @@ describe('createMigrationHistory', () => {
         await fakeDescriptor.value.call(fakeCommand);
 
         // then
-        expect(readOptions).toHaveBeenCalledTimes(1);
+        expect(toolConfigRepository).toHaveBeenCalledTimes(1);
         expect(useElasticsearchClient).toHaveBeenCalledTimes(1);
         expect(fakeOriginalFunction).toHaveBeenCalledTimes(1);
     });
@@ -64,7 +66,7 @@ describe('createMigrationHistory', () => {
         'can not run the original function when connection error in elasticsearch',
         async () => {
             // begin
-            mocked(readOptions).mockImplementation(mockReadOptions);
+            mocked(toolConfigRepository).mockImplementation(mockToolConfigRepository);
             mocked(useElasticsearchClient).mockImplementation(() => {
                 return {
                     ...getMockElasticsearchClient(),
@@ -93,7 +95,7 @@ describe('createMigrationHistory', () => {
 
             // then
             await expect(actual).rejects.toThrow();
-            expect(readOptions).toHaveBeenCalledTimes(1);
+            expect(toolConfigRepository).toHaveBeenCalledTimes(1);
             expect(useElasticsearchClient).toHaveBeenCalledTimes(1);
             expect(spyError).toHaveBeenCalledTimes(1);
             expect(spyError.mock.calls[0][0]).toEqual(
@@ -105,7 +107,7 @@ describe('createMigrationHistory', () => {
         'can not run the original function when the index creation fails due to internal server error',
         async () => {
             // begin
-            mocked(readOptions).mockImplementation(mockReadOptions);
+            mocked(toolConfigRepository).mockImplementation(mockToolConfigRepository);
             mocked(useElasticsearchClient).mockImplementation(() => {
                 return {
                     ...getMockElasticsearchClient(),
@@ -137,7 +139,7 @@ describe('createMigrationHistory', () => {
 
             // then
             await expect(actual).rejects.toThrow();
-            expect(readOptions).toHaveBeenCalledTimes(1);
+            expect(toolConfigRepository).toHaveBeenCalledTimes(1);
             expect(useElasticsearchClient).toHaveBeenCalledTimes(1);
             expect(spyError).toHaveBeenCalledTimes(1);
             expect(spyError.mock.calls[0][0]).toEqual(
@@ -148,7 +150,7 @@ describe('createMigrationHistory', () => {
 
     fancyIt()('can not run the original function when the index creation fails', async () => {
         // begin
-        mocked(readOptions).mockImplementation(mockReadOptions);
+        mocked(toolConfigRepository).mockImplementation(mockToolConfigRepository);
         mocked(useElasticsearchClient).mockImplementation(() => {
             return {
                 ...getMockElasticsearchClient(),
@@ -180,7 +182,7 @@ describe('createMigrationHistory', () => {
 
         // then
         await expect(actual).rejects.toThrow();
-        expect(readOptions).toHaveBeenCalledTimes(1);
+        expect(toolConfigRepository).toHaveBeenCalledTimes(1);
         expect(useElasticsearchClient).toHaveBeenCalledTimes(1);
         expect(spyError).toHaveBeenCalledTimes(2);
         expect(spyError.mock.calls[0][0]).toEqual('Failed to create history index.');
@@ -193,7 +195,16 @@ describe('createMigrationHistory', () => {
         'can run the original function when historyIndexRequestBody is specified',
         async () => {
             // begin
-            mocked(readOptions).mockImplementation(mockReadOptionsWithHistoryIndexRequestBody);
+            mocked(toolConfigRepository).mockImplementation(() => {
+                return {
+                    ...mockToolConfigRepository(),
+                    findBy(_spec: ToolConfigSpecProps) {
+                        return ToolConfigEntity.readConfig(
+                            mockReadOptionsWithHistoryIndexRequestBody
+                        );
+                    }
+                };
+            });
             mocked(useElasticsearchClient).mockImplementation(getMockElasticsearchClient);
             const fakeOriginalFunction = jest.fn();
             const args = ['argument'];
@@ -214,7 +225,7 @@ describe('createMigrationHistory', () => {
             await fakeDescriptor.value.call(fakeCommand);
 
             // then
-            expect(readOptions).toHaveBeenCalledTimes(1);
+            expect(toolConfigRepository).toHaveBeenCalledTimes(1);
             expect(useElasticsearchClient).toHaveBeenCalledTimes(1);
             expect(fakeOriginalFunction).toHaveBeenCalledTimes(1);
         }
