@@ -1,26 +1,51 @@
-import { Command, Flags } from '@oclif/core';
+import { CliUx, Command, Flags } from '@oclif/core';
+import { DefaultFlags, esConnectionFlags } from '../../config/flags/defaultCommandFlags';
+import { DefaultArgs } from '../../config/args/defaultCommandArgs';
+import { createMigrationHistory } from '../../decorators/createMigrationHistory';
+import { migrateLock } from '../../decorators/migrateLock';
+import { toolConfigRepository } from '../../context/config_domain/toolConfigRepository';
+import { ToolConfigSpec } from '../../context/config_domain/spec';
+import { migrationPlanService } from '../../service/migrationPlanService';
 
-export default class Plan extends Command {
-    static description = 'describe the command here';
-
-    static examples = [`$ mynewcli hello hello world from ./src/hello.ts!`];
+export default class Validate extends Command {
+    static description = 'Validate the applied migration.';
 
     static flags = {
-        help: Flags.help({ char: 'h' }),
-        // flag with a value (-n, --name=VALUE)
-        name: Flags.string({ char: 'n', description: 'name to print' }),
-        // flag with no value (-f, --force)
-        force: Flags.boolean({ char: 'f' })
+        ...DefaultFlags,
+        ...esConnectionFlags,
+        ignoredMigrations: Flags.boolean({
+            default: false,
+            env: 'IGNORED_MIGRATIONS',
+            description:
+                'Migration target for additions made during the already migrated version.\nFor example, use this option when you want to migrate v2.0.0 when v1.0.0 and v3.0.0 have already been migrated. Normally, this will result in an ingnore status. Setting this option to true will make v2.0.0 the next migration version after v3.0.0.'
+        })
     };
 
-    static args = [{ name: 'file' }];
+    static args = [...DefaultArgs];
 
-    async run() {
-        const { args, flags } = await this.parse(Plan);
+    @createMigrationHistory()
+    @migrateLock()
+    async run(): Promise<void> {
+        const { args, flags } = await this.parse(Validate);
+        const { findBy } = toolConfigRepository();
+        const configEntity = await findBy(new ToolConfigSpec(flags, this.config));
 
-        this.log(`plan`);
-        if (args.file && flags.force) {
-            this.log(`you input --force and --file: ${args.file}`);
-        }
+        const service = migrationPlanService(
+            args.name,
+            {
+                ignored: flags.ignoredMigrations,
+                future: false,
+                missing: false,
+                outOfOrder: false,
+                pending: false
+            },
+            configEntity.allMigrationConfig
+        );
+        await service.validate();
+    }
+
+    protected catch(err: Error & { exitCode?: number }): Promise<any> {
+        CliUx.ux.error(`throw error. caused by: ${err}`);
+        return super.catch(err);
     }
 }

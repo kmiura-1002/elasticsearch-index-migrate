@@ -10,7 +10,7 @@ jest.mock('../../../decorators/createMigrationHistory');
 jest.mock('../../../decorators/migrateLock');
 jest.mock('../../../service/migrationPlanService');
 
-describe('plan', () => {
+describe('validate', () => {
     describe('resolve pattern', () => {
         beforeEach(() => {
             mocked(migrationPlanService).mockImplementation(getMockMigrationPlanService);
@@ -29,12 +29,12 @@ describe('plan', () => {
             .stdout()
             .stderr()
             .command([
-                'plan',
+                'validate',
                 'test_index1',
                 '-O',
                 `${process.cwd()}/src/__mocks__/testsData/test_config/json/config.json`
             ])
-            .it('can outputs the migration execution plan', () => {
+            .it('can validate the applied migration', () => {
                 expect(migrationPlanService).toHaveBeenCalledTimes(1);
             });
     });
@@ -61,12 +61,12 @@ describe('plan', () => {
             .stdout()
             .stderr()
             .command([
-                'plan',
+                'validate',
                 'test_index1',
                 '-O',
                 `${process.cwd()}/src/__mocks__/testsData/test_config/json/config.json`
             ])
-            .catch(/throw error. caused by: reject refresh/)
-            .it('can not migration execution plan');
+            .catch(/throw error. caused by: reject validate/)
+            .it('can not validate the applied migration');
     });
 });
