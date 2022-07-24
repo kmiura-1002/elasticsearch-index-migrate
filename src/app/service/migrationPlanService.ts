@@ -16,8 +16,8 @@ import { loadMigrationScriptFile } from '../context/util/io/fileService';
 import { migrationHistoryRepository } from '../context/migration/history/migrationHistoryRepository';
 import { migrateHistorySpecByIndexName } from '../context/migration/history/spec';
 import { compare, valid } from 'semver';
-import { ResponseError as ResponseError6 } from 'es6/lib/errors';
-import { ResponseError as ResponseError7 } from 'es7/lib/errors';
+import { errors as Es6Errors } from 'es6';
+import { errors as Es7Errors } from 'es7';
 import { getBaselineVersion } from './migrationConfigService';
 import { MigrationExecuteStatementDataEntity } from '../context/migration/execute_statements/migrationExecuteStatementDataEntity';
 import { UnsupportedVersionError } from '../context/error/UnsupportedVersionError';
@@ -140,7 +140,7 @@ export const migrationPlanService = (
 
             return makeMigrationExplainPlan(migrationPlanMap);
         } catch (e) {
-            if (e instanceof ResponseError6 || e instanceof ResponseError7) {
+            if (e instanceof Es6Errors.ResponseError || e instanceof Es7Errors.ResponseError) {
                 if (e.message === 'index_not_found_exception') {
                     throw new IndexNotFoundError(
                         'History index not found.\n' +
