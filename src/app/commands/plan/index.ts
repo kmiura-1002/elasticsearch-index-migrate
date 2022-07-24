@@ -6,6 +6,10 @@ import { DefaultArgs } from '../../config/args/defaultCommandArgs';
 import { migrationPlanService } from '../../service/migrationPlanService';
 import { toolConfigRepository } from '../../context/config_domain/toolConfigRepository';
 import { ToolConfigSpec } from '../../context/config_domain/spec';
+import { format } from 'date-fns';
+import { MigrationPlanDetail } from '../../../../src_old/model/types';
+import { MigrationPlanData } from '../../types';
+import { DATE_FORMAT } from '../../definitions';
 
 export default class Plan extends Command {
     static description = 'Outputs the migration execution plan.';
@@ -13,6 +17,7 @@ export default class Plan extends Command {
     static flags = {
         ...DefaultFlags,
         ...esConnectionFlags,
+        ...CliUx.ux.table.flags(),
         ignoredMigrations: Flags.boolean({
             default: false,
             env: 'IGNORED_MIGRATIONS',
@@ -29,7 +34,6 @@ export default class Plan extends Command {
         const { args, flags } = await this.parse(Plan);
         const { findBy } = toolConfigRepository();
         const configEntity = await findBy(new ToolConfigSpec(flags, this.config));
-
         const service = migrationPlanService(
             args.name,
             {
@@ -41,11 +45,47 @@ export default class Plan extends Command {
             },
             configEntity.allMigrationConfig
         );
-        await service.refresh();
+        const explainPlan = await service.refresh();
+
+        CliUx.ux.table(
+            makeDetail(explainPlan.all),
+            {
+                version: {},
+                description: {},
+                type: {},
+                installedOn: {},
+                state: {}
+            },
+            {
+                printLine: this.log.bind(this),
+                ...flags // parsed flags
+            }
+        );
     }
 
     protected catch(err: Error & { exitCode?: number }): Promise<any> {
         CliUx.ux.error(`throw error. caused by: ${err}`);
         return super.catch(err);
     }
+}
+
+function getVersion(migrationPlan: MigrationPlanData) {
+    return migrationPlan.version ?? '';
+}
+
+function formatDateAsIsoString(date?: Date): string {
+    return date ? format(date, DATE_FORMAT) : '';
+}
+
+function makeDetail(migrationPlans: MigrationPlanData[]): MigrationPlanDetail[] {
+    return migrationPlans.map(
+        (value) =>
+            ({
+                version: getVersion(value),
+                description: value.description ?? '',
+                type: value.type ?? '',
+                installedOn: formatDateAsIsoString(value.installedOn),
+                state: value.state?.status ?? ''
+            } as MigrationPlanDetail)
+    );
 }
