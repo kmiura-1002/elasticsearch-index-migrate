@@ -76,8 +76,8 @@ export const migrationPlanService = (
                 .sort((a, b) => compare(a, b));
             const resolvedMigrationVersions = migrationData
                 .map((value) => value.version)
-                .filter(isString)
-                .filter((value) => value && valid(value) && isSupportVersionFormat(value))
+                .filter((v: Version | undefined): v is Version => v !== undefined)
+                .filter((value) => valid(value) && isSupportVersionFormat(value))
                 .map((value) => value as Version)
                 .sort((a, b) => compare(a, b));
             const lastResolved = resolvedMigrationVersions[resolvedMigrationVersions.length - 1];
@@ -177,8 +177,6 @@ export const migrationPlanService = (
         validate
     };
 };
-
-const isString = (v: string | undefined): v is string => v !== undefined;
 
 const isRequiredMigrationData = (v: MigrationData): v is RequiredMigrationData =>
     v.version !== undefined;
