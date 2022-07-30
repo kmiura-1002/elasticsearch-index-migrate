@@ -12,7 +12,39 @@ function migrationPlanService(
     _config: Required<MigrationConfig>
 ) {
     return {
-        refresh: () => Promise.resolve(),
+        refresh: () =>
+            Promise.resolve({
+                all: [
+                    {
+                        version: 'v1.0.0',
+                        type: 'CREATE_INDEX',
+                        description: 'description',
+                        installedOn: new Date('2022-01-01T09:00:00'),
+                        state: {
+                            status: 'SUCCESS',
+                            displayName: 'v1.0.0',
+                            resolved: false,
+                            applied: true,
+                            failed: false
+                        }
+                    }
+                ],
+                pending: [
+                    {
+                        version: 'v1.0.0',
+                        type: 'CREATE_INDEX',
+                        description: 'description',
+                        installedOn: new Date('2022-01-01T09:00:00'),
+                        state: {
+                            status: 'SUCCESS',
+                            displayName: 'v1.0.0',
+                            resolved: false,
+                            applied: true,
+                            failed: false
+                        }
+                    }
+                ]
+            }),
         validate: () => Promise.resolve()
     };
 }

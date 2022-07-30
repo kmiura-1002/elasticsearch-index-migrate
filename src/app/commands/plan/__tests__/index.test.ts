@@ -34,8 +34,14 @@ describe('plan', () => {
                 '-O',
                 `${process.cwd()}/src/__mocks__/testsData/test_config/json/config.json`
             ])
-            .it('can outputs the migration execution plan', () => {
+            .it('can outputs the migration execution plan', (ctx) => {
                 expect(migrationPlanService).toHaveBeenCalledTimes(1);
+                expect(ctx.stdout).toContain(
+                    'Version Description Type         Installedon         State'
+                );
+                expect(ctx.stdout).toContain(
+                    'v1.0.0  description CREATE_INDEX 2022-01-01T09:00:00 SUCCESS'
+                );
             });
     });
 
