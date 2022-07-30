@@ -1,10 +1,4 @@
-import type {
-    MigrationConfig,
-    MigrationData,
-    MigrationExecuteConfig,
-    MigrationType,
-    RequiredMigrationData
-} from '../types';
+import type { MigrationData, MigrationType, RequiredMigrationData } from '../types';
 import {
     MigrationExplainPlan,
     MigrationPlanData,
@@ -24,16 +18,27 @@ import { UnsupportedVersionError } from '../context/error/UnsupportedVersionErro
 import { UnknownMigrationTargetError } from '../context/error/UnknownMigrationTargetError';
 import { IndexNotFoundError } from '../context/error/IndexNotFoundError';
 import { MigrationExplainValidationDomainService } from '../context/migration/execute_statements/MigrationExplainValidationDomainService';
+import { Config } from '@oclif/core';
+import { toolConfigRepository } from '../context/config_domain/toolConfigRepository';
+import { ToolConfigSpec } from '../context/config_domain/spec';
 
 export const migrationPlanService = (
     targetName: string,
-    executeConfig: MigrationExecuteConfig,
-    config: Required<MigrationConfig>
+    flags: { [name: string]: any },
+    config: Config
 ) => {
-    const validateInputData = (migrationData: MigrationData[]) => {
+    const executeConfig = {
+        ignored: flags.ignoredMigrations,
+        future: false,
+        missing: false,
+        outOfOrder: false,
+        pending: false
+    };
+
+    const validateInputData = (migrationData: MigrationData[], location: string) => {
         if (migrationData.length === 0) {
             throw new UnknownMigrationTargetError(
-                `There is no migration target for ${targetName} in ${config.migration.location}.`
+                `There is no migration target for ${targetName} in ${location}.`
             );
         }
         if (migrationData.map((value) => value.version).includes(undefined)) {
@@ -51,11 +56,16 @@ export const migrationPlanService = (
         version.match(/^(v\d+.\d+.\d+)/) !== null;
 
     const refresh = async (): Promise<MigrationExplainPlan> => {
-        const migrationData = loadMigrationScriptFile(targetName, [config.migration.location]);
-        const baseline = getBaselineVersion(targetName, config);
-        validateInputData(migrationData);
+        const configEntity = await toolConfigRepository().findBy(new ToolConfigSpec(flags, config));
+        const baseline = getBaselineVersion(targetName, configEntity.allMigrationConfig);
+        const migrationData = loadMigrationScriptFile(targetName, [
+            configEntity.migrationTargetConfig.location
+        ]);
+
+        validateInputData(migrationData, configEntity.migrationTargetConfig.location);
+
         try {
-            const { findBy } = migrationHistoryRepository(config.elasticsearch);
+            const { findBy } = migrationHistoryRepository(configEntity.elasticsearchConfig);
             const histories = await findBy(
                 migrateHistorySpecByIndexName(targetName, baseline, { size: 10000 })
             );

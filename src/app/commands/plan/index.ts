@@ -4,8 +4,6 @@ import { createMigrationHistory } from '../../decorators/createMigrationHistory'
 import { migrateLock } from '../../decorators/migrateLock';
 import { DefaultArgs } from '../../config/args/defaultCommandArgs';
 import { migrationPlanService } from '../../service/migrationPlanService';
-import { toolConfigRepository } from '../../context/config_domain/toolConfigRepository';
-import { ToolConfigSpec } from '../../context/config_domain/spec';
 import { format } from 'date-fns';
 import { MigrationPlanDetail } from '../../../../src_old/model/types';
 import { MigrationPlanData } from '../../types';
@@ -32,19 +30,7 @@ export default class Plan extends Command {
     @migrateLock()
     async run(): Promise<void> {
         const { args, flags } = await this.parse(Plan);
-        const { findBy } = toolConfigRepository();
-        const configEntity = await findBy(new ToolConfigSpec(flags, this.config));
-        const service = migrationPlanService(
-            args.name,
-            {
-                ignored: flags.ignoredMigrations,
-                future: false,
-                missing: false,
-                outOfOrder: false,
-                pending: false
-            },
-            configEntity.allMigrationConfig
-        );
+        const service = migrationPlanService(args.name, flags, this.config);
         const explainPlan = await service.refresh();
 
         CliUx.ux.table(
@@ -69,23 +55,11 @@ export default class Plan extends Command {
     }
 }
 
-function getVersion(migrationPlan: MigrationPlanData) {
-    return migrationPlan.version ?? '';
-}
-
-function formatDateAsIsoString(date?: Date): string {
-    return date ? format(date, DATE_FORMAT) : '';
-}
-
-function makeDetail(migrationPlans: MigrationPlanData[]): MigrationPlanDetail[] {
-    return migrationPlans.map(
-        (value) =>
-            ({
-                version: getVersion(value),
-                description: value.description ?? '',
-                type: value.type ?? '',
-                installedOn: formatDateAsIsoString(value.installedOn),
-                state: value.state?.status ?? ''
-            } as MigrationPlanDetail)
-    );
-}
+const makeDetail = (migrationPlans: MigrationPlanData[]): MigrationPlanDetail[] =>
+    migrationPlans.map((value) => ({
+        version: value.version ?? '',
+        description: value.description ?? '',
+        type: value.type ?? '',
+        installedOn: value.installedOn ? format(value.installedOn, DATE_FORMAT) : '',
+        state: value.state?.status ?? ''
+    }));

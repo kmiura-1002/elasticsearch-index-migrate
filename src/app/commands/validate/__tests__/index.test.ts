@@ -34,8 +34,9 @@ describe('validate', () => {
                 '-O',
                 `${process.cwd()}/src/__mocks__/testsData/test_config/json/config.json`
             ])
-            .it('can validate the applied migration', () => {
+            .it('can validate the applied migration', (ctx) => {
                 expect(migrationPlanService).toHaveBeenCalledTimes(1);
+                expect(ctx.stdout).toContain('error1\nerror2');
             });
     });
 

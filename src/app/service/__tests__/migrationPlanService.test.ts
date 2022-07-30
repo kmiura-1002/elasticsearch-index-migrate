@@ -1,6 +1,5 @@
 import { migrationPlanService } from '../migrationPlanService';
-import { defaultPlanExecutionConfig } from '../../definitions';
-import { MIGRATE_HISTORY_INDEX_NAME, MigrationConfig, MigrationTypes } from '../../types';
+import { MIGRATE_HISTORY_INDEX_NAME, MigrationTypes } from '../../types';
 import { useElasticsearchClient } from '../../client/es/ElasticsearchClient';
 import v7HistoryMapping from '../../../resources/mapping/migrate_history_esV7.json';
 import { mocked } from 'jest-mock';
@@ -9,7 +8,13 @@ import { Search as Search6 } from 'es6/api/requestParams';
 import { Search as Search7 } from 'es7/api/requestParams';
 import { migrateIndices } from '../../../__mocks__/testsData/MigrateIndexTestData';
 import * as spec from '../../context/migration/history/spec';
+import { toolConfigRepository } from '../../context/config_domain/toolConfigRepository';
+import { mockToolConfigRepository } from '../../../__mocks__/context/config_domain/mockReadOptions';
+import { ToolConfigSpecProps } from '../../context/config_domain/spec';
+import { ToolConfigEntity } from '../../context/config_domain/toolConfigEntity';
+import { Config } from '@oclif/core/lib/config/config';
 
+jest.mock('../../context/config_domain/toolConfigRepository');
 jest.mock('../../client/es/ElasticsearchClient');
 jest.mock('checksum');
 
@@ -69,24 +74,28 @@ describe('migrationPlanService', () => {
                     })
                 };
             });
-            const config = {
-                elasticsearch: {
-                    searchEngine: 'elasticsearch',
-                    version: '7',
-                    connect: {
-                        host: 'http://localhost:9202'
+            mocked(toolConfigRepository).mockImplementation(() => {
+                return {
+                    ...mockToolConfigRepository(),
+                    findBy(_spec: ToolConfigSpecProps) {
+                        return ToolConfigEntity.readConfig({
+                            elasticsearch: {
+                                searchEngine: 'elasticsearch',
+                                version: '7',
+                                connect: {
+                                    host: 'http://localhost:9202'
+                                }
+                            },
+                            migration: {
+                                location: `${process.cwd()}/src/__mocks__/testsData/migration`,
+                                baselineVersion: 'v1.0.0'
+                            }
+                        });
                     }
-                },
-                migration: {
-                    location: `${process.cwd()}/src/__mocks__/testsData/migration`,
-                    baselineVersion: 'v1.0.0'
-                }
-            } as Required<MigrationConfig>;
-            const explainPlan = await migrationPlanService(
-                'test2',
-                defaultPlanExecutionConfig(),
-                config
-            ).refresh();
+                };
+            });
+
+            const explainPlan = await migrationPlanService('test2', {}, {} as Config).refresh();
             const actual = explainPlan.all;
 
             expect(
@@ -157,27 +166,30 @@ describe('migrationPlanService', () => {
                     })
                 };
             });
-            const config = {
-                elasticsearch: {
-                    searchEngine: 'elasticsearch',
-                    version: '7',
-                    connect: {
-                        host: 'http://localhost:9202'
+            mocked(toolConfigRepository).mockImplementation(() => {
+                return {
+                    ...mockToolConfigRepository(),
+                    findBy(_spec: ToolConfigSpecProps) {
+                        return ToolConfigEntity.readConfig({
+                            elasticsearch: {
+                                searchEngine: 'elasticsearch',
+                                version: '7',
+                                connect: {
+                                    host: 'http://localhost:9202'
+                                }
+                            },
+                            migration: {
+                                location: `${process.cwd()}/src/__mocks__/testsData/migration`,
+                                baselineVersions: {
+                                    test2: 'v1.0.0'
+                                },
+                                baselineVersion: 'v0.0.0'
+                            }
+                        });
                     }
-                },
-                migration: {
-                    location: `${process.cwd()}/src/__mocks__/testsData/migration`,
-                    baselineVersions: {
-                        test2: 'v1.0.0'
-                    },
-                    baselineVersion: 'v0.0.0'
-                }
-            } as Required<MigrationConfig>;
-            const explainPlan = await migrationPlanService(
-                'test2',
-                defaultPlanExecutionConfig(),
-                config
-            ).refresh();
+                };
+            });
+            const explainPlan = await migrationPlanService('test2', {}, {} as Config).refresh();
             const actual = explainPlan.all;
 
             expect(
@@ -242,26 +254,29 @@ describe('migrationPlanService', () => {
                     }
                 };
             });
-            const config = {
-                elasticsearch: {
-                    searchEngine: 'elasticsearch',
-                    version: '7',
-                    connect: {
-                        host: 'http://localhost:9202'
+            mocked(toolConfigRepository).mockImplementation(() => {
+                return {
+                    ...mockToolConfigRepository(),
+                    findBy(_spec: ToolConfigSpecProps) {
+                        return ToolConfigEntity.readConfig({
+                            elasticsearch: {
+                                searchEngine: 'elasticsearch',
+                                version: '7',
+                                connect: {
+                                    host: 'http://localhost:9202'
+                                }
+                            },
+                            migration: {
+                                location: `${process.cwd()}/src/__mocks__/testsData/migration`,
+                                baselineVersions: {
+                                    test: 'v1.0.0'
+                                }
+                            }
+                        });
                     }
-                },
-                migration: {
-                    location: `${process.cwd()}/src/__mocks__/testsData/migration`,
-                    baselineVersions: {
-                        test: 'v1.0.0'
-                    }
-                }
-            } as Required<MigrationConfig>;
-            const explainPlan = await migrationPlanService(
-                'test',
-                defaultPlanExecutionConfig(),
-                config
-            ).refresh();
+                };
+            });
+            const explainPlan = await migrationPlanService('test', {}, {} as Config).refresh();
             const actual = explainPlan.all;
             expect(
                 actual.map((value) => ({
@@ -378,25 +393,32 @@ describe('migrationPlanService', () => {
                     }
                 };
             });
-            const config = {
-                elasticsearch: {
-                    searchEngine: 'elasticsearch',
-                    version: '7',
-                    connect: {
-                        host: 'http://localhost:9202'
+            mocked(toolConfigRepository).mockImplementation(() => {
+                return {
+                    ...mockToolConfigRepository(),
+                    findBy(_spec: ToolConfigSpecProps) {
+                        return ToolConfigEntity.readConfig({
+                            elasticsearch: {
+                                searchEngine: 'elasticsearch',
+                                version: '7',
+                                connect: {
+                                    host: 'http://localhost:9202'
+                                }
+                            },
+                            migration: {
+                                location: `${process.cwd()}/src/__mocks__/testsData/migration`,
+                                baselineVersions: {
+                                    missing_file: 'v2.0.0'
+                                }
+                            }
+                        });
                     }
-                },
-                migration: {
-                    location: `${process.cwd()}/src/__mocks__/testsData/migration`,
-                    baselineVersions: {
-                        missing_file: 'v2.0.0'
-                    }
-                }
-            } as Required<MigrationConfig>;
+                };
+            });
             const explainPlan = await migrationPlanService(
                 'missing_file',
-                defaultPlanExecutionConfig(),
-                config
+                {},
+                {} as Config
             ).refresh();
             const actual = explainPlan.all;
             expect(
@@ -437,25 +459,32 @@ describe('migrationPlanService', () => {
                     }
                 };
             });
-            const config = {
-                elasticsearch: {
-                    searchEngine: 'elasticsearch',
-                    version: '7',
-                    connect: {
-                        host: 'http://localhost:9202'
+            mocked(toolConfigRepository).mockImplementation(() => {
+                return {
+                    ...mockToolConfigRepository(),
+                    findBy(_spec: ToolConfigSpecProps) {
+                        return ToolConfigEntity.readConfig({
+                            elasticsearch: {
+                                searchEngine: 'elasticsearch',
+                                version: '7',
+                                connect: {
+                                    host: 'http://localhost:9202'
+                                }
+                            },
+                            migration: {
+                                location: `${process.cwd()}/src/__mocks__/testsData/migration`,
+                                baselineVersions: {
+                                    same_version: 'v1.0.0'
+                                }
+                            }
+                        });
                     }
-                },
-                migration: {
-                    location: `${process.cwd()}/src/__mocks__/testsData/migration`,
-                    baselineVersions: {
-                        same_version: 'v1.0.0'
-                    }
-                }
-            } as Required<MigrationConfig>;
+                };
+            });
             const explainPlan = await migrationPlanService(
                 'same_version',
-                defaultPlanExecutionConfig(),
-                config
+                {},
+                {} as Config
             ).refresh();
             const actual = explainPlan.all;
             expect(
@@ -497,26 +526,29 @@ describe('migrationPlanService', () => {
                     }
                 };
             });
-            const config = {
-                elasticsearch: {
-                    searchEngine: 'elasticsearch',
-                    version: '7',
-                    connect: {
-                        host: 'http://localhost:9202'
+            mocked(toolConfigRepository).mockImplementation(() => {
+                return {
+                    ...mockToolConfigRepository(),
+                    findBy(_spec: ToolConfigSpecProps) {
+                        return ToolConfigEntity.readConfig({
+                            elasticsearch: {
+                                searchEngine: 'elasticsearch',
+                                version: '7',
+                                connect: {
+                                    host: 'http://localhost:9202'
+                                }
+                            },
+                            migration: {
+                                location: `${process.cwd()}/src/__mocks__/testsData/migration`,
+                                baselineVersions: {
+                                    test: 'v1.0.0'
+                                }
+                            }
+                        });
                     }
-                },
-                migration: {
-                    location: `${process.cwd()}/src/__mocks__/testsData/migration`,
-                    baselineVersions: {
-                        test: 'v1.0.0'
-                    }
-                }
-            } as Required<MigrationConfig>;
-            const explainPlan = await migrationPlanService(
-                'test',
-                defaultPlanExecutionConfig(),
-                config
-            ).refresh();
+                };
+            });
+            const explainPlan = await migrationPlanService('test', {}, {} as Config).refresh();
             const actual = explainPlan.all;
             expect(
                 actual.map((value) => ({
@@ -558,26 +590,29 @@ describe('migrationPlanService', () => {
                     })
                 };
             });
-            const config = {
-                elasticsearch: {
-                    searchEngine: 'elasticsearch',
-                    version: '7',
-                    connect: {
-                        host: 'http://localhost:9202'
+            mocked(toolConfigRepository).mockImplementation(() => {
+                return {
+                    ...mockToolConfigRepository(),
+                    findBy(_spec: ToolConfigSpecProps) {
+                        return ToolConfigEntity.readConfig({
+                            elasticsearch: {
+                                searchEngine: 'elasticsearch',
+                                version: '7',
+                                connect: {
+                                    host: 'http://localhost:9202'
+                                }
+                            },
+                            migration: {
+                                location: `${process.cwd()}/src/__mocks__/testsData/migration`,
+                                baselineVersions: {
+                                    test: 'v1.0.2'
+                                }
+                            }
+                        });
                     }
-                },
-                migration: {
-                    location: `${process.cwd()}/src/__mocks__/testsData/migration`,
-                    baselineVersions: {
-                        test: 'v1.0.2'
-                    }
-                }
-            } as Required<MigrationConfig>;
-            const explainPlan = await migrationPlanService(
-                'test',
-                defaultPlanExecutionConfig(),
-                config
-            ).refresh();
+                };
+            });
+            const explainPlan = await migrationPlanService('test', {}, {} as Config).refresh();
             const actual = explainPlan.all;
 
             expect(
@@ -631,26 +666,29 @@ describe('migrationPlanService', () => {
                     }
                 };
             });
-            const config = {
-                elasticsearch: {
-                    searchEngine: 'elasticsearch',
-                    version: '7',
-                    connect: {
-                        host: 'http://localhost:9202'
+            mocked(toolConfigRepository).mockImplementation(() => {
+                return {
+                    ...mockToolConfigRepository(),
+                    findBy(_spec: ToolConfigSpecProps) {
+                        return ToolConfigEntity.readConfig({
+                            elasticsearch: {
+                                searchEngine: 'elasticsearch',
+                                version: '7',
+                                connect: {
+                                    host: 'http://localhost:9202'
+                                }
+                            },
+                            migration: {
+                                location: `${process.cwd()}/src/__mocks__/testsData/migration`,
+                                baselineVersions: {
+                                    test: 'v1.0.0'
+                                }
+                            }
+                        });
                     }
-                },
-                migration: {
-                    location: `${process.cwd()}/src/__mocks__/testsData/migration`,
-                    baselineVersions: {
-                        test: 'v1.0.0'
-                    }
-                }
-            } as Required<MigrationConfig>;
-            const explainPlan = await migrationPlanService(
-                'test',
-                defaultPlanExecutionConfig(),
-                config
-            ).refresh();
+                };
+            });
+            const explainPlan = await migrationPlanService('test', {}, {} as Config).refresh();
             const actual = explainPlan.all;
 
             expect(
@@ -679,27 +717,30 @@ describe('migrationPlanService', () => {
         });
 
         it('throw error when there is no migration target', async () => {
+            mocked(toolConfigRepository).mockImplementation(() => {
+                return {
+                    ...mockToolConfigRepository(),
+                    findBy(_spec: ToolConfigSpecProps) {
+                        return ToolConfigEntity.readConfig({
+                            elasticsearch: {
+                                searchEngine: 'elasticsearch',
+                                version: '7',
+                                connect: {
+                                    host: 'http://localhost:9202'
+                                }
+                            },
+                            migration: {
+                                location,
+                                baselineVersions: {
+                                    xxxxx: 'v1.0.0'
+                                }
+                            }
+                        });
+                    }
+                };
+            });
             const location = `${process.cwd()}/src/__mocks__/testsData/migration`;
-            const config = {
-                elasticsearch: {
-                    searchEngine: 'elasticsearch',
-                    version: '7',
-                    connect: {
-                        host: 'http://localhost:9202'
-                    }
-                },
-                migration: {
-                    location,
-                    baselineVersions: {
-                        xxxxx: 'v1.0.0'
-                    }
-                }
-            } as Required<MigrationConfig>;
-            const actual = migrationPlanService(
-                'xxxxx',
-                defaultPlanExecutionConfig(),
-                config
-            ).refresh();
+            const actual = migrationPlanService('xxxxx', {}, {} as Config).refresh();
 
             await expect(actual).rejects.toThrowError(
                 new Error(`There is no migration target for xxxxx in ${location}.`)
@@ -707,26 +748,29 @@ describe('migrationPlanService', () => {
         });
 
         it('throw error when there is a migration file of unknown version', async () => {
-            const config = {
-                elasticsearch: {
-                    searchEngine: 'elasticsearch',
-                    version: '7',
-                    connect: {
-                        host: 'http://localhost:9202'
+            mocked(toolConfigRepository).mockImplementation(() => {
+                return {
+                    ...mockToolConfigRepository(),
+                    findBy(_spec: ToolConfigSpecProps) {
+                        return ToolConfigEntity.readConfig({
+                            elasticsearch: {
+                                searchEngine: 'elasticsearch',
+                                version: '7',
+                                connect: {
+                                    host: 'http://localhost:9202'
+                                }
+                            },
+                            migration: {
+                                location: `${process.cwd()}/src/__mocks__/testsData/migration`,
+                                baselineVersions: {
+                                    unknown_version: 'v1.0.0'
+                                }
+                            }
+                        });
                     }
-                },
-                migration: {
-                    location: `${process.cwd()}/src/__mocks__/testsData/migration`,
-                    baselineVersions: {
-                        unknown_version: 'v1.0.0'
-                    }
-                }
-            } as Required<MigrationConfig>;
-            const actual = migrationPlanService(
-                'unknown_version',
-                defaultPlanExecutionConfig(),
-                config
-            ).refresh();
+                };
+            });
+            const actual = migrationPlanService('unknown_version', {}, {} as Config).refresh();
 
             await expect(actual).rejects.toThrowError(
                 new Error(
@@ -737,27 +781,30 @@ describe('migrationPlanService', () => {
         });
 
         it('throw error when baseline setting for index does not exist', async () => {
-            const config = {
-                elasticsearch: {
-                    searchEngine: 'elasticsearch',
-                    version: '7',
-                    connect: {
-                        host: 'http://localhost:9202'
+            mocked(toolConfigRepository).mockImplementation(() => {
+                return {
+                    ...mockToolConfigRepository(),
+                    findBy(_spec: ToolConfigSpecProps) {
+                        return ToolConfigEntity.readConfig({
+                            elasticsearch: {
+                                searchEngine: 'elasticsearch',
+                                version: '7',
+                                connect: {
+                                    host: 'http://localhost:9202'
+                                }
+                            },
+                            migration: {
+                                location: `${process.cwd()}/src/__mocks__/testsData/migration`,
+                                baselineVersions: {
+                                    test: 'v1.0.0'
+                                }
+                            }
+                        });
                     }
-                },
-                migration: {
-                    location: `${process.cwd()}/src/__mocks__/testsData/migration`,
-                    baselineVersions: {
-                        test: 'v1.0.0'
-                    }
-                }
-            } as Required<MigrationConfig>;
+                };
+            });
             const index = 'unknown_index';
-            const actual = migrationPlanService(
-                index,
-                defaultPlanExecutionConfig(),
-                config
-            ).refresh();
+            const actual = migrationPlanService(index, {}, {} as Config).refresh();
 
             await expect(actual).rejects.toThrowError(
                 new Error(`The baseline setting for index(${index}) does not exist.`)
@@ -765,27 +812,30 @@ describe('migrationPlanService', () => {
         });
 
         it('throw error when baseline is in an unsupported format', async () => {
+            mocked(toolConfigRepository).mockImplementation(() => {
+                return {
+                    ...mockToolConfigRepository(),
+                    findBy(_spec: ToolConfigSpecProps) {
+                        return ToolConfigEntity.readConfig({
+                            elasticsearch: {
+                                searchEngine: 'elasticsearch',
+                                version: '7',
+                                connect: {
+                                    host: 'http://localhost:9202'
+                                }
+                            },
+                            migration: {
+                                location: `${process.cwd()}/src/__mocks__/testsData/migration`,
+                                baselineVersions: {
+                                    test2: baselineVersion
+                                }
+                            }
+                        });
+                    }
+                };
+            });
             const baselineVersion = '1.0.0';
-            const config = {
-                elasticsearch: {
-                    searchEngine: 'elasticsearch',
-                    version: '7',
-                    connect: {
-                        host: 'http://localhost:9202'
-                    }
-                },
-                migration: {
-                    location: `${process.cwd()}/src/__mocks__/testsData/migration`,
-                    baselineVersions: {
-                        test2: baselineVersion
-                    }
-                }
-            } as Required<MigrationConfig>;
-            const actual = migrationPlanService(
-                'test2',
-                defaultPlanExecutionConfig(),
-                config
-            ).refresh();
+            const actual = migrationPlanService('test2', {}, {} as Config).refresh();
 
             await expect(actual).rejects.toThrowError(
                 new Error(
@@ -809,22 +859,29 @@ describe('migrationPlanService', () => {
                     })
                 };
             });
-            const config = {
-                elasticsearch: {
-                    searchEngine: 'elasticsearch',
-                    version: '7',
-                    connect: {
-                        host: 'http://localhost:9202'
+            mocked(toolConfigRepository).mockImplementation(() => {
+                return {
+                    ...mockToolConfigRepository(),
+                    findBy(_spec: ToolConfigSpecProps) {
+                        return ToolConfigEntity.readConfig({
+                            elasticsearch: {
+                                searchEngine: 'elasticsearch',
+                                version: '7',
+                                connect: {
+                                    host: 'http://localhost:9202'
+                                }
+                            },
+                            migration: {
+                                location: `${process.cwd()}/src/__mocks__/testsData/migration`,
+                                baselineVersions: {
+                                    test2: 'v1.0.0'
+                                }
+                            }
+                        });
                     }
-                },
-                migration: {
-                    location: `${process.cwd()}/src/__mocks__/testsData/migration`,
-                    baselineVersions: {
-                        test2: 'v1.0.0'
-                    }
-                }
-            } as Required<MigrationConfig>;
-            const service = migrationPlanService('test2', defaultPlanExecutionConfig(), config);
+                };
+            });
+            const service = migrationPlanService('test2', {}, {} as Config);
 
             await expect(service.refresh()).rejects.toThrowError(new Error('Response Error'));
         });
@@ -849,22 +906,29 @@ describe('migrationPlanService', () => {
                     })
                 };
             });
-            const config = {
-                elasticsearch: {
-                    searchEngine: 'elasticsearch',
-                    version: '7',
-                    connect: {
-                        host: 'http://localhost:9202'
+            mocked(toolConfigRepository).mockImplementation(() => {
+                return {
+                    ...mockToolConfigRepository(),
+                    findBy(_spec: ToolConfigSpecProps) {
+                        return ToolConfigEntity.readConfig({
+                            elasticsearch: {
+                                searchEngine: 'elasticsearch',
+                                version: '7',
+                                connect: {
+                                    host: 'http://localhost:9202'
+                                }
+                            },
+                            migration: {
+                                location: `${process.cwd()}/src/__mocks__/testsData/migration`,
+                                baselineVersions: {
+                                    test2: 'v1.0.0'
+                                }
+                            }
+                        });
                     }
-                },
-                migration: {
-                    location: `${process.cwd()}/src/__mocks__/testsData/migration`,
-                    baselineVersions: {
-                        test2: 'v1.0.0'
-                    }
-                }
-            } as Required<MigrationConfig>;
-            const service = migrationPlanService('test2', defaultPlanExecutionConfig(), config);
+                };
+            });
+            const service = migrationPlanService('test2', {}, {} as Config);
 
             await expect(service.refresh()).rejects.toThrowError(
                 new Error(
@@ -881,30 +945,98 @@ describe('migrationPlanService', () => {
                 return {
                     ...getMockElasticsearchClient(),
                     search(_param: Search6 | Search7) {
-                        return Promise.resolve(migrateIndices());
+                        return Promise.resolve([
+                            {
+                                _index: '',
+                                _type: '',
+                                _id: '',
+                                _source: {
+                                    script_name: 'v1.0.0__create_index.json',
+                                    migrate_version: 'v1.0.0',
+                                    description: 'book index',
+                                    execution_time: 1,
+                                    index_name: 'test',
+                                    installed_on: "2020-01-01'T'00:00:00",
+                                    script_type: MigrationTypes.CREATE_INDEX,
+                                    success: true,
+                                    checksum: 'mock_checksum'
+                                }
+                            },
+                            {
+                                _index: '',
+                                _type: '',
+                                _id: '',
+                                _source: {
+                                    script_name: 'v1.0.1__add_field.json',
+                                    migrate_version: 'v1.0.1',
+                                    description: 'book index',
+                                    execution_time: 1,
+                                    index_name: 'test',
+                                    installed_on: "2020-01-01'T'00:00:00",
+                                    script_type: MigrationTypes.ADD_FIELD,
+                                    success: true,
+                                    checksum: 'mock_checksum'
+                                }
+                            },
+                            {
+                                _index: '',
+                                _type: '',
+                                _id: '',
+                                _source: {
+                                    script_name: 'v1.0.2__add_fieldcopy.json',
+                                    migrate_version: 'v1.0.2',
+                                    description: 'book index',
+                                    execution_time: 1,
+                                    index_name: 'test',
+                                    installed_on: "2020-01-01'T'00:00:00",
+                                    script_type: MigrationTypes.ADD_FIELD,
+                                    success: true,
+                                    checksum: 'mock_checksum'
+                                }
+                            },
+                            {
+                                _index: '',
+                                _type: '',
+                                _id: '',
+                                _source: {
+                                    script_name: 'v1.0.3__add_fieldcopy.json',
+                                    migrate_version: 'v1.0.3',
+                                    description: 'book index',
+                                    execution_time: 1,
+                                    index_name: 'test',
+                                    installed_on: "2020-01-01'T'00:00:00",
+                                    script_type: MigrationTypes.ADD_FIELD,
+                                    success: true,
+                                    checksum: 'mock_checksum'
+                                }
+                            }
+                        ]);
                     }
                 };
             });
-            const config = {
-                elasticsearch: {
-                    searchEngine: 'elasticsearch',
-                    version: '7',
-                    connect: {
-                        host: 'http://localhost:9202'
+            mocked(toolConfigRepository).mockImplementation(() => {
+                return {
+                    ...mockToolConfigRepository(),
+                    findBy(_spec: ToolConfigSpecProps) {
+                        return ToolConfigEntity.readConfig({
+                            elasticsearch: {
+                                searchEngine: 'elasticsearch',
+                                version: '7',
+                                connect: {
+                                    host: 'http://localhost:9202'
+                                }
+                            },
+                            migration: {
+                                location: `${process.cwd()}/src/__mocks__/testsData/migration`,
+                                baselineVersions: {
+                                    test: 'v1.0.0'
+                                }
+                            }
+                        });
                     }
-                },
-                migration: {
-                    location: `${process.cwd()}/src/__mocks__/testsData/migration`,
-                    baselineVersions: {
-                        test: 'v1.0.0'
-                    }
-                }
-            } as Required<MigrationConfig>;
-            const actual = await migrationPlanService(
-                'test',
-                defaultPlanExecutionConfig(),
-                config
-            ).validate();
+                };
+            });
+            const actual = await migrationPlanService('test', {}, {} as Config).validate();
 
             expect(actual).toEqual('');
         });
@@ -967,32 +1099,29 @@ describe('migrationPlanService', () => {
                     }
                 };
             });
-            const config = {
-                elasticsearch: {
-                    searchEngine: 'elasticsearch',
-                    version: '7',
-                    connect: {
-                        host: 'http://localhost:9202'
+            mocked(toolConfigRepository).mockImplementation(() => {
+                return {
+                    ...mockToolConfigRepository(),
+                    findBy(_spec: ToolConfigSpecProps) {
+                        return ToolConfigEntity.readConfig({
+                            elasticsearch: {
+                                searchEngine: 'elasticsearch',
+                                version: '7',
+                                connect: {
+                                    host: 'http://localhost:9202'
+                                }
+                            },
+                            migration: {
+                                location: `${process.cwd()}/src/__mocks__/testsData/migration`,
+                                baselineVersions: {
+                                    test: 'v1.0.0'
+                                }
+                            }
+                        });
                     }
-                },
-                migration: {
-                    location: `${process.cwd()}/src/__mocks__/testsData/migration`,
-                    baselineVersions: {
-                        test: 'v1.0.0'
-                    }
-                }
-            } as Required<MigrationConfig>;
-            const actual = await migrationPlanService(
-                'test',
-                {
-                    outOfOrder: false,
-                    pending: false,
-                    missing: true,
-                    ignored: true,
-                    future: false
-                },
-                config
-            ).validate();
+                };
+            });
+            const actual = await migrationPlanService('test', {}, {} as Config).validate();
 
             expect(actual).toEqual(
                 'Detected failed migrate to version v1.0.0(book index).\n' +

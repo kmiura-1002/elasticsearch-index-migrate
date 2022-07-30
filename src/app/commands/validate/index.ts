@@ -3,8 +3,6 @@ import { DefaultFlags, esConnectionFlags } from '../../config/flags/defaultComma
 import { DefaultArgs } from '../../config/args/defaultCommandArgs';
 import { createMigrationHistory } from '../../decorators/createMigrationHistory';
 import { migrateLock } from '../../decorators/migrateLock';
-import { toolConfigRepository } from '../../context/config_domain/toolConfigRepository';
-import { ToolConfigSpec } from '../../context/config_domain/spec';
 import { migrationPlanService } from '../../service/migrationPlanService';
 
 export default class Validate extends Command {
@@ -27,21 +25,10 @@ export default class Validate extends Command {
     @migrateLock()
     async run(): Promise<void> {
         const { args, flags } = await this.parse(Validate);
-        const { findBy } = toolConfigRepository();
-        const configEntity = await findBy(new ToolConfigSpec(flags, this.config));
+        const service = migrationPlanService(args.name, flags, this.config);
+        const errorMessage = await service.validate();
 
-        const service = migrationPlanService(
-            args.name,
-            {
-                ignored: flags.ignoredMigrations,
-                future: false,
-                missing: false,
-                outOfOrder: false,
-                pending: false
-            },
-            configEntity.allMigrationConfig
-        );
-        await service.validate();
+        CliUx.ux.info(errorMessage);
     }
 
     protected catch(err: Error & { exitCode?: number }): Promise<any> {

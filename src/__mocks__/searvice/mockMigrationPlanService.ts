@@ -45,6 +45,6 @@ function migrationPlanService(
                     }
                 ]
             }),
-        validate: () => Promise.resolve()
+        validate: () => Promise.resolve('error1\nerror2')
     };
 }
