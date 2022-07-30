@@ -4,6 +4,8 @@ import yaml from 'js-yaml';
 import checksum from 'checksum';
 import type { MigrationData, MigrationFile, Version } from '../../../types';
 
+// FIXME Delete this file
+
 export const FILE_NAME_REGEXP = /^([v][0-9]+.[0-9]+.[0-9]+)__([0-9a-zA-Z]+)/;
 const ALLOW_LOAD_EXTENSIONS = ['.json', '.yaml', '.yml'];
 
