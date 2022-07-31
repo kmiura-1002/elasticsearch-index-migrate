@@ -2,7 +2,7 @@ export type MigrationScriptFileSpec = {
     [key: string]: any;
 };
 
-export class migrationScriptFileSpecByLocation implements MigrationScriptFileSpec {
+export class MigrationScriptFileSpecByLocation implements MigrationScriptFileSpec {
     readonly migrantName: string;
     readonly locations: string[];
 

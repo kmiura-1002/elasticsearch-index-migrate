@@ -5,7 +5,7 @@ import path, { ParsedPath } from 'path';
 import yaml from 'js-yaml';
 import checksum from 'checksum';
 
-const FILE_NAME_REGEXP = /^([v][0-9]+.[0-9]+.[0-9]+)__([0-9a-zA-Z]+)/;
+const FILE_NAME_REGEXP = /^(v\d+.\d+.\d+)__([\da-zA-Z]+)/;
 
 export class MigrationScriptFileEntity extends Entity<MigrationData> {
     private constructor(param: MigrationData) {
@@ -26,6 +26,10 @@ export class MigrationScriptFileEntity extends Entity<MigrationData> {
             physicalLocation: parsedPath,
             checksum: checksum(JSON.stringify(migrationFile))
         });
+    }
+
+    get migrationData(): MigrationData {
+        return this.props;
     }
 
     get migrationScript(): MigrationFile {

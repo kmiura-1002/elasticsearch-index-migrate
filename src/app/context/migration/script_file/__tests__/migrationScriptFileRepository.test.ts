@@ -1,11 +1,15 @@
-import { loadMigrationScriptFile } from '../fileService';
+import { migrationScriptFileRepository } from '../migrationScriptFileRepository';
+import { MigrationScriptFileSpecByLocation } from '../spec';
 
-describe('fileService', () => {
+describe('migrationScriptFileRepository', () => {
     it('can load migration files', () => {
-        const migrationData = loadMigrationScriptFile('test1', [
-            `${process.cwd()}/src/__mocks__/testsData/migration`
-        ]);
-        expect(migrationData).toEqual([
+        const { findByAll } = migrationScriptFileRepository();
+        const migrationData = findByAll(
+            new MigrationScriptFileSpecByLocation('test1', [
+                `${process.cwd()}/src/__mocks__/testsData/migration`
+            ])
+        );
+        expect(migrationData.map((value) => value.migrationData)).toEqual([
             {
                 checksum: 'mock_checksum',
                 file: {
@@ -76,11 +80,14 @@ describe('fileService', () => {
     });
 
     it('can load migration files when multiple locations are specified', () => {
-        const migrationData = loadMigrationScriptFile('test1', [
-            `${process.cwd()}/src/__mocks__/testsData/migration`,
-            `${process.cwd()}/src/__mocks__/testsData/migration_2`
-        ]);
-        expect(migrationData).toEqual([
+        const { findByAll } = migrationScriptFileRepository();
+        const migrationData = findByAll(
+            new MigrationScriptFileSpecByLocation('test1', [
+                `${process.cwd()}/src/__mocks__/testsData/migration`,
+                `${process.cwd()}/src/__mocks__/testsData/migration_2`
+            ])
+        );
+        expect(migrationData.map((value) => value.migrationData)).toEqual([
             {
                 checksum: 'mock_checksum',
                 file: {
@@ -213,9 +220,12 @@ describe('fileService', () => {
     });
 
     it('can not load migration files', () => {
-        const migrationData = loadMigrationScriptFile('unknown', [
-            `${process.cwd()}/src/__mocks__/testsData/migration`
-        ]);
+        const { findByAll } = migrationScriptFileRepository();
+        const migrationData = findByAll(
+            new MigrationScriptFileSpecByLocation('unknown', [
+                `${process.cwd()}/src/__mocks__/testsData/migration`
+            ])
+        );
         expect(migrationData).toEqual([]);
     });
 });

@@ -1,11 +1,11 @@
-import { MigrationScriptFileSpec, migrationScriptFileSpecByLocation } from './spec';
+import { MigrationScriptFileSpec, MigrationScriptFileSpecByLocation } from './spec';
 import fs from 'fs';
 import path from 'path';
 import { MigrationScriptFileEntity } from './migrationScriptFileEntity';
 
 const isMigrationScriptFileSpecByLocation = (
     spec: MigrationScriptFileSpec
-): spec is migrationScriptFileSpecByLocation =>
+): spec is MigrationScriptFileSpecByLocation =>
     typeof spec.migrantName !== undefined && typeof spec.locations !== undefined;
 
 const ALLOW_LOAD_EXTENSIONS = ['.json', '.yaml', '.yml'];
@@ -32,7 +32,7 @@ function findAllFiles(dir: string[]): string[] {
 }
 
 export const migrationScriptFileRepository = () => {
-    const findBy = (spec: MigrationScriptFileSpec): MigrationScriptFileEntity[] => {
+    const findByAll = (spec: MigrationScriptFileSpec): MigrationScriptFileEntity[] => {
         if (isMigrationScriptFileSpecByLocation(spec)) {
             const paths = findAllFiles(spec.locations);
             return paths
@@ -48,11 +48,13 @@ export const migrationScriptFileRepository = () => {
                 })
                 .map(path.parse)
                 .filter((value) => ALLOW_LOAD_EXTENSIONS.includes(value.ext))
-                .map((value) => MigrationScriptFileEntity.convert(value));
+                .map((value) => {
+                    return MigrationScriptFileEntity.convert(value);
+                });
         }
         return [];
     };
     return {
-        findBy
+        findByAll
     };
 };

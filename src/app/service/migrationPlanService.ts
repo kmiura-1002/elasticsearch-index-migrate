@@ -6,7 +6,6 @@ import {
     MigrationTypes,
     Version
 } from '../types';
-import { loadMigrationScriptFile } from '../context/util/io/fileService';
 import { migrationHistoryRepository } from '../context/migration/history/migrationHistoryRepository';
 import { migrateHistorySpecByIndexName } from '../context/migration/history/spec';
 import { compare, valid } from 'semver';
@@ -21,6 +20,8 @@ import { MigrationExplainValidationDomainService } from '../context/migration/ex
 import { Config } from '@oclif/core';
 import { toolConfigRepository } from '../context/config_domain/toolConfigRepository';
 import { ToolConfigSpec } from '../context/config_domain/spec';
+import { migrationScriptFileRepository } from '../context/migration/script_file/migrationScriptFileRepository';
+import { MigrationScriptFileSpecByLocation } from '../context/migration/script_file/spec';
 
 export const migrationPlanService = (
     targetName: string,
@@ -58,11 +59,16 @@ export const migrationPlanService = (
     const refresh = async (): Promise<MigrationExplainPlan> => {
         const configEntity = await toolConfigRepository().findBy(new ToolConfigSpec(flags, config));
         const baseline = getBaselineVersion(targetName, configEntity.allMigrationConfig);
-        const migrationData = loadMigrationScriptFile(targetName, [
-            configEntity.migrationTargetConfig.location
-        ]);
+        const migrationData = migrationScriptFileRepository().findByAll(
+            new MigrationScriptFileSpecByLocation(targetName, [
+                configEntity.migrationTargetConfig.location
+            ])
+        );
 
-        validateInputData(migrationData, configEntity.migrationTargetConfig.location);
+        validateInputData(
+            migrationData.map((value) => value.migrationData),
+            configEntity.migrationTargetConfig.location
+        );
 
         try {
             const { findBy } = migrationHistoryRepository(configEntity.elasticsearchConfig);
@@ -84,33 +90,36 @@ export const migrationPlanService = (
             const lastApplied = appliedMigrationVersions[appliedMigrationVersions.length - 1];
             const migrationPlanMap = new Map<Version, MigrationExecuteStatementDataEntity>();
 
-            migrationData.filter(isRequiredMigrationData).forEach((value) => {
-                const migrationPlan = migrationPlanMap.get(value.version);
-                if (migrationPlan) {
-                    // Overwrites the same version of the migration file, if any
-                    migrationPlanMap.set(
-                        value.version,
-                        MigrationExecuteStatementDataEntity.generateExecuteStatement(
-                            baseline,
-                            lastResolved,
-                            lastApplied,
-                            value,
-                            migrationPlan.appliedMigration
-                        )
-                    );
-                    migrationPlan.updateResolvedMigration(value);
-                } else {
-                    migrationPlanMap.set(
-                        value.version,
-                        MigrationExecuteStatementDataEntity.generateExecuteStatement(
-                            baseline,
-                            lastResolved,
-                            lastApplied,
-                            value
-                        )
-                    );
-                }
-            });
+            migrationData
+                .map((value) => value.migrationData)
+                .filter(isRequiredMigrationData)
+                .forEach((value) => {
+                    const migrationPlan = migrationPlanMap.get(value.version);
+                    if (migrationPlan) {
+                        // Overwrites the same version of the migration file, if any
+                        migrationPlanMap.set(
+                            value.version,
+                            MigrationExecuteStatementDataEntity.generateExecuteStatement(
+                                baseline,
+                                lastResolved,
+                                lastApplied,
+                                value,
+                                migrationPlan.appliedMigration
+                            )
+                        );
+                        migrationPlan.updateResolvedMigration(value);
+                    } else {
+                        migrationPlanMap.set(
+                            value.version,
+                            MigrationExecuteStatementDataEntity.generateExecuteStatement(
+                                baseline,
+                                lastResolved,
+                                lastApplied,
+                                value
+                            )
+                        );
+                    }
+                });
             histories.forEach((value) => {
                 const migrationPlan = migrationPlanMap.get(value.migrateVersion);
                 const appliedMigration = {
