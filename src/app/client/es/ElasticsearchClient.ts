@@ -59,7 +59,7 @@ import type {
     IndicesPutSettingsRequest,
     SearchRequest
 } from 'es8/lib/api/types';
-import { UnsupportedVersionError } from '../../context/error/UnsupportedVersionError';
+import { UnsupportedVersionError } from '../../error/UnsupportedVersionError';
 import {
     closeConnection,
     countApi,

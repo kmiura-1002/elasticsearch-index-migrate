@@ -2,7 +2,7 @@ import { IndicesDelete as IndicesDelete6 } from 'es6/api/requestParams';
 import { IndicesDelete as IndicesDelete7 } from 'es7/api/requestParams';
 import { IndicesDeleteRequest } from 'es8/lib/api/types';
 import { isE6Client, isE7Client, isE8Client } from '../EsUtils';
-import { IndexDeleteError } from '../../../context/error/IndexDeleteError';
+import { IndexDeleteError } from '../../../error/IndexDeleteError';
 import { AcknowledgedResponse, EsConnection } from '../types';
 import { Context as Context7 } from 'es7/lib/Transport';
 

@@ -108,7 +108,10 @@ export const MigrationTypes = {
     ADD_FIELD: 'ADD_FIELD',
     CREATE_INDEX: 'CREATE_INDEX',
     DELETE_INDEX: 'DELETE_INDEX',
-    ALTER_SETTING: 'ALTER_SETTING'
+    ALTER_SETTING: 'ALTER_SETTING',
+    TEMPLATE: 'TEMPLATE',
+    INDEX_TEMPLATE: 'INDEX_TEMPLATE',
+    COMPONENT_TEMPLATE: 'COMPONENT_TEMPLATE'
 } as const;
 
 export type MigrationType = typeof MigrationTypes[keyof typeof MigrationTypes];

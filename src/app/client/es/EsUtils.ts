@@ -9,7 +9,7 @@ import type { ClientOptions as ClientOptions6 } from 'es6';
 import { Client as Es6Client } from 'es6';
 import type { ClientOptions as ClientOptions7 } from 'es7';
 import { Client as Es7Client } from 'es7';
-import { UnsupportedVersionError } from '../../context/error/UnsupportedVersionError';
+import { UnsupportedVersionError } from '../../error/UnsupportedVersionError';
 import { Generic as Generic6 } from 'es6/api/requestParams';
 import { Generic as Generic7 } from 'es7/api/requestParams';
 import { RequestBase } from 'es8/lib/api/types';

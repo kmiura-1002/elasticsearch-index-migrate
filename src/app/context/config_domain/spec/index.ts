@@ -1,7 +1,7 @@
 import { Config } from '@oclif/core';
 import fs from 'fs';
 import { CommandCommonFlagsProps } from '../../../types';
-import { NotFindToolConfigurationError } from '../../error/notFindToolConfigurationError';
+import { NotFindToolConfigurationError } from '../../../error/notFindToolConfigurationError';
 
 export type ToolConfigSpecProps = {
     flags: { [name: string]: any };

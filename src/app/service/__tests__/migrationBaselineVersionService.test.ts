@@ -7,7 +7,7 @@ import { IndicesExists as IndicesExists7 } from 'es7/api/requestParams';
 import { CliUx } from '@oclif/core';
 import type { MigrationConfig } from '../../types';
 import { MigrationTypes } from '../../types';
-import { SettingNotFoundError } from '../../context/error/SettingNotFoundError';
+import { SettingNotFoundError } from '../../error/SettingNotFoundError';
 
 jest.mock('../../client/es/ElasticsearchClient');
 const spyInfo = jest.spyOn(CliUx.ux, 'info');

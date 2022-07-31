@@ -45,7 +45,8 @@ describe('validate', () => {
             mocked(migrationPlanService).mockImplementation(() => {
                 return {
                     refresh: () => Promise.reject('reject refresh'),
-                    validate: () => Promise.reject('reject validate')
+                    validate: () => Promise.reject('reject validate'),
+                    migrate: () => Promise.reject('reject validate')
                 };
             });
             mocked(useElasticsearchClient).mockImplementation(getMockElasticsearchClient);

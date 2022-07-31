@@ -1,3 +1,3 @@
-import { DomainError } from './DomainError';
+import { DomainError } from './domainError';
 
 export class UnsupportedVersionError extends DomainError {}

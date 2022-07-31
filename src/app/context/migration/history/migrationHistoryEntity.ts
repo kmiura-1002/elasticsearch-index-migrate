@@ -1,6 +1,6 @@
 import { Entity, IdInterface } from '../../base/entity';
 import { MigrationIndex, MigrationTypes, Version } from '../../../types';
-import { ValidationError } from '../../error/ValidationError';
+import { ValidationError } from '../../../error/ValidationError';
 import { format } from 'date-fns';
 import { DATE_FORMAT } from '../../../definitions';
 import { MigrationHistoryId } from '../../base/id/migrationHistoryId';

@@ -2,7 +2,7 @@ import { Count as Count6 } from 'es6/api/requestParams';
 import { Count as Count7 } from 'es7/api/requestParams';
 import { CountRequest, long } from 'es8/lib/api/types';
 import { isE6Client, isE7Client, isE8Client } from '../EsUtils';
-import { DocumentsCountError } from '../../../context/error/DocumentsCountError';
+import { DocumentsCountError } from '../../../error/DocumentsCountError';
 import { Context as Context7, RequestBody as RequestBody7 } from 'es7/lib/Transport';
 import { EsConnection } from '../types';
 

@@ -1,6 +1,6 @@
 import { MigrationConfig, Version } from '../types';
-import { UnsupportedVersionError } from '../context/error/UnsupportedVersionError';
-import { SettingNotFoundError } from '../context/error/SettingNotFoundError';
+import { UnsupportedVersionError } from '../error/UnsupportedVersionError';
+import { SettingNotFoundError } from '../error/SettingNotFoundError';
 
 // TODO duplicate code
 const isSupportVersionFormat = (version: string): version is Version =>

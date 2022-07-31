@@ -10,7 +10,7 @@ import {
 import { Entity } from '../../base/entity';
 import { lt, valid } from 'semver';
 
-export class MigrationExecuteStatementDataEntity extends Entity<MigrationPlanData> {
+export class MigrationExplainDataEntity extends Entity<MigrationPlanData> {
     private constructor(param: MigrationPlanData) {
         super(param);
     }
@@ -21,7 +21,7 @@ export class MigrationExecuteStatementDataEntity extends Entity<MigrationPlanDat
         resolvedMigration?: RequiredMigrationData,
         appliedMigration?: AppliedMigration
     ) {
-        return new MigrationExecuteStatementDataEntity({
+        return new MigrationExplainDataEntity({
             resolvedMigration: resolvedMigration,
             appliedMigration: appliedMigration,
             baseline,

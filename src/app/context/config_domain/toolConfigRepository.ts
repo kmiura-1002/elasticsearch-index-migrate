@@ -7,9 +7,9 @@ import { Config } from '@oclif/core';
 import { ToolConfigEntity } from './toolConfigEntity';
 import { CommandCommonFlagsProps, MigrationConfig } from '../../types';
 import merge from 'lodash.merge';
-import { NotFindToolConfigurationError } from '../error/notFindToolConfigurationError';
-import { UnsupportedFileError } from '../error/unsupportedFileError';
-import { InvalidConfigDefinitionError } from '../error/invalidConfigDefinitionError';
+import { NotFindToolConfigurationError } from '../../error/notFindToolConfigurationError';
+import { UnsupportedFileError } from '../../error/unsupportedFileError';
+import { InvalidConfigDefinitionError } from '../../error/invalidConfigDefinitionError';
 
 const isToolConfigSpec = (spec: ToolConfigSpecProps): spec is ToolConfigSpec => {
     const configSpec = spec as ToolConfigSpec;

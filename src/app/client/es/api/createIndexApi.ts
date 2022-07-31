@@ -3,7 +3,7 @@ import { IndicesCreate as IndicesCreate7 } from 'es7/api/requestParams';
 import { IndicesCreateRequest } from 'es8/lib/api/types';
 import { isE6Client, isE7Client, isE8Client } from '../EsUtils';
 import { AcknowledgedResponse, EsConnection } from '../types';
-import { CreateIndexError } from '../../../context/error/CreateIndexError';
+import { CreateIndexError } from '../../../error/CreateIndexError';
 import { Context as Context7, RequestBody as RequestBody7 } from 'es7/lib/Transport';
 
 /**

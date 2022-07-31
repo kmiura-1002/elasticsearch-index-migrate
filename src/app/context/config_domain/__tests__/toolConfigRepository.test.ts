@@ -1,7 +1,7 @@
 import * as Config from '@oclif/core';
 import { toolConfigRepository } from '../toolConfigRepository';
 import { ToolConfigSpec } from '../spec';
-import { UnsupportedFileError } from '../../error/unsupportedFileError';
+import { UnsupportedFileError } from '../../../error/unsupportedFileError';
 
 describe('toolConfigRepository', () => {
     const { findBy } = toolConfigRepository();

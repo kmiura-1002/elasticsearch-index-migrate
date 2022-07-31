@@ -1,12 +1,12 @@
 import { mocked } from 'jest-mock';
+import fs from 'fs';
+import { esConnectConf, usedEsVersion } from '../../es/EsUtils';
+import type { ESConnectConfig } from '../../../types';
+import { UnsupportedVersionError } from '../../../error/UnsupportedVersionError';
 
 jest.mock('fs', () => ({
     readFileSync: jest.fn(() => `first¥n second¥n third`)
 }));
-import fs from 'fs';
-import { esConnectConf, usedEsVersion } from '../../es/EsUtils';
-import type { ESConnectConfig } from '../../../types';
-import { UnsupportedVersionError } from '../../../context/error/UnsupportedVersionError';
 
 describe('EsUtils', () => {
     it('can be connect when cloud id access', () => {

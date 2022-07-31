@@ -2,7 +2,7 @@ import { Index as Index6 } from 'es6/api/requestParams';
 import { Index as Index7 } from 'es7/api/requestParams';
 import { IndexRequest } from 'es8/lib/api/types';
 import { isE6Client, isE7Client, isE8Client } from '../EsUtils';
-import { ConnectionCloseError } from '../../../context/error/ConnectionCloseError';
+import { ConnectionCloseError } from '../../../error/ConnectionCloseError';
 import { EsConnection } from '../types';
 
 /**

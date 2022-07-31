@@ -1,4 +1,4 @@
-import { DomainError } from '../DomainError';
+import { DomainError } from '../domainError';
 
 describe('DomainError', () => {
     it('can show error stack', () => {
