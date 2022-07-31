@@ -1,25 +1,25 @@
 import { Generic as Generic6 } from 'es6/api/requestParams';
-import { IndicesPutIndexTemplate as IndicesPutIndexTemplate7 } from 'es7/api/requestParams';
-import { IndicesPutIndexTemplateRequest } from 'es8/lib/api/types';
+import { IndicesDeleteIndexTemplate as IndicesDeleteIndexTemplate7 } from 'es7/api/requestParams';
+import { IndicesDeleteIndexTemplateRequest } from 'es8/lib/api/types';
 import { isE6Client, isE7Client, isE8Client } from '../EsUtils';
 import { AcknowledgedResponse, EsConnection } from '../types';
-import { Context as Context7, RequestBody as RequestBody7 } from 'es7/lib/Transport';
+import { Context as Context7 } from 'es7/lib/Transport';
 import { UnsupportedVersionError } from '../../../error/unsupportedVersionError';
 
 /**
  * @package
  * @constructor
  * @param {EsConnection} connection connection
- * @param {Generic6 | IndicesPutTemplate7 | IndicesPutIndexTemplateRequest} request request param
+ * @param {Generic6 | IndicesPutTemplate7 | IndicesDeleteIndexTemplateRequest} request request param
  */
-export const putIndexTemplateApi = (
+export const deleteIndexTemplateApi = (
     connection: EsConnection,
-    request: Generic6 | IndicesPutIndexTemplate7 | IndicesPutIndexTemplateRequest
+    request: Generic6 | IndicesDeleteIndexTemplate7 | IndicesDeleteIndexTemplateRequest
 ): Promise<AcknowledgedResponse> => {
     const param = { client: connection.client, request };
 
     if (
-        isE6Client<Generic6, IndicesPutIndexTemplate7, IndicesPutIndexTemplateRequest>(
+        isE6Client<Generic6, IndicesDeleteIndexTemplate7, IndicesDeleteIndexTemplateRequest>(
             param,
             connection.version
         )
@@ -28,21 +28,21 @@ export const putIndexTemplateApi = (
             'Index Template API is not supported in elasticsearch6.x'
         );
     } else if (
-        isE7Client<Generic6, IndicesPutIndexTemplate7, IndicesPutIndexTemplateRequest>(
+        isE7Client<Generic6, IndicesDeleteIndexTemplate7, IndicesDeleteIndexTemplateRequest>(
             param,
             connection.version
         )
     ) {
         return param.client.indices
-            .putIndexTemplate<AcknowledgedResponse, RequestBody7, Context7>(param.request)
+            .deleteIndexTemplate<AcknowledgedResponse, Context7>(param.request)
             .then((value) => value.body);
     } else if (
-        isE8Client<Generic6, IndicesPutIndexTemplate7, IndicesPutIndexTemplateRequest>(
+        isE8Client<Generic6, IndicesDeleteIndexTemplate7, IndicesDeleteIndexTemplateRequest>(
             param,
             connection.version
         )
     ) {
-        return param.client.indices.putIndexTemplate(param.request);
+        return param.client.indices.deleteIndexTemplate(param.request);
     }
     return Promise.reject(`illegal argument : ${JSON.stringify(param)}`);
 };

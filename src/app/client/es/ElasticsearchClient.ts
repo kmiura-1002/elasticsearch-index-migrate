@@ -19,44 +19,59 @@ import type {
     Count as Count6,
     Delete as Delete6,
     DeleteByQuery as DeleteByQuery6,
+    Generic as Generic6,
     Index as Index6,
     IndicesCreate as IndicesCreate6,
     IndicesDelete as IndicesDelete6,
+    IndicesDeleteTemplate as IndicesDeleteTemplate6,
     IndicesExists as IndicesExists6,
     IndicesGet as IndicesGet6,
     IndicesGetMapping as IndicesGetMapping6,
     IndicesPutMapping as IndicesPutMapping6,
     IndicesPutSettings as IndicesPutSettings6,
+    IndicesPutTemplate as IndicesPutTemplate6,
     Search as Search6
 } from 'es6/api/requestParams';
 import type {
+    ClusterDeleteComponentTemplate as ClusterDeleteComponentTemplate7,
     ClusterHealth as ClusterHealth7,
+    ClusterPutComponentTemplate as ClusterPutComponentTemplate7,
     Count as Count7,
     Delete as Delete7,
     DeleteByQuery as DeleteByQuery7,
     Index as Index7,
     IndicesCreate as IndicesCreate7,
     IndicesDelete as IndicesDelete7,
+    IndicesDeleteIndexTemplate as IndicesDeleteIndexTemplate7,
+    IndicesDeleteTemplate as IndicesDeleteTemplate7,
     IndicesExists as IndicesExists7,
     IndicesGet as IndicesGet7,
     IndicesGetMapping as IndicesGetMapping7,
+    IndicesPutIndexTemplate as IndicesPutIndexTemplate7,
     IndicesPutMapping as IndicesPutMapping7,
     IndicesPutSettings as IndicesPutSettings7,
+    IndicesPutTemplate as IndicesPutTemplate7,
     Search as Search7
 } from 'es7/api/requestParams';
 import type {
+    ClusterDeleteComponentTemplateRequest,
     ClusterHealthRequest,
+    ClusterPutComponentTemplateRequest,
     CountRequest,
     DeleteByQueryRequest,
     DeleteByQueryResponse,
     DeleteRequest,
     IndexRequest,
     IndicesCreateRequest,
+    IndicesDeleteIndexTemplateRequest,
     IndicesDeleteRequest,
+    IndicesDeleteTemplateRequest,
     IndicesExistsRequest,
     IndicesGetMappingRequest,
+    IndicesPutIndexTemplateRequest,
     IndicesPutMappingRequest,
     IndicesPutSettingsRequest,
+    IndicesPutTemplateRequest,
     SearchRequest
 } from 'es8/lib/api/types';
 import { UnsupportedVersionError } from '../../error/UnsupportedVersionError';
@@ -65,15 +80,21 @@ import {
     countApi,
     createIndexApi,
     deleteApi,
+    deleteComponentTemplateApi,
     deleteDocumentApi,
     deleteDocumentsApi,
+    deleteIndexTemplateApi,
+    deleteTemplateApi,
     existsApi,
     getIndexApi,
     getMappingApi,
     healthCheckApi,
     postDocumentApi,
+    putComponentTemplateApi,
+    putIndexTemplateApi,
     putMappingApi,
     putSettingApi,
+    putTemplateApi,
     searchApi
 } from './api';
 
@@ -171,6 +192,30 @@ export function useElasticsearchClient(connectConf: ESConfig) {
     const count = (param: Count6 | Count7 | CountRequest): Promise<number> =>
         countApi(connection, param);
 
+    const putTemplate = (
+        param: IndicesPutTemplate6 | IndicesPutTemplate7 | IndicesPutTemplateRequest
+    ) => putTemplateApi(connection, param);
+
+    const deleteTemplate = (
+        param: IndicesDeleteTemplate6 | IndicesDeleteTemplate7 | IndicesDeleteTemplateRequest
+    ) => deleteTemplateApi(connection, param);
+
+    const putIndexTemplate = (
+        param: Generic6 | IndicesPutIndexTemplate7 | IndicesPutIndexTemplateRequest
+    ) => putIndexTemplateApi(connection, param);
+
+    const deleteIndexTemplate = (
+        param: Generic6 | IndicesDeleteIndexTemplate7 | IndicesDeleteIndexTemplateRequest
+    ) => deleteIndexTemplateApi(connection, param);
+
+    const putComponentTemplate = (
+        param: Generic6 | ClusterPutComponentTemplate7 | ClusterPutComponentTemplateRequest
+    ) => putComponentTemplateApi(connection, param);
+
+    const deleteComponentTemplate = (
+        param: Generic6 | ClusterDeleteComponentTemplate7 | ClusterDeleteComponentTemplateRequest
+    ) => deleteComponentTemplateApi(connection, param);
+
     return {
         healthCheck,
         putMapping,
@@ -186,6 +231,12 @@ export function useElasticsearchClient(connectConf: ESConfig) {
         getIndex,
         deleteDocuments,
         deleteDocument,
-        count
+        count,
+        putTemplate,
+        deleteTemplate,
+        putIndexTemplate,
+        deleteIndexTemplate,
+        putComponentTemplate,
+        deleteComponentTemplate
     };
 }

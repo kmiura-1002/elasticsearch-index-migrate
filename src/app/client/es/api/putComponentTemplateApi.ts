@@ -4,6 +4,7 @@ import { ClusterPutComponentTemplateRequest } from 'es8/lib/api/types';
 import { isE6Client, isE7Client, isE8Client } from '../EsUtils';
 import { AcknowledgedResponse, EsConnection } from '../types';
 import { Context as Context7, RequestBody as RequestBody7 } from 'es7/lib/Transport';
+import { UnsupportedVersionError } from '../../../error/unsupportedVersionError';
 
 /**
  * @package
@@ -23,8 +24,9 @@ export const putComponentTemplateApi = (
             connection.version
         )
     ) {
-        // FIXME
-        throw new Error('Unsupported API');
+        throw new UnsupportedVersionError(
+            'Component Template API is not supported in elasticsearch6.x'
+        );
     } else if (
         isE7Client<Generic6, ClusterPutComponentTemplate7, ClusterPutComponentTemplateRequest>(
             param,

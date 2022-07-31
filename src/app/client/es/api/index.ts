@@ -54,3 +54,27 @@ export { countApi } from './countApi';
  * @package
  */
 export { deleteDocumentApi } from './deleteDocumentApi';
+/**
+ * @package
+ */
+export { putIndexTemplateApi } from './putIndexTemplateApi';
+/**
+ * @package
+ */
+export { putComponentTemplateApi } from './putComponentTemplateApi';
+/**
+ * @package
+ */
+export { putTemplateApi } from './putTemplateApi';
+/**
+ * @package
+ */
+export { deleteTemplateApi } from './deleteTemplateApi';
+/**
+ * @package
+ */
+export { deleteIndexTemplateApi } from './deleteIndexTemplateApi';
+/**
+ * @package
+ */
+export { deleteComponentTemplateApi } from './deleteComponentTemplateApi';
