@@ -24,8 +24,10 @@ export const putComponentTemplateApi = (
             connection.version
         )
     ) {
-        throw new UnsupportedVersionError(
-            'Component Template API is not supported in elasticsearch6.x'
+        return Promise.reject(
+            new UnsupportedVersionError(
+                'Component Template API is not supported in elasticsearch6.x'
+            )
         );
     } else if (
         isE7Client<Generic6, ClusterPutComponentTemplate7, ClusterPutComponentTemplateRequest>(

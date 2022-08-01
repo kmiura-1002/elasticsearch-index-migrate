@@ -1,5 +1,6 @@
 import { useElasticsearchClient } from '../../es/ElasticsearchClient';
 import { ResponseError } from 'es7/lib/errors';
+import { UnsupportedVersionError } from '../../../error/unsupportedVersionError';
 
 describe('Elasticsearch client test', () => {
     describe('version 6', () => {
@@ -459,6 +460,48 @@ describe('Elasticsearch client test', () => {
             await client.deleteIndex({ index });
         });
 
+        it('can call template api', async () => {
+            const name = `test_template_${Math.random().toString(32).substring(2)}`;
+            const putTemplateResponse = await client.putTemplate({
+                name,
+                body: {
+                    index_patterns: ['test_template-xxx2*'],
+                    template: {
+                        settings: {
+                            number_of_shards: 1
+                        },
+                        mappings: {
+                            _doc: {
+                                _source: { enabled: false }
+                            }
+                        }
+                    }
+                }
+            });
+            expect(putTemplateResponse.acknowledged).toEqual(true);
+
+            const deleteTemplateResponse = await client.deleteTemplate({ name });
+            expect(deleteTemplateResponse.acknowledged).toEqual(true);
+        });
+
+        it('can not call index template api', async () => {
+            const name = `test_template_${Math.random().toString(32).substring(2)}`;
+            await expect(client.putIndexTemplate({ name })).rejects.toThrowError(
+                new UnsupportedVersionError(
+                    'Index Template API is not supported in elasticsearch6.x'
+                )
+            );
+        });
+
+        it('can not call component template api', async () => {
+            const name = `test_template_${Math.random().toString(32).substring(2)}`;
+            await expect(client.putComponentTemplate({ name, body: {} })).rejects.toThrowError(
+                new UnsupportedVersionError(
+                    'Component Template API is not supported in elasticsearch6.x'
+                )
+            );
+        });
+
         it('can call health check api', async () => {
             await expect(client.healthCheck()).resolves.toEqual('green');
         });
@@ -732,6 +775,86 @@ describe('Elasticsearch client test', () => {
             await client.createIndex({ index });
             await expect(client.count({ index })).resolves.toEqual(0);
             await client.deleteIndex({ index });
+        });
+
+        it('can call template api', async () => {
+            const name = `test_template_${Math.random().toString(32).substring(2)}`;
+            const putTemplateResponse = await client.putTemplate({
+                name,
+                body: {
+                    index_patterns: ['test_template-xxx2*'],
+                    template: {
+                        settings: {
+                            number_of_shards: 1
+                        },
+                        mappings: {
+                            _source: { enabled: false }
+                        }
+                    }
+                }
+            });
+            expect(putTemplateResponse.acknowledged).toEqual(true);
+
+            const deleteTemplateResponse = await client.deleteTemplate({ name });
+            expect(deleteTemplateResponse.acknowledged).toEqual(true);
+        });
+
+        it('can call index template api', async () => {
+            const name = `test_template_${Math.random().toString(32).substring(2)}`;
+            const actual = await client.putIndexTemplate({
+                name,
+                body: {
+                    index_patterns: ['te*', 'bar*'],
+                    template: {
+                        settings: {
+                            number_of_shards: 1
+                        },
+                        mappings: {
+                            _source: {
+                                enabled: true
+                            },
+                            properties: {
+                                host_name: {
+                                    type: 'keyword'
+                                },
+                                created_at: {
+                                    type: 'date',
+                                    format: 'EEE MMM dd HH:mm:ss Z yyyy'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            expect(actual.acknowledged).toEqual(true);
+
+            const deleteIndexTemplateResponse = await client.deleteIndexTemplate({ name });
+            expect(deleteIndexTemplateResponse.acknowledged).toEqual(true);
+        });
+
+        it('can call component template api', async () => {
+            const name = `test_template_${Math.random().toString(32).substring(2)}`;
+            const actual = await client.putComponentTemplate({
+                name,
+                body: {
+                    template: {
+                        mappings: {
+                            runtime: {
+                                day_of_week: {
+                                    type: 'keyword',
+                                    script: {
+                                        source: "emit(doc['@timestamp'].value.dayOfWeekEnum.getDisplayName(TextStyle.FULL, Locale.ROOT))"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            expect(actual.acknowledged).toEqual(true);
+
+            const deleteComponentTemplateResponse = await client.deleteComponentTemplate({ name });
+            expect(deleteComponentTemplateResponse.acknowledged).toEqual(true);
         });
 
         it('can call health check api', async () => {

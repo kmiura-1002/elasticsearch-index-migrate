@@ -24,8 +24,8 @@ export const putIndexTemplateApi = (
             connection.version
         )
     ) {
-        throw new UnsupportedVersionError(
-            'Index Template API is not supported in elasticsearch6.x'
+        return Promise.reject(
+            new UnsupportedVersionError('Index Template API is not supported in elasticsearch6.x')
         );
     } else if (
         isE7Client<Generic6, IndicesPutIndexTemplate7, IndicesPutIndexTemplateRequest>(

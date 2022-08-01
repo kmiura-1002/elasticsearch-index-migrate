@@ -135,6 +135,7 @@ function esClientBind(esConfig: ESConfig): EsConnection {
     }
 }
 
+// FIXME ES8 request param対応
 export function useElasticsearchClient(connectConf: ESConfig) {
     const connection = esClientBind(connectConf);
 
